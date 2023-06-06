@@ -16,7 +16,7 @@ def get_sweep_hash_isolated_process():
             check=False,
         ).stdout.decode("utf-8")
     else:
-        os.system("echo $PYTHONHASHSEED; python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' >tmp")
+        os.system("echo seed $PYTHONHASHSEED; python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' >tmp")
         res = open("tmp","r").read()
         os.remove("tmp")
         return res
