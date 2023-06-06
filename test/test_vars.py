@@ -8,15 +8,14 @@ from bencher.example.benchmark_data import AllSweepVars
 
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
+
     result = subprocess.run(
-        [f"scripts/gen_hash_sweep.py"],
+        ["python3", "-c" ,"'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'"],
         stdout=subprocess.PIPE,
         check=False,
     )
     return result.stdout
 
-# TODO enable this again
-# @pytest.mark.skip
 class TestBencherHashing(unittest.TestCase):
     def test_python_hash_seed(self) -> None:
         self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
