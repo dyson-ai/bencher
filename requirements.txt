@@ -1,0 +1,17 @@
+numpy
+seaborn==0.12.2
+matplotlib==3.7.1
+param
+diskcache
+optuna
+pandas==2.0.1
+panel
+hvplot
+strenum
+xarray
+plotly
+optuna
+scikit-learn  
+pytest
+pytest-cov  
+hypothesis
