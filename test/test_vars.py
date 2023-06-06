@@ -5,16 +5,22 @@ import os
 
 from bencher.example.benchmark_data import AllSweepVars
 
-
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
 
-    result = subprocess.run(
-        ["python3", "-c" ,"'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'"],
-        stdout=subprocess.PIPE,
-        check=False,
-    )
-    return result.stdout
+    use_sub_proc = False
+    if use_sub_proc:
+        subprocess.run(
+            ["python3", "-c" ,"'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'"],
+            stdout=subprocess.PIPE,
+            check=False,
+        ).stdout.decode("utf-8")
+    else:
+        os.system("echo $PYTHONHASHSEED; python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' >tmp")
+        res = open("tmp","r").read()
+        os.remove("tmp")
+        return res
+   
 
 class TestBencherHashing(unittest.TestCase):
     #TODO need to change the way hashing works so that it does not depend on this environment variable
@@ -55,4 +61,11 @@ class TestBencherHashing(unittest.TestCase):
 
     def test_hash_sweep_isolated(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
-        self.assertEqual(get_sweep_hash_isolated_process(), get_sweep_hash_isolated_process())
+
+        
+        self.assertNotEqual(len(get_sweep_hash_isolated_process()),0,"make sure the hash is getting returned")
+
+        self.assertEqual(get_sweep_hash_isolated_process(), get_sweep_hash_isolated_process(),"make sure the hashes are equal")
+
+
+print(get_sweep_hash_isolated_process())
