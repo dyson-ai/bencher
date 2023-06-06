@@ -8,7 +8,6 @@ from bencher.example.benchmark_data import AllSweepVars
 
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
-    workspace = os.getenv("DYSON_WORKSPACE")
     result = subprocess.run(
         [f"scripts/gen_hash_sweep.py"],
         stdout=subprocess.PIPE,
