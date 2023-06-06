@@ -1,0 +1,22 @@
+#data managment
+param
+strenum
+numpy
+
+#data storage
+pandas  
+xarray  
+zarr   
+diskcache  
+
+#plotting
+seaborn
+matplotlib
+panel
+hvplot
+optuna 
+plotly 
+
+#testing
+pytest
+hypothesis
