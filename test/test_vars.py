@@ -10,14 +10,14 @@ def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
     workspace = os.getenv("DYSON_WORKSPACE")
     result = subprocess.run(
-        [f"{workspace}/src/common/bencher/scripts/gen_hash_sweep.py"],
+        [f"scripts/gen_hash_sweep.py"],
         stdout=subprocess.PIPE,
         check=False,
     )
     return result.stdout
 
-#TODO enable this again
-@pytest.mark.skip
+# TODO enable this again
+# @pytest.mark.skip
 class TestBencherHashing(unittest.TestCase):
     def test_python_hash_seed(self) -> None:
         self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
