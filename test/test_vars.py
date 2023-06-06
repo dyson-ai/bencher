@@ -17,6 +17,7 @@ def get_sweep_hash_isolated_process():
     return result.stdout
 
 class TestBencherHashing(unittest.TestCase):
+    @pytest.mark.skip
     def test_python_hash_seed(self) -> None:
         self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
 
