@@ -1,21 +1,17 @@
-pip:
+numpy
+seaborn==0.12.2
+matplotlib==3.7.1
+param
+diskcache
+optuna
+pandas==2.0.1
+panel
+hvplot
+strenum
+xarray
+plotly
+optuna
+scikit-learn  
 pytest
+pytest-cov  
 hypothesis
-pytest-cov
-  
-  - buildrun: diskcache
-  - buildrun: optuna
-  - buildrun: pandas==2.0.1
-  - buildrun: panel
-  - buildrun: hvplot
-  - buildrun: strenum
-  - buildrun: xarray
-  - buildrun: plotly
-  - buildrun: seaborn==0.12.2
-  - buildrun: matplotlib==3.7.1
-  - buildrun: param
-  - buildrun: optuna
-  - buildrun: numpy
-  - buildrun: scikit-learn
-  
-
