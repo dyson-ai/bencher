@@ -318,6 +318,11 @@ class BenchCfg(BenchRunCfg):
         doc="A list of ParameterizedSweep results collect and plot.",
     )
 
+    result_groups = param.List(
+        default=None,
+        doc="A list of ParameterizedSweep results collect and plot.",
+    )
+
     const_vars = param.List(
         default=None,
         doc="Variables to keep constant but are different from the default value",

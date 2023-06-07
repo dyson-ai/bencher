@@ -130,6 +130,7 @@ class Bench(BenchPlotServer):
         title: str,
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedOutput] = None,
+        result_groups: List[ParametrizedOutput] = None,
         const_vars: List[ParametrizedSweep] = None,
         time_src: datetime = None,
         description: str = None,
@@ -162,6 +163,8 @@ class Bench(BenchPlotServer):
             input_vars = []
         if result_vars is None:
             result_vars = []
+        if result_groups is None:
+            result_groups = []
         if const_vars is None:
             const_vars = []
 
@@ -169,6 +172,8 @@ class Bench(BenchPlotServer):
             self.check_var_is_a_param(i, "input")
         for i in result_vars:
             self.check_var_is_a_param(i, "result")
+        for i in result_groups:
+            self.check_var_is_a_param(i, "result group")
         for i in const_vars:
             self.check_var_is_a_param(i[0], "const")  # consts come as tuple pairs
 
@@ -185,6 +190,7 @@ class Bench(BenchPlotServer):
         bench_cfg = BenchCfg(
             input_vars=input_vars,
             result_vars=result_vars,
+            result_groups=result_groups,
             const_vars=const_vars,
             bench_name=self.bench_name,
             description=description,

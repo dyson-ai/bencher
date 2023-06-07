@@ -118,6 +118,9 @@ class BenchPlotter:
         """
         plot_rows = pn.Row(name=bench_cfg.bench_name)
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
+        for rg in bench_cfg.result_groups:
+            for rv in bench_cfg.result_vars[]
+                plot_rows.append(BenchPlotter.plot_result_variable_group(bench_cfg, rg, plt_cnt_cfg))
         for rv in bench_cfg.result_vars:
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
 
