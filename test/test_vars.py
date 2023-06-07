@@ -10,14 +10,19 @@ def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
 
     result = subprocess.run(
-        ["python3", "-c" ,"'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'"],
+        [
+            "python3",
+            "-c",
+            "'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'",
+        ],
         stdout=subprocess.PIPE,
         check=False,
     )
     return result.stdout
 
+
 class TestBencherHashing(unittest.TestCase):
-    #TODO need to change the way hashing works so that it does not depend on this environment variable
+    # TODO need to change the way hashing works so that it does not depend on this environment variable
     @pytest.mark.skip
     def test_python_hash_seed(self) -> None:
         self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
