@@ -261,49 +261,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
         return BenchRunCfg(**vars(parser.parse_args()))
 
-    @staticmethod
-    def create(
-        repeats: int = 1,
-        over_time: bool = False,
-        clear_history: bool = False,
-        debug: bool = False,
-        description: str = None,
-        post_description: str = None,
-        print_pandas: bool = False,
-        print_xarray: bool = False,
-        auto_plot: bool = True,
-        raise_duplicate_exception: bool = False,
-        plots_instance=None,
-        use_cache: bool = False,
-        clear_cache: bool = False,
-        serve_panel: bool = False,
-        save_fig: bool = False,
-        use_optuna: bool = False,
-        print_bench_inputs: bool = False,
-        **kwargs,
-    ) -> BenchRunCfg:
-        """Create a benchRunCfg but with autocomplete.  (param variables don't have autocomplete by default)
-
-        Args:
-            repeats (int, optional): The number of times to resample each condition. Defaults to 1.
-            over_time (bool, optional): If true each time the function is called it will plot a timeseries of historical and the latest result. Defaults to False.
-            clear_history (bool, optional): Clear historical results. Defaults to False.
-            debug (bool, optional): Sample with a reduced number of inputs. Defaults to False.
-            print_pandas (bool, optional): Print a pandas summary of the results. Defaults to False.
-            print_xarray (bool, optional): Print an xarray summary of the results. Defaults to False.
-            auto_plot (bool, optional): Automaticlly dedeuce the best type of plot for the results. Defaults to True.
-            raise_duplicate_exception (bool, optional): Used to debug unique plot names. Defaults to False.
-            use_cache (bool, optional): If true, before calling the objective function, the sampler will check if these inputs have been calculated before and if so load them from the cache. Beware depending on how you change code in the objective function, the cache could provide values that are not correct. Defaults to False
-            clear_cache (bool, optional): Clear the cache of saved input->output mappings Defaults to False
-            save_fig (bool, optional): Optionally save a png of each figure. Default False
-            use_optuna (bool, optional): Optionally use optuna to sample and plot extra information about the param sweep.  Beware that optuna is much slower than the default sampling method in bencher. Default True
-            print_bench_inputs (bool,optional): Print the inputs to the benchmark function every time it is called. Default False"
-
-
-        Returns:
-            BenchRunCfg: BenchRunCfg
-        """
-        return BenchRunCfg(**kwargs)
+   
 
 
 class BenchCfg(BenchRunCfg):
