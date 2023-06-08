@@ -1,12 +1,10 @@
 from bencher import Bench, BenchRunCfg
-import pathlib
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-import panel as pn
 
 
-def example_cat_float(run_cfg: BenchRunCfg, time_src=None) -> Bench:
+def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
     """Example of how to perform a parameter sweep for floating point variables
 
     Args:
@@ -58,7 +56,6 @@ def example_cat_float(run_cfg: BenchRunCfg, time_src=None) -> Bench:
 
 
 if __name__ == "__main__":
-    from datetime import datetime
     import time
 
     ex_run_cfg = BenchRunCfg()
