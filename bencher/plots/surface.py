@@ -108,3 +108,34 @@ class SurfacePlot(PlotSignature):
             return surface * upper * lower
         else:
             return surface
+        
+    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
+
+        Args:
+            sns_cfg (PltCfgBase): See PltCfgBase definition
+            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+
+        Returns:
+            PltCfgBase: See PltCfgBase definition
+        """
+        xr_cfg = PltCfgBase()
+        if plt_cnt_cfg.float_cnt == 2:
+            logging.info(f"surface plot: {rv.name}")
+            xr_cfg.plot_callback_xra = xr.plot.plot
+            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
+            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
+            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
+            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
+            xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
+            xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
+
+            if plt_cnt_cfg.cat_cnt >= 1:
+                logging.info("surface plot with 1 categorical")
+                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
+                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
+            if plt_cnt_cfg.cat_cnt >= 2:
+                logging.info("surface plot with 2> categorical")
+                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
+                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
+        return xr_cfg

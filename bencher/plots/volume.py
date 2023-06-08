@@ -6,6 +6,39 @@ class PlotVolume(PlotSignature):
         plot_sig.cat_range = VarRange(0, 0)
         plot_sig.vector_len = VarRange(2, 2)
         return plot_sig
+    
+    def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
+        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
+
+        Args:
+            sns_cfg (PltCfgBase): See PltCfgBase definition
+            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+
+        Returns:
+            PltCfgBase: See PltCfgBase definition
+        """
+        xr_cfg = PltCfgBase(**sns_cfg.as_dict())
+
+        if plt_cnt_cfg.float_cnt >= 3:
+            logging.info("volume plot")
+            sns_cfg.plot_callback = None  # all further plots are surfaces
+            xr_cfg.plot_callback_xra = xr.plot.plot
+            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
+            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
+            xr_cfg.z = plt_cnt_cfg.float_vars[2].name
+            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
+            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
+            xr_cfg.zlabel = f"{xr_cfg.z} [{plt_cnt_cfg.float_vars[2].units}]"
+            if plt_cnt_cfg.cat_cnt >= 1:
+                logging.info("volume plot with 1 categorical")
+                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
+                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
+            if plt_cnt_cfg.cat_cnt >= 2:
+                logging.info("volume plot with 2> categorical")
+                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
+                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
+        return xr_cfg
+
 
     def plot_single(self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec):
         return self.plot_volume_plotly(bench_cfg, rv)

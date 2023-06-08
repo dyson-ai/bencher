@@ -2,8 +2,7 @@
 from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange
 from bencher import BenchCfg,ResultVec
 from typing import List
-from plt_cfg import wrap_long
-
+import panel as pn
 
 class Scatter3D(PlotProvider):
     def get_plot_signatures(self):
