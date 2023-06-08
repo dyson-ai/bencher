@@ -1,18 +1,21 @@
 from __future__ import annotations
+
+import bencher as bch
+import logging
+import argparse
+import copy
 import param
+
+from str2bool import str2bool
+import xarray as xr
 from typing import List, Callable, Tuple, Any
+
 from bencher.bench_vars import (
     TimeSnapshot,
     TimeEvent,
     describe_variable,
     OptDir,
 )
-import bencher as bch
-import logging
-import argparse
-from distutils.util import strtobool
-import copy
-import xarray as xr
 
 
 def to_filename(

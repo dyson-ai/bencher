@@ -15,4 +15,5 @@ scikit-learn
 pytest
 pytest-cov  
 hypothesis
+str2bool
 black==22.12.0
