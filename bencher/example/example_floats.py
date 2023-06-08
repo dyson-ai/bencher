@@ -3,7 +3,6 @@ import pathlib
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-import panel as pn
 
 
 def example_floats(run_cfg: BenchRunCfg) -> Bench:

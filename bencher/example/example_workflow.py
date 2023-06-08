@@ -5,21 +5,21 @@ import numpy as np
 class VolumeSample(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
-    x = FloatSweep(
+    x = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="x coordinate of the sample volume", samples=9
     )
-    y = FloatSweep(
+    y = bch.FloatSweep(
         default=0, bounds=[-2.0, 2.0], doc="y coordinate of the sample volume", samples=10
     )
-    z = FloatSweep(
+    z = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=11
     )
 
-    surf_x = FloatSweep(
+    surf_x = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=9
     )
 
-    surf_y = FloatSweep(
+    surf_y = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=11
     )
 
@@ -27,16 +27,16 @@ class VolumeSample(bch.ParametrizedSweep):
 class VolumeResult(bch.ParametrizedOutput):
     """A class to represent the properties of a volume sample."""
 
-    # value = ResultVar("ul", doc="The scalar value of the 3D volume field")
-    p1_dis = ResultVar("m", direction=bch.OptDir.minimize, doc="The distance to p1")
-    p2_dis = ResultVar("m", direction=bch.OptDir.minimize, doc="The distance to p2")
-    total_dis = ResultVar(
+    # value = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
+    p1_dis = bch.ResultVar("m", direction=bch.OptDir.minimize, doc="The distance to p1")
+    p2_dis = bch.ResultVar("m", direction=bch.OptDir.minimize, doc="The distance to p2")
+    total_dis = bch.ResultVar(
         "m", direction=bch.OptDir.minimize, doc="The total distance to all points"
     )
-    surf_value = ResultVar(
+    surf_value = bch.ResultVar(
         "ul", direction=bch.OptDir.maximize, doc="The scalar value of the 3D volume field"
     )
-    # occupancy = ResultVar("occupied", doc="If the value is > 0.5 this point is considered occupied")
+    # occupancy = bch.ResultVar("occupied", doc="If the value is > 0.5 this point is considered occupied")
 
 
 p1 = np.array([0.4, 0.6, 0.0])
@@ -71,7 +71,7 @@ def bench_fn(point: VolumeSample) -> VolumeResult:
     return output
 
 
-def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None) -> Bench:
+def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -173,7 +173,7 @@ def example_floats3D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
+    ex_run_cfg = bch.BenchRunCfg()
 
     bench = example_floats2D_workflow(ex_run_cfg)
     example_floats3D_workflow(ex_run_cfg, bench)
