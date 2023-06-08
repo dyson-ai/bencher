@@ -57,7 +57,7 @@ class PlotVolume(PlotSignature):
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         da = bench_cfg.ds[rv.name]
 

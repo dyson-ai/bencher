@@ -24,7 +24,7 @@ class SurfacePlot(PlotSignature):
         if type(rv) == ResultVec:
             return plot_scatter3D_px(bench_cfg, rv)
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         da = bench_cfg.ds[rv.name].transpose()
 
@@ -77,7 +77,7 @@ class SurfacePlot(PlotSignature):
             pn.pane.holoview: A 2d surface plot as a holoview in a pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         alpha = 0.3
 

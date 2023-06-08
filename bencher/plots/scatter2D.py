@@ -21,7 +21,7 @@ class Scatter2D(PlotProvider):
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
         ds = bench_cfg.ds.drop_vars("repeat")
 
         df = ds.to_dataframe().reset_index()
@@ -50,7 +50,7 @@ class Scatter2D(PlotProvider):
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
         ds = bench_cfg.ds.drop_vars("repeat")
 
         df = bench_cfg.ds.to_dataframe().reset_index()

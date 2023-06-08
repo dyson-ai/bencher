@@ -122,13 +122,7 @@ class PltCfgBase(param.Parameterized):
         return to_filename(self, exclude_params=["marker", "xlabel", "ylabel", "title"])
 
 
-class PltCntCfg(param.Parameterized):
-    """Plot Count Config"""
 
-    float_vars = param.List(doc="A list of float vars in order of plotting, x then y")
-    float_cnt = param.Integer(0, doc="The number of float variables to plot")
-    cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
-    cat_cnt = param.Integer(0, doc="The number of cat variables")
 
 
 class BenchPlotSrvCfg(param.Parameterized):

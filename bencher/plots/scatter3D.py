@@ -1,6 +1,6 @@
 
 from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange
-from bencher import BenchCfg,ResultVec
+from bencher import BenchCfg,ResultVec,ResultVar
 from typing import List
 import panel as pn
 
@@ -12,7 +12,7 @@ class Scatter3D(PlotProvider):
         return plot_sig
 
     def plot_single(
-        self, plot_sig: PlotSignature, bench_cfg: BenchCfg, result_vars: List[ResultVec]
+        self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec
     ):
         """Given a benchCfg generate a 3D scatter plot with plotly express
 
@@ -23,7 +23,7 @@ class Scatter3D(PlotProvider):
         Returns:
             pn.pane.Plotly: A 3d scatter plot as a holoview in a pane
         """
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         df = bench_cfg.ds.to_dataframe().reset_index()
 
@@ -53,7 +53,7 @@ class Scatter3D(PlotProvider):
             pn.pane.Plotly: A 3d scatter plot as a holoview in a pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         df = bench_cfg.ds.to_dataframe().reset_index()
 

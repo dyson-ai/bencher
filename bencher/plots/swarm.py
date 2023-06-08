@@ -19,7 +19,7 @@ class PlotSwarm(PlotProvider):
             pn.pane: A seaborn plot as a panel pane
         """
 
-        bench_cfg = wrap_long_time_labels(bench_cfg)
+        bench_cfg = self.wrap_long_time_labels(bench_cfg)
 
         plt.rcParams.update({"figure.max_open_warning": 0})
 
