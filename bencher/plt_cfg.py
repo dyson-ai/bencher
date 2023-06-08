@@ -7,7 +7,7 @@ from bencher.bench_cfg import PltCfgBase,  BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedOutput, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
-
+from plotting_functions import PltCntCfg
 
 class BenchPlotter:
     @staticmethod
@@ -197,50 +197,7 @@ class BenchPlotter:
 
         return surf_col
 
-    @staticmethod
-    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        sns_dict = {}
-        for i, v in enumerate(plt_cnt_cfg.cat_vars):
-            axis = cat_axis_order[i]
-            sns_dict[axis] = v.name
-
-        sns_cfg.param.set_param(**sns_dict)
-
-        return sns_cfg
-
-    @staticmethod
-    def get_axes_and_title(
-        rv: ParametrizedOutput, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
-    ) -> PltCntCfg:
-        """Work out the axes label and plot tite
-
-        Args:
-            rv (ParametrizedOutput): result variable
-            sns_cfg (PltCfgBase): plotting config
-            plt_cnt_cfg (PltCntCfg): plot count config
-
-        Returns:
-            PltCfgBase: plot count config with titles added
-        """
-        all_vars = plt_cnt_cfg.float_vars + plt_cnt_cfg.cat_vars
-        xvar = None
-        for i in all_vars:
-            if i.name == sns_cfg.x:
-                xvar = i.units
-        if xvar is not None:
-            sns_cfg.xlabel = f"{sns_cfg.x} [{xvar}]"
-        sns_cfg.ylabel = f"{sns_cfg.y} [{rv.units}]"
-        sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
-        return sns_cfg
+   
 
  
 

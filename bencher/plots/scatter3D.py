@@ -1,8 +1,10 @@
 
 from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange
-from bencher import BenchCfg,ResultVec,ResultVar
+from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
 from typing import List
 import panel as pn
+import plotly.express as px
+
 
 class Scatter3D(PlotProvider):
     def get_plot_signatures(self):
@@ -42,7 +44,7 @@ class Scatter3D(PlotProvider):
             df, x=names[0], y=names[1], z=names[2], color=color, symbol=color, size_max=2
         )
 
-    def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+    def plot_scatter3D_px(self,bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
         """Given a benchCfg generate a 3D scatter plot with plotly express
 
         Args:

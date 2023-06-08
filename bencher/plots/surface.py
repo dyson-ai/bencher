@@ -1,3 +1,15 @@
+import plotly.graph_objs as go
+from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
+from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from typing import List
+import panel as pn
+import plotly.graph_objs as go
+import holoviews as hv
+import logging
+import xarray as xr
+from holoviews import opts
+
+
 
 class SurfacePlot(PlotSignature):
     def get_plot_signatures(self):
@@ -21,8 +33,8 @@ class SurfacePlot(PlotSignature):
             pn.pane.Plotly: A 2d surface plot as a holoview in a pane
         """
 
-        if type(rv) == ResultVec:
-            return plot_scatter3D_px(bench_cfg, rv)
+        # if type(rv) == ResultVec:
+        #     return plot_scatter3D_px(bench_cfg, rv)
 
         bench_cfg = self.wrap_long_time_labels(bench_cfg)
 

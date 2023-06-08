@@ -113,7 +113,7 @@ class PlotProvider():
     def register_group_plotter():
         pass
 
-    def self.wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
+    def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
         """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
 
         Args:
@@ -137,7 +137,53 @@ class PlotProvider():
         return bench_cfg
 
 
-def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
+    #  @staticmethod
+    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
+
+        Args:
+            sns_cfg (PltCfgBase): See PltCfgBase definition
+            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+
+        Returns:
+            PltCfgBase: See PltCfgBase definition
+        """
+        sns_dict = {}
+        for i, v in enumerate(plt_cnt_cfg.cat_vars):
+            axis = cat_axis_order[i]
+            sns_dict[axis] = v.name
+
+        sns_cfg.param.set_param(**sns_dict)
+
+        return sns_cfg
+
+    # @staticmethod
+    def get_axes_and_title(
+        rv: ParametrizedOutput, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+    ) -> PltCntCfg:
+        """Work out the axes label and plot tite
+
+        Args:
+            rv (ParametrizedOutput): result variable
+            sns_cfg (PltCfgBase): plotting config
+            plt_cnt_cfg (PltCntCfg): plot count config
+
+        Returns:
+            PltCfgBase: plot count config with titles added
+        """
+        all_vars = plt_cnt_cfg.float_vars + plt_cnt_cfg.cat_vars
+        xvar = None
+        for i in all_vars:
+            if i.name == sns_cfg.x:
+                xvar = i.units
+        if xvar is not None:
+            sns_cfg.xlabel = f"{sns_cfg.x} [{xvar}]"
+        sns_cfg.ylabel = f"{sns_cfg.y} [{rv.units}]"
+        sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
+        return sns_cfg
+
+
+def plot_sns(self,bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
     """Plot with seaborn
 
     Args:
@@ -178,65 +224,65 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
         # return plot_scatter_sns(bench_cfg, rv)
         # else:
 
-        if type(rv) == ResultVec:
-            if rv.size == 2:
-                plt.figure(figsize=(4, 4))
-                fg = plot_scatter2D_sns(bench_cfg, rv)
-            elif rv.size == 3:
-                return plot_scatter3D_px(bench_cfg, rv)
-            else:
-                return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
-        else:
-            df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
+        # if type(rv) == ResultVec:
+        #     if rv.size == 2:
+        #         plt.figure(figsize=(4, 4))
+        #         fg = plot_scatter2D_sns(bench_cfg, rv)
+        #     elif rv.size == 3:
+        #         return plot_scatter3D_px(bench_cfg, rv)
+        #     else:
+        #         return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
+        # else:
+        df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
 
-            try:
-                fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
-            except Exception as e:
-                return pn.pane.Markdown(
-                    f"Was not able to plot becuase of exception:{e} \n this is likely due to too many NAN values"
-                )
+        try:
+            fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
+        except Exception as e:
+            return pn.pane.Markdown(
+                f"Was not able to plot becuase of exception:{e} \n this is likely due to too many NAN values"
+            )
 
-            # TODO try to set this during the initial plot rather than after
-            if bench_cfg.over_time:
-                for ax in fg.axes.flatten():
-                    for tick in ax.get_xticklabels():
-                        tick.set_rotation(45)
+        # TODO try to set this during the initial plot rather than after
+        if bench_cfg.over_time:
+            for ax in fg.axes.flatten():
+                for tick in ax.get_xticklabels():
+                    tick.set_rotation(45)
 
-            fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
-            fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+        fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
+        fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
         fg.fig.suptitle(sns_cfg.title)
         plt.tight_layout()
 
         if bench_cfg.save_fig:
-            save_fig(bench_cfg, sns_cfg)
+            self.save_fig(bench_cfg, sns_cfg)
         return pn.panel(plt.gcf())
 
 
-def save_fig(
-    bench_cfg: BenchCfg,
-    sns_cfg: PltCfgBase,
-):
-    """Save a seaborn figure to disk based on bench config data
+    def save_fig(self,
+        bench_cfg: BenchCfg,
+        sns_cfg: PltCfgBase,
+    ):
+        """Save a seaborn figure to disk based on bench config data
 
-    Args:
-        bench_cfg (BenchCfg): benchmark config
-        sns_cfg (PltCfgBase): plotting config
-    """
-    sns_cfg.data = None  # remove data before getting __repr__ for filename
-    figname = f"{bench_cfg.as_filename()},{sns_cfg.as_filename()}"
-    figpath = os.path.join("autofig", bench_cfg.bench_name, f"{figname}.png")
-    logging.info(f"saving:{figpath}")
-    dir_name = os.path.dirname(figpath)
-    if not os.path.exists(dir_name) and dir_name != "":
-        try:
-            os.makedirs(dir_name)
-        except OSError as exc:  # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
+        Args:
+            bench_cfg (BenchCfg): benchmark config
+            sns_cfg (PltCfgBase): plotting config
+        """
+        sns_cfg.data = None  # remove data before getting __repr__ for filename
+        figname = f"{bench_cfg.as_filename()},{sns_cfg.as_filename()}"
+        figpath = os.path.join("autofig", bench_cfg.bench_name, f"{figname}.png")
+        logging.info(f"saving:{figpath}")
+        dir_name = os.path.dirname(figpath)
+        if not os.path.exists(dir_name) and dir_name != "":
+            try:
+                os.makedirs(dir_name)
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
 
-    if os.path.exists(figpath) and bench_cfg.raise_duplicate_exception:
-        raise FileExistsError(
-            f"This figname {figname} already exists, please define a unique benchmark name or don't run the same benchmark twice"
-        )
-    plt.savefig(figpath)
+        if os.path.exists(figpath) and bench_cfg.raise_duplicate_exception:
+            raise FileExistsError(
+                f"This figname {figname} already exists, please define a unique benchmark name or don't run the same benchmark twice"
+            )
+        plt.savefig(figpath)
 
