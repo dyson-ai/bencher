@@ -6,4 +6,5 @@
 [MESSAGES CONTROL]
 disable=
   C,R,I,
-  logging-fstring-interpolation,line-too-long,fixme
+  logging-fstring-interpolation,line-too-long,fixme,
+  unused-import,unused-argument

@@ -8,7 +8,6 @@ from bencher.plotting_functions import (
 from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
-import plotly.graph_objs as go
 import plotly.express as px
 import seaborn as sns
 
