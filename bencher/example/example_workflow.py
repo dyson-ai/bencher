@@ -175,7 +175,7 @@ def example_floats3D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
 
-    bench = example_floats2D_workflow(ex_run_cfg)
-    example_floats3D_workflow(ex_run_cfg, bench)
+    bench_ex = example_floats2D_workflow(ex_run_cfg)
+    example_floats3D_workflow(ex_run_cfg, bench_ex)
 
-    bench.plot()
+    bench_ex.plot()
