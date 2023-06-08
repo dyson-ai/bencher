@@ -1,39 +1,29 @@
-from bencher import (
-    Bench,
-    BenchRunCfg,
-    ParametrizedSweep,
-    ParametrizedOutput,
-    FloatSweep,
-    ResultVar,
-    ResultVec,
-    BenchCfg,
-    PltCfgBase,
-)
 import numpy as np
+import bencher as bch
 
 
-class VolumeSample(ParametrizedSweep):
+class VolumeSample(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
-    x = FloatSweep(
+    x = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="x coordinate of the sample volume", samples=8
     )
-    y = FloatSweep(
+    y = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="y coordinate of the sample volume", samples=9
     )
-    z = FloatSweep(
+    z = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=10
     )
 
 
-class VolumeResult(ParametrizedOutput):
+class VolumeResult(bch.ParametrizedOutput):
     """A class to represent the properties of a volume sample."""
 
-    value = ResultVar("ul", doc="The scalar value of the 3D volume field")
-    occupancy = ResultVar("occupied", doc="If the value is > 0.5 this point is considered occupied")
-    interesting = ResultVar("ul", doc="A more interesting scalar field")
-    interesting_vec = ResultVec(3, "vec", doc="A vector field with an interesting shape")
-    interesting_vec_and_occ = ResultVec(
+    value = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
+    occupancy = bch.ResultVar("occupied", doc="If the value is > 0.5 this point is considered occupied")
+    interesting = bch.ResultVar("ul", doc="A more interesting scalar field")
+    interesting_vec = bch.ResultVec(3, "vec", doc="A vector field with an interesting shape")
+    interesting_vec_and_occ = bch.ResultVec(
         3, "vec", doc="The same vector field but only showing values in a sphere of radius 0.5"
     )
 
@@ -66,7 +56,7 @@ def bench_fn(point: VolumeSample) -> VolumeResult:
     return output
 
 
-def example_floats3D(run_cfg: BenchRunCfg) -> Bench:
+def example_floats3D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -75,7 +65,7 @@ def example_floats3D(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
+    bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
 
     bench.plot_sweep(
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
@@ -105,5 +95,5 @@ def example_floats3D(run_cfg: BenchRunCfg) -> Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
+    ex_run_cfg = bch.BenchRunCfg()
     example_floats3D(ex_run_cfg).plot()
