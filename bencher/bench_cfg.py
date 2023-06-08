@@ -254,7 +254,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
         parser.add_argument(
             "--nightly",
-            type=lambda b: bool(strtobool(b)),
+            type=lambda b: bool(str2bool(b)),
             nargs="?",
             const=False,
             default=False,
