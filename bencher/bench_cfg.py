@@ -469,11 +469,7 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
 
     benchmark_sampling_str.append("````")
 
-    # TODO enable printing of const variables
-    # benchmark_sampling_str.append("Constant Inputs:")
-    # for cv in bench_cfg.const_vars:
-    #     benchmark_sampling_str.extend(describe_variable(cv, bench_cfg.debug, False))
-
+  
     benchmark_sampling_str = "\n".join(benchmark_sampling_str)
     return benchmark_sampling_str
 
