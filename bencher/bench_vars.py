@@ -1,8 +1,8 @@
-from param import Parameterized, Number, Selector, Integer, Boolean
-import param
 from enum import Enum, auto
 from strenum import StrEnum
+
 import numpy as np
+import param
 from pandas import Timestamp
 import re
 from datetime import datetime
@@ -35,11 +35,11 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", "\g<1> \g<2>", camel.replace("_", " ")))
 
 
-def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bool = False) -> int:
+def param_hash(param_type: param.Parameterized, hash_value: bool = True, hash_meta: bool = False) -> int:
     """A custom hash function for parametrised types with options for hashing the value of the type and hashing metadata
 
     Args:
-        param_type (Parameterized): A parameter
+        param_type (param.Parameterized): A parameter
         hash_value (bool, optional): use the value as part of the hash. Defaults to True.
         hash_meta (bool, optional): use metadata as part of the hash. Defaults to False.
 
@@ -62,14 +62,14 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     return curhash
 
 
-class ParametrizedSweep(Parameterized):
+class ParametrizedSweep(param.Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
     def __hash__(self) -> int:
         return param_hash(self, True, False)
 
 
-class ParametrizedOutput(Parameterized):
+class ParametrizedOutput(param.Parameterized):
     """Parent class for all Output types that need a custom hash"""
 
     def __hash__(self) -> int:
@@ -81,7 +81,7 @@ class ParametrizedOutput(Parameterized):
 shared_slots = ["units", "samples", "samples_debug"]
 
 
-def sweep_hash(parameter: Parameterized) -> int:
+def sweep_hash(parameter: param.Parameterized) -> int:
     """Generate a hash for a sweep variable
 
     Returns:
@@ -94,11 +94,11 @@ def sweep_hash(parameter: Parameterized) -> int:
     return curhash
 
 
-def hash_extra_vars(parameter: Parameterized) -> int:
+def hash_extra_vars(parameter: param.Parameterized) -> int:
     """hash extra meta vars in the parameter
 
     Args:
-        parameter (Parameterized): a parameter
+        parameter (param.Parameterized): a parameter
 
     Returns:
         int: hash
@@ -107,15 +107,15 @@ def hash_extra_vars(parameter: Parameterized) -> int:
 
 
 def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, indent_count=1
+    v: param.Parameterized, debug: bool, include_samples: bool, indent_count=1
 ) -> List[str]:
     """Generate a string description of a variable
 
     Args:
-        v (param.Parameterized): parameter to describe
-        debug (bool): Generate a reduced number of samples from the variable
+        v (param.param.Parameterized): parameter to describe
+        debug (bool): Generate a reduced param.Number of samples from the variable
         include_samples (bool): Include a description of the samples
-        indent_count (int, optional): Number of times to indent the string. Defaults to 1.
+        indent_count (int, optional): param.Number of times to indent the string. Defaults to 1.
 
     Returns:
         str: String description of the variable
@@ -134,13 +134,13 @@ def describe_variable(
     return sampling_str
 
 
-class BoolSweep(Boolean):
+class BoolSweep(param.Boolean):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Boolean.__init__(self, **params)
+        param.Boolean.__init__(self, **params)
         self.units = units
         if samples is None:
             self.samples = 2
@@ -159,7 +159,7 @@ class BoolSweep(Boolean):
         return hash_extra_vars(self)
 
 
-class TimeBase(Selector):
+class TimeBase(param.Selector):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
 
     __slots__ = shared_slots
@@ -195,9 +195,9 @@ class TimeSnapshot(TimeBase):
         **params,
     ):
         if type(datetime_src) == str:
-            Selector.__init__(self, [datetime_src], instantiate=True, **params)
+            param.Selector.__init__(self, [datetime_src], instantiate=True, **params)
         else:
-            Selector.__init__(
+            param.Selector.__init__(
                 self,
                 [Timestamp(datetime_src)],
                 instantiate=True,
@@ -224,7 +224,7 @@ class TimeEvent(TimeBase):
         samples_debug: int = 2,
         **params,
     ):
-        Selector.__init__(
+        param.Selector.__init__(
             self,
             [time_event],
             instantiate=True,
@@ -238,7 +238,7 @@ class TimeEvent(TimeBase):
         self.samples_debug = min(self.samples, samples_debug)
 
 
-class StringSweep(Selector):
+class StringSweep(param.Selector):
     """A class to reprsent a parameter sweep of strings"""
 
     __slots__ = shared_slots
@@ -251,7 +251,7 @@ class StringSweep(Selector):
         samples_debug: int = 2,
         **params,
     ):
-        Selector.__init__(self, string_list, instantiate=True, **params)
+        param.Selector.__init__(self, string_list, instantiate=True, **params)
         self.units = units
         if samples is None:
             self.samples = len(self.objects)
@@ -277,7 +277,7 @@ class StringSweep(Selector):
         return hash_extra_vars(self)
 
 
-class EnumSweep(Selector):
+class EnumSweep(param.Selector):
     """A class to reprsent a parameter sweep of enums"""
 
     __slots__ = shared_slots
@@ -288,11 +288,11 @@ class EnumSweep(Selector):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = type(enum_type) is list
         if list_of_enums:
-            selector_list = enum_type  # already a list of enums
+            param.Selector_list = enum_type  # already a list of enums
         else:
             # create a list of enums from the enum type definition
-            selector_list = [e for e in enum_type]
-        Selector.__init__(self, selector_list, **params)
+            param.Selector_list = [e for e in enum_type]
+        param.Selector.__init__(self, param.Selector_list, **params)
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
         self.units = units
@@ -330,13 +330,13 @@ def int_float_sampling_str(name, samples) -> str:
     return f"sampling {name} from {samples} in {len(samples)} samples"
 
 
-class IntSweep(Integer):
+class IntSweep(param.Integer):
     """A class to reprsent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values"]
 
     def __init__(self, units="ul", samples=None, samples_debug=2, sample_values=None, **params):
-        Integer.__init__(self, **params)
+        param.Integer.__init__(self, **params)
         self.units = units
         self.samples_debug = samples_debug
 
@@ -344,7 +344,7 @@ class IntSweep(Integer):
 
             if samples is None:
                 if self.bounds is None:
-                    raise RuntimeError("You must define bounds for integer types")
+                    raise RuntimeError("You must define bounds for param.Integer types")
                 else:
                     self.samples = self.bounds[1] - self.bounds[0]
             else:
@@ -386,13 +386,13 @@ class IntSweep(Integer):
         return hash_extra_vars(self)
 
 
-class FloatSweep(Number):
+class FloatSweep(param.Number):
     """A class to represent a parameter sweep of floats"""
 
     __slots__ = shared_slots + ["sample_values"]
 
     def __init__(self, units="ul", samples=10, samples_debug=2, sample_values=None, **params):
-        Number.__init__(self, **params)
+        param.Number.__init__(self, **params)
         self.units = units
         self.samples_debug = samples_debug
         if sample_values is None:
@@ -439,13 +439,13 @@ class OptDir(StrEnum):
     none = auto()  # If none this var will not appear in pareto plots
 
 
-class ResultVar(Number):
+class ResultVar(param.Number):
     """A class to represent result variables and the desired optimisation direction"""
 
     __slots__ = ["units", "direction"]
 
     def __init__(self, units="ul", direction: OptDir = OptDir.minimize, **params):
-        Number.__init__(self, **params)
+        param.Number.__init__(self, **params)
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
