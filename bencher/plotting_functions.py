@@ -96,7 +96,12 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
         else:
             df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
 
-            fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
+            try:
+                fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
+            except Exception as e:
+                return pn.pane.Markdown(
+                    f"Was not able to plot becuase of exception:{e} \n this is likely due to too many NAN values"
+                )
 
             # TODO try to set this during the initial plot rather than after
             if bench_cfg.over_time:
@@ -111,7 +116,7 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
 
         if bench_cfg.save_fig:
             save_fig(bench_cfg, sns_cfg)
-        return pn.panel(plt.gcf(), sizing_mode="scale_height")
+        return pn.panel(plt.gcf())
 
 
 def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
