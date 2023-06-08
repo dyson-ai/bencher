@@ -1,19 +1,8 @@
-from bencher import (
-    Bench,
-    BenchRunCfg,
-    ParametrizedSweep,
-    ParametrizedOutput,
-    FloatSweep,
-    ResultVar,
-    ResultVec,
-    BenchCfg,
-    PltCfgBase,
-)
 import bencher as bch
 import numpy as np
 
 
-class VolumeSample(ParametrizedSweep):
+class VolumeSample(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
     x = FloatSweep(
@@ -35,7 +24,7 @@ class VolumeSample(ParametrizedSweep):
     )
 
 
-class VolumeResult(ParametrizedOutput):
+class VolumeResult(bch.ParametrizedOutput):
     """A class to represent the properties of a volume sample."""
 
     # value = ResultVar("ul", doc="The scalar value of the 3D volume field")
@@ -82,7 +71,7 @@ def bench_fn(point: VolumeSample) -> VolumeResult:
     return output
 
 
-def example_floats2D_workflow(run_cfg: BenchRunCfg, bench: bch.Bench = None) -> Bench:
+def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None) -> Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -92,7 +81,7 @@ def example_floats2D_workflow(run_cfg: BenchRunCfg, bench: bch.Bench = None) -> 
         Bench: results of the parameter sweep
     """
     if bench == None:
-        bench = Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
+        bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
 
     run_cfg.debug = False
 
@@ -131,7 +120,7 @@ def example_floats2D_workflow(run_cfg: BenchRunCfg, bench: bch.Bench = None) -> 
     return bench
 
 
-def example_floats3D_workflow(run_cfg: BenchRunCfg, bench: bch.Bench = None) -> Bench:
+def example_floats3D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -141,7 +130,7 @@ def example_floats3D_workflow(run_cfg: BenchRunCfg, bench: bch.Bench = None) -> 
         Bench: results of the parameter sweep
     """
     if bench == None:
-        bench = Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
+        bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
 
     run_cfg.debug = False
 
