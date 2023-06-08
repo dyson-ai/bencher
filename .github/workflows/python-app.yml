@@ -32,4 +32,4 @@ jobs:
         pylint $(git ls-files '*.py')
     - name: Test with pytest
       run: |
-        pytest
+        PYTHONHASHSEED=42; pytest

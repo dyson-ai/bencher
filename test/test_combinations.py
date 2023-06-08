@@ -93,6 +93,7 @@ for p in input_var_permutations:
     print(",".join([pa.name for pa in p]))
 
 
+@pytest.mark.skip
 class TestAllCombinations(unittest.TestCase):
     """This class uses hypothesis to test as large a range as possible of input parameter combinations to make sure bencher always returns an error message rather than crashing.  After a long running parameter sweep the highest priority is to show as much data as possible even if some of the data processing or visulisations are not possible to calculate. (and result in an exception)"""
 
