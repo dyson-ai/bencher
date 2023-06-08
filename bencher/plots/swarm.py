@@ -1,5 +1,11 @@
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
-from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from bencher.plotting_functions import (
+    PlotProvider,
+    PlotSignature,
+    VarRange,
+    PltCntCfg,
+    PltCfgBase,
+)
+from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
 import plotly.graph_objs as go
@@ -14,7 +20,9 @@ class PlotSwarm(PlotProvider):
         plot_sig.vector_len = VarRange(0, 0)
         return plot_sig
 
-    def plot_sns(self,bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
+    def plot_sns(
+        self, bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase
+    ) -> pn.pane:
         """Plot with seaborn
 
         Args:

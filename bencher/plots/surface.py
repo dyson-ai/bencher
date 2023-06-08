@@ -1,6 +1,12 @@
 import plotly.graph_objs as go
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
-from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from bencher.plotting_functions import (
+    PlotProvider,
+    PlotSignature,
+    VarRange,
+    PltCntCfg,
+    PltCfgBase,
+)
+from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
 import plotly.graph_objs as go
@@ -8,7 +14,6 @@ import holoviews as hv
 import logging
 import xarray as xr
 from holoviews import opts
-
 
 
 class SurfacePlot(PlotSignature):
@@ -115,13 +120,23 @@ class SurfacePlot(PlotSignature):
 
         if bench_cfg.repeats > 1:
             std_dev = da.std("repeat")
-            upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-            lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+            upper = (
+                hv.Dataset(mean + std_dev)
+                .to(hv.Surface)
+                .opts(alpha=alpha, colorbar=False)
+            )
+            lower = (
+                hv.Dataset(mean - std_dev)
+                .to(hv.Surface)
+                .opts(alpha=alpha, colorbar=False)
+            )
             return surface * upper * lower
         else:
             return surface
-        
-    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+
+    def plot_float_cnt_2(
+        plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool
+    ) -> PltCfgBase:
         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
 
         Args:

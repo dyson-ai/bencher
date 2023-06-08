@@ -1,6 +1,5 @@
-
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange
-from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from bencher.plotting_functions import PlotProvider, PlotSignature, VarRange
+from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
 import plotly.express as px
@@ -13,9 +12,7 @@ class Scatter3D(PlotProvider):
         plot_sig.vector_len = VarRange(3, 3)
         return plot_sig
 
-    def plot_single(
-        self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec
-    ):
+    def plot_single(self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec):
         """Given a benchCfg generate a 3D scatter plot with plotly express
 
         Args:
@@ -37,14 +34,24 @@ class Scatter3D(PlotProvider):
             color = None
 
         if bench_cfg.over_time:
-            if len(names) < 3:  # only a 2d vector result so use the time axis as the third point
+            if (
+                len(names) < 3
+            ):  # only a 2d vector result so use the time axis as the third point
                 names.insert(0, bench_cfg.iv_time[0].name)
 
         return px.scatter_3d(
-            df, x=names[0], y=names[1], z=names[2], color=color, symbol=color, size_max=2
+            df,
+            x=names[0],
+            y=names[1],
+            z=names[2],
+            color=color,
+            symbol=color,
+            size_max=2,
         )
 
-    def plot_scatter3D_px(self,bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+    def plot_scatter3D_px(
+        self, bench_cfg: BenchCfg, rv: ParametrizedOutput
+    ) -> pn.pane.Plotly:
         """Given a benchCfg generate a 3D scatter plot with plotly express
 
         Args:
@@ -67,9 +74,17 @@ class Scatter3D(PlotProvider):
             color = None
 
         if bench_cfg.over_time:
-            if len(names) < 3:  # only a 2d vector result so use the time axis as the third point
+            if (
+                len(names) < 3
+            ):  # only a 2d vector result so use the time axis as the third point
                 names.insert(0, bench_cfg.iv_time[0].name)
 
         return px.scatter_3d(
-            df, x=names[0], y=names[1], z=names[2], color=color, symbol=color, size_max=2
+            df,
+            x=names[0],
+            y=names[1],
+            z=names[2],
+            color=color,
+            symbol=color,
+            size_max=2,
         )

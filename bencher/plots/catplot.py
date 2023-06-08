@@ -1,7 +1,14 @@
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
-from bencher import BenchCfg,ResultVec,ResultVar,BenchPlotter
+from bencher.plotting_functions import (
+    PlotProvider,
+    PlotSignature,
+    VarRange,
+    PltCntCfg,
+    PltCfgBase,
+)
+from bencher import BenchCfg, ResultVec, ResultVar, BenchPlotter
 from typing import List
 import seaborn as sns
+
 
 class catplot(PlotProvider):
     def plot_float_cnt_0(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:

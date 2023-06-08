@@ -14,6 +14,7 @@ import logging
 from holoviews import opts
 from bencher.bench_vars import ParametrizedOutput, ResultVec
 from bencher.bench_cfg import PltCfgBase, BenchCfg
+
 # from bencher.plotting_functions import PlotSignature
 
 hv.extension("plotly")
@@ -25,8 +26,8 @@ from typing import List
 import param
 from copy import deepcopy
 
-class VarRange:
 
+class VarRange:
     # lower_bound = param.Integer(0)
     # upper_bound = param.Integer(0)
 
@@ -38,7 +39,6 @@ class VarRange:
 
 
 class PlotSignature:
-
     float_cnt = param.Integer(0, doc="The number of float variables to plot")
     cat_cnt = param.Integer(0, doc="The number of cat variables")
     vector_len = param.Integer(0, doc="The number of cat variables")
@@ -49,16 +49,19 @@ class PlotSignature:
         self.vector_len = VarRange(1, 1)
         self.result_vars = VarRange(1, 1)
 
+
 class PltCntCfg(param.Parameterized):
     """Plot Count Config"""
 
     float_vars = param.List(doc="A list of float vars in order of plotting, x then y")
     float_cnt = param.Integer(0, doc="The number of float variables to plot")
-    cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
+    cat_vars = param.List(
+        doc="A list of categorical values to plot in order hue,row,col"
+    )
     cat_cnt = param.Integer(0, doc="The number of cat variables")
 
     @staticmethod
-    def from_benchCfg(        bench_cfg: BenchCfg    ):
+    def from_benchCfg(bench_cfg: BenchCfg):
         """Given a BenchCfg work out how many float and cat variables there are and store in a PltCntCfg class
 
         Args:
@@ -93,7 +96,7 @@ class PltCntCfg(param.Parameterized):
         return plt_cnt_cfg
 
 
-class PlotProvider():
+class PlotProvider:
     def __init__(self) -> None:
         pass
 
@@ -132,13 +135,15 @@ class PlotProvider():
                 # wrap very long time event labels because otherwise the graphs are unreadable
             if bench_cfg.time_event is not None:
                 bench_cfg.ds.coords["over_time"] = [
-                    "\n".join(wrap(t, 20)) for t in bench_cfg.ds.coords["over_time"].values
+                    "\n".join(wrap(t, 20))
+                    for t in bench_cfg.ds.coords["over_time"].values
                 ]
         return bench_cfg
 
-
     #  @staticmethod
-    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+    def axis_mapping(
+        cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+    ) -> PltCfgBase:
         """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
 
         Args:
@@ -183,7 +188,9 @@ class PlotProvider():
         return sns_cfg
 
 
-def plot_sns(self,bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
+def plot_sns(
+    self, bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase
+) -> pn.pane:
     """Plot with seaborn
 
     Args:
@@ -257,8 +264,8 @@ def plot_sns(self,bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBa
             self.save_fig(bench_cfg, sns_cfg)
         return pn.panel(plt.gcf())
 
-
-    def save_fig(self,
+    def save_fig(
+        self,
         bench_cfg: BenchCfg,
         sns_cfg: PltCfgBase,
     ):
@@ -285,4 +292,3 @@ def plot_sns(self,bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBa
                 f"This figname {figname} already exists, please define a unique benchmark name or don't run the same benchmark twice"
             )
         plt.savefig(figpath)
-

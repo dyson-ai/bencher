@@ -1,5 +1,11 @@
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
-from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from bencher.plotting_functions import (
+    PlotProvider,
+    PlotSignature,
+    VarRange,
+    PltCntCfg,
+    PltCfgBase,
+)
+from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
 import plotly.graph_objs as go
@@ -17,7 +23,9 @@ class Scatter2D(PlotProvider):
     def plot_single(self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec):
         self.plot_scatter2D_sns(bench_cfg, rv)
 
-    def plot_scatter2D_sns(self, bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+    def plot_scatter2D_sns(
+        self, bench_cfg: BenchCfg, rv: ParametrizedOutput
+    ) -> pn.pane.Plotly:
         """Given a benchCfg generate a 2D scatter plot from seaborn
 
         Args:
@@ -36,7 +44,9 @@ class Scatter2D(PlotProvider):
         names = rv.index_names()
 
         if bench_cfg.input_vars:
-            h = sns.jointplot(df, x=names[0], y=names[1], hue=bench_cfg.input_vars[0].name)
+            h = sns.jointplot(
+                df, x=names[0], y=names[1], hue=bench_cfg.input_vars[0].name
+            )
         elif bench_cfg.over_time:
             h = sns.jointplot(df, x=names[0], y=names[1], hue=bench_cfg.iv_time[0].name)
 
@@ -46,7 +56,9 @@ class Scatter2D(PlotProvider):
         h.set_axis_labels(f"{names[0]} [{rv.units}]", f"{names[1]} [{rv.units}]")
         return h
 
-    def plot_scatter2D_hv(self, bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+    def plot_scatter2D_hv(
+        self, bench_cfg: BenchCfg, rv: ParametrizedOutput
+    ) -> pn.pane.Plotly:
         """Given a benchCfg generate a 2D scatter plot
 
         Args:

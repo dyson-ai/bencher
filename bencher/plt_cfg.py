@@ -3,11 +3,12 @@ import xarray as xr
 from copy import deepcopy
 import panel as pn
 import logging
-from bencher.bench_cfg import PltCfgBase,  BenchCfg, describe_benchmark
+from bencher.bench_cfg import PltCfgBase, BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedOutput, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
 from plotting_functions import PltCntCfg
+
 
 class BenchPlotter:
     @staticmethod
@@ -30,7 +31,9 @@ class BenchPlotter:
 
         else:
             plot_cols = pn.Column(name="Plots View")
-            plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
+            plot_cols.append(
+                pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}")
+            )
             benmark_str = describe_benchmark(bench_cfg)
             plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
             if bench_cfg.over_time:
@@ -46,7 +49,9 @@ class BenchPlotter:
 
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
             if bench_cfg.over_time:
-                bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
+                bench_deep = deepcopy(
+                    bench_cfg
+                )  # TODO do this in the future without copying
                 bench_deep.over_time = False
                 bench_deep.iv_time = []
                 last_time = bench_deep.ds.coords["over_time"][-1]
@@ -120,13 +125,15 @@ class BenchPlotter:
         plt_cnt_cfg = PltCntCfg.from_benchCfg(bench_cfg)
         for rg in bench_cfg.result_groups:
             for rv in bench_cfg.result_vars:
-                plot_rows.append(BenchPlotter.plot_result_variable_group(bench_cfg, rg, plt_cnt_cfg))
+                plot_rows.append(
+                    BenchPlotter.plot_result_variable_group(bench_cfg, rg, plt_cnt_cfg)
+                )
         for rv in bench_cfg.result_vars:
-            plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+            plot_rows.append(
+                BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg)
+            )
 
         return plot_rows
-
-   
 
     @staticmethod
     def plot_result_variable(
@@ -148,7 +155,9 @@ class BenchPlotter:
         surf_col = pn.Column()
 
         sns_cfg = PltCfgBase()
-        sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
+        sns_cfg.y = (
+            rv.name
+        )  # by default the result variable is always plotted on the y axis
 
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points
@@ -167,7 +176,9 @@ class BenchPlotter:
                     surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
                 else:
                     try:
-                        surf_col.append(plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg)
+                        )
                     except (TypeError, KeyError) as e:
                         surf_col.append(
                             pn.pane.Markdown(
@@ -176,12 +187,18 @@ class BenchPlotter:
                         )
 
             elif plt_cnt_cfg.float_cnt == 3:
-                xr_cfg = BenchPlotter.plot_float_cnt_3(sns_cfg, plt_cnt_cfg, bench_cfg.debug)
+                xr_cfg = BenchPlotter.plot_float_cnt_3(
+                    sns_cfg, plt_cnt_cfg, bench_cfg.debug
+                )
                 if plt_cnt_cfg.cat_cnt < 1:
                     if type(rv) == ResultVar:
-                        surf_col.append(plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg)
+                        )
                     else:
-                        surf_col.append(plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg)
+                        )
                 else:
                     surf_col.append(
                         pn.pane.Markdown(
@@ -196,12 +213,3 @@ class BenchPlotter:
                 )
 
         return surf_col
-
-   
-
- 
-
-   
-
-
-

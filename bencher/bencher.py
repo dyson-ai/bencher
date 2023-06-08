@@ -31,7 +31,9 @@ for handler in logging.root.handlers:
 import panel as pn
 
 
-def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> xr.DataArray:
+def set_xarray_multidim(
+    data_array: xr.DataArray, index_tuple, value: float
+) -> xr.DataArray:
     """This is terrible, I need to do this in a better way, but [] does not like *args syntax and the () version of the set function doesn't either"""
     match len(index_tuple):
         case 1:
@@ -41,10 +43,16 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
         case 3:
             data_array[index_tuple[0], index_tuple[1], index_tuple[2]] = value
         case 4:
-            data_array[index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]] = value
+            data_array[
+                index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]
+            ] = value
         case 5:
             data_array[
-                index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3], index_tuple[4]
+                index_tuple[0],
+                index_tuple[1],
+                index_tuple[2],
+                index_tuple[3],
+                index_tuple[4],
             ] = value
         case 6:
             data_array[
@@ -115,7 +123,9 @@ class Bench(BenchPlotServer):
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
 
-    def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
+    def set_worker(
+        self, worker: Callable, worker_input_cfg: ParametrizedSweep = None
+    ) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
 
         Args:
@@ -218,7 +228,9 @@ class Bench(BenchPlotServer):
                 else:
                     logging.info("did not detect results in cache")
                     if run_cfg.only_plot:
-                        raise FileNotFoundError("Was not able to load the results to plot!")
+                        raise FileNotFoundError(
+                            "Was not able to load the results to plot!"
+                        )
 
         if calculate_results:
             if run_cfg.time_event is not None:
@@ -339,7 +351,9 @@ class Bench(BenchPlotServer):
 
         if time_src is None:
             time_src = datetime.now()
-        bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
+        bench_cfg.meta_vars = self.define_extra_vars(
+            bench_cfg, bench_cfg.repeats, time_src
+        )
 
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
 
@@ -380,7 +394,9 @@ class Bench(BenchPlotServer):
             constant_inputs = dict(zip(constant_names, constant_values))
         return constant_inputs
 
-    def define_extra_vars(self, bench_cfg: BenchCfg, repeats: int, time_src) -> list[IntSweep]:
+    def define_extra_vars(
+        self, bench_cfg: BenchCfg, repeats: int, time_src
+    ) -> list[IntSweep]:
         """Define extra meta vars that are stored in the n-d array but are not passed to the benchmarking function, such as number of repeats and the time the function was called.
 
         Args:
@@ -473,10 +489,14 @@ class Bench(BenchPlotServer):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
+                                bench_cfg.ds[rv.index_name(i)],
+                                index_tuple,
+                                result_value[i],
                             )
 
-    def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
+    def add_metadata_to_dataset(
+        self, bench_cfg: BenchCfg, input_var: ParametrizedSweep
+    ) -> None:
         """Adds variable metadata to the xrarry so that it can be used to automatically plot the dimension units etc.
 
         Args:
@@ -500,7 +520,9 @@ class Bench(BenchPlotServer):
         if input_var.__doc__ is not None:
             dsvar.attrs["description"] = input_var.__doc__
 
-    def report_results(self, bench_cfg: BenchCfg, print_xarray: bool, print_pandas: bool):
+    def report_results(
+        self, bench_cfg: BenchCfg, print_xarray: bool, print_pandas: bool
+    ):
         """Optionally display the caculated benchmark data as either as pandas, xarray or plot
 
         Args:
