@@ -277,27 +277,7 @@ class BenchPlotter:
         sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
         return sns_cfg
 
-    @staticmethod
-    def plot_float_cnt_0(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-
-        if plt_cnt_cfg.float_cnt == 0:
-            sns_cfg.plot_callback = sns.catplot
-            sns_cfg.kind = "swarm"
-
-            # as more cat variables are added, map them to these plot axes
-            cat_axis_order = ["x", "row", "col", "hue"]
-            sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
-
-        return sns_cfg
+ 
 
     @staticmethod
     def plot_float_cnt_1(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
