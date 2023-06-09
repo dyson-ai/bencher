@@ -2,7 +2,7 @@
 
 ## Continuous Integration Status
 
-![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)
+![Ci](https://github.com/dyson-ai/bencher/actions/.workflows/ci.yml/badge.svg?branch=main)(https://github.com/dyson-ai/bencher/actions/.workflows/ci.yml?query=branch%3Amain)
 
 Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.
 
