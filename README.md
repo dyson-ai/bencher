@@ -2,7 +2,10 @@
 
 /github/actions/workflow/status/:user/:repo/:workflow+?branch=main
 
-[![CI](https://github.com//dyson-ai/bencher/workflows/ci.yaml/badge.svg?branch=main)](https://github.com//dyson-ai/bencher/workflows/ci.yaml?query=branch%3Amain)
+![CI](https://github.com/dyson-ai/bencher/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/workflows/ci.yaml?query=branch%3Amain)
+
+![example branch parameter](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)
+
 
 Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.
 
