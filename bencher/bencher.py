@@ -387,7 +387,7 @@ class Bench(BenchPlotServer):
         """
         iv_repeats = IntSweep(
             default=repeats,
-            bounds=[0, repeats],
+            bounds=[1, repeats],
             samples=repeats,
             samples_debug=2 if repeats > 2 else 1,
             units="repeats",
