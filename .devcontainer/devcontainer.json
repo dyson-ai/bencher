@@ -13,7 +13,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"ms-python.python"
 			]
 		}
 	}
