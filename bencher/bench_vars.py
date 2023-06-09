@@ -159,6 +159,7 @@ class BoolSweep(param.Boolean):
 
     def sampling_str(self, debug: bool) -> str:
         """Generate a string representation of the sampling procedure"""
+        print(self.sampling_str(debug))
         return f"sampling {self.name} from: [True,False]"
 
     def __hash__(self) -> int:
@@ -181,6 +182,7 @@ class TimeBase(param.Selector):
         Args:
             debug (bool): If true then self.samples_debug is used
         """
+        print(self.sampling_str(debug))
         return f"sampling from [The Past to {self.objects[0]}]"
 
     def __hash__(self) -> int:
@@ -279,6 +281,7 @@ class StringSweep(param.Selector):
             debug (bool): If true then self.samples_debug is used
         """
         object_str = ",".join([i for i in self.objects])
+        print(self.sampling_str(debug))
         return f"sampling {self.name} from: [{object_str}]"
 
     def __hash__(self) -> int:
@@ -327,6 +330,7 @@ class EnumSweep(param.Selector):
             debug (bool): If true then self.samples_debug is used
         """
         object_str = ",".join([i for i in self.objects])
+        print(self.sampling_str(debug))
         return f"sampling {self.name} from: [{object_str}]"
 
     def __hash__(self) -> int:
@@ -344,7 +348,7 @@ def int_float_sampling_str(name, samples) -> str:
 
 
 class IntSweep(param.Integer):
-    """A class to reprsent a parameter sweep of ints"""
+    """A class to represent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values"]
 
