@@ -1,5 +1,9 @@
 # Bencher
 
+/github/actions/workflow/status/:user/:repo/:workflow+?branch=main
+
+[![CI](https://github.com//dyson-ai/bencher/workflows/ci.yaml/badge.svg?branch=main)](https://github.com//dyson-ai/bencher/workflows/ci.yaml?query=branch%3Amain)
+
 Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.
 
 Parameters for bencher are defined using the param library https://param.holoviz.org/ as a config class with extra metadata that describes the bounds of the search space you want to measure.  You must define a benchmarking function that accepts an instance of the config class and return a dictionary with string metric names and float values.
