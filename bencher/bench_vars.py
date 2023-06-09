@@ -125,6 +125,7 @@ def describe_variable(
         str: String description of the variable
     """
     indent = "    "
+    indent *= indent_count
     sampling_str = []
     sampling_str.append(f"{v.name}:")
     if include_samples:
@@ -133,8 +134,7 @@ def describe_variable(
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")
     for i in range(len(sampling_str)):
-        for c in range(indent_count):
-            sampling_str[i] = f"{indent}{sampling_str[i]}"
+        sampling_str[i] = f"{indent}{sampling_str[i]}"
     return sampling_str
 
 
