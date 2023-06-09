@@ -139,7 +139,7 @@ def describe_variable(
 
 
 class BoolSweep(param.Boolean):
-    """A class to reprsent a parameter sweep of bools"""
+    """A class to represent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
@@ -219,7 +219,7 @@ class TimeSnapshot(TimeBase):
 
 
 class TimeEvent(TimeBase):
-    """A class to represent a discrete event in time where the data was captured i.e a series of pull requests.  Here time is discrete and can't be interpolated, to represent time as a continous value use the TimeSnapshot class.  The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
+    """A class to represent a discrete event in time where the data was captured i.e a series of pull requests.  Here time is discrete and can't be interpolated, to represent time as a continous value use the TimeSnapshot class.  The distinction is because holoview and plotly code make different assumptions about discrete vs continous variables"""
 
     __slots__ = shared_slots
 
@@ -230,7 +230,8 @@ class TimeEvent(TimeBase):
         samples: int = None,
         samples_debug: int = 2,
         **params,
-    ):
+    ): 
+        super().__init__()
         param.Selector.__init__(
             self,
             [time_event],
