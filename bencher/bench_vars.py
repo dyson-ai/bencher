@@ -33,7 +33,7 @@ def un_camel(camel: str) -> str:
     """
 
     return capitalise_words(
-        re.sub("([a-z])([A-Z])", "\g<1> \g<2>", camel.replace("_", " "))
+        re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " "))
     )
 
 
