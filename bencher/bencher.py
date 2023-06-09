@@ -463,10 +463,12 @@ class Bench(BenchPlotServer):
             if type(rv) == ResultVar:
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
             else:
-                for i in range(rv.size):
-                    set_xarray_multidim(
-                        bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
-                    )
+                if isinstance(result_value, (list, np.ndarray)):
+                    if len(result_value) == rv.size:
+                        for i in range(rv.size):
+                            set_xarray_multidim(
+                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
+                            )
 
     def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
         """Adds variable metadata to the xrarry so that it can be used to automatically plot the dimension units etc.
