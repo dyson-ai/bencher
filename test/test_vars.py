@@ -15,15 +15,27 @@ def get_sweep_hash_isolated_process():
             stdout=subprocess.PIPE,
             check=False,
         ).stdout.decode("utf-8")
+
     else:
         os.system("echo seed $PYTHONHASHSEED; python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' >tmp")
         res = open("tmp","r").read()
         os.remove("tmp")
         return res
    
+    result = subprocess.run(
+        [
+            "python3",
+            "-c",
+            "'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'",
+        ],
+        stdout=subprocess.PIPE,
+        check=False,
+    )
+    return result.stdout
+
 
 class TestBencherHashing(unittest.TestCase):
-    #TODO need to change the way hashing works so that it does not depend on this environment variable
+    # TODO need to change the way hashing works so that it does not depend on this environment variable
     @pytest.mark.skip
     def test_python_hash_seed(self) -> None:
         self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
