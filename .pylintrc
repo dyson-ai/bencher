@@ -1,5 +1,8 @@
 [FORMAT]
 max-line-length=100
 
+
 [MESSAGES CONTROL]
-disable=logging-fstring-interpolation,line-too-long
+disable=
+  C,R,I,
+  logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught

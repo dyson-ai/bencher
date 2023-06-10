@@ -135,7 +135,6 @@ class Bench(BenchPlotServer):
         description: str = None,
         post_description: str = None,
         run_cfg: BenchRunCfg = None,
-        plot_callback: Callable = None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 
@@ -148,7 +147,6 @@ class Bench(BenchPlotServer):
             post_description (str, optional): A description that comes after the benchmark plots. Defaults to None.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
             time_src (datetime, optional): Set a time that the result was generated. Defaults to datetime.now().
-            plt_callback(Callable): Optionally pass a callback to plot the data
 
 
         Raises:

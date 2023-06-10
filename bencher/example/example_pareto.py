@@ -17,7 +17,7 @@ def example_pareto(run_cfg: BenchRunCfg) -> Bench:
 
     run_cfg.use_optuna = True
 
-    bench_cfg = bench.plot_sweep(
+    bench = bench.plot_sweep(
         title="Pareto Optimisation with Optuna",
         description="This example shows how to plot the pareto front of the tradeoff between multiple criteria.  When multiple result variable are defined, and use_optuna=True a pareto plot and the relative importance of each input variable on the output criteria is plotted. A summary of the points on the pareto front is printed as well.  You can use the pareto plot to decide the how to trade off one objective for another.  Pareto plots are suppored for 2D and 3D.  If you have more than 3 result variables the first 3 are selected for the pareto plot.  Plotting 4D surfaces is left as an exercise to the reader",
         input_vars=[

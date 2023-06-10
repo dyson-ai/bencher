@@ -1,7 +1,7 @@
 # you need this import to be able to reference a class from a static method in that class
 from __future__ import annotations
 
-"""This file has some examples for how to perform basic benchmarking parameter sweeps"""
+# """This file has some examples for how to perform basic benchmarking parameter sweeps"""
 
 from bencher import Bench, BenchRunCfg, FloatSweep, ParametrizedSweep, BoolSweep
 from bencher.example.benchmark_data import ExampleBenchCfgOut
