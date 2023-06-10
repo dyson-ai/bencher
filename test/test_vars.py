@@ -1,6 +1,5 @@
 import unittest
 import pytest
-import subprocess
 import os
 
 from bencher.example.benchmark_data import AllSweepVars
