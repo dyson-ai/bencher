@@ -8,6 +8,16 @@ from pandas import Timestamp
 import re
 from datetime import datetime
 from typing import List
+import hashlib
+from sys import byteorder
+
+
+def hash_cust(var: any):
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
+    # hash_val = 0
+    # for ch in text:
+    # hash_val = (hash_val * 281 ^ ord(ch) * 997) & 0xFFFFFFFF
+    # return hash_val
 
 
 def capitalise_words(message: str):
@@ -52,28 +62,28 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     if hash_value:
         for k, v in param_type.param.values().items():
             if k != "name":
-                curhash = hash((curhash, hash(v)))
+                curhash = hash_cust((curhash, hash_cust(v)))
 
     if hash_meta:
         for k, v in param_type.param.params().items():
             if k != "name":
-                print(f"key:{k}, hash:{hash(k)}")
-                print(f"value:{v}, hash:{hash(v)}")
-                curhash = hash((curhash, hash(k), hash(v)))
+                print(f"key:{k}, hash:{hash_cust(k)}")
+                print(f"value:{v}, hash:{hash_cust(v)}")
+                curhash = hash_cust((curhash, hash_cust(k), hash_cust(v)))
     return curhash
 
 
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return param_hash(self, True, False)
 
 
 class ParametrizedOutput(Parameterized):
     """Parent class for all Output types that need a custom hash"""
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return param_hash(self, True, False)
 
 
@@ -90,8 +100,8 @@ def sweep_hash(parameter: Parameterized) -> int:
     """
     curhash = 0
     for v in parameter.values():
-        print(f"value:{v}, hash:{hash(v)}")
-        curhash = hash((curhash, hash(v)))
+        print(f"value:{v}, hash:{hash_cust(v)}")
+        curhash = hash_cust((curhash, hash_cust(v)))
     return curhash
 
 
@@ -104,7 +114,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
 
 
 def describe_variable(
@@ -451,7 +461,7 @@ class ResultVar(Number):
         self.direction = direction
 
     def __hash__(self) -> int:
-        return hash((self.units, self.direction))
+        return hash_cust((self.units, self.direction))
 
 
 class ResultVec(param.List):
@@ -467,7 +477,7 @@ class ResultVec(param.List):
         self.size = size
 
     def __hash__(self) -> int:
-        return hash((self.units, self.direction))
+        return hash_cust((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
         """given the index of the vector, return the column name that

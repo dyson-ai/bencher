@@ -1,5 +1,4 @@
 import unittest
-import pytest
 import os
 
 from bencher.example.benchmark_data import AllSweepVars
@@ -8,7 +7,7 @@ from bencher.example.benchmark_data import AllSweepVars
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
     os.system(
-        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' > hashed_vars_comparison_tmp"
+        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(ex.hash_custom())' > hashed_vars_comparison_tmp"
     )
     res = open("hashed_vars_comparison_tmp", "r", encoding="utf-8").read()
     os.remove("hashed_vars_comparison_tmp")
