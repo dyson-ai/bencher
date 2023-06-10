@@ -26,9 +26,7 @@ class OutputCfg(ParametrizedOutput):
 
     # Documenting the variable here with enables automatic summaries of what has been benchmarked.
     # This made up example uses accuracy as an example, but the variable defined here can be any metric that is important for the performance of a system.  You can also define the direction of the optimisation i.e. to minimise or maximise the metric.
-    accuracy = ResultVar(
-        units="%", direction=OptDir.maximize, doc="The accuracy of the algorithm."
-    )
+    accuracy = ResultVar(units="%", direction=OptDir.maximize, doc="The accuracy of the algorithm.")
 
 
 # Define categorical variables with enums that inherit from StrEnum.  In this example, its just an arbitrary set of categories that have an unknown influence on the metric you want to understand. In a real world case these would be a set of conditions or settings you are benchmarking

@@ -32,9 +32,7 @@ def un_camel(camel: str) -> str:
         str: uncamelcased string
     """
 
-    return capitalise_words(
-        re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " "))
-    )
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
 def param_hash(
@@ -143,9 +141,7 @@ class BoolSweep(param.Boolean):
 
     __slots__ = shared_slots
 
-    def __init__(
-        self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params
-    ):
+    def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
         param.Boolean.__init__(self, **params)
         self.units = units
         if samples is None:
@@ -232,7 +228,7 @@ class TimeEvent(TimeBase):
         samples: int = None,
         samples_debug: int = 2,
         **params,
-    ): 
+    ):
         super().__init__()
         param.Selector.__init__(
             self,
@@ -351,9 +347,7 @@ class IntSweep(param.Integer):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(
-        self, units="ul", samples=None, samples_debug=2, sample_values=None, **params
-    ):
+    def __init__(self, units="ul", samples=None, samples_debug=2, sample_values=None, **params):
         param.Integer.__init__(self, **params)
         self.units = units
         self.samples_debug = samples_debug
@@ -378,10 +372,7 @@ class IntSweep(param.Integer):
         samps = self.samples_debug if debug else self.samples
 
         if self.sample_values is None:
-            return [
-                int(i)
-                for i in np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)
-            ]
+            return [int(i) for i in np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)]
         else:
             if debug:
                 indices = [
@@ -411,9 +402,7 @@ class FloatSweep(param.Number):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(
-        self, units="ul", samples=10, samples_debug=2, sample_values=None, **params
-    ):
+    def __init__(self, units="ul", samples=10, samples_debug=2, sample_values=None, **params):
         param.Number.__init__(self, **params)
         self.units = units
         self.samples_debug = samples_debug

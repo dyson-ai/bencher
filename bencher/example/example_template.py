@@ -36,8 +36,6 @@ template = pn.template.FastListTemplate(
     title="FastListTemplate",
     sidebar=[pn.pane.Markdown("## Settings"), freq_widget, phase_widget],
     main=[
-        pn.pane.HoloViews(
-            hv.DynamicMap(sine) + hv.DynamicMap(cosine), sizing_mode="stretch_both"
-        )
+        pn.pane.HoloViews(hv.DynamicMap(sine) + hv.DynamicMap(cosine), sizing_mode="stretch_both")
     ],
 ).servable()

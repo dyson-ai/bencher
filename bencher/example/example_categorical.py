@@ -84,7 +84,6 @@ def example_categorical(run_cfg: BenchRunCfg) -> Bench:
     return bench
 
 
-
 if __name__ == "__main__":
     ex_run_cfg = BenchRunCfg(repeats=10)
 

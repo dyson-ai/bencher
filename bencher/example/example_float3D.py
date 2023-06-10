@@ -20,7 +20,9 @@ class VolumeResult(bch.ParametrizedOutput):
     """A class to represent the properties of a volume sample."""
 
     value = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
-    occupancy = bch.ResultVar("occupied", doc="If the value is > 0.5 this point is considered occupied")
+    occupancy = bch.ResultVar(
+        "occupied", doc="If the value is > 0.5 this point is considered occupied"
+    )
     interesting = bch.ResultVar("ul", doc="A more interesting scalar field")
     interesting_vec = bch.ResultVec(3, "vec", doc="A vector field with an interesting shape")
     interesting_vec_and_occ = bch.ResultVec(

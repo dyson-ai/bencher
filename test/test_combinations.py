@@ -86,9 +86,7 @@ all_inputs = []
 
 # all possible permutations of the input for a given number of inputs
 for num_inputs in range(1, 4):
-    input_var_permutations.extend(
-        [list(c) for c in generator_func(input_types, num_inputs)]
-    )
+    input_var_permutations.extend([list(c) for c in generator_func(input_types, num_inputs)])
 
 
 for p in input_var_permutations:

@@ -46,9 +46,7 @@ class InputCfg(ParametrizedSweep):
         samples=5,
     )
 
-    trig_func = StringSweep(
-        ["sin", "cos"], doc="Select what trigonometric function use"
-    )
+    trig_func = StringSweep(["sin", "cos"], doc="Select what trigonometric function use")
 
 
 class OutputVoltage(ParametrizedOutput):
