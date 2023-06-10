@@ -117,16 +117,13 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
 
 
-def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, indent_count=1
-) -> List[str]:
+def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
     """Generate a string description of a variable
 
     Args:
         v (param.Parameterized): parameter to describe
         debug (bool): Generate a reduced number of samples from the variable
         include_samples (bool): Include a description of the samples
-        indent_count (int, optional): Number of times to indent the string. Defaults to 1.
 
     Returns:
         str: String description of the variable
@@ -140,8 +137,7 @@ def describe_variable(
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")
     for i in range(len(sampling_str)):
-        for c in range(indent_count):
-            sampling_str[i] = f"{indent}{sampling_str[i]}"
+        sampling_str[i] = f"{indent}{sampling_str[i]}"
     return sampling_str
 
 
@@ -356,7 +352,7 @@ class IntSweep(Integer):
                 if self.bounds is None:
                     raise RuntimeError("You must define bounds for integer types")
                 else:
-                    self.samples = self.bounds[1] - self.bounds[0]
+                    self.samples = 1 + self.bounds[1] - self.bounds[0]
             else:
                 self.samples = samples
             self.sample_values = None
@@ -367,11 +363,16 @@ class IntSweep(Integer):
                 self.default = sample_values[0]
 
     def values(self, debug) -> List[int]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+        """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
         if self.sample_values is None:
-            return [int(i) for i in np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)]
+            return [
+                int(i)
+                for i in np.linspace(
+                    self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
+                )
+            ]
         else:
             if debug:
                 indices = [
