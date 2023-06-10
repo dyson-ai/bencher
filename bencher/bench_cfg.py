@@ -334,7 +334,7 @@ class BenchCfg(BenchRunCfg):
             )
         )
         for v in all_vars:
-            hash_val = hash_cust((hash_val, hash_cust(v)))
+            hash_val = hash_cust((hash_val, v.hash_custom()))
 
         return hash_val
 
