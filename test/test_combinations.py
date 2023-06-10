@@ -104,7 +104,7 @@ class TestAllCombinations(unittest.TestCase):
         bench = bch.Bench("test_bencher", bench_func, BenchCfgTest)
 
         for i in range(2):
-            bench_cfg = bench.plot_sweep(
+            bench.plot_sweep(
                 title="test_unique_filenames",
                 input_vars=input_vars,
                 result_vars=result_vars,
