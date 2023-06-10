@@ -16,7 +16,7 @@ panel
 hvplot
 plotly
 optuna
-scikit-learn 
+# scikit-learn #needed by optuna 
 
 #testing
 pytest
