@@ -37,7 +37,7 @@ class TestVarSweeps(unittest.TestCase):
 
     @pytest.mark.skip
     @given(st.integers(min_value=1, max_value=10), st.integers(min_value=1, max_value=10))
-    def test_int_sweep_samples(self, samples, samples_debug):
+    def test_int_sweep_samples_all(self, samples, samples_debug):
         int_sweep = IntSweep(bounds=[0, 10], samples=samples)
         self.assertEqual(int_sweep.default, 0)
         self.assertEqual(len(int_sweep.values(False)), samples)
