@@ -10,12 +10,7 @@ from str2bool import str2bool
 import xarray as xr
 from typing import List, Callable, Tuple, Any
 
-from bencher.bench_vars import (
-    TimeSnapshot,
-    TimeEvent,
-    describe_variable,
-    OptDir,
-)
+from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_cust
 
 
 def to_filename(
@@ -323,21 +318,26 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
-    def __hash__(self):
+    def hash_custom(self):
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
-        all_vars = self.input_vars + self.result_vars + self.const_vars
 
-        hash_val = hash(
+        hash_val = hash_cust(
             (
-                hash(str(self.bench_name)),
-                hash(str(self.title)),
-                hash(self.over_time),
-                hash(self.repeats),  # needed so that the historical xarray arrays are the same size
-                hash(self.debug),
+                hash_cust(str(self.bench_name)),
+                hash_cust(str(self.title)),
+                hash_cust(self.over_time),
+                hash_cust(
+                    self.repeats
+                ),  # needed so that the historical xarray arrays are the same size
+                hash_cust(self.debug),
             )
         )
+        all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash((hash_val, hash(v)))
+            hash_val = hash_cust((hash_val, v.hash_custom()))
+
+        for v in self.const_vars:
+            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
 
         return hash_val
 

@@ -31,7 +31,7 @@ def example_1D_cat(run_cfg: BenchRunCfg) -> Bench:
 
 if __name__ == "__main__":
     ex_run_cfg = BenchRunCfg()
-    ex_run_cfg.repeats = 20
+    ex_run_cfg.repeats = 10
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = True
 

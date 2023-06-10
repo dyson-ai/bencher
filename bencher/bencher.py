@@ -191,7 +191,7 @@ class Bench(BenchPlotServer):
         )
         bench_cfg.param.update(run_cfg.param.values())
 
-        bench_cfg_hash = hash(bench_cfg)
+        bench_cfg_hash = bench_cfg.hash_custom()
 
         calculate_results = True
         with Cache("cachedir/benchmark_inputs") as c:
