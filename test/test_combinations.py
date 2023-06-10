@@ -76,7 +76,7 @@ result_var_permutations = [
     # [BenchCfgTestOut.param.outvec3],
 ]
 
-from itertools import combinations, permutations
+from itertools import combinations
 
 # the function used to generate all possible combination or permutations of input
 generator_func = combinations
@@ -98,13 +98,16 @@ class TestAllCombinations(unittest.TestCase):
     """This class uses hypothesis to test as large a range as possible of input parameter combinations to make sure bencher always returns an error message rather than crashing.  After a long running parameter sweep the highest priority is to show as much data as possible even if some of the data processing or visulisations are not possible to calculate. (and result in an exception)"""
 
     def run_bencher_over_time(
-        self, input_vars: List[Parameter], result_vars: List[bch.ResultVar], repeats: int
+        self,
+        input_vars: List[Parameter],
+        result_vars: List[bch.ResultVar],
+        repeats: int,
     ):
         """Base function used to run benchers with a set of inputs,results and repeats over time"""
         bench = bch.Bench("test_bencher", bench_func, BenchCfgTest)
 
         for i in range(2):
-            bench_cfg = bench.plot_sweep(
+            bench.plot_sweep(
                 title="test_unique_filenames",
                 input_vars=input_vars,
                 result_vars=result_vars,
@@ -125,7 +128,10 @@ class TestAllCombinations(unittest.TestCase):
         repeats=st.sampled_from([1, 2]),
     )
     def test_all_input_combinations_over_time_hyp(
-        self, input_vars: List[Parameter], result_vars: List[bch.ResultVar], repeats: int
+        self,
+        input_vars: List[Parameter],
+        result_vars: List[bch.ResultVar],
+        repeats: int,
     ):
         """Use hypothesis to enumerate combinations of inputs to bencher
 
@@ -141,7 +147,11 @@ class TestAllCombinations(unittest.TestCase):
 
         # TODO this has been been "fixed" by catching the pandas keyerrors for plot_surface_holo().  It needs to be fixed properly by investigating aggregation of bool datatypes.  At the moment bool varibles can cause agreggation errors. Possibly convert the bool to an enum type??
         self.run_bencher_over_time(
-            [BenchCfgTest.param.float1, BenchCfgTest.param.enum1, BenchCfgTest.param.bool1],
+            [
+                BenchCfgTest.param.float1,
+                BenchCfgTest.param.enum1,
+                BenchCfgTest.param.bool1,
+            ],
             [BenchCfgTestOut.param.out1],
             1,
         )

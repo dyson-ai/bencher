@@ -56,7 +56,7 @@ class BenchPlotter:
                 except ValueError as e:
                     warning = f"failed to load historical data: {e}"
                     plot_cols.append(pn.pane.Markdown(warning))
-                    logging.warn(warning)
+                    logging.warning(warning)
 
             else:
                 plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
@@ -203,7 +203,7 @@ class BenchPlotter:
                     except (TypeError, KeyError) as e:
                         surf_col.append(
                             pn.pane.Markdown(
-                                "3D (cat,float,cat) inputs -> (float) output plots are not supported yet"
+                                f"3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
                             )
                         )
 

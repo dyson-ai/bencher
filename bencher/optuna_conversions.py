@@ -82,7 +82,6 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
     cols = pn.Row()
     for study, title in zip(studies, titles):
-
         rows = pn.Column()
         target_names = []
         for rv in bench_cfg.result_vars:
