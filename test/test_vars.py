@@ -5,26 +5,15 @@ import os
 
 from bencher.example.benchmark_data import AllSweepVars
 
+
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
-
-    use_sub_proc = False
-    if use_sub_proc:
-        result = subprocess.run(
-            [
-                "python3",
-                "-c",
-                "'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'",
-            ],
-            stdout=subprocess.PIPE,
-            check=False,
-        )
-        return result.stdout
-    else:
-        os.system("echo seed $PYTHONHASHSEED; python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' >tmp")
-        res = open("tmp", "r").read()
-        os.remove("tmp")
-        return res
+    os.system(
+        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))' > hashed_vars_comparison_tmp"
+    )
+    res = open("hashed_vars_comparison_tmp", "r", encoding="utf-8").read()
+    os.remove("hashed_vars_comparison_tmp")
+    return res
 
 
 class TestBencherHashing(unittest.TestCase):
@@ -54,8 +43,7 @@ class TestBencherHashing(unittest.TestCase):
         asv2 = AllSweepVars()
 
         self.assertEqual(
-            hash(asv), hash(
-                asv2), "The classes should have equal hash when it has identical values"
+            hash(asv), hash(asv2), "The classes should have equal hash when it has identical values"
         )
 
         asv2.var_float = 1
@@ -68,11 +56,15 @@ class TestBencherHashing(unittest.TestCase):
     def test_hash_sweep_isolated(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
 
-        self.assertNotEqual(len(get_sweep_hash_isolated_process()),
-                            0, "make sure the hash is getting returned")
+        self.assertNotEqual(
+            len(get_sweep_hash_isolated_process()), 0, "make sure the hash is getting returned"
+        )
 
-        self.assertEqual(get_sweep_hash_isolated_process(
-        ), get_sweep_hash_isolated_process(), "make sure the hashes are equal")
+        self.assertEqual(
+            get_sweep_hash_isolated_process(),
+            get_sweep_hash_isolated_process(),
+            "make sure the hashes are equal",
+        )
 
 
 print(get_sweep_hash_isolated_process())
