@@ -56,7 +56,7 @@ class BenchPlotter:
                 except ValueError as e:
                     warning = f"failed to load historical data: {e}"
                     plot_cols.append(pn.pane.Markdown(warning))
-                    logging.warn(warning)
+                    logging.warning(warning)
 
             else:
                 plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
