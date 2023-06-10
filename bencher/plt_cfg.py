@@ -213,7 +213,7 @@ class BenchPlotter:
                     except (TypeError, KeyError) as e:
                         surf_col.append(
                             pn.pane.Markdown(
-                                "3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
+                                f"3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
                             )
                         )
 
