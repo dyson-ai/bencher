@@ -16,11 +16,6 @@ def get_sweep_hash_isolated_process():
 
 
 class TestBencherHashing(unittest.TestCase):
-    # TODO need to change the way hashing works so that it does not depend on this environment variable
-    @pytest.mark.skip
-    def test_python_hash_seed(self) -> None:
-        self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
-
     def test_sweep_hashes(self):
         """check that separate instances with identical data have the same hash"""
         ex = AllSweepVars()
