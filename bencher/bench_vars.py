@@ -117,16 +117,13 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
 
 
-def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, indent_count=1
-) -> List[str]:
+def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
     """Generate a string description of a variable
 
     Args:
         v (param.Parameterized): parameter to describe
         debug (bool): Generate a reduced number of samples from the variable
         include_samples (bool): Include a description of the samples
-        indent_count (int, optional): Number of times to indent the string. Defaults to 1.
 
     Returns:
         str: String description of the variable
@@ -140,8 +137,7 @@ def describe_variable(
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")
     for i in range(len(sampling_str)):
-        for c in range(indent_count):
-            sampling_str[i] = f"{indent}{sampling_str[i]}"
+        sampling_str[i] = f"{indent}{sampling_str[i]}"
     return sampling_str
 
 
