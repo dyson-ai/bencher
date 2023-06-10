@@ -12,7 +12,6 @@ from typing import Tuple, List
 class BenchPlotServer:
     def __init__(self) -> None:
         """Create a new BenchPlotServer object"""
-        pass
 
     def plot_server(
         self, bench_name: str, plot_cfg: BenchPlotSrvCfg = BenchPlotSrvCfg(), plots_instance=None

@@ -28,8 +28,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    # - run: |
-    #     pylint $(git ls-files '*.py')
+    - run: |
+        pylint $(git ls-files '*.py')
     - name: Test with pytest
       run: |
-        PYTHONHASHSEED=42; pytest
+        pytest
