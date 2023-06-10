@@ -19,9 +19,7 @@ from bencher.bench_vars import (
 
 
 def to_filename(
-    param_cfg: param.Parameterized,
-    param_list: list[str] = None,
-    exclude_params: list[str] = None,
+    param_cfg: param.Parameterized, param_list: list[str] = None, exclude_params: list[str] = None
 ) -> str:
     """given a parametrized class, generate a filename based on some of the parameter properties
 
@@ -148,14 +146,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     debug: bool = param.Boolean(
-        False,
-        doc="Debug the sampling faster by reducing the dimension sampling resolution",
+        False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
     )
 
-    use_optuna: bool = param.Boolean(
-        False,
-        doc="show optuna plots",
-    )
+    use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
     print_bench_inputs: bool = param.Boolean(
         True, doc="Print the inputs to the benchmark function every time it is called"
