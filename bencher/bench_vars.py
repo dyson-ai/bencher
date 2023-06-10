@@ -352,7 +352,7 @@ class IntSweep(Integer):
                 if self.bounds is None:
                     raise RuntimeError("You must define bounds for integer types")
                 else:
-                    self.samples = self.bounds[1] - self.bounds[0]
+                    self.samples = 1+self.bounds[1] - self.bounds[0]                    print(self.samples)
             else:
                 self.samples = samples
             self.sample_values = None
@@ -363,11 +363,11 @@ class IntSweep(Integer):
                 self.default = sample_values[0]
 
     def values(self, debug) -> List[int]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+        """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
-
+       
         if self.sample_values is None:
-            return [int(i) for i in np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)]
+            return [int(i) for i in np.linspace(self.bounds[0], self.bounds[1], samps,endpoint=True, dtype=int)]
         else:
             if debug:
                 indices = [
