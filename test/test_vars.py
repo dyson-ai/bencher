@@ -20,14 +20,14 @@ class TestBencherHashing(unittest.TestCase):
         ex = AllSweepVars()
         ex2 = AllSweepVars()
 
-        self.assertEqual(hash(ex.var_float), hash(ex2.var_float))
-        self.assertEqual(hash(ex.var_int), hash(ex2.var_int))
-        self.assertEqual(hash(ex.var_enum), hash(ex2.var_enum))
+        self.assertEqual(ex.var_float.hash_custom(), ex2.var_float.hash_custom())
+        self.assertEqual(ex.var_int.hash_custom(), ex2.var_int.hash_custom())
+        self.assertEqual(ex.var_enum.hash_custom(), ex2.var_enum.hash_custom())
 
         print(ex.__repr__())
         print(ex2.__repr__())
 
-        self.assertEqual(hash(ex), hash(ex2))
+        self.assertEqual(ex.hash_custom(), ex2.hash_custom())
 
     def test_hash_sweep(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
@@ -36,13 +36,15 @@ class TestBencherHashing(unittest.TestCase):
         asv2 = AllSweepVars()
 
         self.assertEqual(
-            hash(asv), hash(asv2), "The classes should have equal hash when it has identical values"
+            asv.hash_custom(),
+            asv2.hash_custom(),
+            "The classes should have equal hash when it has identical values",
         )
 
         asv2.var_float = 1
         self.assertNotEqual(
-            hash(asv),
-            hash(asv2),
+            asv.hash_custom(),
+            asv2.hash_custom(),
             "The classes should not have equal hash when they have different values",
         )
 

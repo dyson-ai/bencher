@@ -166,7 +166,7 @@ class BoolSweep(Boolean):
         """Generate a string representation of the sampling procedure"""
         return f"sampling {self.name} from: [True,False]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -188,7 +188,7 @@ class TimeBase(Selector):
         """
         return f"sampling from [The Past to {self.objects[0]}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -284,7 +284,7 @@ class StringSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -327,7 +327,7 @@ class EnumSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -392,7 +392,7 @@ class IntSweep(Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -439,7 +439,7 @@ class FloatSweep(Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -460,7 +460,7 @@ class ResultVar(Number):
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_cust((self.units, self.direction))
 
 
@@ -476,7 +476,7 @@ class ResultVec(param.List):
         self.direction = direction
         self.size = size
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_cust((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
