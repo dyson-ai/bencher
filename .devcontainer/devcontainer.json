@@ -14,7 +14,8 @@
 		"vscode": {
 			"extensions": [
 				"mhutchie.git-graph",
-				"github.vscode-github-actions"
+				"github.vscode-github-actions",
+				"ms-python.python"
 			]
 		}
 	}
