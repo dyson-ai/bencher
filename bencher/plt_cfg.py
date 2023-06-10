@@ -30,7 +30,9 @@ class BenchPlotter:
 
         else:
             plot_cols = pn.Column(name="Plots View")
-            plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
+            plot_cols.append(
+                pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}")
+            )
             benmark_str = describe_benchmark(bench_cfg)
             plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
             if bench_cfg.over_time:
@@ -46,7 +48,9 @@ class BenchPlotter:
 
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
             if bench_cfg.over_time:
-                bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
+                bench_deep = deepcopy(
+                    bench_cfg
+                )  # TODO do this in the future without copying
                 bench_deep.over_time = False
                 bench_deep.iv_time = []
                 last_time = bench_deep.ds.coords["over_time"][-1]
@@ -119,7 +123,9 @@ class BenchPlotter:
         plot_rows = pn.Row(name=bench_cfg.bench_name)
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         for rv in bench_cfg.result_vars:
-            plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+            plot_rows.append(
+                BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg)
+            )
 
         return plot_rows
 
@@ -180,7 +186,9 @@ class BenchPlotter:
         surf_col = pn.Column()
 
         sns_cfg = PltCfgBase()
-        sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
+        sns_cfg.y = (
+            rv.name
+        )  # by default the result variable is always plotted on the y axis
 
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points
@@ -199,21 +207,29 @@ class BenchPlotter:
                     surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
                 else:
                     try:
-                        surf_col.append(plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg)
+                        )
                     except (TypeError, KeyError) as e:
                         surf_col.append(
                             pn.pane.Markdown(
-                                "3D (cat,float,cat) inputs -> (float) output plots are not supported yet"
+                                "3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
                             )
                         )
 
             elif plt_cnt_cfg.float_cnt == 3:
-                xr_cfg = BenchPlotter.plot_float_cnt_3(sns_cfg, plt_cnt_cfg, bench_cfg.debug)
+                xr_cfg = BenchPlotter.plot_float_cnt_3(
+                    sns_cfg, plt_cnt_cfg, bench_cfg.debug
+                )
                 if plt_cnt_cfg.cat_cnt < 1:
                     if type(rv) == ResultVar:
-                        surf_col.append(plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg)
+                        )
                     else:
-                        surf_col.append(plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg)
+                        )
                 else:
                     surf_col.append(
                         pn.pane.Markdown(
@@ -230,7 +246,9 @@ class BenchPlotter:
         return surf_col
 
     @staticmethod
-    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+    def axis_mapping(
+        cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+    ) -> PltCfgBase:
         """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
 
         Args:
@@ -321,7 +339,9 @@ class BenchPlotter:
         return sns_cfg
 
     @staticmethod
-    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+    def plot_float_cnt_2(
+        plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool
+    ) -> PltCfgBase:
         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
 
         Args:
@@ -353,7 +373,9 @@ class BenchPlotter:
         return xr_cfg
 
     @staticmethod
-    def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
+    def plot_float_cnt_3(
+        sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool
+    ) -> PltCfgBase:
         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
 
         Args:
