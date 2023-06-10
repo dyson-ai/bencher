@@ -330,7 +330,6 @@ class EnumSweep(param.Selector):
             debug (bool): If true then self.samples_debug is used
         """
         object_str = ",".join([i for i in self.objects])
-        print(self.sampling_str(debug))
         return f"sampling {self.name} from: [{object_str}]"
 
     def __hash__(self) -> int:
