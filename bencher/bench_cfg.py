@@ -320,7 +320,6 @@ class BenchCfg(BenchRunCfg):
 
     def hash_custom(self):
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
-        all_vars = self.input_vars + self.result_vars + self.const_vars
 
         hash_val = hash_cust(
             (
@@ -333,8 +332,12 @@ class BenchCfg(BenchRunCfg):
                 hash_cust(self.debug),
             )
         )
+        all_vars = self.input_vars + self.result_vars
         for v in all_vars:
             hash_val = hash_cust((hash_val, v.hash_custom()))
+
+        for v in self.const_vars:
+            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
 
         return hash_val
 
