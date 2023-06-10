@@ -161,7 +161,7 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Pl
     """
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
-    ds = bench_cfg.ds.drop_vars("repeat")
+    bench_cfg.ds.drop_vars("repeat")
 
     df = bench_cfg.ds.to_dataframe().reset_index()
 

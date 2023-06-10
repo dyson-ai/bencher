@@ -1,3 +1,4 @@
+# pylint: skip-file
 from param import Parameterized, Number, Selector, Integer, Boolean
 import param
 from enum import Enum, auto
@@ -32,7 +33,7 @@ def un_camel(camel: str) -> str:
         str: uncamelcased string
     """
 
-    return capitalise_words(re.sub("([a-z])([A-Z])", "\g<1> \g<2>", camel.replace("_", " ")))
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
 def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bool = False) -> int:
@@ -341,7 +342,6 @@ class IntSweep(Integer):
         self.samples_debug = samples_debug
 
         if sample_values is None:
-
             if samples is None:
                 if self.bounds is None:
                     raise RuntimeError("You must define bounds for integer types")

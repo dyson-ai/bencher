@@ -360,7 +360,6 @@ class TestBencher(unittest.TestCase):
         )
 
     def test_forgetting_to_use_param(self) -> None:
-
         bench = self.create_bench()
 
         with self.assertRaises(TypeError):

@@ -5,7 +5,6 @@ bench = Bench("Bencher_Example_Simple", bench_function, ExampleBenchCfgIn)
 
 
 if __name__ == "__main__":
-
     bench_out = bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.theta],
         result_vars=[ExampleBenchCfgOut.param.out_sin],

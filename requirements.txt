@@ -1,18 +1,26 @@
+#data managment
+pandas==2.0.2
+xarray
+param
 numpy
+strenum
+
+#data storage
+diskcache
+
+#plotting
 seaborn==0.12.2
 matplotlib==3.7.1
-param
-diskcache
 optuna
-pandas==2.0.2
 panel
 hvplot
-strenum
-xarray
 plotly
 optuna
-scikit-learn  
+scikit-learn #needed by optuna 
+
+#testing
 pytest
 pytest-cov  
 hypothesis
+str2bool
 black==22.12.0
