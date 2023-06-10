@@ -191,8 +191,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     only_plot: bool = param.Boolean(
-        False,
-        doc="Do not attempt to calculate benchmarks if no results are found in the cache",
+        False, doc="Do not attempt to calculate benchmarks if no results are found in the cache"
     )
 
     save_fig: bool = param.Boolean(False, doc="Optionally save a png of each figure")
