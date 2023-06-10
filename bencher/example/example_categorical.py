@@ -3,7 +3,6 @@ import pathlib
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-import panel as pn
 
 
 bench = Bench("Bencher_Example_Categorical", bench_function, ExampleBenchCfgIn)
@@ -85,9 +84,8 @@ def example_categorical(run_cfg: BenchRunCfg) -> Bench:
     return bench
 
 
-from bencher.example.example_floats import example_floats
-
 if __name__ == "__main__":
     ex_run_cfg = BenchRunCfg(repeats=10)
+    ex_run_cfg.over_time=True
 
     example_categorical(ex_run_cfg).plot()

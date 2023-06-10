@@ -1,18 +1,16 @@
 from __future__ import annotations
-import param
-from typing import List, Callable, Tuple, Any
-from bencher.bench_vars import (
-    TimeSnapshot,
-    TimeEvent,
-    describe_variable,
-    OptDir,
-)
+
 import bencher as bch
 import logging
 import argparse
-from distutils.util import strtobool
 import copy
+import param
+
+from str2bool import str2bool
 import xarray as xr
+from typing import List, Callable, Tuple, Any
+
+from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_cust
 
 
 def to_filename(
@@ -146,10 +144,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
     )
 
-    use_optuna: bool = param.Boolean(
-        False,
-        doc="show optuna plots",
-    )
+    use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
     print_bench_inputs: bool = param.Boolean(
         True, doc="Print the inputs to the benchmark function every time it is called"
@@ -238,7 +233,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
         parser.add_argument(
             "--nightly",
-            type=lambda b: bool(strtobool(b)),
+            type=lambda b: bool(str2bool(b)),
             nargs="?",
             const=False,
             default=False,
@@ -260,50 +255,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         )
 
         return BenchRunCfg(**vars(parser.parse_args()))
-
-    @staticmethod
-    def create(
-        repeats: int = 1,
-        over_time: bool = False,
-        clear_history: bool = False,
-        debug: bool = False,
-        description: str = None,
-        post_description: str = None,
-        print_pandas: bool = False,
-        print_xarray: bool = False,
-        auto_plot: bool = True,
-        raise_duplicate_exception: bool = False,
-        plots_instance=None,
-        use_cache: bool = False,
-        clear_cache: bool = False,
-        serve_panel: bool = False,
-        save_fig: bool = False,
-        use_optuna: bool = False,
-        print_bench_inputs: bool = False,
-        **kwargs,
-    ) -> BenchRunCfg:
-        """Create a benchRunCfg but with autocomplete.  (param variables don't have autocomplete by default)
-
-        Args:
-            repeats (int, optional): The number of times to resample each condition. Defaults to 1.
-            over_time (bool, optional): If true each time the function is called it will plot a timeseries of historical and the latest result. Defaults to False.
-            clear_history (bool, optional): Clear historical results. Defaults to False.
-            debug (bool, optional): Sample with a reduced number of inputs. Defaults to False.
-            print_pandas (bool, optional): Print a pandas summary of the results. Defaults to False.
-            print_xarray (bool, optional): Print an xarray summary of the results. Defaults to False.
-            auto_plot (bool, optional): Automaticlly dedeuce the best type of plot for the results. Defaults to True.
-            raise_duplicate_exception (bool, optional): Used to debug unique plot names. Defaults to False.
-            use_cache (bool, optional): If true, before calling the objective function, the sampler will check if these inputs have been calculated before and if so load them from the cache. Beware depending on how you change code in the objective function, the cache could provide values that are not correct. Defaults to False
-            clear_cache (bool, optional): Clear the cache of saved input->output mappings Defaults to False
-            save_fig (bool, optional): Optionally save a png of each figure. Default False
-            use_optuna (bool, optional): Optionally use optuna to sample and plot extra information about the param sweep.  Beware that optuna is much slower than the default sampling method in bencher. Default True
-            print_bench_inputs (bool,optional): Print the inputs to the benchmark function every time it is called. Default False"
-
-
-        Returns:
-            BenchRunCfg: BenchRunCfg
-        """
-        return BenchRunCfg(**kwargs)
 
 
 class BenchCfg(BenchRunCfg):
@@ -355,7 +306,8 @@ class BenchCfg(BenchRunCfg):
         None, doc="The name of the benchmark and the name of the save folder"
     )
     description: str = param.String(
-        None, doc="A place to store a longer description of the function of the benchmark"
+        None,
+        doc="A place to store a longer description of the function of the benchmark",
     )
     post_description: str = param.String(None, doc="A place to comment on the output of the graphs")
 
@@ -366,21 +318,26 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
-    def __hash__(self):
+    def hash_custom(self):
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
-        all_vars = self.input_vars + self.result_vars + self.const_vars
 
-        hash_val = hash(
+        hash_val = hash_cust(
             (
-                hash(str(self.bench_name)),
-                hash(str(self.title)),
-                hash(self.over_time),
-                hash(self.repeats),  # needed so that the historical xarray arrays are the same size
-                hash(self.debug),
+                hash_cust(str(self.bench_name)),
+                hash_cust(str(self.title)),
+                hash_cust(self.over_time),
+                hash_cust(
+                    self.repeats
+                ),  # needed so that the historical xarray arrays are the same size
+                hash_cust(self.debug),
             )
         )
+        all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash((hash_val, hash(v)))
+            hash_val = hash_cust((hash_val, v.hash_custom()))
+
+        for v in self.const_vars:
+            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
 
         return hash_val
 
@@ -430,7 +387,6 @@ class BenchCfg(BenchRunCfg):
             output = []
 
         for iv in self.input_vars:
-
             # assert da.coords[iv.name].values.size == (1,)
             if da.coords[iv.name].values.size == 1:
                 # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
@@ -444,7 +400,9 @@ class BenchCfg(BenchRunCfg):
         return output
 
     def get_optimal_vec(
-        self, result_var: bch.ParametrizedOutput, input_vars: List[bch.ParametrizedSweep]
+        self,
+        result_var: bch.ParametrizedOutput,
+        input_vars: List[bch.ParametrizedSweep],
     ) -> List[Any]:
         """Get the optimal values from the sweep as a vector.
 
@@ -459,7 +417,6 @@ class BenchCfg(BenchRunCfg):
         da = self.get_optimal_value_indices(result_var)
         output = []
         for iv in input_vars:
-
             if da.coords[iv.name].values.size == 1:
                 # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
                 # use [()] to convert from a 0d numpy array to a scalar
@@ -511,11 +468,6 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
 
     benchmark_sampling_str.append("````")
 
-    # TODO enable printing of const variables
-    # benchmark_sampling_str.append("Constant Inputs:")
-    # for cv in bench_cfg.const_vars:
-    #     benchmark_sampling_str.extend(describe_variable(cv, bench_cfg.debug, False))
-
     benchmark_sampling_str = "\n".join(benchmark_sampling_str)
     return benchmark_sampling_str
 
@@ -524,7 +476,6 @@ class DimsCfg:
     """A class to store data about the sampling and result dimensions"""
 
     def __init__(self, bench_cfg: BenchCfg) -> None:
-
         self.dims_name = [i.name for i in bench_cfg.all_vars]
         self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]

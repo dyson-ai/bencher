@@ -1,49 +1,39 @@
-from bencher import (
-    Bench,
-    BenchRunCfg,
-    ParametrizedSweep,
-    ParametrizedOutput,
-    FloatSweep,
-    ResultVar,
-    ResultVec,
-    BenchCfg,
-    PltCfgBase,
-)
+import bencher as bch
 import numpy as np
 
 
-class VolumeSample(ParametrizedSweep):
+class VolumeSample(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
     pos_samples = 1
 
-    x = FloatSweep(
+    x = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=pos_samples, doc="x coordinate of the sample volume"
     )
-    y = FloatSweep(
+    y = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=pos_samples, doc="y coordinate of the sample volume"
     )
-    z = FloatSweep(
+    z = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=pos_samples, doc="z coordinate of the sample volume"
     )
 
     vec_samples = 5
 
-    vec_x = FloatSweep(
+    vec_x = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=vec_samples, doc="x coordinate of the sample volume"
     )
-    vec_y = FloatSweep(
+    vec_y = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=vec_samples, doc="y coordinate of the sample volume"
     )
-    vec_z = FloatSweep(
+    vec_z = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], samples=vec_samples, doc="z coordinate of the sample volume"
     )
 
 
-class VolumeResult(ParametrizedOutput):
+class VolumeResult(bch.ParametrizedOutput):
     """A class to represent the properties of a volume sample."""
 
-    vec_dir = ResultVec(3, "vec", doc="A vector field with an interesting shape")
+    vec_dir = bch.ResultVec(3, "vec", doc="A vector field with an interesting shape")
 
 
 def bench_fn(point: VolumeSample, normalise=False) -> VolumeResult:
@@ -68,7 +58,7 @@ def bench_fn(point: VolumeSample, normalise=False) -> VolumeResult:
     return output
 
 
-def example_cone(run_cfg: BenchRunCfg) -> Bench:
+def example_cone(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -77,7 +67,7 @@ def example_cone(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Cone", bench_fn, VolumeSample)
+    bench = bch.Bench("Bencher_Example_Cone", bench_fn, VolumeSample)
 
     bench.plot_sweep(
         input_vars=[
@@ -100,6 +90,6 @@ def example_cone(run_cfg: BenchRunCfg) -> Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
+    ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_cache = True
     example_cone(ex_run_cfg).plot()
