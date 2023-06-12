@@ -14,5 +14,5 @@ from .bench_vars import (
     ResultVar,
     ResultVec,
     OptDir,
-    hash_cust
+    hash_cust,
 )
