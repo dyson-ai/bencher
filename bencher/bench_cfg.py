@@ -14,7 +14,9 @@ from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDi
 
 
 def to_filename(
-    param_cfg: param.Parameterized, param_list: list[str] = None, exclude_params: list[str] = None
+    param_cfg: param.Parameterized,
+    param_list: list[str] = None,
+    exclude_params: list[str] = None,
 ) -> str:
     """given a parametrized class, generate a filename based on some of the parameter properties
 
@@ -50,18 +52,30 @@ def to_filename(
 class PltCfgBase(param.Parameterized):
     """A base class that contains plotting parameters shared by seaborn and xarray"""
 
-    x: str = param.String(None, doc="the x parameter for seaborn and xarray plotting functions")
-    y: str = param.String(None, doc="the y parameter for seaborn and xarray plotting functions")
+    x: str = param.String(
+        None, doc="the x parameter for seaborn and xarray plotting functions"
+    )
+    y: str = param.String(
+        None, doc="the y parameter for seaborn and xarray plotting functions"
+    )
     z: str = param.String(None, doc="the z parameter for xarray plotting functions")
-    hue: str = param.String(None, doc="the hue parameter for seaborn and xarray plotting functions")
+    hue: str = param.String(
+        None, doc="the hue parameter for seaborn and xarray plotting functions"
+    )
 
-    row: str = param.String(None, doc="the row parameter for seaborn and xarray plotting functions")
-    col: str = param.String(None, doc="the col parameter for seaborn and xarray plotting functions")
+    row: str = param.String(
+        None, doc="the row parameter for seaborn and xarray plotting functions"
+    )
+    col: str = param.String(
+        None, doc="the col parameter for seaborn and xarray plotting functions"
+    )
 
     num_rows: int = param.Integer(1, doc="The number of rows in the facetgrid")
     num_cols: int = param.Integer(1, doc="The number of cols in the facetgrid")
 
-    kind: str = param.String(None, doc="the 'kind' of plot, ie barplot, lineplot, scatter etc")
+    kind: str = param.String(
+        None, doc="the 'kind' of plot, ie barplot, lineplot, scatter etc"
+    )
     marker: str = param.String(None, doc="The marker to use when plotting")
 
     cmap = param.String(None, doc="colormap type")
@@ -76,7 +90,9 @@ class PltCfgBase(param.Parameterized):
 
     title: str = param.String(None, doc="The title of the graph")
 
-    def as_dict(self, include_params: List[str] = None, exclude_params: List[str] = None) -> dict:
+    def as_dict(
+        self, include_params: List[str] = None, exclude_params: List[str] = None
+    ) -> dict:
         """Return this class as dictionary to pass to plotting functions but exclude parameters that are not expected by those functions
 
         Args:
@@ -103,7 +119,9 @@ class PltCfgBase(param.Parameterized):
         return output
 
     def as_sns_args(self) -> dict:
-        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind", "marker"])
+        return self.as_dict(
+            include_params=["x", "y", "hue", "row", "col", "kind", "marker"]
+        )
 
     def as_xra_args(self) -> dict:
         return self.as_dict(include_params=["x", "y", "hue", "row", "col", "cmap"])
@@ -115,15 +133,6 @@ class PltCfgBase(param.Parameterized):
             str: filename
         """
         return to_filename(self, exclude_params=["marker", "xlabel", "ylabel", "title"])
-
-
-class PltCntCfg(param.Parameterized):
-    """Plot Count Config"""
-
-    float_vars = param.List(doc="A list of float vars in order of plotting, x then y")
-    float_cnt = param.Integer(0, doc="The number of float variables to plot")
-    cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
-    cat_cnt = param.Integer(0, doc="The number of cat variables")
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -141,7 +150,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     debug: bool = param.Boolean(
-        False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
+        False,
+        doc="Debug the sampling faster by reducing the dimension sampling resolution",
     )
 
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
@@ -174,7 +184,9 @@ class BenchRunCfg(BenchPlotSrvCfg):
         True, doc=" Automaticlly dedeuce the best type of plot for the results."
     )
 
-    raise_duplicate_exception: bool = param.Boolean(False, doc=" Used to debug unique plot names.")
+    raise_duplicate_exception: bool = param.Boolean(
+        False, doc=" Used to debug unique plot names."
+    )
 
     use_cache: bool = param.Boolean(
         False,
@@ -186,7 +198,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     only_plot: bool = param.Boolean(
-        False, doc="Do not attempt to calculate benchmarks if no results are found in the cache"
+        False,
+        doc="Do not attempt to calculate benchmarks if no results are found in the cache",
     )
 
     save_fig: bool = param.Boolean(False, doc="Optionally save a png of each figure")
@@ -269,6 +282,11 @@ class BenchCfg(BenchRunCfg):
         doc="A list of ParameterizedSweep results collect and plot.",
     )
 
+    result_groups = param.List(
+        default=None,
+        doc="A list of ParameterizedSweep results collect and plot.",
+    )
+
     const_vars = param.List(
         default=None,
         doc="Variables to keep constant but are different from the default value",
@@ -307,9 +325,12 @@ class BenchCfg(BenchRunCfg):
     )
     description: str = param.String(
         None,
+       
         doc="A place to store a longer description of the function of the benchmark",
     )
-    post_description: str = param.String(None, doc="A place to comment on the output of the graphs")
+    post_description: str = param.String(
+        None, doc="A place to comment on the output of the graphs",
+    )
 
     has_results: bool = param.Boolean(
         False,
@@ -350,7 +371,9 @@ class BenchCfg(BenchRunCfg):
         strs.append(f"repeats={self.repeats},over_time={self.over_time}")
         return "".join(strs)
 
-    def get_optimal_value_indices(self, result_var: bch.ParametrizedOutput) -> xr.DataArray:
+    def get_optimal_value_indices(
+        self, result_var: bch.ParametrizedOutput
+    ) -> xr.DataArray:
         """Get an xarray mask of the values with the best values found during a parameter sweep
 
         Args:
@@ -448,7 +471,9 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
         for cv in bench_cfg.const_vars:
             c = cv[0]
             benchmark_sampling_str.extend(
-                [f"\t{c.name}: \n\t\tvalue: {cv[1]}\n\t\tunits: {c.units}\n\t\tdocs: {c.doc}"]
+                [
+                    f"\t{c.name}: \n\t\tvalue: {cv[1]}\n\t\tunits: {c.units}\n\t\tdocs: {c.doc}"
+                ]
             )
 
     print_meta = True

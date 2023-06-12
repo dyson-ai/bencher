@@ -3,10 +3,11 @@ import xarray as xr
 from copy import deepcopy
 import panel as pn
 import logging
-from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
+from bencher.bench_cfg import PltCfgBase, BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedOutput, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
+from plotting_functions import PltCntCfg
 
 
 class BenchPlotter:
@@ -30,7 +31,9 @@ class BenchPlotter:
 
         else:
             plot_cols = pn.Column(name="Plots View")
-            plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
+            plot_cols.append(
+                pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}")
+            )
             benmark_str = describe_benchmark(bench_cfg)
             plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
             if bench_cfg.over_time:
@@ -46,7 +49,9 @@ class BenchPlotter:
 
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
             if bench_cfg.over_time:
-                bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
+                bench_deep = deepcopy(
+                    bench_cfg
+                )  # TODO do this in the future without copying
                 bench_deep.over_time = False
                 bench_deep.iv_time = []
                 last_time = bench_deep.ds.coords["over_time"][-1]
@@ -117,48 +122,18 @@ class BenchPlotter:
             pn.Row: A panel row with plots in it
         """
         plot_rows = pn.Row(name=bench_cfg.bench_name)
-        plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
+        plt_cnt_cfg = PltCntCfg.from_benchCfg(bench_cfg)
+        for rg in bench_cfg.result_groups:
+            for rv in bench_cfg.result_vars:
+                plot_rows.append(
+                    BenchPlotter.plot_result_variable_group(bench_cfg, rg, plt_cnt_cfg)
+                )
         for rv in bench_cfg.result_vars:
-            plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+            plot_rows.append(
+                BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg)
+            )
 
         return plot_rows
-
-    @staticmethod
-    def generate_plt_cnt_cfg(
-        bench_cfg: BenchCfg,
-    ) -> PltCntCfg:
-        """Given a BenchCfg work out how many float and cat variables there are and store in a PltCntCfg class
-
-        Args:
-            bench_cfg (BenchCfg): See BenchCfg definition
-
-        Raises:
-            ValueError: If no plotting procedure could be automatically detected
-
-        Returns:
-            PltCntCfg: see PltCntCfg definition
-        """
-        plt_cnt_cfg = PltCntCfg()
-        plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
-        plt_cnt_cfg.cat_vars = []
-
-        for iv in bench_cfg.input_vars:
-            type_allocated = False
-            typestr = str(type(iv))
-
-            if "IntSweep" in typestr or "FloatSweep" in typestr:
-                plt_cnt_cfg.float_vars.append(iv)
-                type_allocated = True
-            if "EnumSweep" in typestr or "BoolSweep" in typestr:
-                plt_cnt_cfg.cat_vars.append(iv)
-                type_allocated = True
-
-            if not type_allocated:
-                raise ValueError(f"No rule for type {typestr}")
-
-        plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
-        plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
-        return plt_cnt_cfg
 
     @staticmethod
     def plot_result_variable(
@@ -180,7 +155,9 @@ class BenchPlotter:
         surf_col = pn.Column()
 
         sns_cfg = PltCfgBase()
-        sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
+        sns_cfg.y = (
+            rv.name
+        )  # by default the result variable is always plotted on the y axis
 
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points
@@ -199,7 +176,9 @@ class BenchPlotter:
                     surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
                 else:
                     try:
-                        surf_col.append(plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg)
+                        )
                     except (TypeError, KeyError) as e:
                         surf_col.append(
                             pn.pane.Markdown(
@@ -208,12 +187,18 @@ class BenchPlotter:
                         )
 
             elif plt_cnt_cfg.float_cnt == 3:
-                xr_cfg = BenchPlotter.plot_float_cnt_3(sns_cfg, plt_cnt_cfg, bench_cfg.debug)
+                xr_cfg = BenchPlotter.plot_float_cnt_3(
+                    sns_cfg, plt_cnt_cfg, bench_cfg.debug
+                )
                 if plt_cnt_cfg.cat_cnt < 1:
                     if type(rv) == ResultVar:
-                        surf_col.append(plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg)
+                        )
                     else:
-                        surf_col.append(plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg))
+                        surf_col.append(
+                            plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg)
+                        )
                 else:
                     surf_col.append(
                         pn.pane.Markdown(
@@ -228,159 +213,3 @@ class BenchPlotter:
                 )
 
         return surf_col
-
-    @staticmethod
-    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        sns_dict = {}
-        for i, v in enumerate(plt_cnt_cfg.cat_vars):
-            axis = cat_axis_order[i]
-            sns_dict[axis] = v.name
-
-        sns_cfg.param.set_param(**sns_dict)
-
-        return sns_cfg
-
-    @staticmethod
-    def get_axes_and_title(
-        rv: ParametrizedOutput, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
-    ) -> PltCntCfg:
-        """Work out the axes label and plot tite
-
-        Args:
-            rv (ParametrizedOutput): result variable
-            sns_cfg (PltCfgBase): plotting config
-            plt_cnt_cfg (PltCntCfg): plot count config
-
-        Returns:
-            PltCfgBase: plot count config with titles added
-        """
-        all_vars = plt_cnt_cfg.float_vars + plt_cnt_cfg.cat_vars
-        xvar = None
-        for i in all_vars:
-            if i.name == sns_cfg.x:
-                xvar = i.units
-        if xvar is not None:
-            sns_cfg.xlabel = f"{sns_cfg.x} [{xvar}]"
-        sns_cfg.ylabel = f"{sns_cfg.y} [{rv.units}]"
-        sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
-        return sns_cfg
-
-    @staticmethod
-    def plot_float_cnt_0(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-
-        if plt_cnt_cfg.float_cnt == 0:
-            sns_cfg.plot_callback = sns.catplot
-            sns_cfg.kind = "swarm"
-
-            # as more cat variables are added, map them to these plot axes
-            cat_axis_order = ["x", "row", "col", "hue"]
-            sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
-
-        return sns_cfg
-
-    @staticmethod
-    def plot_float_cnt_1(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there is 1 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-
-        if plt_cnt_cfg.float_cnt == 1:
-            sns_cfg.x = plt_cnt_cfg.float_vars[0].name
-            sns_cfg.kind = "line"
-            sns_cfg.plot_callback = sns.relplot
-
-            # as more cat variables are added, map them to these plot axes
-            cat_axis_order = ["hue", "row", "col", "hue"]
-
-            sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
-
-        return sns_cfg
-
-    @staticmethod
-    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
-        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        xr_cfg = PltCfgBase()
-        if plt_cnt_cfg.float_cnt == 2:
-            logging.info(f"surface plot: {rv.name}")
-            xr_cfg.plot_callback_xra = xr.plot.plot
-            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-            xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
-            xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
-
-            if plt_cnt_cfg.cat_cnt >= 1:
-                logging.info("surface plot with 1 categorical")
-                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-            if plt_cnt_cfg.cat_cnt >= 2:
-                logging.info("surface plot with 2> categorical")
-                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-        return xr_cfg
-
-    @staticmethod
-    def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
-        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        xr_cfg = PltCfgBase(**sns_cfg.as_dict())
-
-        if plt_cnt_cfg.float_cnt >= 3:
-            logging.info("volume plot")
-            sns_cfg.plot_callback = None  # all further plots are surfaces
-            xr_cfg.plot_callback_xra = xr.plot.plot
-            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-            xr_cfg.z = plt_cnt_cfg.float_vars[2].name
-            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-            xr_cfg.zlabel = f"{xr_cfg.z} [{plt_cnt_cfg.float_vars[2].units}]"
-            if plt_cnt_cfg.cat_cnt >= 1:
-                logging.info("volume plot with 1 categorical")
-                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-            if plt_cnt_cfg.cat_cnt >= 2:
-                logging.info("volume plot with 2> categorical")
-                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-        return xr_cfg

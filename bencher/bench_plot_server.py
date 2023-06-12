@@ -14,7 +14,10 @@ class BenchPlotServer:
         """Create a new BenchPlotServer object"""
 
     def plot_server(
-        self, bench_name: str, plot_cfg: BenchPlotSrvCfg = BenchPlotSrvCfg(), plots_instance=None
+        self,
+        bench_name: str,
+        plot_cfg: BenchPlotSrvCfg = BenchPlotSrvCfg(),
+        plots_instance=None,
     ) -> None:
         """Load previously calculated benchmark data from the database and start a plot server to display it
 
@@ -29,7 +32,9 @@ class BenchPlotServer:
             plots_instance = self.load_data_from_cache(bench_name)
         self.serve(bench_name, plots_instance, port=plot_cfg.port)
 
-    def load_data_from_cache(self, bench_name: str) -> Tuple[BenchCfg, List[pn.panel]] | None:
+    def load_data_from_cache(
+        self, bench_name: str
+    ) -> Tuple[BenchCfg, List[pn.panel]] | None:
         """Load previously calculated benchmark data from the database and start a plot server to display it
 
         Args:
@@ -51,7 +56,9 @@ class BenchPlotServer:
                 for bench_cfg_hash in bench_cfg_hashes:
                     # load the results based on the hash retrieved from the benchmark name
                     if bench_cfg_hash in c:
-                        logging.info(f"loading cached results from key: {bench_cfg_hash}")
+                        logging.info(
+                            f"loading cached results from key: {bench_cfg_hash}"
+                        )
                         bench_cfg = c[bench_cfg_hash]
                         logging.info(f"loaded: {bench_cfg.title}")
 
@@ -66,7 +73,9 @@ class BenchPlotServer:
                     "This benchmark name does not exist in the results cache. Was not able to load the results to plot!  Make sure to run the bencher to generate and save results to the cache"
                 )
 
-    def serve(self, bench_name: str, plots_instance: List[pn.panel], port: int = None) -> None:
+    def serve(
+        self, bench_name: str, plots_instance: List[pn.panel], port: int = None
+    ) -> None:
         """Launch a panel server to view results
 
 
@@ -77,7 +86,9 @@ class BenchPlotServer:
         """
 
         if port is not None:
-            pn.serve(plots_instance, title=bench_name, websocket_origin=["*"], port=port)
+            pn.serve(
+                plots_instance, title=bench_name, websocket_origin=["*"], port=port
+            )
         else:
             logging.getLogger().setLevel(logging.WARNING)
             pn.serve(plots_instance, title=bench_name)

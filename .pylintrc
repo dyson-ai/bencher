@@ -1,5 +1,5 @@
-[FORMAT]
-max-line-length=100
+# [FORMAT]
+# max-line-length=100
 
 
 [MESSAGES CONTROL]
