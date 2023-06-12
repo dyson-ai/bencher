@@ -182,6 +182,17 @@ class BenchPlotter:
         sns_cfg = PltCfgBase()
         sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
 
+        from bencher.plots.catplot import Catplot
+
+        plot_providers=[]
+
+        plot_providers.append(Catplot.plot_float_cnt_0)
+
+        for p in plot_providers:
+            p()
+
+        
+
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points
             if bench_cfg.over_time:
