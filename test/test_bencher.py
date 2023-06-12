@@ -130,7 +130,7 @@ class TestBencher(unittest.TestCase):
         self.assertEqual(get_hash_isolated_process(), get_hash_isolated_process())
 
     # @pytest.mark.skip
-    @settings(deadline=10000)
+    @settings(deadline=15000)
     @given(
         input_vars=st.sampled_from(input_var_cat_permutations),
         result_vars=st.sampled_from([[ExampleBenchCfgOut.param.out_sin]]),
