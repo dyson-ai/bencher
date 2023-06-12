@@ -1,4 +1,4 @@
-from bencher.plotting_functions import (
+from bencher.plot_signature import (
     PlotProvider,
     PlotSignature,
     VarRange,
@@ -11,9 +11,7 @@ import seaborn as sns
 
 
 class relplot(PlotProvider):
-    def plot_float_cnt_1(
-        self, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
-    ) -> PltCfgBase:
+    def plot_float_cnt_1(self, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
         """A function for determining the plot settings if there is 1 float variable and updates the PltCfgBase
 
         Args:

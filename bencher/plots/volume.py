@@ -1,10 +1,11 @@
-from bencher.plotting_functions import PlotProvider, PlotSignature,VarRange,PltCntCfg,PltCfgBase
-from bencher import BenchCfg,ResultVec,ResultVar,ParametrizedOutput
+from bencher.plot_signature import PlotProvider, PlotSignature, VarRange, PltCntCfg, PltCfgBase
+from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
 import plotly.graph_objs as go
 import xarray as xr
 import logging
+
 
 class PlotVolume(PlotSignature):
     def get_plot_signatures(self):
@@ -13,7 +14,7 @@ class PlotVolume(PlotSignature):
         plot_sig.cat_range = VarRange(0, 0)
         plot_sig.vector_len = VarRange(2, 2)
         return plot_sig
-    
+
     def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
 
@@ -45,7 +46,6 @@ class PlotVolume(PlotSignature):
                 xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
                 xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
         return xr_cfg
-
 
     def plot_single(self, plot_sig: PlotSignature, bench_cfg: BenchCfg, rv: ResultVec):
         return self.plot_volume_plotly(bench_cfg, rv)

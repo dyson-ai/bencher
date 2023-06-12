@@ -1,4 +1,4 @@
-from bencher.plotting_functions import (
+from bencher.plot_signature import (
     PlotProvider,
     PlotSignature,
     VarRange,
@@ -20,9 +20,7 @@ class PlotSwarm(PlotProvider):
         plot_sig.vector_len = VarRange(0, 0)
         return plot_sig
 
-    def plot_sns(
-        self, bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase
-    ) -> pn.pane:
+    def plot_sns(self, bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
         """Plot with seaborn
 
         Args:

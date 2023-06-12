@@ -1,4 +1,4 @@
-from bencher.plotting_functions import PlotProvider, PlotSignature, VarRange
+from bencher.plot_signature import PlotProvider, PlotSignature, VarRange
 from bencher import BenchCfg, ResultVec, ResultVar, ParametrizedOutput
 from typing import List
 import panel as pn
@@ -34,9 +34,7 @@ class Scatter3D(PlotProvider):
             color = None
 
         if bench_cfg.over_time:
-            if (
-                len(names) < 3
-            ):  # only a 2d vector result so use the time axis as the third point
+            if len(names) < 3:  # only a 2d vector result so use the time axis as the third point
                 names.insert(0, bench_cfg.iv_time[0].name)
 
         return px.scatter_3d(
@@ -49,9 +47,7 @@ class Scatter3D(PlotProvider):
             size_max=2,
         )
 
-    def plot_scatter3D_px(
-        self, bench_cfg: BenchCfg, rv: ParametrizedOutput
-    ) -> pn.pane.Plotly:
+    def plot_scatter3D_px(self, bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
         """Given a benchCfg generate a 3D scatter plot with plotly express
 
         Args:
@@ -74,9 +70,7 @@ class Scatter3D(PlotProvider):
             color = None
 
         if bench_cfg.over_time:
-            if (
-                len(names) < 3
-            ):  # only a 2d vector result so use the time axis as the third point
+            if len(names) < 3:  # only a 2d vector result so use the time axis as the third point
                 names.insert(0, bench_cfg.iv_time[0].name)
 
         return px.scatter_3d(

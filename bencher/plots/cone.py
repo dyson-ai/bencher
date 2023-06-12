@@ -1,4 +1,4 @@
-from bencher.plotting_functions import (
+from bencher.plot_signature import (
     PlotProvider,
     PlotSignature,
     VarRange,
@@ -44,9 +44,7 @@ class SurfacePlot(PlotSignature):
         df = bench_cfg.ds.to_dataframe().reset_index()
 
         print("size before removing zero size vectors", df.shape)
-        df = df.loc[
-            (df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)
-        ]
+        df = df.loc[(df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)]
         print("size after removing zero size vectors", df.shape)
 
         data = [
