@@ -1,10 +1,8 @@
 # [FORMAT]
 # max-line-length=100
 
-# disable=logging-fstring-interpolation
 
-; [MESSAGES CONTROL]
-; disable=
-;   C,R,I,
-;   logging-fstring-interpolation,line-too-long,fixme,
-;   unused-import,unused-argument
+[MESSAGES CONTROL]
+disable=
+  C,R,I,
+  logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught

@@ -25,16 +25,16 @@ def cosine(freq, phase):
     )
 
 
-freq = pn.widgets.FloatSlider(name="Frequency", start=0, end=10, value=2)
-phase = pn.widgets.FloatSlider(name="Phase", start=0, end=np.pi)
+freq_widget = pn.widgets.FloatSlider(name="Frequency", start=0, end=10, value=2)
+phase_widget = pn.widgets.FloatSlider(name="Phase", start=0, end=np.pi)
 
-sine = pn.bind(sine, freq=freq, phase=phase)
-cosine = pn.bind(cosine, freq=freq, phase=phase)
+sine = pn.bind(sine, freq=freq_widget, phase=phase_widget)
+cosine = pn.bind(cosine, freq=freq_widget, phase=phase_widget)
 
 template = pn.template.FastListTemplate(
     site="Panel",
     title="FastListTemplate",
-    sidebar=[pn.pane.Markdown("## Settings"), freq, phase],
+    sidebar=[pn.pane.Markdown("## Settings"), freq_widget, phase_widget],
     main=[
         pn.pane.HoloViews(hv.DynamicMap(sine) + hv.DynamicMap(cosine), sizing_mode="stretch_both")
     ],

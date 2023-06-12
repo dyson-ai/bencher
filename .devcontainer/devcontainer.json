@@ -9,11 +9,13 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "PYTHONHASHSEED=42; pip3 install --user -r requirements.txt && pip install -e .",
+	"postCreateCommand": "pip3 install --user -r requirements.txt && pip install -e .",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"github.vscode-github-actions",
+				"ms-python.python"
 			]
 		}
 	}

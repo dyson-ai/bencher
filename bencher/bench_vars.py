@@ -1,3 +1,6 @@
+# pylint: skip-file
+from param import Parameterized, Number, Selector, Integer, Boolean
+import param
 from enum import Enum, auto
 from strenum import StrEnum
 
@@ -7,6 +10,16 @@ from pandas import Timestamp
 import re
 from datetime import datetime
 from typing import List
+import hashlib
+from sys import byteorder
+
+
+def hash_cust(var: any):
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
+    # hash_val = 0
+    # for ch in text:
+    # hash_val = (hash_val * 281 ^ ord(ch) * 997) & 0xFFFFFFFF
+    # return hash_val
 
 
 def capitalise_words(message: str):
@@ -32,9 +45,7 @@ def un_camel(camel: str) -> str:
         str: uncamelcased string
     """
 
-    return capitalise_words(
-        re.sub("([a-z])([A-Z])", "\g<1> \g<2>", camel.replace("_", " "))
-    )
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
 def param_hash(
@@ -55,28 +66,28 @@ def param_hash(
     if hash_value:
         for k, v in param_type.param.values().items():
             if k != "name":
-                curhash = hash((curhash, hash(v)))
+                curhash = hash_cust((curhash, hash_cust(v)))
 
     if hash_meta:
         for k, v in param_type.param.params().items():
             if k != "name":
-                print(f"key:{k}, hash:{hash(k)}")
-                print(f"value:{v}, hash:{hash(v)}")
-                curhash = hash((curhash, hash(k), hash(v)))
+                print(f"key:{k}, hash:{hash_cust(k)}")
+                print(f"value:{v}, hash:{hash_cust(v)}")
+                curhash = hash_cust((curhash, hash_cust(k), hash_cust(v)))
     return curhash
 
 
 class ParametrizedSweep(param.Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return param_hash(self, True, False)
 
 
 class ParametrizedOutput(param.Parameterized):
     """Parent class for all Output types that need a custom hash"""
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return param_hash(self, True, False)
 
 
@@ -93,8 +104,8 @@ def sweep_hash(parameter: param.Parameterized) -> int:
     """
     curhash = 0
     for v in parameter.values():
-        print(f"value:{v}, hash:{hash(v)}")
-        curhash = hash((curhash, hash(v)))
+        print(f"value:{v}, hash:{hash_cust(v)}")
+        curhash = hash_cust((curhash, hash_cust(v)))
     return curhash
 
 
@@ -107,19 +118,17 @@ def hash_extra_vars(parameter: param.Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
 
 
-def describe_variable(
-    v: param.Parameterized, debug: bool, include_samples: bool, indent_count=1
-) -> List[str]:
+
+def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
     """Generate a string description of a variable
 
     Args:
         v (param.param.Parameterized): parameter to describe
         debug (bool): Generate a reduced param.Number of samples from the variable
         include_samples (bool): Include a description of the samples
-        indent_count (int, optional): param.Number of times to indent the string. Defaults to 1.
 
     Returns:
         str: String description of the variable
@@ -133,8 +142,7 @@ def describe_variable(
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")
     for i in range(len(sampling_str)):
-        for c in range(indent_count):
-            sampling_str[i] = f"{indent}{sampling_str[i]}"
+        sampling_str[i] = f"{indent}{sampling_str[i]}"
     return sampling_str
 
 
@@ -161,7 +169,7 @@ class BoolSweep(param.Boolean):
         """Generate a string representation of the sampling procedure"""
         return f"sampling {self.name} from: [True,False]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -183,7 +191,7 @@ class TimeBase(param.Selector):
         """
         return f"sampling from [The Past to {self.objects[0]}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -279,7 +287,7 @@ class StringSweep(param.Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -327,7 +335,7 @@ class EnumSweep(param.Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -358,7 +366,7 @@ class IntSweep(param.Integer):
                 if self.bounds is None:
                     raise RuntimeError("You must define bounds for param.Integer types")
                 else:
-                    self.samples = self.bounds[1] - self.bounds[0]
+                    self.samples = 1 + self.bounds[1] - self.bounds[0]
             else:
                 self.samples = samples
             self.sample_values = None
@@ -369,13 +377,15 @@ class IntSweep(param.Integer):
                 self.default = sample_values[0]
 
     def values(self, debug) -> List[int]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+        """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
         if self.sample_values is None:
             return [
                 int(i)
-                for i in np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)
+                for i in np.linspace(
+                    self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
+                )
             ]
         else:
             if debug:
@@ -397,7 +407,7 @@ class IntSweep(param.Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -446,7 +456,7 @@ class FloatSweep(param.Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def __hash__(self) -> int:
+    def hash_custom(self) -> int:
         return hash_extra_vars(self)
 
 
@@ -467,8 +477,8 @@ class ResultVar(param.Number):
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
 
-    def __hash__(self) -> int:
-        return hash((self.units, self.direction))
+    def hash_custom(self) -> int:
+        return hash_cust((self.units, self.direction))
 
 
 class ResultVec(param.List):
@@ -483,8 +493,8 @@ class ResultVec(param.List):
         self.direction = direction
         self.size = size
 
-    def __hash__(self) -> int:
-        return hash((self.units, self.direction))
+    def hash_custom(self) -> int:
+        return hash_cust((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
         """given the index of the vector, return the column name that

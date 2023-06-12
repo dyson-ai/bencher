@@ -1,6 +1,4 @@
 import unittest
-import pytest
-import subprocess
 import os
 
 from bencher.example.benchmark_data import AllSweepVars
@@ -8,38 +6,28 @@ from bencher.example.benchmark_data import AllSweepVars
 
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
-
-    result = subprocess.run(
-        [
-            "python3",
-            "-c",
-            "'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(hash(ex))'",
-        ],
-        stdout=subprocess.PIPE,
-        check=False,
+    os.system(
+        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(ex.hash_custom())' > hashed_vars_comparison_tmp"
     )
-    return result.stdout
+    res = open("hashed_vars_comparison_tmp", "r", encoding="utf-8").read()
+    os.remove("hashed_vars_comparison_tmp")
+    return res
 
 
 class TestBencherHashing(unittest.TestCase):
-    # TODO need to change the way hashing works so that it does not depend on this environment variable
-    @pytest.mark.skip
-    def test_python_hash_seed(self) -> None:
-        self.assertTrue(os.getenv("PYTHONHASHSEED"), "42")
-
     def test_sweep_hashes(self):
         """check that separate instances with identical data have the same hash"""
         ex = AllSweepVars()
         ex2 = AllSweepVars()
 
-        self.assertEqual(hash(ex.var_float), hash(ex2.var_float))
-        self.assertEqual(hash(ex.var_int), hash(ex2.var_int))
-        self.assertEqual(hash(ex.var_enum), hash(ex2.var_enum))
+        self.assertEqual(ex.param.var_float.hash_custom(), ex2.param.var_float.hash_custom())
+        self.assertEqual(ex.param.var_int.hash_custom(), ex2.param.var_int.hash_custom())
+        self.assertEqual(ex.param.var_enum.hash_custom(), ex2.param.var_enum.hash_custom())
 
         print(ex.__repr__())
         print(ex2.__repr__())
 
-        self.assertEqual(hash(ex), hash(ex2))
+        self.assertEqual(ex.hash_custom(), ex2.hash_custom())
 
     def test_hash_sweep(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
@@ -48,16 +36,30 @@ class TestBencherHashing(unittest.TestCase):
         asv2 = AllSweepVars()
 
         self.assertEqual(
-            hash(asv), hash(asv2), "The classes should have equal hash when it has identical values"
+            asv.hash_custom(),
+            asv2.hash_custom(),
+            "The classes should have equal hash when it has identical values",
         )
 
         asv2.var_float = 1
         self.assertNotEqual(
-            hash(asv),
-            hash(asv2),
+            asv.hash_custom(),
+            asv2.hash_custom(),
             "The classes should not have equal hash when they have different values",
         )
 
     def test_hash_sweep_isolated(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
-        self.assertEqual(get_sweep_hash_isolated_process(), get_sweep_hash_isolated_process())
+
+        self.assertNotEqual(
+            len(get_sweep_hash_isolated_process()), 0, "make sure the hash is getting returned"
+        )
+
+        self.assertEqual(
+            get_sweep_hash_isolated_process(),
+            get_sweep_hash_isolated_process(),
+            "make sure the hashes are equal",
+        )
+
+
+print(get_sweep_hash_isolated_process())

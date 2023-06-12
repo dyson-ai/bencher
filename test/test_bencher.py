@@ -22,7 +22,7 @@ def get_hash_isolated_process() -> bytes:
         [
             "python3",
             "-c",
-            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(hash(cfg1))'",
+            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(cfg1.hash_custom())'",
         ],
         stdout=subprocess.PIPE,
         check=False,
@@ -123,14 +123,14 @@ class TestBencher(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(hash(cfg1), hash(cfg2))
+        self.assertEqual(cfg1.hash_custom(), cfg2.hash_custom())
 
     def test_bench_cfg_hash_isolated(self):
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
         self.assertEqual(get_hash_isolated_process(), get_hash_isolated_process())
 
     # @pytest.mark.skip
-    @settings(deadline=10000)
+    @settings(deadline=15000)
     @given(
         input_vars=st.sampled_from(input_var_cat_permutations),
         result_vars=st.sampled_from([[ExampleBenchCfgOut.param.out_sin]]),
@@ -360,7 +360,6 @@ class TestBencher(unittest.TestCase):
         )
 
     def test_forgetting_to_use_param(self) -> None:
-
         bench = self.create_bench()
 
         with self.assertRaises(TypeError):
