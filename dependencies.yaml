@@ -17,5 +17,7 @@ pip:
   - buildrun: optuna
   - buildrun: numpy
   - buildrun: scikit-learn
+  - buildrun: str2bool
+
   
 
