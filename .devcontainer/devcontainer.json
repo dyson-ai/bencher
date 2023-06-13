@@ -17,7 +17,8 @@
 				"github.vscode-github-actions",
 				"ms-python.python",
 				"ms-python.black-formatter",
-				"ms-python.pylint"
+				"ms-python.pylint",
+				"njpwerner.autodocstring"
 			]
 		}
 	}
