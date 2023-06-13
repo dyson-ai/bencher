@@ -328,17 +328,25 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
-    def hash_custom(self):
-        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
+    def hash_custom(self, include_repeats):
+        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
+
+        Args:
+            include_repeats (bool) : by default include repeats as part of the hash execpt with using the
+        """
+
+        if include_repeats:
+            # needed so that the historical xarray arrays are the same size
+            repeats_hash = hash_cust(self.repeats)
+        else:
+            repeats_hash = 0
 
         hash_val = hash_cust(
             (
                 hash_cust(str(self.bench_name)),
                 hash_cust(str(self.title)),
                 hash_cust(self.over_time),
-                hash_cust(
-                    self.repeats
-                ),  # needed so that the historical xarray arrays are the same size
+                repeats_hash,
                 hash_cust(self.debug),
             )
         )
