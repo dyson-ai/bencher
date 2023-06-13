@@ -62,16 +62,15 @@ class TestSampleCache(unittest.TestCase):
 
         # create a new benchmark and clear the cache (for this new benchmark only)
 
-        bencher.clear_call_counts()
-
         run_cfg.clear_sample_cache = True
+        bencher.clear_call_counts()
         bencher.plot_sweep(
             title="new benchmark", result_vars=[UnreliableClass.param.return_value], run_cfg=run_cfg
         )
 
         self.assertEqual(bencher.worker_wrapper_call_count, 2)
-        # self.assertEqual(bencher.worker_fn_call_count, 2)
-        # self.assertEqual(bencher.worker_cache_call_count, 0)
+        self.assertEqual(bencher.worker_fn_call_count, 2)
+        self.assertEqual(bencher.worker_cache_call_count, 0)
 
         # check that the previous benchmark still has the cached values, and they were not cleared by clearing the sample cache of an unrelated benchmark
 

@@ -200,7 +200,7 @@ class Bench(BenchPlotServer):
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
         bench_cfg_sample_hash = bench_cfg.hash_custom(False)
 
-        if bench_cfg.use_sample_cache and self.sample_cache is None:
+        if bench_cfg.use_sample_cache:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
             if bench_cfg.clear_sample_cache:
                 logging.info(
@@ -477,7 +477,9 @@ class Bench(BenchPlotServer):
                 (list(zip(dims_name, function_input_vars)), bench_sample_hash)
             )
             if function_input_signature in self.sample_cache:
-                logging.info("Found a previously calculated value in the sample cache")
+                logging.info(
+                    f"Found a previously calculated value in the sample cache {bench_sample_hash}"
+                )
                 result = self.sample_cache[function_input_signature]
                 self.worker_cache_call_count += 1
             else:
