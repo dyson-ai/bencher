@@ -42,7 +42,6 @@ def example_sample_cache(run_cfg: bch.BenchRunCfg, trigger_crash: bool) -> bch.B
 
     bencher = bch.Bench("example_sample_cache", instance.crashy_fn)
 
-    # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
     bencher.plot_sweep(
         title="Example Crashy Function with the sample_cache",
         input_vars=[UnreliableClass.param.input_val],
