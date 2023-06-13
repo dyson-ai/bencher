@@ -192,7 +192,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     clear_sample_cache: bool = param.Boolean(
         False,
-        doc="Clears the per-sample cache.  Use this if you get unexpected behavior",
+        doc="Clears the per-sample cache.  Use this if you get unexpected behavior.  The per_sample cache is tagged by the specific benchmark it was sampled from. So clearing the cache of one benchmark will not clear the cache of other benchmarks.",
     )
 
     only_plot: bool = param.Boolean(
