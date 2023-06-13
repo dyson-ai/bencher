@@ -18,7 +18,7 @@ class UnreliableClass(bch.ParametrizedSweep):
         doc="In the example the first time the benchmark is run we set the value to 0.  After the code crashes the value is set to 1. The plots show the values >1 are calculated on the second attempt",
     )
 
-    def crashy_fn(self, input_val: int = 0, **kwargs) -> float:  # pylint-ignore W0613
+    def crashy_fn(self, input_val: int = 0, **kwargs) -> float:  # pylint: disable=unused-argument
         if self.trigger_crash:
             if input_val > 1:
                 raise RuntimeError("I crashed for no good reason ;P")
