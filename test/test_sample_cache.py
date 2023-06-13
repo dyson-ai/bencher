@@ -23,8 +23,7 @@ class TestSampleCache(unittest.TestCase):
         self.sample_cache()
 
     def sample_cache(self):
-        """This checks the b
-        """
+        """This checks the b"""
         run_cfg = bch.BenchRunCfg()
         run_cfg.repeats = 1
 
