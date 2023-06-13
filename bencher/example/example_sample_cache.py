@@ -74,4 +74,6 @@ if __name__ == "__main__":
 
     ex_run_cfg.repeats = 2
 
-    bencher = example_sample_cache(ex_run_cfg, trigger_crash=False)
+    example_sample_cache(ex_run_cfg, trigger_crash=False).plot()
+
+    # see the test_sample_cache for a more detailed explanation of the mechanisms of the cache
