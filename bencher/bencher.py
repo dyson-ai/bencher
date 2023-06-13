@@ -232,7 +232,8 @@ class Bench(BenchPlotServer):
             if run_cfg.time_event is not None:
                 time_src = run_cfg.time_event
             bench_cfg = self.calculate_benchmark_results(bench_cfg, time_src, bench_cfg_sample_hash)
-            self.sample_cache.close()
+            if self.sample_cache is not None:
+                self.sample_cache.close()
 
             # use the hash of the inputs to look up historical values in the cache
             if run_cfg.over_time:
