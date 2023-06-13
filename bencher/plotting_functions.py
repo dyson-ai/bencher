@@ -104,10 +104,9 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
                 )
 
             # TODO try to set this during the initial plot rather than after
-            if bench_cfg.over_time:
-                for ax in fg.axes.flatten():
-                    for tick in ax.get_xticklabels():
-                        tick.set_rotation(45)
+            for ax in fg.axes.flatten():
+                for tick in ax.get_xticklabels():
+                    tick.set_rotation(45)
 
             fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
             fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
