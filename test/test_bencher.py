@@ -14,7 +14,6 @@ from diskcache import Cache
 
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from bencher import Bench, BenchCfg, BenchRunCfg, BenchPlotter
-import bencher as bch
 
 
 def get_hash_isolated_process() -> bytes:
@@ -124,7 +123,7 @@ class TestBencher(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(cfg1.hash_custom(), cfg2.hash_custom())
+        self.assertEqual(cfg1.hash_custom(True), cfg2.hash_custom(True))
 
     def test_bench_cfg_hash_isolated(self):
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
