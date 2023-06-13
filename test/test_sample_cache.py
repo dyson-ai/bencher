@@ -18,24 +18,23 @@ class TestSampleCache(unittest.TestCase):
         )
 
     def test_sample_cache(self):
-        """The sample cache function needs to be run twice because the first time run can pass when there is no cache, but will fail the second time when a cache exists"""
+        """The sample cache function needs to be run twice because the first run can pass when there is no cache, but will fail the second time when the cache exists"""
         self.sample_cache()
         self.sample_cache()
 
     def sample_cache(self):
-        """This checks the b"""
         run_cfg = bch.BenchRunCfg()
         run_cfg.repeats = 1
 
         run_cfg.clear_sample_cache = True
-        run_cfg.use_sample_cache = True  # this will store the result of of every call
+        run_cfg.use_sample_cache = True  # this will store the result of every call
 
         instance = UnreliableClass()
         instance.trigger_crash = True
 
         bencher = bch.Bench("example_sample_cache", instance.crashy_fn)
 
-        # the benchmark is set up to clear the previous sample cache and to cache the intermedite results from each benchmark sample.  It will throw an exception becuase the class has been set up to crash after the 2nd sample
+        # the benchmark is set up to clear the previous sample cache and to cache the intermediate results from each benchmark sample.  It will throw an exception because the class has been set up to crash after the 2nd sample
         with self.assertRaises(RuntimeError):
             self.call_bencher(bencher, run_cfg)
 
@@ -58,10 +57,10 @@ class TestSampleCache(unittest.TestCase):
         self.assertEqual(bencher.worker_wrapper_call_count, 4)
         # the fn_call count should be 2 because 2 values were left uncalculated
         self.assertEqual(bencher.worker_fn_call_count, 2)
-        # the cache call count should be 2 because 2 values were successfull calculated last time (3rd one crashed before the result was stored)
+        # the cache call count should be 2 because 2 values were successfully calculated last time (3rd one crashed before the result was stored)
         self.assertEqual(bencher.worker_cache_call_count, 2)
 
-        # now increase the number of repeats to 2.  This will use the previously calculated values for repeat 1 and only calculate the new values
+        # now increase the number of repeats to 2.  This will use the previously calculated values for repeat 1 and only calculate the new values for repeat=2
         run_cfg.repeats = 2
         bencher.clear_call_counts()
         self.call_bencher(bencher, run_cfg)
@@ -87,7 +86,7 @@ class TestSampleCache(unittest.TestCase):
         # sample cache is cleared so no values from the cache
         self.assertEqual(bencher.worker_cache_call_count, 0)
 
-        # check that the previous benchmark still has the cached values, and they were not cleared by clearing the sample cache of an unrelated benchmark
+        # check that the previous benchmark still has the cached values, and that they were not removed by clearing the sample cache of an unrelated benchmark
 
         run_cfg.clear_sample_cache = False
         bencher.clear_call_counts()
@@ -97,5 +96,5 @@ class TestSampleCache(unittest.TestCase):
         self.assertEqual(bencher.worker_wrapper_call_count, 8)
         # all the results should be in the cache and not been cleared by the previous clear_sample_cache=True call because this is a different benchmark
         self.assertEqual(bencher.worker_fn_call_count, 0)
-        # all results already in the cache
+        # all 8 previously calculated results already in the cache
         self.assertEqual(bencher.worker_cache_call_count, 8)
