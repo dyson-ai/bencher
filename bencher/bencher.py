@@ -198,10 +198,12 @@ class Bench(BenchPlotServer):
 
         bench_cfg_hash = bench_cfg.hash_custom()
 
-        if bench_cfg.use_sample_cache:
+        if bench_cfg.use_sample_cache and self.sample_cache is None:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
             if bench_cfg.clear_sample_cache:
-                self.sample_cache.evict(bench_cfg_hash)
+                logging.info(f"clearing the sample cache for bench_cfg_hash: {bench_cfg_hash}")
+                removed_vals = self.sample_cache.evict(bench_cfg_hash)
+                logging.info(f"removed: {removed_vals} items from the cache")
 
         calculate_results = True
         with Cache("cachedir/benchmark_inputs") as c:
@@ -420,6 +422,7 @@ class Bench(BenchPlotServer):
         return extra_vars
 
     def worker_wrapper(self, function_input: dict):
+        self.worker_fn_call_count += 1
         function_input.pop("repeat")
         if "over_time" in function_input:
             function_input.pop("over_time")
@@ -469,6 +472,7 @@ class Bench(BenchPlotServer):
             if function_input_signature in self.sample_cache:
                 logging.info("Found a previously calculated value in the sample cache")
                 result = self.sample_cache[function_input_signature]
+                self.worker_cache_call_count += 1
             else:
                 logging.info("Sample cache values Not Found, calling benchmark function")
                 result = self.worker_wrapper(function_input)
