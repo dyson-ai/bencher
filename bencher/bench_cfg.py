@@ -178,11 +178,21 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     use_cache: bool = param.Boolean(
         False,
-        doc=" If true, before calling the objective function, the sampler will check if these inputs have been calculated before and if so load them from the cache. Beware depending on how you change code in the objective function, the cache could provide values that are not correct.",
+        doc="This is a benchmark level cache that stores the results of a fully completed benchmark. At the end of a benchmark the values are added to the cache but are not if the benchmark does not complete.  If you want to cache values during the benchmark you need to use the use_sample_cache option. Beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
 
     clear_cache: bool = param.Boolean(
         False, doc=" Clear the cache of saved input->output mappings."
+    )
+
+    use_sample_cache: bool = param.Boolean(
+        False,
+        doc="If true, every time the benchmark function is called, bencher will check if that value has been calculated before and if so load the from the cache.  Note that the sample level cache is different from the benchmark level cache which only caches the aggregate of all the results at the end of the benchmark. This cache lets you stop a benchmark halfway through and continue. However, beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
+    )
+
+    clear_sample_cache: bool = param.Boolean(
+        False,
+        doc="Clears the per-sample cache.  Use this if you get unexpected behavior.  The per_sample cache is tagged by the specific benchmark it was sampled from. So clearing the cache of one benchmark will not clear the cache of other benchmarks.",
     )
 
     only_plot: bool = param.Boolean(
@@ -318,17 +328,25 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
-    def hash_custom(self):
-        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
+    def hash_custom(self, include_repeats):
+        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
+
+        Args:
+            include_repeats (bool) : by default include repeats as part of the hash execpt with using the
+        """
+
+        if include_repeats:
+            # needed so that the historical xarray arrays are the same size
+            repeats_hash = hash_cust(self.repeats)
+        else:
+            repeats_hash = 0
 
         hash_val = hash_cust(
             (
                 hash_cust(str(self.bench_name)),
                 hash_cust(str(self.title)),
                 hash_cust(self.over_time),
-                hash_cust(
-                    self.repeats
-                ),  # needed so that the historical xarray arrays are the same size
+                repeats_hash,
                 hash_cust(self.debug),
             )
         )
