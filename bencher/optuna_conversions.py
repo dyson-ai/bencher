@@ -179,7 +179,7 @@ def sweep_var_to_optuna_dist(var: param.Parameter) -> optuna.distributions.BaseD
         return optuna.distributions.CategoricalDistribution(var.objects)
     elif iv_type == BoolSweep:
         return optuna.distributions.CategoricalDistribution([False, True])
-    if iv_type == TimeSnapshot:
+    elif iv_type == TimeSnapshot:
         # return optuna.distributions.IntDistribution(0, sys.maxsize)
         return optuna.distributions.FloatDistribution(0, 1e20)
         # return optuna.distributions.CategoricalDistribution([])
