@@ -3,12 +3,11 @@
 You can define a subclass which contains an input configuration which can be passed to a function in a type safe way. You can combine the subclass with a higher level class which contains more configuation parameters.  This is to help manage the complexity of large configuration/parameter spaces. 
 """
 
-
-from strenum import StrEnum
-from enum import auto
-
 import math
 import random
+from enum import auto
+from strenum import StrEnum
+
 
 from bencher.bench_vars import (
     ParametrizedSweep,
