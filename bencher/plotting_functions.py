@@ -273,11 +273,11 @@ def plot_surface_plotly(
             xaxis_title=xr_cfg.xlabel,
             yaxis_title=xr_cfg.ylabel,
             zaxis_title=xr_cfg.zlabel,
-            camera=dict(eye=dict(x=eye_dis, y=eye_dis, z=eye_dis)),
+            camera={"eye":{"x":eye_dis, "y":eye_dis, "z":eye_dis}},
         ),
     )
 
-    fig = dict(data=surfaces, layout=layout)
+    fig = {"data":surfaces, "layout":layout}
 
     return pn.pane.Plotly(fig)
 
