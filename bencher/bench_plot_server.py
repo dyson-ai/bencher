@@ -10,8 +10,10 @@ from bencher.bench_cfg import BenchPlotSrvCfg, BenchCfg
 
 logging.basicConfig(level=logging.INFO)
 
+
 class BenchPlotServer:
     """A server for display plots of benchmark results"""
+
     def __init__(self) -> None:
         """Create a new BenchPlotServer object"""
 
@@ -53,11 +55,13 @@ class BenchPlotServer:
                 for bench_cfg_hash in bench_cfg_hashes:
                     # load the results based on the hash retrieved from the benchmark name
                     if bench_cfg_hash in cache:
-                        logging.info(f"loading cached results from key: {bench_cfg_hash}")
+                        logging.info(
+                            f"loading cached results from key: {bench_cfg_hash}")
                         bench_cfg = cache[bench_cfg_hash]
                         logging.info(f"loaded: {bench_cfg.title}")
 
-                        plots_instance = BenchPlotter.plot(bench_cfg, plots_instance)
+                        plots_instance = BenchPlotter.plot(
+                            bench_cfg, plots_instance)
                     else:
                         raise FileNotFoundError(
                             "The benchmarks have been run and saved, but the specific results you are trying to load do not exist.  This should not happen and could be because the cache was cleared."
@@ -79,7 +83,8 @@ class BenchPlotServer:
         """
 
         if port is not None:
-            pn.serve(plots_instance, title=bench_name, websocket_origin=["*"], port=port)
+            pn.serve(plots_instance, title=bench_name,
+                     websocket_origin=["*"], port=port)
         else:
             logging.getLogger().setLevel(logging.WARNING)
             pn.serve(plots_instance, title=bench_name)
