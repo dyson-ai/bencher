@@ -3,6 +3,7 @@ import bencher as bch
 
 class InputCfg(bch.ParametrizedSweep):
     """An example of a datatype with an integer and float parameter"""
+
     x = bch.FloatSweep(
         sample_values=[2, 3, 4, 7, 8, 9],
         doc="An example of a user defines set of sweep values",
@@ -32,8 +33,7 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench("benchmarking_example_custom_sweep",
-                        benchmark_fn, InputCfg)
+    bencher = bch.Bench("benchmarking_example_custom_sweep", benchmark_fn, InputCfg)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
 
