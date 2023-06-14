@@ -175,7 +175,7 @@ def sweep_var_to_optuna_dist(var: param.Parameter) -> optuna.distributions.BaseD
         return optuna.distributions.IntDistribution(var.bounds[0], var.bounds[1])
     elif iv_type == FloatSweep:
         return optuna.distributions.FloatDistribution(var.bounds[0], var.bounds[1])
-    elif iv_type in( EnumSweep , StringSweep):
+    elif iv_type in (EnumSweep, StringSweep):
         return optuna.distributions.CategoricalDistribution(var.objects)
     elif iv_type == BoolSweep:
         return optuna.distributions.CategoricalDistribution([False, True])
@@ -185,8 +185,8 @@ def sweep_var_to_optuna_dist(var: param.Parameter) -> optuna.distributions.BaseD
         # return optuna.distributions.CategoricalDistribution([])
     # elif iv_type == TimeEvent:
     #     pass
-        # return optuna.distributions.CategoricalDistribution(["now"])
-   
+    # return optuna.distributions.CategoricalDistribution(["now"])
+
     raise ValueError(f"This input type {iv_type} is not supported")
 
 
@@ -209,7 +209,7 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
         return trial.suggest_int(iv.name, iv.bounds[0], iv.bounds[1])
     elif iv_type == FloatSweep:
         return trial.suggest_float(iv.name, iv.bounds[0], iv.bounds[1])
-    elif iv_type in ( EnumSweep ,StringSweep):
+    elif iv_type in (EnumSweep, StringSweep):
         return trial.suggest_categorical(iv.name, iv.objects)
     elif iv_type == TimeSnapshot:
         pass  # optuna does not like time
@@ -217,7 +217,7 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
         pass  # optuna does not like time
     elif iv_type == BoolSweep:
         return trial.suggest_categorical(iv.name, [True, False])
-    
+
     raise ValueError(f"This input type {iv_type} is not supported")
 
 

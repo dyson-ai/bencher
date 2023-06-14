@@ -272,11 +272,11 @@ def plot_surface_plotly(
             xaxis_title=xr_cfg.xlabel,
             yaxis_title=xr_cfg.ylabel,
             zaxis_title=xr_cfg.zlabel,
-            camera={"eye":{"x":eye_dis, "y":eye_dis, "z":eye_dis}},
+            camera={"eye": {"x": eye_dis, "y": eye_dis, "z": eye_dis}},
         ),
     )
 
-    fig = {"data":surfaces, "layout":layout}
+    fig = {"data": surfaces, "layout": layout}
 
     return pn.pane.Plotly(fig)
 
@@ -323,7 +323,7 @@ def plot_surface_holo(
         std_dev = da.std("repeat")
         upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
         lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        return surface * upper * lower    
+        return surface * upper * lower
     return surface
 
 
