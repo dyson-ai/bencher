@@ -216,7 +216,7 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
     if iv_type == TimeEvent:
         pass  # optuna does not like time
     if iv_type == BoolSweep:
-        return trial.suggest_categorical(iv.name, [True, False])    
+        return trial.suggest_categorical(iv.name, [True, False])
     raise ValueError(f"This input type {iv_type} is not supported")
 
 
