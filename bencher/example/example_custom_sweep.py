@@ -32,7 +32,8 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench("benchmarking_example_custom_sweep", benchmark_fn, InputCfg)
+    bencher = bch.Bench("benchmarking_example_custom_sweep",
+                        benchmark_fn, InputCfg)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
 
