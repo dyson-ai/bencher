@@ -78,44 +78,43 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
         else:
             plot = ds.to(hv.Bars) * ds.to(hv.Scatter).opts(jitter=50)
         return plot
-    else:
-        plt.rcParams.update({"figure.max_open_warning": 0})
+    plt.rcParams.update({"figure.max_open_warning": 0})
 
-        # if type(rv) == ResultVec:
-        # return plot_scatter_sns(bench_cfg, rv)
-        # else:
+    # if type(rv) == ResultVec:
+    # return plot_scatter_sns(bench_cfg, rv)
+    # else:
 
-        if type(rv) == ResultVec:
-            if rv.size == 2:
-                plt.figure(figsize=(4, 4))
-                fg = plot_scatter2D_sns(bench_cfg, rv)
-            elif rv.size == 3:
-                return plot_scatter3D_px(bench_cfg, rv)
-            else:
-                return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
+    if type(rv) == ResultVec:
+        if rv.size == 2:
+            plt.figure(figsize=(4, 4))
+            fg = plot_scatter2D_sns(bench_cfg, rv)
+        elif rv.size == 3:
+            return plot_scatter3D_px(bench_cfg, rv)
         else:
-            df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
+            return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
+    else:
+        df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
 
-            try:
-                fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
-            except Exception as e:
-                return pn.pane.Markdown(
-                    f"Was not able to plot becuase of exception:{e} \n this is likely due to too many NAN values"
-                )
+        try:
+            fg = sns_cfg.plot_callback(data=df, **sns_cfg.as_sns_args())
+        except Exception as e:
+            return pn.pane.Markdown(
+                f"Was not able to plot becuase of exception:{e} \n this is likely due to too many NAN values"
+            )
 
-            # TODO try to set this during the initial plot rather than after
-            for ax in fg.axes.flatten():
-                for tick in ax.get_xticklabels():
-                    tick.set_rotation(45)
+        # TODO try to set this during the initial plot rather than after
+        for ax in fg.axes.flatten():
+            for tick in ax.get_xticklabels():
+                tick.set_rotation(45)
 
-            fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
-            fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
-        fg.fig.suptitle(sns_cfg.title)
-        plt.tight_layout()
+        fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
+        fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+    fg.fig.suptitle(sns_cfg.title)
+    plt.tight_layout()
 
-        if bench_cfg.save_fig:
-            save_fig(bench_cfg, sns_cfg)
-        return pn.panel(plt.gcf())
+    if bench_cfg.save_fig:
+        save_fig(bench_cfg, sns_cfg)
+    return pn.panel(plt.gcf())
 
 
 def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
@@ -273,11 +272,11 @@ def plot_surface_plotly(
             xaxis_title=xr_cfg.xlabel,
             yaxis_title=xr_cfg.ylabel,
             zaxis_title=xr_cfg.zlabel,
-            camera=dict(eye=dict(x=eye_dis, y=eye_dis, z=eye_dis)),
+            camera={"eye": {"x": eye_dis, "y": eye_dis, "z": eye_dis}},
         ),
     )
 
-    fig = dict(data=surfaces, layout=layout)
+    fig = {"data": surfaces, "layout": layout}
 
     return pn.pane.Plotly(fig)
 
@@ -325,8 +324,7 @@ def plot_surface_holo(
         upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
         lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
         return surface * upper * lower
-    else:
-        return surface
+    return surface
 
 
 def plot_volume_plotly(
