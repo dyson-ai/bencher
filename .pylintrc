@@ -6,6 +6,6 @@ max-line-length=100
 disable=
   C,R,
   logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,
-  too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,no-else-return
+  too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal
 
 enable=no-else-return,consider-using-in
