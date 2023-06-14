@@ -115,7 +115,7 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
 
         if bench_cfg.save_fig:
             save_fig(bench_cfg, sns_cfg)
-        return pn.panel(plt.gcf())
+    return pn.panel(plt.gcf())
 
 
 def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
@@ -324,9 +324,8 @@ def plot_surface_holo(
         std_dev = da.std("repeat")
         upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
         lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        return surface * upper * lower
-    else:
-        return surface
+        return surface * upper * lower    
+    return surface
 
 
 def plot_volume_plotly(

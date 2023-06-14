@@ -65,10 +65,9 @@ class BenchPlotServer:
                             "The benchmarks have been run and saved, but the specific results you are trying to load do not exist.  This should not happen and could be because the cache was cleared."
                         )
                 return plots_instance
-            else:
-                raise FileNotFoundError(
-                    "This benchmark name does not exist in the results cache. Was not able to load the results to plot!  Make sure to run the bencher to generate and save results to the cache"
-                )
+        raise FileNotFoundError(
+            "This benchmark name does not exist in the results cache. Was not able to load the results to plot!  Make sure to run the bencher to generate and save results to the cache"
+        )
 
     def serve(self, bench_name: str, plots_instance: List[pn.panel], port: int = None) -> None:
         """Launch a panel server to view results

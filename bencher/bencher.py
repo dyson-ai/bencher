@@ -441,7 +441,7 @@ class Bench(BenchPlotServer):
             for k, v in function_input.items():
                 input_cfg.param.set_param(k, v)
 
-            return self.worker(input_cfg)
+        return self.worker(input_cfg)
 
     def call_worker_and_store_results(
         self,
