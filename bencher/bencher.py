@@ -436,7 +436,7 @@ class Bench(BenchPlotServer):
 
         if self.worker_input_cfg is None:  # worker takes kwargs
             return self.worker(**function_input)
-        
+
         # worker takes a parametrised input object
         input_cfg = self.worker_input_cfg()
         for k, v in function_input.items():
