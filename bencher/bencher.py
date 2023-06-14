@@ -139,6 +139,7 @@ class Bench(BenchPlotServer):
         time_src: datetime = None,
         description: str = None,
         post_description: str = None,
+        pass_repeat: bool = False,
         run_cfg: BenchRunCfg = None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
@@ -152,7 +153,7 @@ class Bench(BenchPlotServer):
             post_description (str, optional): A description that comes after the benchmark plots. Defaults to None.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
             time_src (datetime, optional): Set a time that the result was generated. Defaults to datetime.now().
-
+            pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if you want the benchmark function to be passed the repeat number
 
         Raises:
             ValueError: If a result variable is not set
@@ -193,6 +194,7 @@ class Bench(BenchPlotServer):
             description=description,
             post_description=post_description,
             title=title,
+            pass_repeat=pass_repeat,
         )
         bench_cfg.param.update(run_cfg.param.values())
 
@@ -426,9 +428,10 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
-    def worker_wrapper(self, function_input: dict):
+    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict):
         self.worker_fn_call_count += 1
-        function_input.pop("repeat")
+        if not bench_cfg.pass_repeat:
+            function_input.pop("repeat")
         if "over_time" in function_input:
             function_input.pop("over_time")
         if "time_event" in function_input:
@@ -485,10 +488,10 @@ class Bench(BenchPlotServer):
                 self.worker_cache_call_count += 1
             else:
                 logging.info("Sample cache values Not Found, calling benchmark function")
-                result = self.worker_wrapper(function_input)
+                result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(function_input_signature, result, tag=bench_sample_hash)
         else:
-            result = self.worker_wrapper(function_input)
+            result = self.worker_wrapper(bench_cfg, function_input)
 
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
