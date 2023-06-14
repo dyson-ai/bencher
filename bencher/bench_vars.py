@@ -153,7 +153,7 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug) -> list[bool]:
+    def values(self, debug) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return [True, False]
@@ -497,7 +497,7 @@ class ResultVec(param.List):
             index = idx
         return f"{self.name}_{index}"
 
-    def index_names(self) -> list[str]:
+    def index_names(self) -> List[str]:
         """Returns a list of all the xarray column names for the result vector
 
         Returns:
