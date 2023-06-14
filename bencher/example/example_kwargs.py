@@ -17,7 +17,7 @@ def bench_function(
     **kwargs  # pylint: disable=unused-argument
 ) -> dict:
     """All the other examples use classes and parameters to define the inputs and outputs to the function. However it makes the code less flexible when integrating with other systems, so this example shows a more basic interface that accepts and returns dictionaries.  The classes still need to be defined however because that is how the sweep and plotting settings are calcuated"""
-    output = dict()
+    output = {}
 
     if trig_func == "sin":
         output["voltage"] = offset + math.sin(theta) * scale
