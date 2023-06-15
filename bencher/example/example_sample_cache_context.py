@@ -26,7 +26,7 @@ def assert_call_counts(bencher, run_cfg, wrapper_calls=-1, fn_calls=-1, cache_ca
     print("worker fn call count", bencher.worker_fn_call_count)
     print("worker cache call count", bencher.worker_cache_call_count)
     assert bencher.worker_wrapper_call_count == wrapper_calls * run_cfg.repeats
-    assert bencher.worker_fn_call_count == fn_calls*run_cfg.repeats
+    assert bencher.worker_fn_call_count == fn_calls * run_cfg.repeats
     assert bencher.worker_cache_call_count == cache_calls * run_cfg.repeats
 
 
