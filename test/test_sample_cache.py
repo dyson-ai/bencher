@@ -1,6 +1,7 @@
 import unittest
 import bencher as bch
 from bencher.example.example_sample_cache import UnreliableClass
+from bencher.example.example_sample_cache_context import example_cache_context
 
 
 class TestSampleCache(unittest.TestCase):
@@ -51,7 +52,8 @@ class TestSampleCache(unittest.TestCase):
 
         # clear the call counts from the previous run
         bencher.clear_call_counts()
-        self.call_bencher(bencher, run_cfg)  # this will calculate the remaining values
+        # this will calculate the remaining values
+        self.call_bencher(bencher, run_cfg)
 
         # the wrapped call count should be 4 because there are 4 samples
         self.assertEqual(bencher.worker_wrapper_call_count, 4)
@@ -98,3 +100,8 @@ class TestSampleCache(unittest.TestCase):
         self.assertEqual(bencher.worker_fn_call_count, 0)
         # all 8 previously calculated results already in the cache
         self.assertEqual(bencher.worker_cache_call_count, 8)
+
+    def test_sample_cache_context(self):
+        """The sample cache function needs to be run twice because the first run can pass when there is no cache, but will fail the second time when the cache exists"""
+        example_cache_context()
+        example_cache_context()

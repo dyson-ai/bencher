@@ -1,3 +1,4 @@
+import panel as pn
 import logging
 from datetime import datetime
 import xarray as xr
@@ -6,6 +7,7 @@ from itertools import product
 from typing import Callable, List
 from diskcache import Cache
 import param
+from sortedcontainers import SortedDict
 
 from bencher.bench_vars import (
     IntSweep,
@@ -27,9 +29,6 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
 for handler in logging.root.handlers:
     handler.setFormatter(formatter)
-
-
-import panel as pn
 
 
 def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> xr.DataArray:
@@ -112,7 +111,8 @@ class Bench(BenchPlotServer):
         self.set_worker(worker, worker_input_cfg)
 
         self.plots_instance = pn.Tabs(tabs_location="left", name=self.bench_name)
-        self.worker_wrapper_call_count = 0  # The number of times the wrapped worker was called
+        # The number of times the wrapped worker was called
+        self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
         # The number of times the cache was used instead of the raw worker
         self.worker_cache_call_count = 0
@@ -174,7 +174,8 @@ class Bench(BenchPlotServer):
         for i in result_vars:
             self.check_var_is_a_param(i, "result")
         for i in const_vars:
-            self.check_var_is_a_param(i[0], "const")  # consts come as tuple pairs
+            # consts come as tuple pairs
+            self.check_var_is_a_param(i[0], "const")
 
         if post_description is None:
             post_description = (
@@ -233,7 +234,9 @@ class Bench(BenchPlotServer):
         if calculate_results:
             if run_cfg.time_event is not None:
                 time_src = run_cfg.time_event
-            bench_cfg = self.calculate_benchmark_results(bench_cfg, time_src, bench_cfg_sample_hash)
+            bench_cfg = self.calculate_benchmark_results(
+                bench_cfg, time_src, bench_cfg_sample_hash, run_cfg
+            )
             if self.sample_cache is not None:
                 self.sample_cache.close()
 
@@ -272,7 +275,9 @@ class Bench(BenchPlotServer):
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
-    def calculate_benchmark_results(self, bench_cfg, time_src: datetime | str, bench_cfg_hash):
+    def calculate_benchmark_results(
+        self, bench_cfg, time_src: datetime | str, bench_cfg_hash, bench_run_cfg
+    ):
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
         Args:
@@ -294,6 +299,7 @@ class Bench(BenchPlotServer):
                 dims_name,
                 constant_inputs,
                 bench_cfg_hash,
+                bench_run_cfg,
             )
             callcount += 1
 
@@ -455,6 +461,7 @@ class Bench(BenchPlotServer):
         dims_name: List[str],
         constant_inputs: dict,
         bench_sample_hash,
+        bench_run_cfg,
     ) -> None:
         """A wrapper around the benchmarking function to set up and store the results of the benchmark function
 
@@ -478,19 +485,38 @@ class Bench(BenchPlotServer):
 
         if bench_cfg.use_sample_cache and self.sample_cache is not None:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
-            function_input_signature = hash_cust(
-                (list(zip(dims_name, function_input_vars)), bench_sample_hash)
+            fn_inputs_sorted = list(SortedDict(function_input).items())
+            function_input_signature_pure = hash_cust(fn_inputs_sorted)
+
+            function_input_signature_benchmark_context = hash_cust(
+                (function_input_signature_pure, bench_sample_hash)
             )
-            if function_input_signature in self.sample_cache:
+            print("inputs", fn_inputs_sorted)
+            print("pure", function_input_signature_pure)
+            if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
-                    f"Found a previously calculated value in the sample cache {bench_sample_hash}"
+                    f"Found a previously calculated value in the sample cache with the benchmark context: {bench_sample_hash}"
                 )
-                result = self.sample_cache[function_input_signature]
+                result = self.sample_cache[function_input_signature_benchmark_context]
+                self.worker_cache_call_count += 1
+            elif (
+                not bench_run_cfg.sample_cache_include_bench_context
+                and function_input_signature_pure in self.sample_cache
+            ):
+                logging.info(
+                    f"A value including the benchmark context was not found: {bench_sample_hash}, but the function has been called with these inputs before so loading those values from the hash.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
+                )
+                result = self.sample_cache[function_input_signature_pure]
                 self.worker_cache_call_count += 1
             else:
-                logging.info("Sample cache values Not Found, calling benchmark function")
+                logging.info(
+                    "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
+                )
                 result = self.worker_wrapper(bench_cfg, function_input)
-                self.sample_cache.set(function_input_signature, result, tag=bench_sample_hash)
+                self.sample_cache.set(
+                    function_input_signature_benchmark_context, result, tag=bench_sample_hash
+                )
+                self.sample_cache.set(function_input_signature_pure, result, tag=bench_sample_hash)
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
@@ -555,6 +581,7 @@ class Bench(BenchPlotServer):
             logging.info(bench_cfg.ds.to_dataframe())
 
     def clear_call_counts(self) -> None:
+        """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0

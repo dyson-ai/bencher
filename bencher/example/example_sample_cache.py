@@ -57,7 +57,8 @@ if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 1
 
-    ex_run_cfg.use_sample_cache = True  # this will store the result of of every call to crashy_fn
+    # this will store the result of of every call to crashy_fn
+    ex_run_cfg.use_sample_cache = True
     ex_run_cfg.clear_sample_cache = True
 
     try:
