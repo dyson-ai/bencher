@@ -331,6 +331,11 @@ class BenchCfg(BenchRunCfg):
         doc="If this config has results, true, otherwise used to store titles and other bench metadata",
     )
 
+    pass_repeat: bool = param.Boolean(
+        False,
+        doc="By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if you want the benchmark function to be passed the repeat number",
+    )
+
     ds = []
 
     def hash_custom(self, include_repeats):
