@@ -26,6 +26,7 @@ def example_cache_context() -> bch.Bench:
     run_cfg.use_sample_cache = True
     run_cfg.clear_sample_cache = True  # clear the first time
     run_cfg.sample_cache_include_bench_context = False
+    run_cfg.repeats = 2
 
     bencher = bch.Bench("bench_context", bench_function, Cfg)
 
@@ -36,8 +37,8 @@ def example_cache_context() -> bch.Bench:
         run_cfg=run_cfg,
     )
 
-    assert bencher.worker_wrapper_call_count == 1
-    assert bencher.worker_fn_call_count == 1
+    assert bencher.worker_wrapper_call_count == 1 * run_cfg.repeats
+    assert bencher.worker_fn_call_count == 1 * run_cfg.repeats
     assert bencher.worker_cache_call_count == 0
 
     bencher.clear_call_counts()
@@ -48,23 +49,23 @@ def example_cache_context() -> bch.Bench:
         run_cfg=run_cfg,
     )
 
-    assert bencher.worker_wrapper_call_count == 1
-    assert bencher.worker_fn_call_count == 1
+    assert bencher.worker_wrapper_call_count == 1 * run_cfg.repeats
+    assert bencher.worker_fn_call_count == 1 * run_cfg.repeats
     assert bencher.worker_cache_call_count == 0
 
     run_cfg.clear_sample_cache = False  # clear the first time
 
     bencher.clear_call_counts()
-    res = bencher.plot_sweep(
+    bencher.plot_sweep(
         title="Benchmark enum=[value_1,value_2] combined",
         input_vars=[Cfg.param.enum1],
         result_vars=[Cfg.param.result],
         run_cfg=run_cfg,
     )
 
-    assert bencher.worker_wrapper_call_count == 2
+    assert bencher.worker_wrapper_call_count == 2 * run_cfg.repeats
     assert bencher.worker_fn_call_count == 0
-    assert bencher.worker_cache_call_count == 2
+    assert bencher.worker_cache_call_count == 2 * run_cfg.repeats
 
     return bencher
 
