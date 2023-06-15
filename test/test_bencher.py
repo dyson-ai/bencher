@@ -123,7 +123,10 @@ class TestBencher(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(cfg1.hash_custom(True), cfg2.hash_custom(True))
+        self.assertEqual(
+            cfg1.hash_custom(include_repeats=True),
+            cfg2.hash_custom(include_repeats=True),
+        )
 
     def test_bench_cfg_hash_isolated(self):
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""

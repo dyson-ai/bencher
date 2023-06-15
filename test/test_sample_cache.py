@@ -16,6 +16,7 @@ class TestSampleCache(unittest.TestCase):
             description="""This example shows how to use the use_sample_cache option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashing during the run""",
             run_cfg=run_cfg,
             post_description="The input_val vs return value graph is a straigh line as expected and there is no record of the fact the benchmark crashed halfway through. The second graph shows that for values >1 the trigger_crash value had to be 0 in order to proceed",
+            tag="testing_tag3",
         )
 
     def test_sample_cache(self):
@@ -27,13 +28,14 @@ class TestSampleCache(unittest.TestCase):
         run_cfg = bch.BenchRunCfg()
         run_cfg.repeats = 1
 
-        run_cfg.clear_sample_cache = True
         run_cfg.use_sample_cache = True  # this will store the result of every call
+        run_cfg.only_hash_tag = True
 
         instance = UnreliableClass()
         instance.trigger_crash = True
 
         bencher = bch.Bench("example_sample_cache", instance.crashy_fn)
+        bencher.clear_tag("testing_tag3")
 
         # the benchmark is set up to clear the previous sample cache and to cache the intermediate results from each benchmark sample.  It will throw an exception because the class has been set up to crash after the 2nd sample
         with self.assertRaises(RuntimeError):
@@ -45,7 +47,6 @@ class TestSampleCache(unittest.TestCase):
         self.assertEqual(bencher.worker_cache_call_count, 0)
 
         # now turn off the clearing of the sample cache.  Previously calculated values will be used now
-        run_cfg.clear_sample_cache = False
 
         # turn off the trigger to crash so the remaining values can be calculated
         instance.trigger_crash = False
@@ -105,3 +106,6 @@ class TestSampleCache(unittest.TestCase):
         """The sample cache function needs to be run twice because the first run can pass when there is no cache, but will fail the second time when the cache exists"""
         example_cache_context()
         example_cache_context()
+
+
+# TestSampleCache().sample_cache()
