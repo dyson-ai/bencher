@@ -190,9 +190,9 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true, every time the benchmark function is called, bencher will check if that value has been calculated before and if so load the from the cache.  Note that the sample level cache is different from the benchmark level cache which only caches the aggregate of all the results at the end of the benchmark. This cache lets you stop a benchmark halfway through and continue. However, beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
 
-    sample_cache_include_bench_context: bool = param.Boolean(
-        True,
-        doc="By default when checking if a sample has been calculated before it includes the hash of the greater benchmarking context.  This is safer because it means that data generated from one benchmark will not affect data from another benchmark.  However, if you are careful it can be more flexible to ignore which benchmark generated the data and only use the direct inputs to a function to check if that data has been calculated before. ie, you can create two benchmarks that sample a subset of the problem during exploration, and then afterwards create a larger benchmark that covers the cases you already explored.  If this value is true, it the combined benchmark will notice that the values have been calculated before and immediatly return the data of the combined benchmarks",
+    only_hash_tag: bool = param.Boolean(
+        False,
+        doc="By default when checking if a sample has been calculated before it includes the hash of the greater benchmarking context.  This is safer because it means that data generated from one benchmark will not affect data from another benchmark.  However, if you are careful it can be more flexible to ignore which benchmark generated the data and only use the tag hash to check if that data has been calculated before. ie, you can create two benchmarks that sample a subset of the problem during exploration and give them the same tag, and then afterwards create a larger benchmark that covers the cases you already explored.  If this value is true, the combined benchmark will use any data from other benchmarks with the same tag.",
     )
 
     clear_sample_cache: bool = param.Boolean(
@@ -336,13 +336,18 @@ class BenchCfg(BenchRunCfg):
         doc="By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if you want the benchmark function to be passed the repeat number",
     )
 
+    tag: str = param.String(
+        "",
+        doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from eachother and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with eachother based only on the tag value.",
+    )
+
     ds = []
 
     def hash_custom(self, include_repeats):
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
         Args:
-            include_repeats (bool) : by default include repeats as part of the hash execpt with using the
+            include_repeats (bool) : by default include repeats as part of the hash execpt with using the sample cache
         """
 
         if include_repeats:
@@ -358,6 +363,7 @@ class BenchCfg(BenchRunCfg):
                 hash_cust(self.over_time),
                 repeats_hash,
                 hash_cust(self.debug),
+                hash_cust(self.tag),
             )
         )
         all_vars = self.input_vars + self.result_vars

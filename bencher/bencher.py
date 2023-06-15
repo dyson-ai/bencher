@@ -140,6 +140,7 @@ class Bench(BenchPlotServer):
         description: str = None,
         post_description: str = None,
         pass_repeat: bool = False,
+        tag: str = "",
         run_cfg: BenchRunCfg = None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
@@ -151,9 +152,12 @@ class Bench(BenchPlotServer):
             title (str, optional): The title of the benchmark. Defaults to None.
             description (str, optional): A description of the benchmark. Defaults to None.
             post_description (str, optional): A description that comes after the benchmark plots. Defaults to None.
-            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
             time_src (datetime, optional): Set a time that the result was generated. Defaults to datetime.now().
-            pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if you want the benchmark function to be passed the repeat number
+            pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if
+            you want the benchmark function to be passed the repeat number
+            tag (str,optional): Use tags to group different benchmarks together.
+            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
+
 
         Raises:
             ValueError: If a result variable is not set
@@ -196,21 +200,19 @@ class Bench(BenchPlotServer):
             post_description=post_description,
             title=title,
             pass_repeat=pass_repeat,
+            tag=tag,
         )
         bench_cfg.param.update(run_cfg.param.values())
 
         bench_cfg_hash = bench_cfg.hash_custom(True)
+
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
         bench_cfg_sample_hash = bench_cfg.hash_custom(False)
 
         if bench_cfg.use_sample_cache:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
             if bench_cfg.clear_sample_cache:
-                logging.info(
-                    f"clearing the sample cache for bench_cfg_hash: {bench_cfg_sample_hash}"
-                )
-                removed_vals = self.sample_cache.evict(bench_cfg_sample_hash)
-                logging.info(f"removed: {removed_vals} items from the cache")
+                self.clear_tag(bench_cfg.tag)
 
         calculate_results = True
         with Cache("cachedir/benchmark_inputs") as c:
@@ -276,7 +278,7 @@ class Bench(BenchPlotServer):
             c[self.bench_name] = self.bench_cfg_hashes
 
     def calculate_benchmark_results(
-        self, bench_cfg, time_src: datetime | str, bench_cfg_hash, bench_run_cfg
+        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
     ):
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
@@ -298,7 +300,7 @@ class Bench(BenchPlotServer):
                 function_input_vars,
                 dims_name,
                 constant_inputs,
-                bench_cfg_hash,
+                bench_cfg_sample_hash,
                 bench_run_cfg,
             )
             callcount += 1
@@ -460,7 +462,7 @@ class Bench(BenchPlotServer):
         function_input_vars: List,
         dims_name: List[str],
         constant_inputs: dict,
-        bench_sample_hash,
+        bench_cfg_sample_hash,
         bench_run_cfg,
     ) -> None:
         """A wrapper around the benchmarking function to set up and store the results of the benchmark function
@@ -483,28 +485,25 @@ class Bench(BenchPlotServer):
             for k, v in function_input.items():
                 logging.info(f"\t {k}:{v}")
 
-        if bench_cfg.use_sample_cache and self.sample_cache is not None:
+        if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_cust(fn_inputs_sorted)
+            function_input_signature_pure = hash_cust((fn_inputs_sorted, bench_cfg.tag))
 
             function_input_signature_benchmark_context = hash_cust(
-                (function_input_signature_pure, bench_sample_hash)
+                (function_input_signature_pure, bench_cfg_sample_hash)
             )
             print("inputs", fn_inputs_sorted)
             print("pure", function_input_signature_pure)
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
-                    f"Found a previously calculated value in the sample cache with the benchmark context: {bench_sample_hash}"
+                    f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
                 )
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif (
-                not bench_run_cfg.sample_cache_include_bench_context
-                and function_input_signature_pure in self.sample_cache
-            ):
+            elif bench_run_cfg.only_hash_tag and function_input_signature_pure in self.sample_cache:
                 logging.info(
-                    f"A value including the benchmark context was not found: {bench_sample_hash}, but the function has been called with these inputs before so loading those values from the hash.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
+                    f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
                 result = self.sample_cache[function_input_signature_pure]
                 self.worker_cache_call_count += 1
@@ -514,9 +513,9 @@ class Bench(BenchPlotServer):
                 )
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
-                    function_input_signature_benchmark_context, result, tag=bench_sample_hash
+                    function_input_signature_benchmark_context, result, tag=bench_cfg.tag
                 )
-                self.sample_cache.set(function_input_signature_pure, result, tag=bench_sample_hash)
+                self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
@@ -542,6 +541,17 @@ class Bench(BenchPlotServer):
                             set_xarray_multidim(
                                 bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
                             )
+
+    def clear_tag(self, tag: str):
+        """Clear all samples from the cache that match a tag
+        Args:
+            tag(str): clear samples with this tag
+        """
+        if self.sample_cache is None:
+            self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
+        logging.info(f"clearing the sample cache for tag: {tag}")
+        removed_vals = self.sample_cache.evict(tag)
+        logging.info(f"removed: {removed_vals} items from the cache")
 
     def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
         """Adds variable metadata to the xrarry so that it can be used to automatically plot the dimension units etc.
