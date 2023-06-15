@@ -64,8 +64,8 @@ def example_cache_context() -> bch.Bench:
     )
 
     assert bencher.worker_wrapper_call_count == 2 * run_cfg.repeats
-    print("worker fn call count",bencher.worker_fn_call_count)
-    print("worker cache call count",bencher.worker_cache_call_count)
+    print("worker fn call count", bencher.worker_fn_call_count)
+    print("worker cache call count", bencher.worker_cache_call_count)
 
     assert bencher.worker_fn_call_count == 0
     assert bencher.worker_cache_call_count == 2 * run_cfg.repeats

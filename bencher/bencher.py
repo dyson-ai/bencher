@@ -491,8 +491,8 @@ class Bench(BenchPlotServer):
             function_input_signature_benchmark_context = hash_cust(
                 (function_input_signature_pure, bench_sample_hash)
             )
-            print("inputs",fn_inputs_sorted)
-            print("pure",function_input_signature_pure)
+            print("inputs", fn_inputs_sorted)
+            print("pure", function_input_signature_pure)
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
                     f"Found a previously calculated value in the sample cache with the benchmark context: {bench_sample_hash}"
