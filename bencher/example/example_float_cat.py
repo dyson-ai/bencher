@@ -1,3 +1,4 @@
+"""Example of how to perform a parameter sweep for categorical variables"""
 from bencher import Bench, BenchRunCfg
 
 # All the examples will be using the data structures and benchmark function defined in this file
@@ -5,7 +6,7 @@ from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut
 
 
 def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
-    """Example of how to perform a parameter sweep for floating point variables
+    """Example of how to perform a parameter sweep for categorical variables
 
     Args:
         run_cfg (BenchRunCfg): configuration of how to perform the param sweep
