@@ -190,6 +190,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true, every time the benchmark function is called, bencher will check if that value has been calculated before and if so load the from the cache.  Note that the sample level cache is different from the benchmark level cache which only caches the aggregate of all the results at the end of the benchmark. This cache lets you stop a benchmark halfway through and continue. However, beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
 
+    sample_cache_include_bench_context: bool = param.Boolean(
+        True,
+        doc="By default when checking if a sample has been calculated before it includes the hash of the greater benchmarking context.  This is safer because it means that data generated from one benchmark will not affect data from another benchmark.  However, if you are careful it can be more flexible to ignore which benchmark generated the data and only use the direct inputs to a function to check if that data has been calculated before. ie, you can create two benchmarks that sample a subset of the problem during exploration, and then afterwards create a larger benchmark that covers the cases you already explored.  If this value is true, it the combined benchmark will notice that the values have been calculated before and immediatly return the data of the combined benchmarks",
+    )
+
     clear_sample_cache: bool = param.Boolean(
         False,
         doc="Clears the per-sample cache.  Use this if you get unexpected behavior.  The per_sample cache is tagged by the specific benchmark it was sampled from. So clearing the cache of one benchmark will not clear the cache of other benchmarks.",
