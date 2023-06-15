@@ -503,7 +503,7 @@ class Bench(BenchPlotServer):
                 logging.info(
                     f"A value including the benchmark context was not found: {bench_sample_hash}, but the function has been called with these inputs before so loading those values from the hash.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
-                result = self.sample_cache[function_input_signature_benchmark_context]
+                result = self.sample_cache[function_input_signature_pure]
             else:
                 logging.info("Sample cache values Not Found, calling benchmark function")
                 result = self.worker_wrapper(bench_cfg, function_input)
