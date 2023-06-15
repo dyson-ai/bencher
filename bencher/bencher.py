@@ -7,6 +7,7 @@ from itertools import product
 from typing import Callable, List
 from diskcache import Cache
 import param
+from sortedcontainers import SortedDict
 
 from bencher.bench_vars import (
     IntSweep,
@@ -484,12 +485,14 @@ class Bench(BenchPlotServer):
 
         if bench_cfg.use_sample_cache and self.sample_cache is not None:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
-            function_input_signature_pure = hash_cust(function_input)
+            fn_inputs_sorted = list(SortedDict(function_input).items())
+            function_input_signature_pure = hash_cust(fn_inputs_sorted)
 
             function_input_signature_benchmark_context = hash_cust(
                 (function_input_signature_pure, bench_sample_hash)
             )
-
+            print("inputs",fn_inputs_sorted)
+            print("pure",function_input_signature_pure)
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
                     f"Found a previously calculated value in the sample cache with the benchmark context: {bench_sample_hash}"
@@ -504,6 +507,7 @@ class Bench(BenchPlotServer):
                     f"A value including the benchmark context was not found: {bench_sample_hash}, but the function has been called with these inputs before so loading those values from the hash.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
                 result = self.sample_cache[function_input_signature_pure]
+                self.worker_cache_call_count += 1
             else:
                 logging.info(
                     "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"

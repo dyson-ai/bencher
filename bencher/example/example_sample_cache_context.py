@@ -26,7 +26,7 @@ def example_cache_context() -> bch.Bench:
     run_cfg.use_sample_cache = True
     run_cfg.clear_sample_cache = True  # clear the first time
     run_cfg.sample_cache_include_bench_context = False
-    run_cfg.repeats = 2
+    run_cfg.repeats = 1
 
     bencher = bch.Bench("bench_context", bench_function, Cfg)
 
@@ -53,7 +53,7 @@ def example_cache_context() -> bch.Bench:
     assert bencher.worker_fn_call_count == 1 * run_cfg.repeats
     assert bencher.worker_cache_call_count == 0
 
-    run_cfg.clear_sample_cache = False  # clear the first time
+    # run_cfg.clear_sample_cache = False  # clear the first time
 
     bencher.clear_call_counts()
     bencher.plot_sweep(
@@ -64,6 +64,9 @@ def example_cache_context() -> bch.Bench:
     )
 
     assert bencher.worker_wrapper_call_count == 2 * run_cfg.repeats
+    print("worker fn call count",bencher.worker_fn_call_count)
+    print("worker cache call count",bencher.worker_cache_call_count)
+
     assert bencher.worker_fn_call_count == 0
     assert bencher.worker_cache_call_count == 2 * run_cfg.repeats
 
