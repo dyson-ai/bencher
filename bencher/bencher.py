@@ -40,8 +40,7 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
         case 3:
             data_array[index_tuple[0], index_tuple[1], index_tuple[2]] = value
         case 4:
-            data_array[index_tuple[0], index_tuple[1],
-                       index_tuple[2], index_tuple[3]] = value
+            data_array[index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]] = value
         case 5:
             data_array[
                 index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3], index_tuple[4]
@@ -110,8 +109,7 @@ class Bench(BenchPlotServer):
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
-        self.plots_instance = pn.Tabs(
-            tabs_location="left", name=self.bench_name)
+        self.plots_instance = pn.Tabs(tabs_location="left", name=self.bench_name)
         # The number of times the wrapped worker was called
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
@@ -223,16 +221,14 @@ class Bench(BenchPlotServer):
                     f"checking for previously calculated results with key: {bench_cfg_hash}"
                 )
                 if bench_cfg_hash in c:
-                    logging.info(
-                        f"loading cached results from key: {bench_cfg_hash}")
+                    logging.info(f"loading cached results from key: {bench_cfg_hash}")
                     bench_cfg = c[bench_cfg_hash]
                     # if not over_time:  # if over time we always want to calculate results
                     calculate_results = False
                 else:
                     logging.info("did not detect results in cache")
                     if run_cfg.only_plot:
-                        raise FileNotFoundError(
-                            "Was not able to load the results to plot!")
+                        raise FileNotFoundError("Was not able to load the results to plot!")
 
         if calculate_results:
             if run_cfg.time_event is not None:
@@ -249,8 +245,7 @@ class Bench(BenchPlotServer):
                     bench_cfg.ds, bench_cfg_hash, run_cfg.clear_history
                 )
 
-            self.report_results(
-                bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
+            self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
 
         self.plots_instance = BenchPlotter.plot(bench_cfg, self.plots_instance)
@@ -291,13 +286,11 @@ class Bench(BenchPlotServer):
         Returns:
             bench_cfg (BenchCfg): description of the benchmark parameters
         """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(
-            bench_cfg, time_src)
+        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
         for idx_tuple, function_input_vars in func_inputs:
-            logging.info(
-                f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
+            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(
                 bench_cfg,
                 idx_tuple,
@@ -368,8 +361,7 @@ class Bench(BenchPlotServer):
 
         if time_src is None:
             time_src = datetime.now()
-        bench_cfg.meta_vars = self.define_extra_vars(
-            bench_cfg, bench_cfg.repeats, time_src)
+        bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
 
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
 
@@ -378,8 +370,7 @@ class Bench(BenchPlotServer):
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(
-            zip(product(*dims_cfg.dim_ranges_index),
-                product(*dims_cfg.dim_ranges))
+            zip(product(*dims_cfg.dim_ranges_index), product(*dims_cfg.dim_ranges))
         )
         # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have a nd array for each result variable
         data_vars = {}
@@ -393,8 +384,7 @@ class Bench(BenchPlotServer):
                 for i in range(rv.size):
                     result_data = np.empty(dims_cfg.dims_size)
                     result_data.fill(np.nan)
-                    data_vars[rv.index_name(i)] = (
-                        dims_cfg.dims_name, result_data)
+                    data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
 
@@ -516,13 +506,13 @@ class Bench(BenchPlotServer):
                 result = self.sample_cache[function_input_signature_pure]
             else:
                 logging.info(
-                    "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function")
+                    "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
+                )
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_sample_hash
                 )
-                self.sample_cache.set(
-                    function_input_signature_pure, result, tag=bench_sample_hash)
+                self.sample_cache.set(function_input_signature_pure, result, tag=bench_sample_hash)
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
@@ -540,15 +530,13 @@ class Bench(BenchPlotServer):
             print(rv.name, result_value)
 
             if type(rv) == ResultVar:
-                set_xarray_multidim(
-                    bench_cfg.ds[rv.name], index_tuple, result_value)
+                set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
             else:
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(
-                                    i)], index_tuple, result_value[i]
+                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
                             )
 
     def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
