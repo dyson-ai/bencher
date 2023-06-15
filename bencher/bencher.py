@@ -484,7 +484,7 @@ class Bench(BenchPlotServer):
 
         if bench_cfg.use_sample_cache and self.sample_cache is not None:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
-            function_input_signature_pure = hash_cust(zip(dims_name, function_input_vars))
+            function_input_signature_pure = hash_cust( function_input)
 
             function_input_signature_benchmark_context = hash_cust(
                 (function_input_signature_pure, bench_sample_hash)
@@ -497,7 +497,7 @@ class Bench(BenchPlotServer):
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
             elif (
-                bench_run_cfg.sample_cache_include_bench_context
+                not bench_run_cfg.sample_cache_include_bench_context
                 and function_input_signature_pure in self.sample_cache
             ):
                 logging.info(
@@ -505,7 +505,7 @@ class Bench(BenchPlotServer):
                 )
                 result = self.sample_cache[function_input_signature_pure]
             else:
-                logging.info("Sample cache values Not Found, calling benchmark function")
+                logging.info("Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function")
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_sample_hash
@@ -575,6 +575,7 @@ class Bench(BenchPlotServer):
             logging.info(bench_cfg.ds.to_dataframe())
 
     def clear_call_counts(self) -> None:
+        """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
