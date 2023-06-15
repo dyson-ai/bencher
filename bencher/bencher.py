@@ -16,6 +16,8 @@ from bencher.bench_vars import (
     ParametrizedSweep,
     ParametrizedOutput,
     ResultVar,
+    ResultVec,
+    ResultList,
     hash_cust,
 )
 from bencher.plt_cfg import BenchPlotter
@@ -119,6 +121,7 @@ class Bench(BenchPlotServer):
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
+        self.ds_dynamic=None
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -383,13 +386,18 @@ class Bench(BenchPlotServer):
                 result_data = np.empty(dims_cfg.dims_size)
                 result_data.fill(np.nan)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            else:
+            elif type(rv) == ResultVec:
                 for i in range(rv.size):
                     result_data = np.empty(dims_cfg.dims_size)
                     result_data.fill(np.nan)
                     data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
+            else:
+                if self.ds_dynamic is None:
+                    self.ds_dynamic = {}
+
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
+        bench_cfg.ds_dynamic = self.ds_dynamic
 
         return bench_cfg, function_inputs, dims_cfg.dims_name
 
@@ -534,13 +542,25 @@ class Bench(BenchPlotServer):
 
             if type(rv) == ResultVar:
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
-            else:
+            elif type(rv) == ResultVec:
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
                                 bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
                             )
+            elif type(rv) == ResultList:
+                dimname =bench_cfg.input_vars[0].name
+                # ,coords={dimname:function_input[dimname]}
+                new= xr.DataArray(result_value,name=rv.name,dims=[dimname])
+                print(new)
+                if rv.name in self.ds_dynamic:                    
+                    self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],dim=dimname)    
+                else:
+                    self.ds_dynamic[rv.name]=new
+            else:
+                raise RuntimeError("Unsupported result type")
+
 
     def clear_tag(self, tag: str):
         """Clear all samples from the cache that match a tag
@@ -565,10 +585,13 @@ class Bench(BenchPlotServer):
             if type(rv) == ResultVar:
                 bench_cfg.ds[rv.name].attrs["units"] = rv.units
                 bench_cfg.ds[rv.name].attrs["long_name"] = rv.name
-            else:
+            elif type(rv) == ResultVec:
                 for i in range(rv.size):
                     bench_cfg.ds[rv.index_name(i)].attrs["units"] = rv.units
                     bench_cfg.ds[rv.index_name(i)].attrs["long_name"] = rv.name
+            else:
+                pass #todo
+
 
         dsvar = bench_cfg.ds[input_var.name]
         dsvar.attrs["long_name"] = input_var.name

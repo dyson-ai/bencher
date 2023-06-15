@@ -12,7 +12,7 @@ import plotly.express as px
 import logging
 
 from holoviews import opts
-from bencher.bench_vars import ParametrizedOutput, ResultVec
+from bencher.bench_vars import ParametrizedOutput, ResultVar, ResultVec,ResultList
 from bencher.bench_cfg import PltCfgBase, BenchCfg
 
 hv.extension("plotly")
@@ -92,7 +92,7 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
             return plot_scatter3D_px(bench_cfg, rv)
         else:
             return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
-    else:
+    elif type(rv) == ResultVar:
         df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
 
         try:
@@ -109,6 +109,28 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
 
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+    else:
+        # df = bench_cfg.ds_dynamic[rv.name].to_dataframe()
+        # print("df",df)
+
+
+        df = bench_cfg.ds_dynamic[rv.name].to_dataframe().reset_index()
+        plt.figure(figsize=(4, 4))
+        print("df",df)
+
+        print(bench_cfg.input_vars[0].name)
+        # fg =sns.lineplot(df,hue=bench_cfg.input_vars[0].name)
+        fg =sns.lineplot(df)
+
+
+        fg.set_xlabel(f"{rv.dim_name} [{rv.dim_units}]")
+        fg.set_ylabel(f"{rv.name} [{rv.units}]")
+        plt.tight_layout()
+
+
+        # fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+        return pn.panel(plt.gcf())
+        # return pn.panel(bench_cfg.ds_dynamic[-1].plot())
     fg.fig.suptitle(sns_cfg.title)
     plt.tight_layout()
 

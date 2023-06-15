@@ -13,6 +13,7 @@ from .bench_vars import (
     ParametrizedSweep,
     ResultVar,
     ResultVec,
+    ResultList,
     OptDir,
     hash_cust,
 )
