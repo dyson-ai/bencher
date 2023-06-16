@@ -69,4 +69,4 @@ class TestBenchExamples(unittest.TestCase):
         self.assertIsNotNone(example_floats3D_workflow(self.create_run_cfg()))
 
     def test_example_vector(self) -> None:
-        self.assertIsNotNone(example_vector(self.create_run_cfg()))
+        self.assertIsNotNone(example_vector())
