@@ -43,7 +43,8 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
         case 3:
             data_array[index_tuple[0], index_tuple[1], index_tuple[2]] = value
         case 4:
-            data_array[index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]] = value
+            data_array[index_tuple[0], index_tuple[1],
+                       index_tuple[2], index_tuple[3]] = value
         case 5:
             data_array[
                 index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3], index_tuple[4]
@@ -112,7 +113,8 @@ class Bench(BenchPlotServer):
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
-        self.plots_instance = pn.Tabs(tabs_location="left", name=self.bench_name)
+        self.plots_instance = pn.Tabs(
+            tabs_location="left", name=self.bench_name)
         # The number of times the wrapped worker was called
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
@@ -121,7 +123,7 @@ class Bench(BenchPlotServer):
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
-        self.ds_dynamic=None
+        self.ds_dynamic = None
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -208,6 +210,7 @@ class Bench(BenchPlotServer):
         bench_cfg.param.update(run_cfg.param.values())
 
         bench_cfg_hash = bench_cfg.hash_custom(True)
+        bench_cfg.hash_value = bench_cfg_hash
 
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
         bench_cfg_sample_hash = bench_cfg.hash_custom(False)
@@ -227,14 +230,16 @@ class Bench(BenchPlotServer):
                     f"checking for previously calculated results with key: {bench_cfg_hash}"
                 )
                 if bench_cfg_hash in c:
-                    logging.info(f"loading cached results from key: {bench_cfg_hash}")
+                    logging.info(
+                        f"loading cached results from key: {bench_cfg_hash}")
                     bench_cfg = c[bench_cfg_hash]
                     # if not over_time:  # if over time we always want to calculate results
                     calculate_results = False
                 else:
                     logging.info("did not detect results in cache")
                     if run_cfg.only_plot:
-                        raise FileNotFoundError("Was not able to load the results to plot!")
+                        raise FileNotFoundError(
+                            "Was not able to load the results to plot!")
 
         if calculate_results:
             if run_cfg.time_event is not None:
@@ -251,7 +256,8 @@ class Bench(BenchPlotServer):
                     bench_cfg.ds, bench_cfg_hash, run_cfg.clear_history
                 )
 
-            self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
+            self.report_results(
+                bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
 
         self.plots_instance = BenchPlotter.plot(bench_cfg, self.plots_instance)
@@ -292,11 +298,13 @@ class Bench(BenchPlotServer):
         Returns:
             bench_cfg (BenchCfg): description of the benchmark parameters
         """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
+        bench_cfg, func_inputs, dims_name = self.setup_dataset(
+            bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
         for idx_tuple, function_input_vars in func_inputs:
-            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
+            logging.info(
+                f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(
                 bench_cfg,
                 idx_tuple,
@@ -367,7 +375,8 @@ class Bench(BenchPlotServer):
 
         if time_src is None:
             time_src = datetime.now()
-        bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
+        bench_cfg.meta_vars = self.define_extra_vars(
+            bench_cfg, bench_cfg.repeats, time_src)
 
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
 
@@ -376,7 +385,8 @@ class Bench(BenchPlotServer):
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(
-            zip(product(*dims_cfg.dim_ranges_index), product(*dims_cfg.dim_ranges))
+            zip(product(*dims_cfg.dim_ranges_index),
+                product(*dims_cfg.dim_ranges))
         )
         # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have a nd array for each result variable
         data_vars = {}
@@ -390,11 +400,11 @@ class Bench(BenchPlotServer):
                 for i in range(rv.size):
                     result_data = np.empty(dims_cfg.dims_size)
                     result_data.fill(np.nan)
-                    data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
+                    data_vars[rv.index_name(i)] = (
+                        dims_cfg.dims_name, result_data)
             else:
                 if self.ds_dynamic is None:
                     self.ds_dynamic = {}
-
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_cfg.ds_dynamic = self.ds_dynamic
@@ -496,7 +506,8 @@ class Bench(BenchPlotServer):
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_cust((fn_inputs_sorted, bench_cfg.tag))
+            function_input_signature_pure = hash_cust(
+                (fn_inputs_sorted, bench_cfg.tag))
 
             function_input_signature_benchmark_context = hash_cust(
                 (function_input_signature_pure, bench_cfg_sample_hash)
@@ -523,7 +534,8 @@ class Bench(BenchPlotServer):
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_cfg.tag
                 )
-                self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
+                self.sample_cache.set(
+                    function_input_signature_pure, result, tag=bench_cfg.tag)
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
@@ -541,72 +553,34 @@ class Bench(BenchPlotServer):
             print(rv.name, result_value)
 
             if type(rv) == ResultVar:
-                set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
+                set_xarray_multidim(
+                    bench_cfg.ds[rv.name], index_tuple, result_value)
             elif type(rv) == ResultVec:
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
+                                bench_cfg.ds[rv.index_name(
+                                    i)], index_tuple, result_value[i]
                             )
             elif type(rv) == ResultList:
-                dimname =bench_cfg.input_vars[0].name
-                vec_dimname = "time"
+                # TODO generalise this for arbirary dimensions, only works for 1 input dim so far.
+                dimname = bench_cfg.input_vars[0].name
                 input_value = function_input[dimname]
-                name = rv.name
-                times_values =list(range(len(result_value)))
+                # manually create dimension indices to help concat the data later
+                dim_indices = list(range(len(result_value)))
 
-                # ,coords={dimname:function_input[dimname]}
-                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname],coords={dimname:[function_input[dimname]]*len(result_value)})
-
-                # import pandas as pd
-
-                # data = {dimname:[function_input[dimname]]*len(result_value),rv.name:result_value,vec_dimname:list(range(len(result_value)))}
-
-                # df = pd.DataFrame(data)
-                # print("df")
-                # print(df)
-
-                # new = xr.DataArray(df,name=input_value)
-
-                new= xr.DataArray([result_value],name=name,coords={dimname:[input_value], vec_dimname:times_values})
-
-                # rv1 = np.array(result_value)
-                # rv2 = rv1+1
-
-                # dat = [rv1,rv2]
-                # print(dat)
-                # new= xr.DataArray(dat,name=name,coords={dimname:[0.,2.],vec_dimname:times_values})
-
-
-                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname])
-
-                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname,vec_dimname],coords={dimname:[function_input[dimname]]*len(result_value),vec_dimname:list(range(len(result_value)))})
-
-                print("new")
-                print(new)
-                print(new.to_dataframe().reset_index())
-                if rv.name in self.ds_dynamic:    
-                    self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],dimname)    
-
-                    # self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],"dim2",combine_attrs="drop")    
-                    # self.ds_dynamic[rv.name] = xr.merge([self.ds_dynamic[rv.name],new])    
-                    # self.ds_dynamic[rv.name] = xr.combine_nested([self.ds_dynamic[rv.name],new],dimname)    
-                    # self.ds_dynamic[rv.name] = xr.combine_by_coords([self.ds_dynamic[rv.name],new],dimname)    
-
-
-                    print("concat")
-                    print(self.ds_dynamic[rv.name])
-                    print(self.ds_dynamic[rv.name].to_dataframe())
-                    print(self.ds_dynamic[rv.name].to_dataframe().reset_index())
-
+                new_dataarray = xr.DataArray([result_value], name=rv.name, coords={
+                                   dimname: [input_value], rv.dim_name: dim_indices})
+                
+                dataset_key = (bench_cfg.hash_value, rv.name)
+                if dataset_key in self.ds_dynamic:
+                    self.ds_dynamic[dataset_key] = xr.concat(
+                        [self.ds_dynamic[dataset_key], new_dataarray], dimname)
                 else:
-                    self.ds_dynamic[rv.name]=new
-               
-
+                    self.ds_dynamic[dataset_key] = new_dataarray
             else:
                 raise RuntimeError("Unsupported result type")
-
 
     def clear_tag(self, tag: str):
         """Clear all samples from the cache that match a tag
@@ -636,8 +610,7 @@ class Bench(BenchPlotServer):
                     bench_cfg.ds[rv.index_name(i)].attrs["units"] = rv.units
                     bench_cfg.ds[rv.index_name(i)].attrs["long_name"] = rv.name
             else:
-                pass #todo
-
+                pass  # todo
 
         dsvar = bench_cfg.ds[input_var.name]
         dsvar.attrs["long_name"] = input_var.name
