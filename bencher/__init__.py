@@ -14,7 +14,7 @@ from .bench_vars import (
     ResultVar,
     ResultVec,
     ResultList,
-    ResSer,
+    ResultSeries,
     OptDir,
     hash_cust,
 )
