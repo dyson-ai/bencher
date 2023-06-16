@@ -14,7 +14,7 @@ from sys import byteorder
 
 def hash_cust(var: any) -> str:
     """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()    
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
 
 
 def capitalise_words(message: str):
@@ -524,6 +524,6 @@ class ResultList(param.List):
         self.dim_units = dim_units
         self.units = units
 
-     def hash_custom(self) -> str:
+    def hash_custom(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.dim_name, self.dim_units))

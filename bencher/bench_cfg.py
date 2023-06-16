@@ -341,10 +341,10 @@ class BenchCfg(BenchRunCfg):
         doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from eachother and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with eachother based only on the tag value.",
     )
 
-    hash_value:str = param.String(
+    hash_value: str = param.String(
         "",
         doc="store the hash value of the config to avoid having to hash multiple times",
-    )  
+    )
 
     ds = []
 

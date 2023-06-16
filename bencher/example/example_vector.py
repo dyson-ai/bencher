@@ -5,7 +5,7 @@ import numpy as np
 from math import sin, cos
 
 
-class SweepCfg(bch.ParametrizedSweep):
+class OffsetCfg(bch.ParametrizedSweep):
     """A class for describing which parameters to sweep"""
 
     dc_offset = bch.FloatSweep(
@@ -35,7 +35,15 @@ class SweepResult(bch.ParametrizedOutput):
     )
 
 
-def sin_sweep(cfg: SweepCfg) -> SweepResult:
+def sin_sweep(cfg: OffsetCfg) -> SweepResult:
+    """A function that returns vector outputs of the sin and cos functions
+
+    Args:
+        cfg (OffsetCfg): Options for phase and dc offset
+
+    Returns:
+        SweepResult: vectors with sin and cos results
+    """
     res = SweepResult()
     for i in np.arange(0, 6.28, 0.02):
         res.sin_sweep.append(sin(i + cfg.phase_offset) + cfg.dc_offset)
@@ -46,11 +54,11 @@ def sin_sweep(cfg: SweepCfg) -> SweepResult:
 
 def example_vector() -> bch.Bench:
     """Example on how to sweep over function with vector outputs"""
-    bencher = bch.Bench("vector output example", sin_sweep, SweepCfg)
+    bencher = bch.Bench("vector output example", sin_sweep, OffsetCfg)
 
     bencher.plot_sweep(
         title="Sweep DC offset",
-        input_vars=[SweepCfg.param.dc_offset],
+        input_vars=[OffsetCfg.param.dc_offset],
         result_vars=[SweepResult.param.sin_sweep, SweepResult.param.cos_sweep],
         description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of dc offsets""",
         post_description="""The output shows stack of sin and cos functions as the dc offset increases""",
@@ -58,7 +66,7 @@ def example_vector() -> bch.Bench:
 
     bencher.plot_sweep(
         title="Sweep phase offset",
-        input_vars=[SweepCfg.param.phase_offset],
+        input_vars=[OffsetCfg.param.phase_offset],
         result_vars=[SweepResult.param.sin_sweep, SweepResult.param.cos_sweep],
         description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of phase offsets""",
         post_description="""The output shows different phases of the sin and cos functions""",
