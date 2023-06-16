@@ -7,41 +7,65 @@ from math import sin, cos
 
 class SweepCfg(bch.ParametrizedSweep):
     """A class for describing which parameters to sweep"""
-    dc_offset = bch.FloatSweep(default=0, bounds=[
-                            0., 2.], samples=4, units="v", doc="DC offset to add to the result of the signal")
-    phase_offset = bch.FloatSweep(default=0, bounds=[
-                                  0., 3.14], samples=4, units="rad", doc="phase offset that is added to the input before passing to the trig function")
+
+    dc_offset = bch.FloatSweep(
+        default=0,
+        bounds=[0.0, 2.0],
+        samples=4,
+        units="v",
+        doc="DC offset to add to the result of the signal",
+    )
+    phase_offset = bch.FloatSweep(
+        default=0,
+        bounds=[0.0, 3.14],
+        samples=4,
+        units="rad",
+        doc="phase offset that is added to the input before passing to the trig function",
+    )
 
 
 class SweepResult(bch.ParametrizedOutput):
     """A class to describe the vector outputs of the benchmark function"""
-    sin_sweep = bch.ResultList(dim_name="time", dim_units="s",
-                               units="v", doc="A list of values from a sin function")
-    cos_sweep = bch.ResultList(dim_name="time", dim_units="s",
-                               units="v", doc="A list of values from a cos function")
+
+    sin_sweep = bch.ResultList(
+        dim_name="time", dim_units="s", units="v", doc="A list of values from a sin function"
+    )
+    cos_sweep = bch.ResultList(
+        dim_name="time", dim_units="s", units="v", doc="A list of values from a cos function"
+    )
 
 
 def sin_sweep(cfg: SweepCfg) -> SweepResult:
     res = SweepResult()
     for i in np.arange(0, 6.28, 0.02):
-        res.sin_sweep.append(sin(i+cfg.phase_offset)+cfg.dc_offset)
+        res.sin_sweep.append(sin(i + cfg.phase_offset) + cfg.dc_offset)
     for i in np.arange(0, 3.28, 0.02):
-        res.cos_sweep.append(cos(i+cfg.phase_offset)+cfg.dc_offset)
+        res.cos_sweep.append(cos(i + cfg.phase_offset) + cfg.dc_offset)
     return res
+
 
 def example_vector() -> bch.Bench:
     """Example on how to sweep over function with vector outputs"""
     bencher = bch.Bench("vector output example", sin_sweep, SweepCfg)
 
-    bencher.plot_sweep(title="Sweep offset", input_vars=[SweepCfg.param.dc_offset], result_vars=[
-                    SweepResult.param.sin_sweep, SweepResult.param.cos_sweep],
-                    description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of dc offsets""", post_description="""The output shows stack of sin and cos functions as the dc offset increases""")
+    bencher.plot_sweep(
+        title="Sweep DC offset",
+        input_vars=[SweepCfg.param.dc_offset],
+        result_vars=[SweepResult.param.sin_sweep, SweepResult.param.cos_sweep],
+        description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of dc offsets""",
+        post_description="""The output shows stack of sin and cos functions as the dc offset increases""",
+    )
 
-    bencher.plot_sweep(title="Sweep phase offset", input_vars=[SweepCfg.param.phase_offset], result_vars=[
-                    SweepResult.param.sin_sweep, SweepResult.param.cos_sweep], description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of phase offsets""", post_description="""The output shows different phases of the sin and cos functions""")
+    bencher.plot_sweep(
+        title="Sweep phase offset",
+        input_vars=[SweepCfg.param.phase_offset],
+        result_vars=[SweepResult.param.sin_sweep, SweepResult.param.cos_sweep],
+        description="""This is an example of how to sample function that return a vector of unknown or varying size. In this example it returns the output of the sin and cos function for varying angles and a range of phase offsets""",
+        post_description="""The output shows different phases of the sin and cos functions""",
+    )
 
     return bencher
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     example_vector().plot()

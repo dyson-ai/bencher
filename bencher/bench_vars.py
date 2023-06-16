@@ -505,17 +505,18 @@ class ResultVec(param.List):
         """
         return [self.index_name(i) for i in range(self.size)]
 
+
 class ResultList(param.List):
     """A class to unknown size vector result variable"""
 
-    __slots__ = ["units","dim_name","dim_units"]
+    __slots__ = ["units", "dim_name", "dim_units"]
 
-    def __init__(self,dim_name,dim_units, units="ul", **params):
+    def __init__(self, dim_name, dim_units, units="ul", **params):
         param.List.__init__(self, **params)
-        self.dim_name= dim_name
-        self.dim_units= dim_units
+        self.dim_name = dim_name
+        self.dim_units = dim_units
 
         self.units = units
 
     def hash_custom(self) -> int:
-        return hash_cust(self.units)
+        return hash_cust((self.units, self.dim_name, self.dim_units))

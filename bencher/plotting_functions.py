@@ -12,7 +12,7 @@ import plotly.express as px
 import logging
 
 from holoviews import opts
-from bencher.bench_vars import ParametrizedOutput, ResultVar, ResultVec,ResultList
+from bencher.bench_vars import ParametrizedOutput, ResultVar, ResultVec, ResultList
 from bencher.bench_cfg import PltCfgBase, BenchCfg
 
 hv.extension("plotly")
@@ -109,24 +109,24 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
 
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
-    elif type(rv) == ResultList:       
+    elif type(rv) == ResultList:
         plt.figure(figsize=(4, 4))
 
-        #get the data to plot
-        dataset_key =(bench_cfg.hash_value, rv.name)
+        # get the data to plot
+        dataset_key = (bench_cfg.hash_value, rv.name)
         df = bench_cfg.ds_dynamic[dataset_key].to_dataframe().reset_index()
 
-        #plot
-        fg =sns.lineplot(df,x=rv.dim_name,y=rv.name,hue=bench_cfg.input_vars[0].name)
+        # plot
+        fg = sns.lineplot(df, x=rv.dim_name, y=rv.name, hue=bench_cfg.input_vars[0].name)
 
-        #titles and labels and formatting
+        # titles and labels and formatting
         fg.set_xlabel(f"{rv.dim_name} [{rv.dim_units}]")
         fg.set_ylabel(f"{rv.name} [{rv.units}]")
         fg.set_title(bench_cfg.title)
         plt.tight_layout()
 
         return pn.panel(plt.gcf())
-    
+
     fg.fig.suptitle(sns_cfg.title)
     plt.tight_layout()
 
