@@ -551,13 +551,59 @@ class Bench(BenchPlotServer):
                             )
             elif type(rv) == ResultList:
                 dimname =bench_cfg.input_vars[0].name
+                vec_dimname = "time"
+                input_value = function_input[dimname]
+                name = rv.name
+                times_values =list(range(len(result_value)))
+
                 # ,coords={dimname:function_input[dimname]}
-                new= xr.DataArray(result_value,name=rv.name,dims=[dimname])
+                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname],coords={dimname:[function_input[dimname]]*len(result_value)})
+
+                # import pandas as pd
+
+                # data = {dimname:[function_input[dimname]]*len(result_value),rv.name:result_value,vec_dimname:list(range(len(result_value)))}
+
+                # df = pd.DataFrame(data)
+                # print("df")
+                # print(df)
+
+                # new = xr.DataArray(df,name=input_value)
+
+                new= xr.DataArray([result_value],name=name,coords={dimname:[input_value], vec_dimname:times_values})
+
+                # rv1 = np.array(result_value)
+                # rv2 = rv1+1
+
+                # dat = [rv1,rv2]
+                # print(dat)
+                # new= xr.DataArray(dat,name=name,coords={dimname:[0.,2.],vec_dimname:times_values})
+
+
+                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname])
+
+                # new= xr.DataArray(result_value,name=rv.name,dims=[dimname,vec_dimname],coords={dimname:[function_input[dimname]]*len(result_value),vec_dimname:list(range(len(result_value)))})
+
+                print("new")
                 print(new)
-                if rv.name in self.ds_dynamic:                    
-                    self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],dim=dimname)    
+                print(new.to_dataframe().reset_index())
+                if rv.name in self.ds_dynamic:    
+                    self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],dimname)    
+
+                    # self.ds_dynamic[rv.name] = xr.concat([self.ds_dynamic[rv.name],new],"dim2",combine_attrs="drop")    
+                    # self.ds_dynamic[rv.name] = xr.merge([self.ds_dynamic[rv.name],new])    
+                    # self.ds_dynamic[rv.name] = xr.combine_nested([self.ds_dynamic[rv.name],new],dimname)    
+                    # self.ds_dynamic[rv.name] = xr.combine_by_coords([self.ds_dynamic[rv.name],new],dimname)    
+
+
+                    print("concat")
+                    print(self.ds_dynamic[rv.name])
+                    print(self.ds_dynamic[rv.name].to_dataframe())
+                    print(self.ds_dynamic[rv.name].to_dataframe().reset_index())
+
                 else:
                     self.ds_dynamic[rv.name]=new
+               
+
             else:
                 raise RuntimeError("Unsupported result type")
 

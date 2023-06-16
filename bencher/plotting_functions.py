@@ -120,7 +120,11 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
 
         print(bench_cfg.input_vars[0].name)
         # fg =sns.lineplot(df,hue=bench_cfg.input_vars[0].name)
-        fg =sns.lineplot(df)
+        fg =sns.lineplot(df,x=rv.dim_name,y=rv.name,hue=bench_cfg.input_vars[0].name)
+        # fg =sns.lineplot(df,x="time")
+        # fg =sns.lineplot(df)
+
+
 
 
         fg.set_xlabel(f"{rv.dim_name} [{rv.dim_units}]")

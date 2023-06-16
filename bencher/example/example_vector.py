@@ -4,11 +4,11 @@ from math import sin, cos
 
 
 class Cfg(bch.ParametrizedSweep):
-    offset = bch.FloatSweep(default=0, bounds=[0., 2.], samples=2,units="v")
+    offset = bch.FloatSweep(default=0, bounds=[0., 2.], samples=5, units="v")
     # angle = bch.FloatSweep(default=0,bounds=[0,6.28])
 
-    sin_sweep = bch.ResultList(dim_name = "time",dim_units="s",units="v")
-    cos_sweep = bch.ResultList(dim_name= "time",dim_units = "s",units="v")
+    sin_sweep = bch.ResultList(dim_name="time", dim_units="s", units="v")
+    cos_sweep = bch.ResultList(dim_name="time", dim_units="s", units="v")
 
 
 def sin_sweep(offset=0, **kwargs):
@@ -26,6 +26,8 @@ cfg = Cfg()
 bencher = bch.Bench("vector output example", sin_sweep)
 
 bencher.plot_sweep(title="sin", input_vars=[Cfg.param.offset], result_vars=[
+                #    Cfg.param.sin_sweep])
                    Cfg.param.sin_sweep, Cfg.param.cos_sweep])
+
 
 bencher.plot()
