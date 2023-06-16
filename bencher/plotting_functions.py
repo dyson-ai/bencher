@@ -112,17 +112,20 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
     elif type(rv) == ResultList:
         plt.figure(figsize=(4, 4))
 
+        in_var = bench_cfg.input_vars[0].name
+
         # get the data to plot
         dataset_key = (bench_cfg.hash_value, rv.name)
         df = bench_cfg.ds_dynamic[dataset_key].to_dataframe().reset_index()
 
         # plot
-        fg = sns.lineplot(df, x=rv.dim_name, y=rv.name, hue=bench_cfg.input_vars[0].name)
+        fg = sns.lineplot(df, x=rv.dim_name, y=rv.name, hue=in_var)
 
         # titles and labels and formatting
         fg.set_xlabel(f"{rv.dim_name} [{rv.dim_units}]")
         fg.set_ylabel(f"{rv.name} [{rv.units}]")
-        fg.set_title(bench_cfg.title)
+        fg.set_title(f"{in_var} vs ({rv.name} vs {rv.dim_name})")
+
         plt.tight_layout()
 
         return pn.panel(plt.gcf())

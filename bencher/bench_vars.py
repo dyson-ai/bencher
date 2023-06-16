@@ -513,7 +513,29 @@ class ResultVec(param.List):
         return [self.index_name(i) for i in range(self.size)]
 
 
-class ResultList(param.List):
+class ResSer:
+    def __init__(self, values=None, index=None) -> None:
+        self.values = []
+        self.index = []
+        self.set_index_and_values(values, index)
+
+    def append(self, value, index=None) -> None:
+        if index is None:
+            self.index.append(len(self.values))
+        else:
+            self.index.append(index)
+        self.values.append(value)
+
+    def set_index_and_values(self, values, index=None) -> None:
+        if values is not None:
+            if index is None:
+                self.index = list(range(len(values)))
+            else:
+                self.index = index
+            self.values = values
+
+
+class ResultList(param.Parameter):
     """A class to unknown size vector result variable"""
 
     __slots__ = ["units", "dim_name", "dim_units", "indices"]
@@ -522,23 +544,30 @@ class ResultList(param.List):
         self,
         index_name: str,
         index_units: str,
+        default=ResSer(),
         units="ul",
         indices: List[float] = None,
+        instantiate=True,
         **params,
     ):
-
-        param.List.__init__(self, **params)
+        param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
+        # self.
+        # self.value_units = units
+        # self.index_units = index_units
         self.units = units
         self.dim_name = index_name
         self.dim_units = index_units
         self.indices = indices
+        # self.index = indices
 
     def hash_custom(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.dim_name, self.dim_units))
 
-    def validate_indices(self, result_vec) -> None:
-        if self.indices is None:
-            self.indices = list(range(len(result_vec)))
-        else:
-            assert len(self.indices) == len(result_vec)
+    # def gen_indices(self, result_vec) -> None:
+    #     # if self.indices is None:
+    #     return list(range(len(result_vec)))
+    # return self.indices
+
+    # def append(self,val):
+    # self.it
