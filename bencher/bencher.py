@@ -538,7 +538,6 @@ class Bench(BenchPlotServer):
                 logging.info(f"{rv.name}: {result_value}")
 
             if type(rv) == ResultVar:
-
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
             elif type(rv) == ResultVec:
                 if isinstance(result_value, (list, np.ndarray)):
