@@ -150,6 +150,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
         True, doc="Print the inputs to the benchmark function every time it is called"
     )
 
+    print_bench_results: bool = param.Boolean(
+        True, doc="Print the results of the benchmark function every time it is called"
+    )
+
     clear_history: bool = param.Boolean(False, doc="Clear historical results")
 
     print_pandas: bool = param.Boolean(

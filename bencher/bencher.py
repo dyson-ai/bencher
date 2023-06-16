@@ -467,8 +467,8 @@ class Bench(BenchPlotServer):
         function_input_vars: List,
         dims_name: List[str],
         constant_inputs: dict,
-        bench_cfg_sample_hash,
-        bench_run_cfg,
+        bench_cfg_sample_hash: str,
+        bench_run_cfg: BenchRunCfg,
     ) -> None:
         """A wrapper around the benchmarking function to set up and store the results of the benchmark function
 
@@ -533,9 +533,9 @@ class Bench(BenchPlotServer):
                 result_value = result[rv.name]
             else:
                 result_value = result.param.values()[rv.name]
-            logging.debug(f"rn:{rv.name},rv:{result_value}")
 
-            print(rv.name, result_value)
+            if bench_run_cfg.print_bench_results:
+                logging.info(rv.name, result_value)
 
             if type(rv) == ResultVar:
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
@@ -552,6 +552,12 @@ class Bench(BenchPlotServer):
                 input_value = function_input[dimname]
                 # manually create dimension indices to help concat the data later
                 dim_indices = list(range(len(result_value)))
+
+                print(result_value)
+                print(dimname)
+                print(dimname, input_value)
+                print(rv.dim_name)
+                print(dim_indices)
 
                 new_dataarray = xr.DataArray(
                     [result_value],
