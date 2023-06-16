@@ -28,10 +28,10 @@ class SweepResult(bch.ParametrizedOutput):
     """A class to describe the vector outputs of the benchmark function"""
 
     sin_sweep = bch.ResultList(
-        dim_name="time", dim_units="s", units="v", doc="A list of values from a sin function"
+        index_name="time", index_units="s", units="v", doc="A list of values from a sin function"
     )
     cos_sweep = bch.ResultList(
-        dim_name="time", dim_units="s", units="v", doc="A list of values from a cos function"
+        index_name="time", index_units="s", units="v", doc="A list of values from a cos function"
     )
 
 
@@ -47,8 +47,10 @@ def sin_sweep(cfg: OffsetCfg) -> SweepResult:
     res = SweepResult()
     for i in np.arange(0, 6.28, 0.02):
         res.sin_sweep.append(sin(i + cfg.phase_offset) + cfg.dc_offset)
+        res.sin_sweep.indices.append(i)
     for i in np.arange(0, 3.28, 0.02):
         res.cos_sweep.append(cos(i + cfg.phase_offset) + cfg.dc_offset)
+        res.cos_sweep.indices.append(i)
     return res
 
 

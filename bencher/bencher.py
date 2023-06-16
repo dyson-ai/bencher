@@ -551,18 +551,23 @@ class Bench(BenchPlotServer):
                 dimname = bench_cfg.input_vars[0].name
                 input_value = function_input[dimname]
                 # manually create dimension indices to help concat the data later
-                dim_indices = list(range(len(result_value)))
+
+                rv.validate_indices(result_value)
+                # if rv.indicies is None:
+                #     dim_indices = list(range(len(result_value)))
+                # else:
+                #     dim_indices = rv.indices
 
                 print(result_value)
                 print(dimname)
                 print(dimname, input_value)
                 print(rv.dim_name)
-                print(dim_indices)
+                print(rv.indices)
 
                 new_dataarray = xr.DataArray(
                     [result_value],
                     name=rv.name,
-                    coords={dimname: [input_value], rv.dim_name: dim_indices},
+                    coords={dimname: [input_value], rv.dim_name: rv.indices},
                 )
 
                 dataset_key = (bench_cfg.hash_value, rv.name)

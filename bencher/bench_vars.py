@@ -516,14 +516,29 @@ class ResultVec(param.List):
 class ResultList(param.List):
     """A class to unknown size vector result variable"""
 
-    __slots__ = ["units", "dim_name", "dim_units"]
+    __slots__ = ["units", "dim_name", "dim_units", "indices"]
 
-    def __init__(self, dim_name, dim_units, units="ul", **params):
+    def __init__(
+        self,
+        index_name: str,
+        index_units: str,
+        units="ul",
+        indices: List[float] = None,
+        **params,
+    ):
+
         param.List.__init__(self, **params)
-        self.dim_name = dim_name
-        self.dim_units = dim_units
         self.units = units
+        self.dim_name = index_name
+        self.dim_units = index_units
+        self.indices = indices
 
     def hash_custom(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.dim_name, self.dim_units))
+
+    def validate_indices(self, result_vec) -> None:
+        if self.indices is None:
+            self.indices = list(range(len(result_vec)))
+        else:
+            assert len(self.indices) == len(result_vec)
