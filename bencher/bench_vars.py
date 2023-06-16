@@ -12,12 +12,9 @@ import hashlib
 from sys import byteorder
 
 
-def hash_cust(var: any):
-    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
-    # hash_val = 0
-    # for ch in text:
-    # hash_val = (hash_val * 281 ^ ord(ch) * 997) & 0xFFFFFFFF
-    # return hash_val
+def hash_cust(var: any) -> str:
+    """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()    
 
 
 def capitalise_words(message: str):
@@ -76,14 +73,16 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return param_hash(self, True, False)
 
 
 class ParametrizedOutput(Parameterized):
     """Parent class for all Output types that need a custom hash"""
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return param_hash(self, True, False)
 
 
@@ -162,7 +161,8 @@ class BoolSweep(Boolean):
         """Generate a string representation of the sampling procedure"""
         return f"sampling {self.name} from: [True,False]"
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -184,7 +184,8 @@ class TimeBase(Selector):
         """
         return f"sampling from [The Past to {self.objects[0]}]"
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -280,7 +281,8 @@ class StringSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -323,7 +325,8 @@ class EnumSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -393,7 +396,8 @@ class IntSweep(Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -440,7 +444,8 @@ class FloatSweep(Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -461,7 +466,8 @@ class ResultVar(Number):
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.direction))
 
 
@@ -477,7 +483,8 @@ class ResultVec(param.List):
         self.direction = direction
         self.size = size
 
-    def hash_custom(self) -> int:
+   def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
@@ -515,8 +522,8 @@ class ResultList(param.List):
         param.List.__init__(self, **params)
         self.dim_name = dim_name
         self.dim_units = dim_units
-
         self.units = units
 
-    def hash_custom(self) -> int:
+    def hash_custom(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_cust((self.units, self.dim_name, self.dim_units))
