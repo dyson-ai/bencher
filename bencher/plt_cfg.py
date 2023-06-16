@@ -116,7 +116,9 @@ class BenchPlotter:
         Returns:
             pn.Row: A panel row with plots in it
         """
-        plot_rows = pn.Row(name=bench_cfg.bench_name)
+        plot_rows = pn.FlexBox(
+            name=bench_cfg.bench_name,
+        )
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         for rv in bench_cfg.result_vars:
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
