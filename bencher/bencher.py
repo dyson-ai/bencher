@@ -534,13 +534,13 @@ class Bench(BenchPlotServer):
             else:
                 result_value = result.param.values()[rv.name]
 
+            if bench_run_cfg.print_bench_results:
+                logging.info(f"{rv.name}: {result_value}")
+
             if type(rv) == ResultVar:
-                if bench_run_cfg.print_bench_results:
-                    logging.info(rv.name, result_value)
+
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
             elif type(rv) == ResultVec:
-                if bench_run_cfg.print_bench_results:
-                    logging.info(rv.name, result_value)
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
@@ -551,11 +551,6 @@ class Bench(BenchPlotServer):
                 # TODO generalise this for arbirary dimensions, only works for 1 input dim so far.
                 dimname = bench_cfg.input_vars[0].name
                 input_value = function_input[dimname]
-                # print(result_value)
-                # print(dimname)
-                # print(dimname, input_value)
-                # print(rv.dim_name)
-                # print(rv.indices)
 
                 new_dataarray = xr.DataArray(
                     [result_value.values],
