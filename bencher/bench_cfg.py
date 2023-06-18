@@ -124,6 +124,8 @@ class PltCntCfg(param.Parameterized):
     float_cnt = param.Integer(0, doc="The number of float variables to plot")
     cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
     cat_cnt = param.Integer(0, doc="The number of cat variables")
+    vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
+    result_vars = param.Integer(1, doc="The number result variables to plot")
 
 
 class BenchPlotSrvCfg(param.Parameterized):
