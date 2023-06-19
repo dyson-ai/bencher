@@ -389,8 +389,7 @@ class Bench(BenchPlotServer):
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
-                    result_data = np.empty(dims_cfg.dims_size)
-                    result_data.fill(np.nan)
+                    result_data.full(dims_cfg.dims_size,np.nan)
                     data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
