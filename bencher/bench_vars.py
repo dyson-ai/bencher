@@ -568,23 +568,13 @@ class ResultList(param.Parameter):
         **params,
     ):
         param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
-        # self.
-        # self.value_units = units
-        # self.index_units = index_units
         self.units = units
         self.dim_name = index_name
         self.dim_units = index_units
         self.indices = indices
-        # self.index = indices
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.dim_name, self.dim_units))
 
-    # def gen_indices(self, result_vec) -> None:
-    #     # if self.indices is None:
-    #     return list(range(len(result_vec)))
-    # return self.indices
-
-    # def append(self,val):
-    # self.it
+ 
