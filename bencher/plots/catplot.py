@@ -12,11 +12,11 @@ from strenum import StrEnum
 from enum import auto
 
 
-class CatPlotTypes(StrEnum):
-    swarmplot = auto()
-    barplot = auto()
-    violinplot = auto()
-    boxenplot = auto()
+# class CatPlotTypes(StrEnum):
+#     swarmplot = auto()
+#     barplot = auto()
+#     violinplot = auto()
+#     boxenplot = auto()
 
 
 class Catplot(PlotProvider):
@@ -29,7 +29,6 @@ class Catplot(PlotProvider):
 
     # def __init__(self):
     #     pass
-
     #     # self.register_plot(self.swarmplot)
     #     # self.register_plot(self.boxplot)
     #     # self.register_plot(self.barplot)

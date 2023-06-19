@@ -51,7 +51,23 @@ class PlotFilter:
         )
 
 
+from dataclasses import dataclass
+
+
+@dataclass
+class PlotInput:
+    bench_cfg: BenchCfg
+    rv: ParametrizedSweep
+    plt_cnt_cfg: PltCntCfg
+
+
 class PlotProvider:
+    def plot1(self, pl_in: PlotInput):
+        all_plots = []
+        for p in self.plots:
+            all_plots.extend(p(bench_cfg, rv, plt_cnt_cfg))
+        return all_plots
+
     def plot(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
         all_plots = []
         for p in self.plots:
