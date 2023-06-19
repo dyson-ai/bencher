@@ -5,14 +5,19 @@ from bencher.plot_signature import (
     PltCntCfg,
     PltCfgBase,
 )
-from bencher import BenchCfg, ResultVec, ResultVar, BenchPlotter
+from bencher import BenchCfg, ResultVec, ResultVar, BenchPlotter, ParametrizedSweep
 from typing import List
 import seaborn as sns
 import panel as pn
 
 
 class Catplot(PlotProvider):
-    def swarmplot(self, plot_sig: PltCntCfg, bench_cfg: BenchCfg) -> pn.pane:
+    def plot(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
+        return self.swarmplot(BenchCfg, rv, plt_cnt_cfg)
+
+    def swarmplot(
+        self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
+    ) -> pn.pane | None:
         """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
         Args:
             sns_cfg (PltCfgBase): See PltCfgBase definition
@@ -25,7 +30,7 @@ class Catplot(PlotProvider):
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             vector_len=VarRange(1, 1),
-            result_vars=VarRange(1,1)
+            result_vars=VarRange(1, 1),
         ).matches(plot_sig):
             df = self.plot_setup(plot_sig, bench_cfg)
             sns_cfg.kind = "swarm"
@@ -34,7 +39,8 @@ class Catplot(PlotProvider):
             cat_axis_order = ["x", "row", "col", "hue"]
             sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
 
-        return sns_cfg
+            return sns_cfg
+        return None
 
     def plot_setup(self, plot_sig: PlotFilter, bench_cfg: BenchCfg):
         plt.figure(figsize=(4, 4))

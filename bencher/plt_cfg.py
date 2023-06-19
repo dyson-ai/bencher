@@ -7,7 +7,7 @@ from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmar
 from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
-from plot_signature import PlotLibrary
+from bencher.plot_library import PlotLibrary
 
 class BenchPlotter:
     @staticmethod
@@ -122,7 +122,7 @@ class BenchPlotter:
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         plot_lib = PlotLibrary()
         for rv in bench_cfg.result_vars:
-            plot_rows.append(plot_lib.gather_plots(bench_cfg,rv,plt_cnt_cfg))
+            # plot_rows.append(plot_lib.gather_plots(bench_cfg,rv,plt_cnt_cfg))
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
 
         return plot_rows

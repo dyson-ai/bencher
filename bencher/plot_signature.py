@@ -1,6 +1,7 @@
 from __future__ import annotations
 import param
 from bencher.bench_cfg import PltCntCfg
+
 # from bencher.plotting_functions import Plot
 
 
@@ -45,8 +46,8 @@ class PlotFilter:
         self,
         float_range: VarRange = VarRange(),
         cat_range: VarRange = VarRange(),
-        vector_len: VarRange = VarRange(1,1),
-        result_vars: VarRange = VarRange(1,1),
+        vector_len: VarRange = VarRange(1, 1),
+        result_vars: VarRange = VarRange(1, 1),
     ) -> None:
         self.float_range = float_range
         self.cat_range = cat_range
@@ -70,6 +71,13 @@ class PlotFilter:
         )
 
 
-class PlotProvider:
+from abc import ABC, abstractmethod
+
+
+class PlotProvider(ABC):
     def __init__(self) -> None:
         pass
+
+    @abstractmethod
+    def plot(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
+        raise NotImplementedError("you must implement a plot function")
