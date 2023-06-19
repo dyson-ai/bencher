@@ -353,6 +353,7 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
+
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
@@ -478,7 +479,7 @@ class BenchCfg(BenchRunCfg):
             pd.DataFrame: The xarray results array as a pandas dataframe
         """
 
-        return self.ds.to_dataframe.reset_index()
+        return self.ds.to_dataframe().reset_index()
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
