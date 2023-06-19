@@ -1,6 +1,7 @@
 from __future__ import annotations
 import param
 from bencher.bench_cfg import PltCntCfg
+# from bencher.plotting_functions import Plot
 
 
 class VarRange:
@@ -12,16 +13,16 @@ class VarRange:
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
-    # def matches(self, var_range: VarRange) -> bool:
-    #     return (
-    #         var_range.lower_bound >= self.lower_bound and var_range.upper_bound <= self.upper_bound
-    #     )
+    def matches_range(self, var_range: VarRange) -> bool:
+        return (
+            var_range.lower_bound >= self.lower_bound and var_range.upper_bound <= self.upper_bound
+        )
 
     def matches(self, val: int):
         if self.lower_bound is not None:
             lower_match = val >= self.lower_bound
         else:
-            upper_match = True
+            lower_match = True
 
         if self.upper_bound is not None:
             upper_match = val <= self.upper_bound
@@ -44,15 +45,15 @@ class PlotFilter:
         self,
         float_range: VarRange = VarRange(),
         cat_range: VarRange = VarRange(),
-        vector_len: VarRange = VarRange(),
-        result_vars: VarRange = VarRange(),
+        vector_len: VarRange = VarRange(1,1),
+        result_vars: VarRange = VarRange(1,1),
     ) -> None:
         self.float_range = float_range
         self.cat_range = cat_range
         self.vector_len = vector_len
         self.result_vars = result_vars
 
-    # def matches(self, plot_sig: PlotSignature):
+    # def matches_sig(self, plot_sig: PlotSignature):
     #     return (
     #         self.float_range.matches(plot_sig.float_range)
     #         and self.cat_range.matches(plot_sig.cat_range)
@@ -60,7 +61,7 @@ class PlotFilter:
     #         and self.result_vars.matches(plot_sig.result_vars)
     #     )
 
-    def matches(self, plt_cng_cfg: PltCntCfg):
+    def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
         return (
             self.float_range.matches(plt_cng_cfg.float_cnt)
             and self.cat_range.matches(plt_cng_cfg.cat_cnt)

@@ -25,6 +25,7 @@ class Catplot(PlotProvider):
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             vector_len=VarRange(1, 1),
+            result_vars=VarRange(1,1)
         ).matches(plot_sig):
             df = self.plot_setup(plot_sig, bench_cfg)
             sns_cfg.kind = "swarm"
