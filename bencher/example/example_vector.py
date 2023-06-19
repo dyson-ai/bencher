@@ -24,7 +24,7 @@ class OffsetCfg(bch.ParametrizedSweep):
     )
 
 
-class SweepResult(bch.ParametrizedOutput):
+class SweepResult(bch.ParametrizedSweep):
     """A class to describe the vector outputs of the benchmark function"""
 
     sin_sweep = bch.ResultList(
