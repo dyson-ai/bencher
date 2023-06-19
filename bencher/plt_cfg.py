@@ -96,7 +96,7 @@ class BenchPlotter:
                         pn.pane.Markdown(
                             """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
                         ),
-                        bench_cfg.to_dataframe(),
+                        bench_cfg.get_dataframe(),
                         name="Pandas Dataframe Flattened View",
                     )
                 )

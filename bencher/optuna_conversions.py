@@ -241,7 +241,7 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
         optuna.Study: optuna description of the study
     """
     if include_meta:
-        df = bench_cfg.to_dataframe()
+        df = bench_cfg.get_dataframe()
         all_vars = []
         for v in bench_cfg.all_vars:
             if type(v) != TimeEvent:
