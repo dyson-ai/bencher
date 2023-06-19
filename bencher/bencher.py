@@ -211,7 +211,7 @@ class Bench(BenchPlotServer):
         if bench_cfg.use_sample_cache:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
             if bench_cfg.clear_sample_cache:
-                self.clear_tag(bench_cfg.tag)
+                self.clear_tag_from_cache(bench_cfg.tag)
 
         calculate_results = True
         with Cache("cachedir/benchmark_inputs") as c:
@@ -541,7 +541,7 @@ class Bench(BenchPlotServer):
                                 bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
                             )
 
-    def clear_tag(self, tag: str):
+    def clear_tag_from_cache(self, tag: str):
         """Clear all samples from the cache that match a tag
         Args:
             tag(str): clear samples with this tag
