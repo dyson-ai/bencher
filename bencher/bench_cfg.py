@@ -11,7 +11,7 @@ import xarray as xr
 from typing import List, Callable, Tuple, Any
 
 from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_cust
-
+from pandas import DataFrame
 
 def to_filename(
     param_cfg: param.Parameterized, param_list: list[str] = None, exclude_params: list[str] = None
@@ -469,6 +469,17 @@ class BenchCfg(BenchRunCfg):
                 output.append(max(da.coords[iv.name].values[()]))
             logging.info(f"Maximum value of {iv.name}: {output[-1]}")
         return output
+
+    def get_dataframe(self) -> DataFrame:
+        """Get the xarray results as a pandas dataframe
+
+        Returns:
+            pd.DataFrame: The xarray results array as a pandas dataframe
+        """
+        
+        
+        return self.ds.to_dataframe.reset_index()
+        
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
