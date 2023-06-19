@@ -74,10 +74,14 @@ class PlotFilter:
 from abc import ABC, abstractmethod
 
 
-class PlotProvider(ABC):
-    def __init__(self) -> None:
-        pass
-
-    @abstractmethod
+class PlotProvider:
     def plot(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
-        raise NotImplementedError("you must implement a plot function")
+        all_plots = []
+        for p in self.plots:
+            all_plots.extend(p(bench_cfg, rv, plt_cnt_cfg))
+        return all_plots
+
+    def register_plot(self, plot_fn: Callable):
+        if not hasattr(self, "plots"):
+            self.plots = []
+        self.plots.append(plot_fn)

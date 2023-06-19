@@ -8,6 +8,9 @@ from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
 from bencher.plot_library import PlotLibrary
+from bencher.plots.catplot import Catplot
+from bencher.plots.tables import Tables
+
 
 class BenchPlotter:
     @staticmethod
@@ -121,8 +124,11 @@ class BenchPlotter:
         )
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         plot_lib = PlotLibrary()
+        plot_lib.add_plotter(Catplot())
+        plot_lib.add_plotter(Tables())
+
         for rv in bench_cfg.result_vars:
-            # plot_rows.append(plot_lib.gather_plots(bench_cfg,rv,plt_cnt_cfg))
+            plot_rows.append(plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
 
         return plot_rows
@@ -185,8 +191,6 @@ class BenchPlotter:
 
         sns_cfg = PltCfgBase()
         sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
-
-        
 
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points

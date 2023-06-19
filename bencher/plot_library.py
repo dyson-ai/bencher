@@ -26,8 +26,8 @@ class PlotLibrary:
             rv (ParametrizedSweep): a config of the result variable
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
 
-        coln = pn.Column()
+        tabs = pn.Tabs()
         for p in self.plotters:
-            plot = p.plot(bench_cfg, rv, plt_cnt_cfg)
-            if plot is not None:
-                coln.append(plot)
+            for p in p.plot(bench_cfg, rv, plt_cnt_cfg):
+                tabs.append(p)
+        return tabs
