@@ -576,5 +576,3 @@ class ResultList(param.Parameter):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.dim_name, self.dim_units))
-
- 

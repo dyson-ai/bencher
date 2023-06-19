@@ -20,7 +20,9 @@ class TestBencherHashing(unittest.TestCase):
         ex = AllSweepVars()
         ex2 = AllSweepVars()
 
-        self.assertEqual(ex.param.var_float.hash_persistent(), ex2.param.var_float.hash_persistent())
+        self.assertEqual(
+            ex.param.var_float.hash_persistent(), ex2.param.var_float.hash_persistent()
+        )
         self.assertEqual(ex.param.var_int.hash_persistent(), ex2.param.var_int.hash_persistent())
         self.assertEqual(ex.param.var_enum.hash_persistent(), ex2.param.var_enum.hash_persistent())
 
