@@ -12,7 +12,7 @@ import plotly.express as px
 import logging
 
 from holoviews import opts
-from bencher.bench_vars import ParametrizedOutput, ResultVec
+from bencher.bench_vars import ParametrizedSweep, ResultVec
 from bencher.bench_cfg import PltCfgBase, BenchCfg
 
 hv.extension("plotly")
@@ -44,12 +44,12 @@ def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
     return bench_cfg
 
 
-def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -> pn.pane:
+def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) -> pn.pane:
     """Plot with seaborn
 
     Args:
         bench_cfg (BenchCfg): bench config
-        rv (ParametrizedOutput): the result variable to plot
+        rv (ParametrizedSweep): the result variable to plot
         sns_cfg (PltCfgBase): the plot configuration
 
     Returns:
@@ -117,12 +117,12 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput, sns_cfg: PltCfgBase) -
     return pn.panel(plt.gcf())
 
 
-def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D scatter plot from seaborn
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
 
     Returns:
         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
@@ -147,12 +147,12 @@ def plot_scatter2D_sns(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.P
     return h
 
 
-def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D scatter plot
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
 
     Returns:
         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
@@ -168,12 +168,12 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Pl
     return px.scatter(df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram")
 
 
-def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedOutput) -> pn.pane.Plotly:
+def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plotly:
     """Given a benchCfg generate a 3D scatter plot with plotly express
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
 
     Returns:
         pn.pane.Plotly: A 3d scatter plot as a holoview in a pane
@@ -229,13 +229,13 @@ def save_fig(
 
 
 def plot_surface_plotly(
-    bench_cfg: BenchCfg, rv: ParametrizedOutput, xr_cfg: PltCfgBase
+    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D surface plot
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
 
     Returns:
@@ -282,13 +282,13 @@ def plot_surface_plotly(
 
 
 def plot_surface_holo(
-    bench_cfg: BenchCfg, rv: ParametrizedOutput, xr_cfg: PltCfgBase
+    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D surface plot
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
 
     Returns:
@@ -328,13 +328,13 @@ def plot_surface_holo(
 
 
 def plot_volume_plotly(
-    bench_cfg: BenchCfg, rv: ParametrizedOutput, xr_cfg: PltCfgBase
+    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 3D surface plot
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
 
     Returns:
@@ -383,13 +383,13 @@ def plot_volume_plotly(
 
 
 def plot_cone_plotly(
-    bench_cfg: BenchCfg, rv: ParametrizedOutput, xr_cfg: PltCfgBase
+    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 3D surface plot
 
     Args:
         bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedOutput): result variable to plot
+        rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
 
     Returns:

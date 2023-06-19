@@ -24,7 +24,7 @@ class VolumeSample(bch.ParametrizedSweep):
     )
 
 
-class VolumeResult(bch.ParametrizedOutput):
+class VolumeResult(bch.ParametrizedSweep):
     """A class to represent the properties of a volume sample."""
 
     # value = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
