@@ -15,5 +15,5 @@ from .bench_vars import (
     ResultList,
     ResultSeries,
     OptDir,
-    hash_cust,
+    hash_sha1,
 )

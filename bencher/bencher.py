@@ -17,7 +17,7 @@ from bencher.bench_vars import (
     ResultVar,
     ResultVec,
     ResultList,
-    hash_cust,
+    hash_sha1,
 )
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
@@ -206,11 +206,11 @@ class Bench(BenchPlotServer):
         )
         bench_cfg.param.update(run_cfg.param.values())
 
-        bench_cfg_hash = bench_cfg.hash_custom(True)
+        bench_cfg_hash = bench_cfg.hash_persistent(True)
         bench_cfg.hash_value = bench_cfg_hash
 
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
-        bench_cfg_sample_hash = bench_cfg.hash_custom(False)
+        bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
@@ -388,8 +388,7 @@ class Bench(BenchPlotServer):
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
-                    result_data = np.empty(dims_cfg.dims_size)
-                    result_data.fill(np.nan)
+                    result_data = np.full(dims_cfg.dims_size, np.nan)
                     data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
@@ -492,9 +491,9 @@ class Bench(BenchPlotServer):
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_cust((fn_inputs_sorted, bench_cfg.tag))
+            function_input_signature_pure = hash_sha1((fn_inputs_sorted, bench_cfg.tag))
 
-            function_input_signature_benchmark_context = hash_cust(
+            function_input_signature_benchmark_context = hash_sha1(
                 (function_input_signature_pure, bench_cfg_sample_hash)
             )
             print("inputs", fn_inputs_sorted)

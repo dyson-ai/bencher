@@ -182,7 +182,7 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
     bench_cfg = wrap_long_time_labels(bench_cfg)
     bench_cfg.ds.drop_vars("repeat")
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     names = rv.index_names()
 
@@ -202,7 +202,7 @@ def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     names = rv.index_names()  # get the column names of the vector result
 
@@ -425,7 +425,7 @@ def plot_cone_plotly(
 
     opacity = 1.0
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     print("size before removing zero size vectors", df.shape)
     df = df.loc[(df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)]
