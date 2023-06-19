@@ -13,7 +13,7 @@ class InputCfg(bch.ParametrizedSweep):
     )
 
 
-class Result(bch.ParametrizedOutput):
+class Result(bch.ParametrizedSweep):
     result = bch.ResultVar("ul", doc="Square of x")
 
 
