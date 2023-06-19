@@ -144,6 +144,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
+        plot_lib = 
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 

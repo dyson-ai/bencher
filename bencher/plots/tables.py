@@ -1,13 +1,9 @@
 from bencher.plot_signature import PlotProvider, PlotFilter, VarRange
-from bencher.bench_cfg import BenchCfg
+from bencher.bench_cfg import BenchCfg, PltCntCfg
 from bencher.bench_vars import ParametrizedSweep
-from bencher.plt_cfg import PltCntCfg, PltCfgBase
 
-# from bencher import BenchCfg, ResultVec, ResultVar, BenchPlotter, ParametrizedSweep
 from typing import List
-import seaborn as sns
 import panel as pn
-import matplotlib.pyplot as plt
 
 
 class Tables(PlotProvider):

@@ -1,16 +1,12 @@
 from __future__ import annotations
 import param
-from bencher.bench_cfg import PltCntCfg
-
-# from bencher.plotting_functions import Plot
+from bencher.bench_cfg import PltCntCfg, BenchCfg
+from bencher.bench_vars import ParametrizedSweep
+from typing import Callable
 
 
 class VarRange:
-    # lower_bound = param.Integer(0)
-    # upper_bound = param.Integer(0)
-
     def __init__(self, lower_bound=-1, upper_bound=-1) -> None:
-        # assert upper_bound >= lower_bound
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
@@ -32,16 +28,8 @@ class VarRange:
 
         return lower_match and upper_match
 
-        # return self.lower_bound <= val and val <= self.upper_bound
-
 
 class PlotFilter:
-    # def __init__(self) -> None:
-    #     self.float_range = VarRange(0, 0)
-    #     self.cat_range = VarRange(0, 0)
-    #     self.vector_len = VarRange(1, 1)
-    #     self.result_vars = VarRange(1, 1)
-
     def __init__(
         self,
         float_range: VarRange = VarRange(),
@@ -54,14 +42,6 @@ class PlotFilter:
         self.vector_len = vector_len
         self.result_vars = result_vars
 
-    # def matches_sig(self, plot_sig: PlotSignature):
-    #     return (
-    #         self.float_range.matches(plot_sig.float_range)
-    #         and self.cat_range.matches(plot_sig.cat_range)
-    #         and self.vector_len.matches(plot_sig.vector_len)
-    #         and self.result_vars.matches(plot_sig.result_vars)
-    #     )
-
     def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
         return (
             self.float_range.matches(plt_cng_cfg.float_cnt)
@@ -69,9 +49,6 @@ class PlotFilter:
             and self.vector_len.matches(plt_cng_cfg.vector_len)
             and self.result_vars.matches(plt_cng_cfg.result_vars)
         )
-
-
-from abc import ABC, abstractmethod
 
 
 class PlotProvider:
