@@ -8,6 +8,15 @@ from typing import List
 import seaborn as sns
 import panel as pn
 import matplotlib.pyplot as plt
+from strenum import StrEnum
+from enum import auto
+
+
+class CatPlotTypes(StrEnum):
+    swarmplot = auto()
+    barplot = auto()
+    violinplot = auto()
+    boxenplot = auto()
 
 
 class Catplot(PlotProvider):
@@ -18,12 +27,14 @@ class Catplot(PlotProvider):
         result_vars=VarRange(1, 1),
     )
 
-    def __init__(self):
-        self.register_plot(self.swarmplot)
-        self.register_plot(self.boxplot)
-        self.register_plot(self.barplot)
-        self.register_plot(self.violinplot)
-        self.register_plot(self.boxenplot)
+    # def __init__(self):
+    #     pass
+
+    #     # self.register_plot(self.swarmplot)
+    #     # self.register_plot(self.boxplot)
+    #     # self.register_plot(self.barplot)
+    #     # self.register_plot(self.violinplot)
+    #     # self.register_plot(self.boxenplot)
 
     def plot_setup(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
         plt.figure(figsize=(4, 4))

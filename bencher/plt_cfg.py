@@ -7,7 +7,7 @@ from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmar
 from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
-from bencher.plot_library import PlotLibrary
+from bencher.plots.plot_collection import PlotCollection
 from bencher.plots.catplot import Catplot
 from bencher.plots.tables import Tables
 
@@ -123,10 +123,9 @@ class BenchPlotter:
             name=bench_cfg.bench_name,
         )
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
-      
 
         for rv in bench_cfg.result_vars:
-            plot_rows.append(plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
+            plot_rows.append(bench_cfg.plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
             # todo enable this check in future pr
             # if len(plot_rows) == 0:  # use the old plotting method as a backup
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))

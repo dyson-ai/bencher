@@ -6,7 +6,6 @@ from bencher.bench_cfg import PltCntCfg
 
 
 class TestVarRange(unittest.TestCase):
-
     # @given(st.integers(min_value=0), st.integers(min_value=0))
     # def test_matches_none(self, min_val, max_val):
     #     self.assertFalse(VarRange().matches(VarRange(min_val, max_val)))
@@ -31,39 +30,32 @@ class TestVarRange(unittest.TestCase):
         self.assertTrue(var_range.matches(100))
 
     @given(st.integers())
-    def test_matches_none_none(self,val):
+    def test_matches_none_none(self, val):
         var_range = VarRange(None, None)
         self.assertTrue(var_range.matches(val))
 
-class TestPlotFilter(unittest.TestCase):
 
+class TestPlotFilter(unittest.TestCase):
     @given(st.integers(min_value=0), st.integers(min_value=0))
-    def test_matches_none(self,float_cnt,cat_cnt):
+    def test_matches_none(self, float_cnt, cat_cnt):
         """The default plot filter should not match any inputs"""
 
         null_case = PlotFilter()
-        self.assertFalse(null_case.matches(PltCntCfg(float_cnt=float_cnt,cat_cnt=cat_cnt)))
+        self.assertFalse(null_case.matches(PltCntCfg(float_cnt=float_cnt, cat_cnt=cat_cnt)))
 
     def test_matches_float(self):
-        #match only float from 0 to 1
-        pf = PlotFilter(float_range=VarRange(0,1),cat_range = VarRange(None,None))
+        # match only float from 0 to 1
+        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
 
         self.assertTrue(pf.matches(PltCntCfg(float_cnt=0)))
-        self.assertTrue(pf.matches(PltCntCfg(float_cnt=1)))                        
+        self.assertTrue(pf.matches(PltCntCfg(float_cnt=1)))
         self.assertFalse(pf.matches(PltCntCfg(float_cnt=2)))
 
-
     @given(st.integers(min_value=0))
-    def test_matches_float_cat(self,cat_cnt):
+    def test_matches_float_cat(self, cat_cnt):
+        # match any cat count but only float from 0 to 1
+        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
 
-        #match any cat count but only float from 0 to 1
-        pf = PlotFilter(float_range=VarRange(0,1),cat_range = VarRange(None,None))
-
-        self.assertTrue(pf.matches(PltCntCfg(float_cnt=0,cat_cnt=cat_cnt)))
-        self.assertTrue(pf.matches(PltCntCfg(float_cnt=1,cat_cnt=cat_cnt)))
-        self.assertFalse(pf.matches(PltCntCfg(float_cnt=2,cat_cnt=cat_cnt)))
-
-    
-
-
-
+        self.assertTrue(pf.matches(PltCntCfg(float_cnt=0, cat_cnt=cat_cnt)))
+        self.assertTrue(pf.matches(PltCntCfg(float_cnt=1, cat_cnt=cat_cnt)))
+        self.assertFalse(pf.matches(PltCntCfg(float_cnt=2, cat_cnt=cat_cnt)))

@@ -7,14 +7,22 @@ from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmar
 from bencher.bench_vars import ParametrizedSweep
 import bencher.plotting_functions as plt_func
 from bencher.plot_signature import PlotProvider
+import inspect
 
 
-class PlotLibrary:
+class PlotCollection:
     def __init__(self) -> None:
+        self.plotter_source = []
+        self.plotter_providers = {}
         self.plotters = []
 
-    def add_plotter(self, plotter: PlotProvider) -> None:
-        self.plotters.append(plotter)
+    def add_plotter_source(self, plotter: PlotProvider) -> None:
+        self.plotter_source.append(plotter)
+        self.plotter_providers |= dict(inspect.getmembers(plotter, predicate=inspect.ismethod))
+
+    def add_plotter(self, plot_name: str):
+        if plot_name in self.plotter_providers:
+            self.plotters.append(self.plotter_providers[plot_name])
 
     def gather_plots(
         self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
@@ -27,7 +35,7 @@ class PlotLibrary:
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
 
         tabs = pn.Tabs()
-        for p in self.plotters:
+        for p in self.plotter_source:
             for p in p.plot(bench_cfg, rv, plt_cnt_cfg):
                 tabs.append(p)
         return tabs

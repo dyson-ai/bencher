@@ -22,6 +22,7 @@ from bencher.bench_vars import (
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
+from bencher.plots.plot_library import PlotLibrary
 
 
 # Customize the formatter
@@ -144,7 +145,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot_lib = 
+        plot_lib=None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 
@@ -205,6 +206,8 @@ class Bench(BenchPlotServer):
             pass_repeat=pass_repeat,
             tag=tag,
         )
+        bench_cfg.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
+
         bench_cfg.param.update(run_cfg.param.values())
 
         bench_cfg_hash = bench_cfg.hash_persistent(True)

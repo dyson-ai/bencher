@@ -5,6 +5,15 @@ from bencher.bench_vars import ParametrizedSweep
 from typing import List
 import panel as pn
 
+from strenum import StrEnum
+from enum import auto
+
+
+class TablesPlotTypes(StrEnum):
+    dataframe_raw = auto()
+    dataframe_summary = auto()
+    xarray = auto()
+
 
 class Tables(PlotProvider):
     no_float_1_cat = PlotFilter(

@@ -62,3 +62,4 @@ class PlotProvider:
         if not hasattr(self, "plots"):
             self.plots = []
         self.plots.append(plot_fn)
+        return self
