@@ -394,11 +394,11 @@ class BenchCfg(BenchRunCfg):
         strs.append(f"repeats={self.repeats},over_time={self.over_time}")
         return "".join(strs)
 
-    def get_optimal_value_indices(self, result_var: bch.ParametrizedOutput) -> xr.DataArray:
+    def get_optimal_value_indices(self, result_var: bch.ParametrizedSweep) -> xr.DataArray:
         """Get an xarray mask of the values with the best values found during a parameter sweep
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal value of this result variable
+            result_var (bch.ParametrizedSweep): Optimal value of this result variable
 
         Returns:
             xr.DataArray: xarray mask of optimal values
@@ -413,12 +413,12 @@ class BenchCfg(BenchRunCfg):
         return indicies
 
     def get_optimal_inputs(
-        self, result_var: bch.ParametrizedOutput, keep_existing_consts: bool = True
+        self, result_var: bch.ParametrizedSweep, keep_existing_consts: bool = True
     ) -> Tuple[bch.ParametrizedSweep, Any]:
         """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal values of this result variable
+            result_var (bch.ParametrizedSweep): Optimal values of this result variable
             keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
 
         Returns:
@@ -445,13 +445,13 @@ class BenchCfg(BenchRunCfg):
 
     def get_optimal_vec(
         self,
-        result_var: bch.ParametrizedOutput,
+        result_var: bch.ParametrizedSweep,
         input_vars: List[bch.ParametrizedSweep],
     ) -> List[Any]:
         """Get the optimal values from the sweep as a vector.
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal values of this result variable
+            result_var (bch.ParametrizedSweep): Optimal values of this result variable
             input_vars (List[bch.ParametrizedSweep]): Define which input vars values are returned in the vector
 
         Returns:

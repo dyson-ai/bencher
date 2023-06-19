@@ -78,14 +78,6 @@ class ParametrizedSweep(Parameterized):
         return param_hash(self, True, False)
 
 
-class ParametrizedOutput(Parameterized):
-    """Parent class for all Output types that need a custom hash"""
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return param_hash(self, True, False)
-
-
 # slots that are shared across all Sweep classes
 # param does not work with multiple inheritance so define here
 shared_slots = ["units", "samples", "samples_debug"]
