@@ -7,7 +7,7 @@ from bencher.example.benchmark_data import AllSweepVars
 def get_sweep_hash_isolated_process():
     """get has values from a separate process as by default hashes across process are not the same"""
     os.system(
-        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(ex.hash_custom())' > hashed_vars_comparison_tmp"
+        "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(ex.hash_persistent())' > hashed_vars_comparison_tmp"
     )
     res = open("hashed_vars_comparison_tmp", "r", encoding="utf-8").read()
     os.remove("hashed_vars_comparison_tmp")
@@ -20,14 +20,14 @@ class TestBencherHashing(unittest.TestCase):
         ex = AllSweepVars()
         ex2 = AllSweepVars()
 
-        self.assertEqual(ex.param.var_float.hash_custom(), ex2.param.var_float.hash_custom())
-        self.assertEqual(ex.param.var_int.hash_custom(), ex2.param.var_int.hash_custom())
-        self.assertEqual(ex.param.var_enum.hash_custom(), ex2.param.var_enum.hash_custom())
+        self.assertEqual(ex.param.var_float.hash_persistent(), ex2.param.var_float.hash_persistent())
+        self.assertEqual(ex.param.var_int.hash_persistent(), ex2.param.var_int.hash_persistent())
+        self.assertEqual(ex.param.var_enum.hash_persistent(), ex2.param.var_enum.hash_persistent())
 
         print(ex.__repr__())
         print(ex2.__repr__())
 
-        self.assertEqual(ex.hash_custom(), ex2.hash_custom())
+        self.assertEqual(ex.hash_persistent(), ex2.hash_persistent())
 
     def test_hash_sweep(self) -> None:
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
@@ -36,15 +36,15 @@ class TestBencherHashing(unittest.TestCase):
         asv2 = AllSweepVars()
 
         self.assertEqual(
-            asv.hash_custom(),
-            asv2.hash_custom(),
+            asv.hash_persistent(),
+            asv2.hash_persistent(),
             "The classes should have equal hash when it has identical values",
         )
 
         asv2.var_float = 1
         self.assertNotEqual(
-            asv.hash_custom(),
-            asv2.hash_custom(),
+            asv.hash_persistent(),
+            asv2.hash_persistent(),
             "The classes should not have equal hash when they have different values",
         )
 

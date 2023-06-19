@@ -353,7 +353,7 @@ class BenchCfg(BenchRunCfg):
 
     ds = []
 
-    def hash_custom(self, include_repeats):
+    def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
         Args:
@@ -378,10 +378,10 @@ class BenchCfg(BenchRunCfg):
         )
         all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash_cust((hash_val, v.hash_custom()))
+            hash_val = hash_cust((hash_val, v.hash_persistent()))
 
         for v in self.const_vars:
-            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
+            hash_val = hash_cust((v[0].hash_persistent(), hash_cust(v[1])))
 
         return hash_val
 

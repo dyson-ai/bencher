@@ -207,11 +207,11 @@ class Bench(BenchPlotServer):
         )
         bench_cfg.param.update(run_cfg.param.values())
 
-        bench_cfg_hash = bench_cfg.hash_custom(True)
+        bench_cfg_hash = bench_cfg.hash_persistent(True)
         bench_cfg.hash_value = bench_cfg_hash
 
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
-        bench_cfg_sample_hash = bench_cfg.hash_custom(False)
+        bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
             self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
