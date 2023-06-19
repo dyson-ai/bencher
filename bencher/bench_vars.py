@@ -12,7 +12,7 @@ import hashlib
 from sys import byteorder
 
 
-def hash_cust(var: any) -> str:
+def hash_sha1(var: any) -> str:
     """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
     return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
 
@@ -59,14 +59,14 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     if hash_value:
         for k, v in param_type.param.values().items():
             if k != "name":
-                curhash = hash_cust((curhash, hash_cust(v)))
+                curhash = hash_sha1((curhash, hash_sha1(v)))
 
     if hash_meta:
         for k, v in param_type.param.params().items():
             if k != "name":
-                print(f"key:{k}, hash:{hash_cust(k)}")
-                print(f"value:{v}, hash:{hash_cust(v)}")
-                curhash = hash_cust((curhash, hash_cust(k), hash_cust(v)))
+                print(f"key:{k}, hash:{hash_sha1(k)}")
+                print(f"value:{v}, hash:{hash_sha1(v)}")
+                curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
     return curhash
 
 
@@ -99,8 +99,8 @@ def sweep_hash(parameter: Parameterized) -> int:
     """
     curhash = 0
     for v in parameter.values():
-        print(f"value:{v}, hash:{hash_cust(v)}")
-        curhash = hash_cust((curhash, hash_cust(v)))
+        print(f"value:{v}, hash:{hash_sha1(v)}")
+        curhash = hash_sha1((curhash, hash_sha1(v)))
     return curhash
 
 
@@ -113,7 +113,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_sha1((parameter.units, parameter.samples, parameter.samples_debug))
 
 
 def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
@@ -468,7 +468,7 @@ class ResultVar(Number):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_cust((self.units, self.direction))
+        return hash_sha1((self.units, self.direction))
 
 
 class ResultVec(param.List):
@@ -485,7 +485,7 @@ class ResultVec(param.List):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_cust((self.units, self.direction))
+        return hash_sha1((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
         """given the index of the vector, return the column name that
@@ -579,7 +579,7 @@ class ResultList(param.Parameter):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_cust((self.units, self.dim_name, self.dim_units))
+        return hash_sha1((self.units, self.dim_name, self.dim_units))
 
     # def gen_indices(self, result_vec) -> None:
     #     # if self.indices is None:

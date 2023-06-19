@@ -18,7 +18,7 @@ from bencher.bench_vars import (
     ResultVar,
     ResultVec,
     ResultList,
-    hash_cust,
+    hash_sha1,
 )
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
@@ -493,9 +493,9 @@ class Bench(BenchPlotServer):
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_cust((fn_inputs_sorted, bench_cfg.tag))
+            function_input_signature_pure = hash_sha1((fn_inputs_sorted, bench_cfg.tag))
 
-            function_input_signature_benchmark_context = hash_cust(
+            function_input_signature_benchmark_context = hash_sha1(
                 (function_input_signature_pure, bench_cfg_sample_hash)
             )
             print("inputs", fn_inputs_sorted)
