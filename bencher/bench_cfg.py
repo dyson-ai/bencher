@@ -351,7 +351,7 @@ class BenchCfg(BenchRunCfg):
         doc="store the hash value of the config to avoid having to hash multiple times",
     )
 
-    ds = []
+    ds = xr.Dataset()
 
 
     def hash_persistent(self, include_repeats) -> str:
