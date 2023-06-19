@@ -3,7 +3,7 @@ from bencher import (
     FloatSweep,
     StringSweep,
     ResultVar,
-    ParametrizedOutput,
+    ParametrizedSweep,
     ParametrizedSweep,
 )
 import math
@@ -49,7 +49,7 @@ class InputCfg(ParametrizedSweep):
     trig_func = StringSweep(["sin", "cos"], doc="Select what trigonometric function use")
 
 
-class OutputVoltage(ParametrizedOutput):
+class OutputVoltage(ParametrizedSweep):
     voltage = ResultVar(units="v", doc="Output voltage")
 
 

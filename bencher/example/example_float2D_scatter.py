@@ -2,7 +2,7 @@ from bencher import (
     Bench,
     BenchRunCfg,
     ParametrizedSweep,
-    ParametrizedOutput,
+    ParametrizedSweep,
     FloatSweep,
     ResultVar,
     ResultVec,
@@ -21,7 +21,7 @@ class GaussianDist(ParametrizedSweep):
     )
 
 
-class Example2DGaussianResult(ParametrizedOutput):
+class Example2DGaussianResult(ParametrizedSweep):
     """A class to represent the properties of a volume sample."""
 
     gauss_x = ResultVar("m", doc="x value of the 2D gaussian")
