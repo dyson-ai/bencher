@@ -11,7 +11,6 @@ from strenum import StrEnum
 
 from bencher.bench_vars import (
     ParametrizedSweep,
-    ParametrizedSweep,
     IntSweep,
     FloatSweep,
     EnumSweep,

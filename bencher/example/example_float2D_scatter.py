@@ -2,7 +2,6 @@ from bencher import (
     Bench,
     BenchRunCfg,
     ParametrizedSweep,
-    ParametrizedSweep,
     FloatSweep,
     ResultVar,
     ResultVec,

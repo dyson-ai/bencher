@@ -4,7 +4,6 @@ from bencher import (
     StringSweep,
     ResultVar,
     ParametrizedSweep,
-    ParametrizedSweep,
 )
 import math
 

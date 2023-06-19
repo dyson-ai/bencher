@@ -8,7 +8,6 @@ from bencher import (
     EnumSweep,
     ResultVar,
     ParametrizedSweep,
-    ParametrizedSweep,
     OptDir,
 )
 import math
