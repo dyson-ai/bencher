@@ -20,10 +20,12 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     plot_lib = bch.PlotLibrary.default()
     plot_lib.add(bch.AllPlotTypes.barplot)
-    plot_lib.add(bch.AllPlotTypes.dataframe_raw)
+    plot_lib.add(bch.AllPlotTypes.dataframe_flat)
     plot_lib.add(bch.AllPlotTypes.dataframe_mean)
 
     plot_lib.remove(bch.AllPlotTypes.swarmplot)
+
+    plot_lib = bch.PlotLibrary.all()
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
     bencher.plot_sweep(
