@@ -96,7 +96,7 @@ class BenchPlotter:
                         pn.pane.Markdown(
                             """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
                         ),
-                        bench_cfg.ds.to_dataframe().reset_index(),
+                        bench_cfg.get_dataframe(),
                         name="Pandas Dataframe Flattened View",
                     )
                 )
@@ -116,7 +116,9 @@ class BenchPlotter:
         Returns:
             pn.Row: A panel row with plots in it
         """
-        plot_rows = pn.Row(name=bench_cfg.bench_name)
+        plot_rows = pn.Row(
+            name=bench_cfg.bench_name,
+        )
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         for rv in bench_cfg.result_vars:
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))

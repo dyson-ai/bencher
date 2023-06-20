@@ -22,7 +22,7 @@ def get_hash_isolated_process() -> bytes:
         [
             "python3",
             "-c",
-            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(cfg1.hash_custom())'",
+            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(cfg1.hash_persistent())'",
         ],
         stdout=subprocess.PIPE,
         check=False,
@@ -124,8 +124,8 @@ class TestBencher(unittest.TestCase):
         )
 
         self.assertEqual(
-            cfg1.hash_custom(include_repeats=True),
-            cfg2.hash_custom(include_repeats=True),
+            cfg1.hash_persistent(include_repeats=True),
+            cfg2.hash_persistent(include_repeats=True),
         )
 
     def test_bench_cfg_hash_isolated(self):

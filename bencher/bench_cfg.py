@@ -10,7 +10,8 @@ from str2bool import str2bool
 import xarray as xr
 from typing import List, Callable, Tuple, Any
 
-from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_cust
+from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_sha1
+from pandas import DataFrame
 
 
 def to_filename(
@@ -148,6 +149,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     print_bench_inputs: bool = param.Boolean(
         True, doc="Print the inputs to the benchmark function every time it is called"
+    )
+
+    print_bench_results: bool = param.Boolean(
+        True, doc="Print the results of the benchmark function every time it is called"
     )
 
     clear_history: bool = param.Boolean(False, doc="Clear historical results")
@@ -341,9 +346,14 @@ class BenchCfg(BenchRunCfg):
         doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from eachother and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with eachother based only on the tag value.",
     )
 
-    ds = []
+    hash_value: str = param.String(
+        "",
+        doc="store the hash value of the config to avoid having to hash multiple times",
+    )
 
-    def hash_custom(self, include_repeats):
+    ds = xr.Dataset()
+
+    def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
         Args:
@@ -352,26 +362,26 @@ class BenchCfg(BenchRunCfg):
 
         if include_repeats:
             # needed so that the historical xarray arrays are the same size
-            repeats_hash = hash_cust(self.repeats)
+            repeats_hash = hash_sha1(self.repeats)
         else:
             repeats_hash = 0
 
-        hash_val = hash_cust(
+        hash_val = hash_sha1(
             (
-                hash_cust(str(self.bench_name)),
-                hash_cust(str(self.title)),
-                hash_cust(self.over_time),
+                hash_sha1(str(self.bench_name)),
+                hash_sha1(str(self.title)),
+                hash_sha1(self.over_time),
                 repeats_hash,
-                hash_cust(self.debug),
-                hash_cust(self.tag),
+                hash_sha1(self.debug),
+                hash_sha1(self.tag),
             )
         )
         all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash_cust((hash_val, v.hash_custom()))
+            hash_val = hash_sha1((hash_val, v.hash_persistent()))
 
         for v in self.const_vars:
-            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
+            hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
 
         return hash_val
 
@@ -460,6 +470,15 @@ class BenchCfg(BenchRunCfg):
                 output.append(max(da.coords[iv.name].values[()]))
             logging.info(f"Maximum value of {iv.name}: {output[-1]}")
         return output
+
+    def get_dataframe(self) -> DataFrame:
+        """Get the xarray results as a pandas dataframe
+
+        Returns:
+            pd.DataFrame: The xarray results array as a pandas dataframe
+        """
+
+        return self.ds.to_dataframe().reset_index()
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:

@@ -12,6 +12,8 @@ from .bench_vars import (
     ParametrizedSweep,
     ResultVar,
     ResultVec,
+    ResultList,
+    ResultSeries,
     OptDir,
-    hash_cust,
+    hash_sha1,
 )

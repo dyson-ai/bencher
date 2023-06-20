@@ -12,7 +12,7 @@ import plotly.express as px
 import logging
 
 from holoviews import opts
-from bencher.bench_vars import ParametrizedSweep, ResultVec
+from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec, ResultList
 from bencher.bench_cfg import PltCfgBase, BenchCfg
 
 hv.extension("plotly")
@@ -92,7 +92,7 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
             return plot_scatter3D_px(bench_cfg, rv)
         else:
             return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
-    else:
+    elif type(rv) == ResultVar:
         df = bench_cfg.ds[rv.name].to_dataframe().reset_index()
 
         try:
@@ -109,6 +109,27 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
 
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+    elif type(rv) == ResultList:
+        plt.figure(figsize=(4, 4))
+
+        in_var = bench_cfg.input_vars[0].name
+
+        # get the data to plot
+        dataset_key = (bench_cfg.hash_value, rv.name)
+        df = bench_cfg.ds_dynamic[dataset_key].to_dataframe().reset_index()
+
+        # plot
+        fg = sns.lineplot(df, x=rv.dim_name, y=rv.name, hue=in_var)
+
+        # titles and labels and formatting
+        fg.set_xlabel(f"{rv.dim_name} [{rv.dim_units}]")
+        fg.set_ylabel(f"{rv.name} [{rv.units}]")
+        fg.set_title(f"{in_var} vs ({rv.name} vs {rv.dim_name})")
+
+        plt.tight_layout()
+
+        return pn.panel(plt.gcf())
+
     fg.fig.suptitle(sns_cfg.title)
     plt.tight_layout()
 
@@ -161,7 +182,7 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
     bench_cfg = wrap_long_time_labels(bench_cfg)
     bench_cfg.ds.drop_vars("repeat")
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     names = rv.index_names()
 
@@ -181,7 +202,7 @@ def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     names = rv.index_names()  # get the column names of the vector result
 
@@ -404,7 +425,7 @@ def plot_cone_plotly(
 
     opacity = 1.0
 
-    df = bench_cfg.ds.to_dataframe().reset_index()
+    df = bench_cfg.get_dataframe()
 
     print("size before removing zero size vectors", df.shape)
     df = df.loc[(df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)]
