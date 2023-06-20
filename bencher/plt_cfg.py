@@ -7,9 +7,9 @@ from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmar
 from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
-from bencher.plots.plot_collection import PlotCollection
-from bencher.plots.catplot import Catplot
-from bencher.plots.tables import Tables
+from bencher.plotting.plot_collection import PlotCollection
+from bencher.plotting.plots.catplot import Catplot
+from bencher.plotting.plots.tables import Tables
 
 
 class BenchPlotter:

@@ -22,7 +22,7 @@ from bencher.bench_vars import (
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
-from bencher.plots.plot_library import PlotLibrary
+from bencher.plotting.plot_library import PlotLibrary
 
 
 # Customize the formatter
