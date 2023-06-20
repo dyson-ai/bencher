@@ -1,8 +1,6 @@
 from __future__ import annotations
-import param
 from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
-from typing import Callable
 
 
 class VarRange:
@@ -62,20 +60,12 @@ class PlotInput:
 
 
 class PlotProvider:
-    def plot1(self, pl_in: PlotInput):
-        all_plots = []
-        for p in self.plots:
-            all_plots.extend(p(bench_cfg, rv, plt_cnt_cfg))
-        return all_plots
+    """A base class for code that displays or plots data. Each class that inherits provides plotting methods and a filter that specifies what the plot is capable of displaying"""
 
-    def plot(self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg):
-        all_plots = []
-        for p in self.plots:
-            all_plots.extend(p(bench_cfg, rv, plt_cnt_cfg))
-        return all_plots
-
-    def register_plot(self, plot_fn: Callable):
-        if not hasattr(self, "plots"):
-            self.plots = []
-        self.plots.append(plot_fn)
-        return self
+    # commonly used filters that are shared across classes
+    float_1_cat_any_vec_1_res_1_ = PlotFilter(
+        float_range=VarRange(0, 0),
+        cat_range=VarRange(0, None),
+        vector_len=VarRange(1, 1),
+        result_vars=VarRange(1, 1),
+    )

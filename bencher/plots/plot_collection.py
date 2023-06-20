@@ -6,23 +6,29 @@ import logging
 from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedSweep
 import bencher.plotting_functions as plt_func
-from bencher.plot_signature import PlotProvider
+from bencher.plot_signature import PlotProvider, PlotInput
 import inspect
+from collections import OrderedDict
 
 
 class PlotCollection:
     def __init__(self) -> None:
         self.plotter_source = []
         self.plotter_providers = {}
-        self.plotters = []
+        self.plotters = OrderedDict()
 
     def add_plotter_source(self, plotter: PlotProvider) -> None:
         self.plotter_source.append(plotter)
         self.plotter_providers |= dict(inspect.getmembers(plotter, predicate=inspect.ismethod))
 
-    def add_plotter(self, plot_name: str):
+    def add(self, plot_name: str):
         if plot_name in self.plotter_providers:
-            self.plotters.append(self.plotter_providers[plot_name])
+            self.plotters[plot_name] = self.plotter_providers[plot_name]
+        return self
+
+    def remove(self, plot_name: str):
+        self.plotters.pop(plot_name)
+        return self
 
     def gather_plots(
         self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
@@ -35,7 +41,8 @@ class PlotCollection:
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
 
         tabs = pn.Tabs()
-        for p in self.plotter_source:
-            for p in p.plot(bench_cfg, rv, plt_cnt_cfg):
+        for p in self.plotters.values():
+            plots = p(PlotInput(bench_cfg, rv, plt_cnt_cfg))
+            for p in plots:
                 tabs.append(p)
         return tabs

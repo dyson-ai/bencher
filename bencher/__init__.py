@@ -17,3 +17,4 @@ from .bench_vars import (
     OptDir,
     hash_sha1,
 )
+from .plots.plot_library import PlotLibrary, AllPlotTypes
