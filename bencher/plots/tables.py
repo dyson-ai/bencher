@@ -8,6 +8,7 @@ import panel as pn
 
 class Tables:
     """A class to display the result data in tabular form"""
+
     match_all = PlotFilter(
         float_range=VarRange(None, None),
         cat_range=VarRange(None, None),
@@ -15,10 +16,16 @@ class Tables:
         result_vars=VarRange(None, None),
     )
 
-    def dataframe_raw(self, pl_in: PlotInput) -> List[pn.panel]:
+    def dataframe_flat(self, pl_in: PlotInput) -> List[pn.panel]:
         if self.match_all.matches(pl_in.plt_cnt_cfg):
             df = pl_in.bench_cfg.get_dataframe()
-            return [pn.pane.DataFrame(df, name=self.dataframe_raw.__name__)]
+            return [pn.pane.DataFrame(df, name=self.dataframe_flat.__name__)]
+        return []
+
+    def dataframe_multi_index(self, pl_in: PlotInput) -> List[pn.panel]:
+        if self.match_all.matches(pl_in.plt_cnt_cfg):
+            df = pl_in.bench_cfg.ds.to_dataframe()
+            return [pn.pane.DataFrame(df, name=self.dataframe_multi_index.__name__)]
         return []
 
     def dataframe_mean(self, pl_in: PlotInput) -> List[pn.panel]:
