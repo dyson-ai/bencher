@@ -11,6 +11,7 @@ from strenum import StrEnum
 
 from bencher.bench_vars import (
     ParametrizedSweep,
+    ParametrizedOutput,
     IntSweep,
     FloatSweep,
     EnumSweep,
@@ -84,7 +85,7 @@ class ExampleBenchCfgIn(NoiseCfg):
     postprocess_fn = EnumSweep(PostprocessFn)
 
 
-class ExampleBenchCfgOut(ParametrizedSweep):
+class ExampleBenchCfgOut(ParametrizedOutput):
     out_sin = ResultVar(units="v", direction=OptDir.minimize, doc="sin of theta with some noise")
     out_cos = ResultVar(units="v", direction=OptDir.minimize, doc="cos of theta with some noise")
     out_bool = ResultVar(units="%", doc="sin > 0.5")

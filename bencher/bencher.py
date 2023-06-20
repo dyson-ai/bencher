@@ -14,6 +14,7 @@ from bencher.bench_vars import (
     TimeSnapshot,
     TimeEvent,
     ParametrizedSweep,
+    ParametrizedOutput,
     ResultVar,
     ResultVec,
     ResultList,
@@ -136,7 +137,7 @@ class Bench(BenchPlotServer):
         self,
         title: str,
         input_vars: List[ParametrizedSweep] = None,
-        result_vars: List[ParametrizedSweep] = None,
+        result_vars: List[ParametrizedOutput] = None,
         const_vars: List[ParametrizedSweep] = None,
         time_src: datetime = None,
         description: str = None,
@@ -149,7 +150,7 @@ class Bench(BenchPlotServer):
 
         Args:
             input_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
-            result_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
+            result_vars (List[ParametrizedOutput], optional): _description_. Defaults to None.
             const_vars (List[ParametrizedSweep], optional): A list of variables to keep constant with a specified value. Defaults to None.
             title (str, optional): The title of the benchmark. Defaults to None.
             description (str, optional): A description of the benchmark. Defaults to None.

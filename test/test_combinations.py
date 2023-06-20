@@ -37,7 +37,7 @@ class BenchCfgTest(bch.ParametrizedSweep):
     enum2 = bch.EnumSweep(Enum2)
 
 
-class BenchCfgTestOut(bch.ParametrizedSweep):
+class BenchCfgTestOut(bch.ParametrizedOutput):
     """A class for representing all types of result"""
 
     out1 = bch.ResultVar(doc="generic result variable 1")

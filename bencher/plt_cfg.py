@@ -4,7 +4,7 @@ from copy import deepcopy
 import panel as pn
 import logging
 from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedSweep, ResultVar
+from bencher.bench_vars import ParametrizedOutput, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
 
@@ -164,13 +164,13 @@ class BenchPlotter:
 
     @staticmethod
     def plot_result_variable(
-        bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
+        bench_cfg: BenchCfg, rv: ParametrizedOutput, plt_cnt_cfg: PltCntCfg
     ) -> pn.Column:
         """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
 
         Args:
             bench_cfg (BenchCfg): A config of the input vars
-            rv (ParametrizedSweep): a config of the result variable
+            rv (ParametrizedOutput): a config of the result variable
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are
 
         Raises:
@@ -253,12 +253,12 @@ class BenchPlotter:
 
     @staticmethod
     def get_axes_and_title(
-        rv: ParametrizedSweep, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+        rv: ParametrizedOutput, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
     ) -> PltCntCfg:
         """Work out the axes label and plot tite
 
         Args:
-            rv (ParametrizedSweep): result variable
+            rv (ParametrizedOutput): result variable
             sns_cfg (PltCfgBase): plotting config
             plt_cnt_cfg (PltCntCfg): plot count config
 

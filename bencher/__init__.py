@@ -9,6 +9,7 @@ from .bench_vars import (
     TimeSnapshot,
     EnumSweep,
     BoolSweep,
+    ParametrizedOutput,
     ParametrizedSweep,
     ResultVar,
     ResultVec,
