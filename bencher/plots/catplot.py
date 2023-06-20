@@ -35,16 +35,19 @@ class Catplot:
         plt.tight_layout()
         return [pn.panel(plt.gcf(), name=name)]
 
-    # def catplot_common(self, pl_in: PlotInput,kind) -> List[pn.panel]:
-
-    def swarmplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        name = "swarm"
+    def catplot_common(self, pl_in: PlotInput, kind, name) -> List[pn.panel]:
         if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
             df, sns_cfg = self.plot_setup(pl_in)
-            sns_cfg.kind = name
+            sns_cfg.kind = kind
             fg = sns.catplot(df, **sns_cfg.as_sns_args())
             return self.plot_postprocess(fg, sns_cfg, name)
         return []
+
+    def swarmplot(self, pl_in: PlotInput) -> List[pn.panel]:
+        return self.catplot_common(pl_in, "swarm", self.swarmplot.__name__)
+
+    def violinplot(self, pl_in: PlotInput) -> List[pn.panel]:
+        return self.catplot_common(pl_in, "violin", self.violinplot.__name__)
 
     def boxplot(self, pl_in: PlotInput) -> List[pn.panel]:
         if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
@@ -67,13 +70,5 @@ class Catplot:
             df, sns_cfg = self.plot_setup(pl_in)
             sns_cfg.kind = "boxen"
             fg = sns.catplot(df, x=sns_cfg.x, y=sns_cfg.y, kind=sns_cfg.kind)
-            return self.plot_postprocess(fg, sns_cfg, sns_cfg.kind)
-        return []
-
-    def violinplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
-            df, sns_cfg = self.plot_setup(pl_in)
-            sns_cfg.kind = "violin"
-            fg = sns.catplot(df, **sns_cfg.as_sns_args())
             return self.plot_postprocess(fg, sns_cfg, sns_cfg.kind)
         return []
