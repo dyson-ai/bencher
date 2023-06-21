@@ -14,7 +14,6 @@ from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDi
 from pandas import DataFrame
 
 
-
 def to_filename(
     param_cfg: param.Parameterized, param_list: list[str] = None, exclude_params: list[str] = None
 ) -> str:
