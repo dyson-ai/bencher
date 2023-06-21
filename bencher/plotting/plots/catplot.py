@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 import seaborn as sns
 import panel as pn
 import matplotlib.pyplot as plt
@@ -10,14 +10,14 @@ from bencher.plotting.plot_types import PlotTypes
 
 class Catplot:
     # shared plot filter for catplots
-    float_1_cat_any_vec_1_res_1_ = PlotFilter(
+    float_0_cat_at_least1_vec_1_res_1 = PlotFilter(
         float_range=VarRange(0, 0),
-        cat_range=VarRange(0, None),
+        cat_range=VarRange(1, None),
         vector_len=VarRange(1, 1),
         result_vars=VarRange(1, 1),
     )
 
-    def plot_setup(self, pl_in: PlotInput) -> Tuple(pd.DataFrame, PltCfgBase):
+    def plot_setup(self, pl_in: PlotInput) -> Tuple[pd.DataFrame, PltCfgBase]:
         plt.figure(figsize=(4, 4))
         df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
         sns_cfg = PltCfgBase()
@@ -37,7 +37,7 @@ class Catplot:
         return [pn.panel(plt.gcf(), name=name)]
 
     def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> List[pn.panel]:
-        if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
+        if self.float_0_cat_at_least1_vec_1_res_1.matches(pl_in.plt_cnt_cfg):
             df, sns_cfg = self.plot_setup(pl_in)
             sns_cfg.kind = kind
             fg = sns.catplot(df, **sns_cfg.as_sns_args())
