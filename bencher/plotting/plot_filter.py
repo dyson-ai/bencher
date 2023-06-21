@@ -1,7 +1,7 @@
 from __future__ import annotations
 from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
-
+from dataclasses import dataclass
 
 class VarRange:
     def __init__(self, lower_bound: int = 0, upper_bound: int = -1) -> None:
@@ -42,6 +42,7 @@ class VarRange:
 
 
 class PlotFilter:
+    
     def __init__(
         self,
         float_range: VarRange = VarRange(),
@@ -49,12 +50,30 @@ class PlotFilter:
         vector_len: VarRange = VarRange(1, 1),
         result_vars: VarRange = VarRange(1, 1),
     ) -> None:
+        """A class for representing the types of results a plot is able to represent. 
+
+        Args:
+            float_range (VarRange, optional): The range of float varibles the plot supports. Defaults to VarRange().
+            cat_range (VarRange, optional): The range of categorical varibles the plot supports. Defaults to VarRange().
+            vector_len (VarRange, optional): The range of vector lengths the plot supports. Defaults to VarRange(1, 1).
+            result_vars (VarRange, optional): The range of number of result varibles the plot supports. Defaults to VarRange(1, 1).
+        """      
+       
         self.float_range = float_range
         self.cat_range = cat_range
         self.vector_len = vector_len
         self.result_vars = result_vars
 
-    def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
+    def matches(self, plt_cng_cfg: PltCntCfg) -> bool:          
+        """Checks if the result data signature matches the type of data the plot is able to display.
+
+        Args:
+            plt_cng_cfg (PltCntCfg): The plot count configuration to check.
+
+        Returns:
+            bool: True if the configuration matches the filter, False otherwise.
+        """
+       
         return (
             self.float_range.matches(plt_cng_cfg.float_cnt)
             and self.cat_range.matches(plt_cng_cfg.cat_cnt)
@@ -63,7 +82,7 @@ class PlotFilter:
         )
 
 
-from dataclasses import dataclass
+
 
 
 @dataclass
