@@ -38,9 +38,9 @@ def example_cache_context() -> bch.Bench:
 
     bencher = bch.Bench("bench_context", bench_function, Cfg)
 
-    # clear all tags at the beginning so that behavior is repeatable across runs
-    bencher.clear_tag("example_tag1")
-    bencher.clear_tag("example_tag2")
+    # clear all tags from the cache at the beginning so that the example works the same not matter how many times the example is run.  When using this for you own code you probably don't want to clear the cache at the beginning because you will lose all the data you collected.
+    bencher.clear_tag_from_cache("example_tag1")
+    bencher.clear_tag_from_cache("example_tag2")
 
     # run a benchmark with a constant value and save results with example_tag1
     bencher.plot_sweep(

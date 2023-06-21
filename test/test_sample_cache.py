@@ -35,7 +35,7 @@ class TestSampleCache(unittest.TestCase):
         instance.trigger_crash = True
 
         bencher = bch.Bench("example_sample_cache", instance.crashy_fn)
-        bencher.clear_tag("testing_tag3")
+        bencher.clear_tag_from_cache("testing_tag3")
 
         # the benchmark is set up to clear the previous sample cache and to cache the intermediate results from each benchmark sample.  It will throw an exception because the class has been set up to crash after the 2nd sample
         with self.assertRaises(RuntimeError):
