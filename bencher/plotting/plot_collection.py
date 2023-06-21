@@ -1,8 +1,8 @@
-import seaborn as sns
+from __future__ import annotations
 import xarray as xr
-from copy import deepcopy
 import panel as pn
 import logging
+
 from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedSweep
 import bencher.plotting_functions as plt_func
@@ -12,21 +12,53 @@ from collections import OrderedDict
 
 
 class PlotCollection:
+    """A set of plot providers with filters that determine if they are able to plot the type of data in the results.  The plot collection can be customised with user defined plots or ones already defined by bencher. You can also take predefine PlotCollections defined in PlotLibrary and add or remove specific plots that you want to override.  The add and remove function accept strings, or StrEnums (which are equivalent to strings)"""
+
     def __init__(self) -> None:
-        self.plotter_source = []
+        """A PlotCollection has a dictionary of function_name:function_pointer which are all the available types of plot. The plotters variable contains an ordered dictionary of the active plotting functions"""
         self.plotter_providers = {}
-        self.plotters = OrderedDict()
+        self.plotters = {}
 
-    def add_plotter_source(self, plotter: PlotProvider) -> None:
-        self.plotter_source.append(plotter)
-        self.plotter_providers |= dict(inspect.getmembers(plotter, predicate=inspect.ismethod))
+    def add_plotter_source(self, plotter_class_instance: PlotProvider) -> None:
+        """Given a class definition that contains several plotting methods, get a list of all the methods of the class and add them to the dictionary of available plotting functions
 
-    def add(self, plot_name: str):
+        Args:
+            plotter_class_instance (PlotProvider): A class that contains plotting methods
+        """
+
+        if not inspect.isclass(plotter_class_instance):
+            self.plotter_providers |= dict(
+                inspect.getmembers(plotter_class_instance, predicate=inspect.ismethod)
+            )
+        else:
+            raise ValueError(
+                "You need to pass an instance of a class not the class type, Add () to the end of the class name"
+            )
+
+    def add(self, plot_name: str) -> PlotCollection:
+        """Add a plotting method to the list of active plotting functions
+
+        Args:
+            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum AllPlotTypes (which is also a string)
+
+        Returns:
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add(barplot).remove(swarmplot)
+        """
         if plot_name in self.plotter_providers:
             self.plotters[plot_name] = self.plotter_providers[plot_name]
+        else:
+            raise ValueError("This plot was not found in the list of available plots")
         return self
 
-    def remove(self, plot_name: str):
+    def remove(self, plot_name: str) -> PlotCollection:
+        """Remove a plotting method from the list of active plotting functions
+
+        Args:
+            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum AllPlotTypes (which is also a string)
+
+        Returns:
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.remove(swarmplot).add(barplot)
+        """
         self.plotters.pop(plot_name)
         return self
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.tables import Tables
