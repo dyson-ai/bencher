@@ -1,10 +1,7 @@
-from bencher.plotting.plot_filter import PlotProvider, PlotFilter, VarRange, PlotInput
-from bencher.bench_cfg import BenchCfg, PltCntCfg
-from bencher.bench_vars import ParametrizedSweep
-
 from typing import List
 import panel as pn
 from bencher.plotting.plot_types import AllPlotTypes
+from bencher.plotting.plot_filter import PlotInput
 
 
 class Tables:
