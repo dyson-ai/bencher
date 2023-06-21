@@ -173,21 +173,21 @@ def sweep_var_to_optuna_dist(var: param.Parameter) -> optuna.distributions.BaseD
     iv_type = type(var)
     if iv_type == IntSweep:
         return optuna.distributions.IntDistribution(var.bounds[0], var.bounds[1])
-    elif iv_type == FloatSweep:
+    if iv_type == FloatSweep:
         return optuna.distributions.FloatDistribution(var.bounds[0], var.bounds[1])
-    elif iv_type == EnumSweep or iv_type == StringSweep:
+    if iv_type in (EnumSweep, StringSweep):
         return optuna.distributions.CategoricalDistribution(var.objects)
-    elif iv_type == BoolSweep:
+    if iv_type == BoolSweep:
         return optuna.distributions.CategoricalDistribution([False, True])
-    elif iv_type == TimeSnapshot:
+    if iv_type == TimeSnapshot:
         # return optuna.distributions.IntDistribution(0, sys.maxsize)
         return optuna.distributions.FloatDistribution(0, 1e20)
         # return optuna.distributions.CategoricalDistribution([])
-    elif iv_type == TimeEvent:
-        pass
-        # return optuna.distributions.CategoricalDistribution(["now"])
-    else:
-        raise ValueError(f"This input type {iv_type} is not supported")
+    # elif iv_type == TimeEvent:
+    #     pass
+    # return optuna.distributions.CategoricalDistribution(["now"])
+
+    raise ValueError(f"This input type {iv_type} is not supported")
 
 
 def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
@@ -207,18 +207,17 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
 
     if iv_type == IntSweep:
         return trial.suggest_int(iv.name, iv.bounds[0], iv.bounds[1])
-    elif iv_type == FloatSweep:
+    if iv_type == FloatSweep:
         return trial.suggest_float(iv.name, iv.bounds[0], iv.bounds[1])
-    elif iv_type == EnumSweep or iv_type == StringSweep:
+    if iv_type in (EnumSweep, StringSweep):
         return trial.suggest_categorical(iv.name, iv.objects)
-    elif iv_type == TimeSnapshot:
+    if iv_type == TimeSnapshot:
         pass  # optuna does not like time
-    elif iv_type == TimeEvent:
+    if iv_type == TimeEvent:
         pass  # optuna does not like time
-    elif iv_type == BoolSweep:
+    if iv_type == BoolSweep:
         return trial.suggest_categorical(iv.name, [True, False])
-    else:
-        raise ValueError(f"This input type {iv_type} is not supported")
+    raise ValueError(f"This input type {iv_type} is not supported")
 
 
 def cfg_from_optuna_trial(
@@ -242,7 +241,7 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
         optuna.Study: optuna description of the study
     """
     if include_meta:
-        df = bench_cfg.ds.to_dataframe().reset_index()
+        df = bench_cfg.get_dataframe()
         all_vars = []
         for v in bench_cfg.all_vars:
             if type(v) != TimeEvent:

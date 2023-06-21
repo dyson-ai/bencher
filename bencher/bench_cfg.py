@@ -10,7 +10,8 @@ from str2bool import str2bool
 import xarray as xr
 from typing import List, Callable, Tuple, Any
 
-from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_cust
+from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_sha1
+from pandas import DataFrame
 
 
 def to_filename(
@@ -150,6 +151,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
         True, doc="Print the inputs to the benchmark function every time it is called"
     )
 
+    print_bench_results: bool = param.Boolean(
+        True, doc="Print the results of the benchmark function every time it is called"
+    )
+
     clear_history: bool = param.Boolean(False, doc="Clear historical results")
 
     print_pandas: bool = param.Boolean(
@@ -178,11 +183,26 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     use_cache: bool = param.Boolean(
         False,
-        doc=" If true, before calling the objective function, the sampler will check if these inputs have been calculated before and if so load them from the cache. Beware depending on how you change code in the objective function, the cache could provide values that are not correct.",
+        doc="This is a benchmark level cache that stores the results of a fully completed benchmark. At the end of a benchmark the values are added to the cache but are not if the benchmark does not complete.  If you want to cache values during the benchmark you need to use the use_sample_cache option. Beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
 
     clear_cache: bool = param.Boolean(
         False, doc=" Clear the cache of saved input->output mappings."
+    )
+
+    use_sample_cache: bool = param.Boolean(
+        False,
+        doc="If true, every time the benchmark function is called, bencher will check if that value has been calculated before and if so load the from the cache.  Note that the sample level cache is different from the benchmark level cache which only caches the aggregate of all the results at the end of the benchmark. This cache lets you stop a benchmark halfway through and continue. However, beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
+    )
+
+    only_hash_tag: bool = param.Boolean(
+        False,
+        doc="By default when checking if a sample has been calculated before it includes the hash of the greater benchmarking context.  This is safer because it means that data generated from one benchmark will not affect data from another benchmark.  However, if you are careful it can be more flexible to ignore which benchmark generated the data and only use the tag hash to check if that data has been calculated before. ie, you can create two benchmarks that sample a subset of the problem during exploration and give them the same tag, and then afterwards create a larger benchmark that covers the cases you already explored.  If this value is true, the combined benchmark will use any data from other benchmarks with the same tag.",
+    )
+
+    clear_sample_cache: bool = param.Boolean(
+        False,
+        doc="Clears the per-sample cache.  Use this if you get unexpected behavior.  The per_sample cache is tagged by the specific benchmark it was sampled from. So clearing the cache of one benchmark will not clear the cache of other benchmarks.",
     )
 
     only_plot: bool = param.Boolean(
@@ -316,28 +336,52 @@ class BenchCfg(BenchRunCfg):
         doc="If this config has results, true, otherwise used to store titles and other bench metadata",
     )
 
-    ds = []
+    pass_repeat: bool = param.Boolean(
+        False,
+        doc="By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if you want the benchmark function to be passed the repeat number",
+    )
 
-    def hash_custom(self):
-        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg"""
+    tag: str = param.String(
+        "",
+        doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from eachother and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with eachother based only on the tag value.",
+    )
 
-        hash_val = hash_cust(
+    hash_value: str = param.String(
+        "",
+        doc="store the hash value of the config to avoid having to hash multiple times",
+    )
+
+    ds = xr.Dataset()
+
+    def hash_persistent(self, include_repeats) -> str:
+        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
+
+        Args:
+            include_repeats (bool) : by default include repeats as part of the hash execpt with using the sample cache
+        """
+
+        if include_repeats:
+            # needed so that the historical xarray arrays are the same size
+            repeats_hash = hash_sha1(self.repeats)
+        else:
+            repeats_hash = 0
+
+        hash_val = hash_sha1(
             (
-                hash_cust(str(self.bench_name)),
-                hash_cust(str(self.title)),
-                hash_cust(self.over_time),
-                hash_cust(
-                    self.repeats
-                ),  # needed so that the historical xarray arrays are the same size
-                hash_cust(self.debug),
+                hash_sha1(str(self.bench_name)),
+                hash_sha1(str(self.title)),
+                hash_sha1(self.over_time),
+                repeats_hash,
+                hash_sha1(self.debug),
+                hash_sha1(self.tag),
             )
         )
         all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash_cust((hash_val, v.hash_custom()))
+            hash_val = hash_sha1((hash_val, v.hash_persistent()))
 
         for v in self.const_vars:
-            hash_val = hash_cust((v[0].hash_custom(), hash_cust(v[1])))
+            hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
 
         return hash_val
 
@@ -350,11 +394,11 @@ class BenchCfg(BenchRunCfg):
         strs.append(f"repeats={self.repeats},over_time={self.over_time}")
         return "".join(strs)
 
-    def get_optimal_value_indices(self, result_var: bch.ParametrizedOutput) -> xr.DataArray:
+    def get_optimal_value_indices(self, result_var: bch.ParametrizedSweep) -> xr.DataArray:
         """Get an xarray mask of the values with the best values found during a parameter sweep
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal value of this result variable
+            result_var (bch.ParametrizedSweep): Optimal value of this result variable
 
         Returns:
             xr.DataArray: xarray mask of optimal values
@@ -369,12 +413,12 @@ class BenchCfg(BenchRunCfg):
         return indicies
 
     def get_optimal_inputs(
-        self, result_var: bch.ParametrizedOutput, keep_existing_consts: bool = True
+        self, result_var: bch.ParametrizedSweep, keep_existing_consts: bool = True
     ) -> Tuple[bch.ParametrizedSweep, Any]:
         """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal values of this result variable
+            result_var (bch.ParametrizedSweep): Optimal values of this result variable
             keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
 
         Returns:
@@ -401,13 +445,13 @@ class BenchCfg(BenchRunCfg):
 
     def get_optimal_vec(
         self,
-        result_var: bch.ParametrizedOutput,
+        result_var: bch.ParametrizedSweep,
         input_vars: List[bch.ParametrizedSweep],
     ) -> List[Any]:
         """Get the optimal values from the sweep as a vector.
 
         Args:
-            result_var (bch.ParametrizedOutput): Optimal values of this result variable
+            result_var (bch.ParametrizedSweep): Optimal values of this result variable
             input_vars (List[bch.ParametrizedSweep]): Define which input vars values are returned in the vector
 
         Returns:
@@ -426,6 +470,15 @@ class BenchCfg(BenchRunCfg):
                 output.append(max(da.coords[iv.name].values[()]))
             logging.info(f"Maximum value of {iv.name}: {output[-1]}")
         return output
+
+    def get_dataframe(self) -> DataFrame:
+        """Get the xarray results as a pandas dataframe
+
+        Returns:
+            pd.DataFrame: The xarray results array as a pandas dataframe
+        """
+
+        return self.ds.to_dataframe().reset_index()
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:

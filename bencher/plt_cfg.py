@@ -4,7 +4,7 @@ from copy import deepcopy
 import panel as pn
 import logging
 from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedOutput, ResultVar
+from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 import bencher.plotting_functions as plt_func
 
@@ -96,7 +96,7 @@ class BenchPlotter:
                         pn.pane.Markdown(
                             """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
                         ),
-                        bench_cfg.ds.to_dataframe().reset_index(),
+                        bench_cfg.get_dataframe(),
                         name="Pandas Dataframe Flattened View",
                     )
                 )
@@ -116,7 +116,9 @@ class BenchPlotter:
         Returns:
             pn.Row: A panel row with plots in it
         """
-        plot_rows = pn.Row(name=bench_cfg.bench_name)
+        plot_rows = pn.Row(
+            name=bench_cfg.bench_name,
+        )
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
         for rv in bench_cfg.result_vars:
             plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
@@ -162,13 +164,13 @@ class BenchPlotter:
 
     @staticmethod
     def plot_result_variable(
-        bench_cfg: BenchCfg, rv: ParametrizedOutput, plt_cnt_cfg: PltCntCfg
+        bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
     ) -> pn.Column:
         """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
 
         Args:
             bench_cfg (BenchCfg): A config of the input vars
-            rv (ParametrizedOutput): a config of the result variable
+            rv (ParametrizedSweep): a config of the result variable
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are
 
         Raises:
@@ -251,12 +253,12 @@ class BenchPlotter:
 
     @staticmethod
     def get_axes_and_title(
-        rv: ParametrizedOutput, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+        rv: ParametrizedSweep, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
     ) -> PltCntCfg:
         """Work out the axes label and plot tite
 
         Args:
-            rv (ParametrizedOutput): result variable
+            rv (ParametrizedSweep): result variable
             sns_cfg (PltCfgBase): plotting config
             plt_cnt_cfg (PltCntCfg): plot count config
 

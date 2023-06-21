@@ -2,6 +2,8 @@ import bencher as bch
 
 
 class InputCfg(bch.ParametrizedSweep):
+    """An example of a datatype with an integer and float parameter"""
+
     x = bch.FloatSweep(
         sample_values=[2, 3, 4, 7, 8, 9],
         doc="An example of a user defines set of sweep values",
@@ -11,7 +13,7 @@ class InputCfg(bch.ParametrizedSweep):
     )
 
 
-class Result(bch.ParametrizedOutput):
+class Result(bch.ParametrizedSweep):
     result = bch.ResultVar("ul", doc="Square of x")
 
 

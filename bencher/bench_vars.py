@@ -12,12 +12,9 @@ import hashlib
 from sys import byteorder
 
 
-def hash_cust(var: any):
+def hash_sha1(var: any) -> str:
+    """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
     return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
-    # hash_val = 0
-    # for ch in text:
-    # hash_val = (hash_val * 281 ^ ord(ch) * 997) & 0xFFFFFFFF
-    # return hash_val
 
 
 def capitalise_words(message: str):
@@ -62,28 +59,22 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     if hash_value:
         for k, v in param_type.param.values().items():
             if k != "name":
-                curhash = hash_cust((curhash, hash_cust(v)))
+                curhash = hash_sha1((curhash, hash_sha1(v)))
 
     if hash_meta:
         for k, v in param_type.param.params().items():
             if k != "name":
-                print(f"key:{k}, hash:{hash_cust(k)}")
-                print(f"value:{v}, hash:{hash_cust(v)}")
-                curhash = hash_cust((curhash, hash_cust(k), hash_cust(v)))
+                print(f"key:{k}, hash:{hash_sha1(k)}")
+                print(f"value:{v}, hash:{hash_sha1(v)}")
+                curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
     return curhash
 
 
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
-    def hash_custom(self) -> int:
-        return param_hash(self, True, False)
-
-
-class ParametrizedOutput(Parameterized):
-    """Parent class for all Output types that need a custom hash"""
-
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return param_hash(self, True, False)
 
 
@@ -100,8 +91,8 @@ def sweep_hash(parameter: Parameterized) -> int:
     """
     curhash = 0
     for v in parameter.values():
-        print(f"value:{v}, hash:{hash_cust(v)}")
-        curhash = hash_cust((curhash, hash_cust(v)))
+        print(f"value:{v}, hash:{hash_sha1(v)}")
+        curhash = hash_sha1((curhash, hash_sha1(v)))
     return curhash
 
 
@@ -114,7 +105,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_sha1((parameter.units, parameter.samples, parameter.samples_debug))
 
 
 def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
@@ -153,7 +144,7 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug) -> list[bool]:
+    def values(self, debug) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return [True, False]
@@ -162,7 +153,8 @@ class BoolSweep(Boolean):
         """Generate a string representation of the sampling procedure"""
         return f"sampling {self.name} from: [True,False]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -184,7 +176,8 @@ class TimeBase(Selector):
         """
         return f"sampling from [The Past to {self.objects[0]}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -280,7 +273,8 @@ class StringSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -323,7 +317,8 @@ class EnumSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -393,7 +388,8 @@ class IntSweep(Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -440,7 +436,8 @@ class FloatSweep(Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -461,12 +458,13 @@ class ResultVar(Number):
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
 
-    def hash_custom(self) -> int:
-        return hash_cust((self.units, self.direction))
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.direction))
 
 
 class ResultVec(param.List):
-    """A class to represent vector result variable"""
+    """A class to represent fixed size vector result variable"""
 
     __slots__ = ["units", "direction", "size"]
 
@@ -477,8 +475,9 @@ class ResultVec(param.List):
         self.direction = direction
         self.size = size
 
-    def hash_custom(self) -> int:
-        return hash_cust((self.units, self.direction))
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
         """given the index of the vector, return the column name that
@@ -497,10 +496,75 @@ class ResultVec(param.List):
             index = idx
         return f"{self.name}_{index}"
 
-    def index_names(self) -> list[str]:
+    def index_names(self) -> List[str]:
         """Returns a list of all the xarray column names for the result vector
 
         Returns:
             list[str]: column names
         """
         return [self.index_name(i) for i in range(self.size)]
+
+
+class ResultSeries:
+    """A class to represent a vector of results, it also includes an index similar to pandas.series"""
+
+    def __init__(self, values=None, index=None) -> None:
+        self.values = []
+        self.index = []
+        self.set_index_and_values(values, index)
+
+    def append(self, value: float | int, index: float | int | str = None) -> None:
+        """Add a value and index to the result series
+
+        Args:
+            value (float | int): result value of the series
+            index (float | int | str, optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+        """
+
+        if index is None:
+            self.index.append(len(self.values))
+        else:
+            self.index.append(index)
+        self.values.append(value)
+
+    def set_index_and_values(
+        self, values: List[float | int], index: List[float | int | str] = None
+    ) -> None:
+        """Add values and indices to the result series
+
+        Args:
+            value (List[float | int]): result value of the series
+            index (List[float | int | str], optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+        """
+        if values is not None:
+            if index is None:
+                self.index = list(range(len(values)))
+            else:
+                self.index = index
+            self.values = values
+
+
+class ResultList(param.Parameter):
+    """A class to unknown size vector result variable"""
+
+    __slots__ = ["units", "dim_name", "dim_units", "indices"]
+
+    def __init__(
+        self,
+        index_name: str,
+        index_units: str,
+        default=ResultSeries(),
+        units="ul",
+        indices: List[float] = None,
+        instantiate=True,
+        **params,
+    ):
+        param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
+        self.units = units
+        self.dim_name = index_name
+        self.dim_units = index_units
+        self.indices = indices
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.dim_name, self.dim_units))

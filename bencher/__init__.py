@@ -9,10 +9,11 @@ from .bench_vars import (
     TimeSnapshot,
     EnumSweep,
     BoolSweep,
-    ParametrizedOutput,
     ParametrizedSweep,
     ResultVar,
     ResultVec,
+    ResultList,
+    ResultSeries,
     OptDir,
-    hash_cust,
+    hash_sha1,
 )

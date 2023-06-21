@@ -3,16 +3,14 @@
 You can define a subclass which contains an input configuration which can be passed to a function in a type safe way. You can combine the subclass with a higher level class which contains more configuation parameters.  This is to help manage the complexity of large configuration/parameter spaces. 
 """
 
-
-from strenum import StrEnum
-from enum import auto
-
 import math
 import random
+from enum import auto
+from strenum import StrEnum
+
 
 from bencher.bench_vars import (
     ParametrizedSweep,
-    ParametrizedOutput,
     IntSweep,
     FloatSweep,
     EnumSweep,
@@ -86,7 +84,7 @@ class ExampleBenchCfgIn(NoiseCfg):
     postprocess_fn = EnumSweep(PostprocessFn)
 
 
-class ExampleBenchCfgOut(ParametrizedOutput):
+class ExampleBenchCfgOut(ParametrizedSweep):
     out_sin = ResultVar(units="v", direction=OptDir.minimize, doc="sin of theta with some noise")
     out_cos = ResultVar(units="v", direction=OptDir.minimize, doc="cos of theta with some noise")
     out_bool = ResultVar(units="%", doc="sin > 0.5")
