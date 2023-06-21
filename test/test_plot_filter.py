@@ -1,5 +1,5 @@
 import unittest
-from bencher.plot_signature import VarRange, PlotFilter
+from bencher.plotting.plot_filter import VarRange, PlotFilter
 from hypothesis import given, settings, strategies as st
 
 from bencher.bench_cfg import PltCntCfg

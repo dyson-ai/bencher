@@ -6,7 +6,7 @@ import logging
 from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedSweep
 import bencher.plotting_functions as plt_func
-from bencher.plot_signature import PlotProvider, PlotInput
+from bencher.plotting.plot_filter import PlotProvider, PlotInput
 import inspect
 from collections import OrderedDict
 

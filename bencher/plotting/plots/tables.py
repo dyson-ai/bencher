@@ -1,4 +1,4 @@
-from bencher.plot_signature import PlotProvider, PlotFilter, VarRange, PlotInput
+from bencher.plotting.plot_filter import PlotProvider, PlotFilter, VarRange, PlotInput
 from bencher.bench_cfg import BenchCfg, PltCntCfg
 from bencher.bench_vars import ParametrizedSweep
 

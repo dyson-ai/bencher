@@ -1,4 +1,4 @@
-from bencher.plot_signature import PlotFilter, VarRange, PlotInput
+from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
 from bencher.plt_cfg import PltCntCfg, PltCfgBase
 
 from typing import List
