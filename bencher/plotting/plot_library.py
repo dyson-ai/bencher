@@ -3,7 +3,7 @@ from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.tables import Tables
 
-from bencher.plotting.plot_types import AllPlotTypes
+from bencher.plotting.plot_types import PlotTypes
 
 
 class PlotLibrary:
@@ -29,7 +29,7 @@ class PlotLibrary:
             PlotCollection: sensible default for PlotCollection
         """
         plt_col = PlotLibrary.setup_sources()
-        plt_col.add(AllPlotTypes.swarmplot)
+        plt_col.add(PlotTypes.swarmplot)
         return plt_col
 
     @staticmethod
@@ -40,8 +40,8 @@ class PlotLibrary:
             PlotCollection: Only table plots
         """
         plt_col = PlotLibrary.setup_sources()
-        plt_col.add(AllPlotTypes.dataframe_multi_index)
-        plt_col.add(AllPlotTypes.dataframe_mean)
+        plt_col.add(PlotTypes.dataframe_multi_index)
+        plt_col.add(PlotTypes.dataframe_mean)
         return plt_col
 
     @staticmethod
@@ -52,6 +52,6 @@ class PlotLibrary:
             PlotCollection: All possible plots
         """
         plt_col = PlotLibrary.setup_sources()
-        for pt in [p for p in AllPlotTypes]:  # iterate through all plot enums
+        for pt in [p for p in PlotTypes]:  # iterate through all plot enums
             plt_col.add(pt)
         return plt_col

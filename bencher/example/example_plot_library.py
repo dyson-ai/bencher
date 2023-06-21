@@ -19,11 +19,11 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
 
     plot_lib = bch.PlotLibrary.default()
-    plot_lib.add(bch.AllPlotTypes.barplot)
-    plot_lib.add(bch.AllPlotTypes.dataframe_flat)
-    plot_lib.add(bch.AllPlotTypes.dataframe_mean)
+    plot_lib.add(bch.PlotTypes.barplot)
+    plot_lib.add(bch.PlotTypes.dataframe_flat)
+    plot_lib.add(bch.PlotTypes.dataframe_mean)
 
-    plot_lib.remove(bch.AllPlotTypes.swarmplot)
+    plot_lib.remove(bch.PlotTypes.swarmplot)
 
     plot_lib = bch.PlotLibrary.all()
 

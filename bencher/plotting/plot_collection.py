@@ -35,7 +35,7 @@ class PlotCollection:
         """Add a plotting method to the list of active plotting functions
 
         Args:
-            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum AllPlotTypes (which is also a string)
+            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum PlotTypes (which is also a string)
 
         Returns:
             PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add(barplot).remove(swarmplot)
@@ -50,7 +50,7 @@ class PlotCollection:
         """Remove a plotting method from the list of active plotting functions
 
         Args:
-            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum AllPlotTypes (which is also a string)
+            plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum PlotTypes (which is also a string)
 
         Returns:
             PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.remove(swarmplot).add(barplot)
