@@ -1,5 +1,4 @@
 from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
-from bencher.plt_cfg import PltCntCfg, PltCfgBase
 
 from typing import List
 import seaborn as sns

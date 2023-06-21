@@ -1,14 +1,10 @@
 from __future__ import annotations
-import xarray as xr
 import panel as pn
-import logging
 
-from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
+from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
-import bencher.plotting_functions as plt_func
 from bencher.plotting.plot_filter import PlotProvider, PlotInput
 import inspect
-from collections import OrderedDict
 
 
 class PlotCollection:
