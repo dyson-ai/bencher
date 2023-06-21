@@ -2,6 +2,7 @@ from typing import List
 import seaborn as sns
 import panel as pn
 import matplotlib.pyplot as plt
+import pandas as pd
 from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
@@ -16,7 +17,7 @@ class Catplot:
         result_vars=VarRange(1, 1),
     )
 
-    def plot_setup(self, pl_in: PlotInput):
+    def plot_setup(self, pl_in: PlotInput) -> Tuple(pd.DataFrame, PltCfgBase):
         plt.figure(figsize=(4, 4))
         df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
         sns_cfg = PltCfgBase()
@@ -28,14 +29,14 @@ class Catplot:
         sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
         return df, sns_cfg
 
-    def plot_postprocess(self, fg, sns_cfg, name):
+    def plot_postprocess(self, fg: plt.figure, sns_cfg: PltCfgBase, name: str) -> List[pn.panel]:
         fg.fig.suptitle(sns_cfg.title)
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
         plt.tight_layout()
         return [pn.panel(plt.gcf(), name=name)]
 
-    def catplot_common(self, pl_in: PlotInput, kind, name) -> List[pn.panel]:
+    def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> List[pn.panel]:
         if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
             df, sns_cfg = self.plot_setup(pl_in)
             sns_cfg.kind = kind
@@ -50,25 +51,10 @@ class Catplot:
         return self.catplot_common(pl_in, "violin", PlotTypes.violinplot)
 
     def boxplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
-            df, sns_cfg = self.plot_setup(pl_in)
-            sns_cfg.kind = "box"
-            fg = sns.catplot(df, x=sns_cfg.x, y=sns_cfg.y, kind=sns_cfg.kind)
-            return self.plot_postprocess(fg, sns_cfg, sns_cfg.kind)
-        return []
+        return self.catplot_common(pl_in, "box", PlotTypes.boxplot)
 
     def barplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
-            df, sns_cfg = self.plot_setup(pl_in)
-            sns_cfg.kind = "bar"
-            fg = sns.catplot(df, x=sns_cfg.x, y=sns_cfg.y, kind=sns_cfg.kind)
-            return self.plot_postprocess(fg, sns_cfg, sns_cfg.kind)
-        return []
+        return self.catplot_common(pl_in, "bar", PlotTypes.barplot)
 
     def boxenplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
-            df, sns_cfg = self.plot_setup(pl_in)
-            sns_cfg.kind = "boxen"
-            fg = sns.catplot(df, x=sns_cfg.x, y=sns_cfg.y, kind=sns_cfg.kind)
-            return self.plot_postprocess(fg, sns_cfg, sns_cfg.kind)
-        return []
+        return self.catplot_common(pl_in, "boxen", PlotTypes.boxenplot)

@@ -10,6 +10,7 @@ class PlotTypes(StrEnum):
     barplot = auto()
     violinplot = auto()
     boxenplot = auto()
+    boxplot = auto()
 
     # table enums
     dataframe_multi_index = auto()

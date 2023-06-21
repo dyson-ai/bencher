@@ -6,7 +6,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function
 
     Args:
@@ -31,8 +31,9 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher.plot_sweep(
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
+        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
-        description=example_1D_cat.__doc__,
+        description=example_plot_library.__doc__,
         run_cfg=run_cfg,
         plot_lib=plot_lib,
     )
@@ -45,4 +46,4 @@ if __name__ == "__main__":
     ex_run_cfg.print_pandas = True
     # ex_run_cfg.over_time = True
 
-    example_1D_cat(ex_run_cfg).plot()
+    example_plot_library(ex_run_cfg).plot()
