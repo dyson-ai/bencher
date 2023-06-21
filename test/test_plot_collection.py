@@ -2,7 +2,7 @@
 import unittest
 import panel as pn
 from typing import List
-from bencher.plotting.plot_collection import PlotCollection, PlotProvider, PlotInput
+from bencher.plotting.plot_collection import PlotCollection, PlotProvider
 
 
 class TestPlotProvider:

@@ -1,9 +1,10 @@
-from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
-
 from typing import List
 import seaborn as sns
 import panel as pn
 import matplotlib.pyplot as plt
+from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
+from bencher.plt_cfg import PltCfgBase
+from bencher.plotting.plot_types import AllPlotTypes
 
 
 class Catplot:
@@ -43,10 +44,10 @@ class Catplot:
         return []
 
     def swarmplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        return self.catplot_common(pl_in, "swarm", self.swarmplot.__name__)
+        return self.catplot_common(pl_in, "swarm", AllPlotTypes.swarmplot)
 
     def violinplot(self, pl_in: PlotInput) -> List[pn.panel]:
-        return self.catplot_common(pl_in, "violin", self.violinplot.__name__)
+        return self.catplot_common(pl_in, "violin", AllPlotTypes.violinplot)
 
     def boxplot(self, pl_in: PlotInput) -> List[pn.panel]:
         if self.float_1_cat_any_vec_1_res_1_.matches(pl_in.plt_cnt_cfg):
