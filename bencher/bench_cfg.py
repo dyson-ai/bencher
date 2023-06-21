@@ -107,8 +107,7 @@ class PltCfgBase(param.Parameterized):
     #     return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind", "marker"])
 
     def as_sns_args(self) -> dict:
-        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind" ])
-
+        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind"])
 
     def as_xra_args(self) -> dict:
         return self.as_dict(include_params=["x", "y", "hue", "row", "col", "cmap"])

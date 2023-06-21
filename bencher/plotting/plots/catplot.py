@@ -17,7 +17,8 @@ class Catplot:
         result_vars=VarRange(1, 1),
     )
 
-    def plot_setup(self, pl_in: PlotInput) -> Tuple[pd.DataFrame, PltCfgBase]:
+    @staticmethod
+    def plot_setup(pl_in: PlotInput) -> Tuple[pd.DataFrame, PltCfgBase]:
         plt.figure(figsize=(4, 4))
         df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
         sns_cfg = PltCfgBase()
@@ -29,12 +30,13 @@ class Catplot:
         sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
         return df, sns_cfg
 
-    def plot_postprocess(self, fg: plt.figure, sns_cfg: PltCfgBase, name: str) -> List[pn.panel]:
+    @staticmethod
+    def plot_postprocess(fg: plt.figure, sns_cfg: PltCfgBase, name: str) -> List[pn.panel]:
         fg.fig.suptitle(sns_cfg.title)
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
         plt.tight_layout()
-        return [pn.panel(plt.gcf(), name=name)]
+        return [pn.panel(fg.fig, name=name)]
 
     def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> List[pn.panel]:
         if self.float_0_cat_at_least1_vec_1_res_1.matches(pl_in.plt_cnt_cfg):

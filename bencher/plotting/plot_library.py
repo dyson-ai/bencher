@@ -55,3 +55,12 @@ class PlotLibrary:
         for pt in [p for p in PlotTypes]:  # iterate through all plot enums
             plt_col.add(pt)
         return plt_col
+
+    @staticmethod
+    def none() -> PlotCollection:
+        """Set up a plot collection with no active plots
+
+        Returns:
+            PlotCollection: No plots
+        """
+        return PlotLibrary.setup_sources()
