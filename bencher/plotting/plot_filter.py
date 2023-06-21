@@ -84,6 +84,13 @@ class PlotFilter:
 
 @dataclass
 class PlotInput:
+    """A dataclass that contains all the information needed to plot
+    Args:
+        bench_cfg (BenchCfg): The benchmark configuration used to generate the result data
+        rv (ParametrizedSweep): The result variable to plot
+        plt_cnt_cfg (PltCntCfg): The number and types of variable to plot
+    """
+
     bench_cfg: BenchCfg
     rv: ParametrizedSweep
     plt_cnt_cfg: PltCntCfg
