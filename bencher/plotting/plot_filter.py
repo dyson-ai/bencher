@@ -4,8 +4,8 @@ from bencher.bench_vars import ParametrizedSweep
 
 
 class VarRange:
-    def __init__(self, lower_bound:int=0, upper_bound:int=-1) -> None:
-        """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers. 
+    def __init__(self, lower_bound: int = 0, upper_bound: int = -1) -> None:
+        """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers.
 
         Args:
             lower_bound (int, optional): The smallest acceptable value to matches(). Passing None will result in a lower bound of 0 (as matches only accepts positive integers). Defaults to 0.
@@ -13,7 +13,6 @@ class VarRange:
         """
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
-   
 
     def matches(self, val: int) -> bool:
         """Checks that a value is within the variable range.  lower_bound and upper_bound are inclusive (lower_bound<=val<=upper_bound )
@@ -24,7 +23,7 @@ class VarRange:
         Returns:
             bool: True if the items is within the range, False otherwise.
         """
-        if val>=0:
+        if val >= 0:
             if self.lower_bound is not None:
                 lower_match = val >= self.lower_bound
             else:
@@ -36,7 +35,10 @@ class VarRange:
                 upper_match = True
 
             return lower_match and upper_match
-        raise RuntimeError("val must be >= 0")
+        raise ValueError("val must be >= 0")
+    
+    def __repr__(self) -> str:
+        return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
 
 
 class PlotFilter:

@@ -5,8 +5,7 @@ from hypothesis import given, settings, strategies as st
 from bencher.bench_cfg import PltCntCfg
 
 
-class TestVarRange(unittest.TestCase):  
-
+class TestVarRange(unittest.TestCase):
     def test_matches_zero(self) -> None:
         zero_case = VarRange(0, 0)
         self.assertTrue(zero_case.matches(0))
@@ -20,21 +19,20 @@ class TestVarRange(unittest.TestCase):
         self.assertFalse(var_range.matches(2))
 
     @given(st.integers())
-    def test_default_matches_nothing(self,val) -> None:
+    def test_default_matches_nothing(self, val) -> None:
         """Check that the default constructor produces a range that always returns false (so that any matches must be defined explicitly by the developer)"""
-        var_range = VarRange()  
-        if val>=0: 
-            self.assertFalse(var_range.matches(val))  
+        var_range = VarRange()
+        if val >= 0:
+            self.assertFalse(var_range.matches(val))
         else:
-            with self.assertRaises(RuntimeError):
+            with self.assertRaises(ValueError):
                 var_range.matches(val)
-               
 
     @given(st.integers(min_value=0))
-    def test_matches_none_upper(self,val) -> None:
+    def test_matches_none_upper(self, val) -> None:
         """Check that no upper bound matches all positive integers"""
-        var_range = VarRange(0, None)   
-        self.assertTrue(var_range.matches(val))  
+        var_range = VarRange(0, None)
+        self.assertTrue(var_range.matches(val))
 
     @given(st.integers(min_value=0))
     def test_matches_none_none(self, val) -> None:
