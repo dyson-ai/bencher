@@ -69,8 +69,8 @@ class PlotCollection:
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
 
         tabs = pn.Tabs()
-        for p in self.plotters.values():
-            plots = p(PlotInput(bench_cfg, rv, plt_cnt_cfg))
-            for p in plots:
-                tabs.append(p)
+        for plt_fn in self.plotters.values():
+            plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
+            for plt_instance in plots:
+                tabs.append(plt_instance)
         return tabs
