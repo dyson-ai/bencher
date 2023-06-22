@@ -23,3 +23,9 @@ pytest-cov
 hypothesis
 str2bool
 black==23.3.0
+
+#docs
+sphinx
+sphinx-automodapi
+sphinx-rtd-theme
+# sphinx-code-include
