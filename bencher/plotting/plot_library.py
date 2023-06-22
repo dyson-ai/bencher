@@ -52,7 +52,7 @@ class PlotLibrary:
             PlotCollection: All possible plots
         """
         plt_col = PlotLibrary.setup_sources()
-        for pt in [p for p in PlotTypes]:  # iterate through all plot enums
+        for pt in PlotTypes:  # iterate through all plot enums
             plt_col.add(pt)
         return plt_col
 
