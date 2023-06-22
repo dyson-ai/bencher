@@ -73,4 +73,4 @@ class TestBenchExamples(unittest.TestCase):
         self.assertIsNotNone(example_vector())
 
     def test_plot_library(self) -> None:
-        self.assertIsNotNone(example_plot_library())
+        self.assertIsNotNone(example_plot_library(self.create_run_cfg()))
