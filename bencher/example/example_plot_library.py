@@ -27,7 +27,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=run_cfg,
-        # plot_lib=plot_lib,
+        plot_lib=plot_lib,
     )
     return bencher
 
