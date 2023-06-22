@@ -1,16 +1,10 @@
 import unittest
-
-# from bencher.plotting.plot_filter import VarRange, PlotFilter
-from hypothesis import given, strategies as st
+import panel as pn
 
 from bencher.plotting.plot_collection import PlotInput
 from bencher.plotting.plot_types import PlotTypes
-
-# from bencher.plotting.plot_library import PlotLibrary
 from bencher.plotting.plots.catplot import Catplot
-from bencher.bench_cfg import BenchCfg, PltCntCfg
-from bencher.bench_vars import ParametrizedSweep
-import panel as pn
+from bencher.bench_cfg import  PltCntCfg
 import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from hypothesis import given, settings, strategies as st
