@@ -14,7 +14,7 @@ from bencher.example.example_float3D_cone import example_cone
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_vector import example_vector
-
+from bencher.example.example_plot_library import example_plot_library
 
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
@@ -70,3 +70,7 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_vector(self) -> None:
         self.assertIsNotNone(example_vector())
+
+    def test_plot_library(self)->None:
+        self.assertIsNotNone(example_plot_library())
+        

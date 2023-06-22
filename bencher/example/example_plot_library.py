@@ -1,4 +1,4 @@
-"""This file has some examples for how to perform basic benchmarking parameter sweeps"""
+"""This file has some examples for how to modify what plots are shown with PlotLibrary"""
 
 import bencher as bch
 
@@ -7,7 +7,7 @@ from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut
 
 
 def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
-    """This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function
+    """This example shows how use PlotLibrary.all() to display all possible plot types for a given benchmark
 
     Args:
         run_cfg (BenchRunCfg): configuration of how to perform the param sweep
@@ -18,16 +18,8 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
 
-    plot_lib = bch.PlotLibrary.default()
-    plot_lib.add(bch.PlotTypes.barplot)
-    plot_lib.add(bch.PlotTypes.dataframe_flat)
-    plot_lib.add(bch.PlotTypes.dataframe_mean)
-
-    plot_lib.remove(bch.PlotTypes.swarmplot)
-
     plot_lib = bch.PlotLibrary.all()
-
-    # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
+ 
     bencher.plot_sweep(
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
@@ -44,6 +36,5 @@ if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 10
     ex_run_cfg.print_pandas = True
-    # ex_run_cfg.over_time = True
 
     example_plot_library(ex_run_cfg).plot()
