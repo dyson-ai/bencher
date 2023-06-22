@@ -24,10 +24,10 @@ class VarRange:
         Returns:
             bool: True if the items is within the range, False otherwise.
 
-        Raises: 
+        Raises:
             ValueError: If val < 0
         """
-        if val <0:
+        if val < 0:
             raise ValueError("val must be >= 0")
         if val >= 0:
             if self.lower_bound is not None:
@@ -41,7 +41,6 @@ class VarRange:
                 upper_match = True
 
             return lower_match and upper_match
-       
 
     def __repr__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
