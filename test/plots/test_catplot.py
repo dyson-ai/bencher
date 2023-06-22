@@ -12,8 +12,12 @@ from hypothesis import given, settings, strategies as st
 
 class TestCatPlot(unittest.TestCase):
     @settings(deadline=10000)
-    @given(st.sampled_from([PlotTypes.swarmplot]))
-    def test_plot_name1(self, plot_name) -> None:
+    @given(
+        st.sampled_from(
+            [PlotTypes.swarmplot, PlotTypes.barplot, PlotTypes.boxenplot, PlotTypes.violinplot]
+        )
+    )
+    def test_plot_name(self, plot_name) -> None:
         bencher = bch.Bench("test_catplot", bench_function, ExampleBenchCfgIn)
 
         bench_cfg = bencher.plot_sweep(
@@ -22,7 +26,7 @@ class TestCatPlot(unittest.TestCase):
             const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
             result_vars=[ExampleBenchCfgOut.param.out_cos],
             plot_lib=bch.PlotLibrary.none().add(plot_name),
-            run_cfg=bch.BenchRunCfg(use_cache=True),
+            run_cfg=bch.BenchRunCfg(auto_plot=False),
         )
 
         plt_cnt_cfg = PltCntCfg(float_cnt=0, cat_cnt=1)
