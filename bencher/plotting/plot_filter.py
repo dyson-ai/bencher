@@ -23,6 +23,9 @@ class VarRange:
 
         Returns:
             bool: True if the items is within the range, False otherwise.
+
+        Raises: 
+            ValueError: If val < 0
         """
         if val <0:
             raise ValueError("val must be >= 0")
