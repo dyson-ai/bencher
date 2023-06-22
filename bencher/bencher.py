@@ -208,7 +208,7 @@ class Bench(BenchPlotServer):
         )
 
         bench_cfg.param.update(run_cfg.param.values())
-        bench_cfg.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
+        bench_cfg.plot_lib =  plot_lib
 
         print("plot_lib", bench_cfg.plot_lib)
 
