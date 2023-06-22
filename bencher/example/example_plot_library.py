@@ -19,7 +19,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
 
     plot_lib = bch.PlotLibrary.all()
- 
+
     bencher.plot_sweep(
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],

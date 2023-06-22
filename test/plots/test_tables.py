@@ -14,7 +14,12 @@ class TestCatPlot(unittest.TestCase):
     @settings(deadline=10000)
     @given(
         st.sampled_from(
-            [PlotTypes.dataframe_flat, PlotTypes.dataframe_mean, PlotTypes.dataframe_multi_index, PlotTypes.xarray]
+            [
+                PlotTypes.dataframe_flat,
+                PlotTypes.dataframe_mean,
+                PlotTypes.dataframe_multi_index,
+                PlotTypes.xarray,
+            ]
         )
     )
     def test_plot_name(self, plot_name) -> None:
