@@ -43,7 +43,8 @@ class PlotLibrary:
         plt_col.add(PlotTypes.dataframe_multi_index)
         plt_col.add(PlotTypes.dataframe_mean)
         return plt_col
-
+    
+ 
     @staticmethod
     def all() -> PlotCollection:
         """Display the data in every possible way. All plots are included

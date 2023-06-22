@@ -206,9 +206,11 @@ class Bench(BenchPlotServer):
             pass_repeat=pass_repeat,
             tag=tag,
         )
-        bench_cfg.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
 
         bench_cfg.param.update(run_cfg.param.values())
+        bench_cfg.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
+
+        print("plot_lib",bench_cfg.plot_lib)
 
         bench_cfg_hash = bench_cfg.hash_persistent(True)
         bench_cfg.hash_value = bench_cfg_hash
