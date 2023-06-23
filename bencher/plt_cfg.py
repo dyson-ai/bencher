@@ -156,7 +156,7 @@ class BenchPlotter:
             if "IntSweep" in typestr or "FloatSweep" in typestr:
                 plt_cnt_cfg.float_vars.append(iv)
                 type_allocated = True
-            if "EnumSweep" in typestr or "BoolSweep" in typestr:
+            if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
                 plt_cnt_cfg.cat_vars.append(iv)
                 type_allocated = True
 
