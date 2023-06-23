@@ -104,7 +104,7 @@ class PltCfgBase(param.Parameterized):
         return output
 
     def as_sns_args(self) -> dict:
-        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind", "marker"])
+        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind"])
 
     def as_xra_args(self) -> dict:
         return self.as_dict(include_params=["x", "y", "hue", "row", "col", "cmap"])
@@ -125,6 +125,8 @@ class PltCntCfg(param.Parameterized):
     float_cnt = param.Integer(0, doc="The number of float variables to plot")
     cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
     cat_cnt = param.Integer(0, doc="The number of cat variables")
+    vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
+    result_vars = param.Integer(1, doc="The number result variables to plot")
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -352,6 +354,7 @@ class BenchCfg(BenchRunCfg):
     )
 
     ds = xr.Dataset()
+    plot_lib = None
 
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg

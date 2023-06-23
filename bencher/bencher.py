@@ -144,6 +144,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
+        plot_lib=None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 
@@ -204,7 +205,11 @@ class Bench(BenchPlotServer):
             pass_repeat=pass_repeat,
             tag=tag,
         )
+
         bench_cfg.param.update(run_cfg.param.values())
+        bench_cfg.plot_lib = plot_lib
+
+        print("plot_lib", bench_cfg.plot_lib)
 
         bench_cfg_hash = bench_cfg.hash_persistent(True)
         bench_cfg.hash_value = bench_cfg_hash
