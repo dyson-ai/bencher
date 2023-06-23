@@ -147,9 +147,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot_lib=PlotLibrary.default().add_list(
-            [PlotTypes.barplot, PlotTypes.dataframe_multi_index, PlotTypes.dataframe_mean]
-        ),
+        plot_lib=None,
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 
