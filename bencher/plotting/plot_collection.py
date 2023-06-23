@@ -1,10 +1,13 @@
 from __future__ import annotations
 import panel as pn
+import inspect
+from typing import List
 
 from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotProvider, PlotInput
 import inspect
+import logging
 
 
 class PlotCollection:
@@ -38,12 +41,25 @@ class PlotCollection:
             plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum PlotTypes (which is also a string)
 
         Returns:
-            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add(barplot).remove(swarmplot)
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add("barplot").remove("swarmplot")
         """
         if plot_name in self.plotter_providers:
             self.plotters[plot_name] = self.plotter_providers[plot_name]
         else:
             raise ValueError("This plot was not found in the list of available plots")
+        return self
+
+    def add_list(self, plot_names: List[str]) -> PlotCollection:
+        """Add a list of plotting methods to the list of active plotting functions
+
+        Args:
+            plot_name (List[str]): A list of names of the plot to add. The list can contain either strings, or StrEnum PlotTypes (which is also a string)
+
+        Returns:
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add_list(["barplot","boxplot"]).remove("swarmplot")
+        """
+        for p in plot_names:
+            self.add(p)
         return self
 
     def remove(self, plot_name: str) -> PlotCollection:
@@ -72,5 +88,6 @@ class PlotCollection:
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
             for plt_instance in plots:
+                logging.info(f"plotting: {plt_instance.name}")
                 tabs.append(plt_instance)
         return tabs
