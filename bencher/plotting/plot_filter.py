@@ -28,19 +28,18 @@ class VarRange:
             ValueError: If val < 0
         """
         if val < 0:
-            raise ValueError("val must be >= 0")
-        if val >= 0:
-            if self.lower_bound is not None:
-                lower_match = val >= self.lower_bound
-            else:
-                lower_match = True
+            raise ValueError("val must be >= 0")        
+        if self.lower_bound is not None:
+            lower_match = val >= self.lower_bound
+        else:
+            lower_match = True
 
-            if self.upper_bound is not None:
-                upper_match = val <= self.upper_bound
-            else:
-                upper_match = True
+        if self.upper_bound is not None:
+            upper_match = val <= self.upper_bound
+        else:
+            upper_match = True
 
-            return lower_match and upper_match
+        return lower_match and upper_match
 
     def __repr__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
