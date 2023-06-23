@@ -4,7 +4,7 @@ import panel as pn
 import matplotlib.pyplot as plt
 import pandas as pd
 from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
-from bencher.plt_cfg import PltCfgBase
+from bencher.plt_cfg import PltCfgBase, PltCntCfg
 from bencher.plotting.plot_types import PlotTypes
 
 
@@ -28,6 +28,8 @@ class Catplot:
         sns_cfg.xlabel = f"{sns_cfg.x} [{x_units}]"
         sns_cfg.ylabel = f"{sns_cfg.y} [{pl_in.rv.units}]"
         sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
+        cat_axis_order = ["x", "row", "col", "hue"]
+        sns_cfg = Catplot.axis_mapping(cat_axis_order, sns_cfg, pl_in.plt_cnt_cfg)
         return df, sns_cfg
 
     @staticmethod
@@ -37,6 +39,26 @@ class Catplot:
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
         plt.tight_layout()
         return [pn.panel(fg.fig, name=name)]
+
+    @staticmethod
+    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
+
+        Args:
+            sns_cfg (PltCfgBase): See PltCfgBase definition
+            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+
+        Returns:
+            PltCfgBase: See PltCfgBase definition
+        """
+        sns_dict = {}
+        for i, v in enumerate(plt_cnt_cfg.cat_vars):
+            axis = cat_axis_order[i]
+            sns_dict[axis] = v.name
+
+        sns_cfg.param.set_param(**sns_dict)
+
+        return sns_cfg
 
     def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> List[pn.panel]:
         if self.float_0_cat_at_least1_vec_1_res_1.matches(pl_in.plt_cnt_cfg):
