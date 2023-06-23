@@ -3,9 +3,9 @@ import pathlib
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
+from bencher.plotting.plot_library import PlotLibrary
 
-
-bench = Bench("Bencher_Example_Categorical", bench_function, ExampleBenchCfgIn)
+bench = Bench("Bencher_Example_Categorical", bench_function, ExampleBenchCfgIn,plot_lib=PlotLibrary().default())
 
 
 def example_categorical(run_cfg: BenchRunCfg) -> Bench:

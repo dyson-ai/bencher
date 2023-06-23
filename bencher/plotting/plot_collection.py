@@ -6,6 +6,9 @@ from typing import List
 from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotProvider, PlotInput
+import inspect
+import logging
+
 
 class PlotCollection:
     """A set of plot providers with filters that determine if they are able to plot the type of data in the results.  The plot collection can be customised with user defined plots or ones already defined by bencher. You can also take predefine PlotCollections defined in PlotLibrary and add or remove specific plots that you want to override.  The add and remove function accept strings, or StrEnums (which are equivalent to strings)"""
@@ -85,5 +88,6 @@ class PlotCollection:
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
             for plt_instance in plots:
+                logging.info(f"plotting: {plt_instance.name}")
                 tabs.append(plt_instance)
         return tabs
