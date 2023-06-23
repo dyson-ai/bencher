@@ -28,7 +28,7 @@ class VarRange:
             ValueError: If val < 0
         """
         if val < 0:
-            raise ValueError("val must be >= 0")        
+            raise ValueError("val must be >= 0")
         if self.lower_bound is not None:
             lower_match = val >= self.lower_bound
         else:
