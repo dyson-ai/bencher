@@ -98,6 +98,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
+        plot_lib=None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -121,6 +122,7 @@ class Bench(BenchPlotServer):
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
+        self.plot_lib = plot_lib
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -207,7 +209,7 @@ class Bench(BenchPlotServer):
         )
 
         bench_cfg.param.update(run_cfg.param.values())
-        bench_cfg.plot_lib = plot_lib
+        bench_cfg.plot_lib = plot_lib if plot_lib is not None else self.plot_lib
 
         print("plot_lib", bench_cfg.plot_lib)
 
