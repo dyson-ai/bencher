@@ -5,6 +5,7 @@ from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotProvider, PlotInput
 import inspect
+import logging
 
 
 class PlotCollection:
@@ -72,5 +73,6 @@ class PlotCollection:
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
             for plt_instance in plots:
+                logging.info(f"plotting: {plt_instance.name}")
                 tabs.append(plt_instance)
         return tabs
