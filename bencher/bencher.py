@@ -22,7 +22,8 @@ from bencher.bench_vars import (
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
-
+from bencher.plotting.plot_library import PlotLibrary
+from bencher.plotting.plot_types import PlotTypes
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -144,7 +145,9 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot_lib=None,
+        plot_lib=PlotLibrary.default().add_list(
+            [PlotTypes.barplot, PlotTypes.dataframe_multi_index, PlotTypes.dataframe_mean]
+        ),
     ) -> BenchCfg:
         """The all in 1 function benchmarker and results plotter.
 
