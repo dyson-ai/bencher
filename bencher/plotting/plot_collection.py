@@ -2,12 +2,12 @@ from __future__ import annotations
 import panel as pn
 import inspect
 from typing import List
+import logging
+
 
 from bencher.bench_cfg import PltCntCfg, BenchCfg
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotProvider, PlotInput
-import inspect
-import logging
 
 
 class PlotCollection:
