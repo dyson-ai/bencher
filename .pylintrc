@@ -4,7 +4,7 @@ max-line-length=100
 
 [MESSAGES CONTROL]
 disable=
-  C,R,
+  C,
   logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,
   too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal
 
