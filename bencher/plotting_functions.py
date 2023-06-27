@@ -18,7 +18,6 @@ from bencher.bench_cfg import PltCfgBase, BenchCfg
 hv.extension("plotly")
 
 
-
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
     """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
 

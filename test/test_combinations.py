@@ -28,10 +28,8 @@ class Enum2(StrEnum):
 class BenchCfgTest(bch.ParametrizedSweep):
     """A class for representing all types of input"""
 
-    float1 = bch.FloatSweep(
-        default=0, bounds=[0, 1], doc="generic float 1", samples=3)
-    float2 = bch.FloatSweep(
-        default=0, bounds=[0, 1], doc="generic float 2", samples=3)
+    float1 = bch.FloatSweep(default=0, bounds=[0, 1], doc="generic float 1", samples=3)
+    float2 = bch.FloatSweep(default=0, bounds=[0, 1], doc="generic float 2", samples=3)
     int1 = bch.IntSweep(default=0, bounds=[0, 3], doc="generic int 1")
     int2 = bch.IntSweep(default=0, bounds=[0, 3], doc="generic int 2")
     bool1 = bch.BoolSweep(doc="generic bool 1")
@@ -88,8 +86,7 @@ all_inputs = []
 
 # all possible permutations of the input for a given number of inputs
 for num_inputs in range(1, 4):
-    input_var_permutations.extend(
-        [list(c) for c in generator_func(input_types, num_inputs)])
+    input_var_permutations.extend([list(c) for c in generator_func(input_types, num_inputs)])
 
 
 for p in input_var_permutations:
