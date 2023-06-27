@@ -82,7 +82,8 @@ class TestPlotCollection(unittest.TestCase):
 
         plot_coll.add_plotter_source(TestPlotProvider())
         with self.assertRaises(ValueError):
-            plot_coll.add_list("plot_1")  # try adding a variable that is not a list
+            # try adding a variable that is not a list
+            plot_coll.add_list("plot_1")
 
     def test_add_list_empty(self):
         plot_coll = PlotCollection()
