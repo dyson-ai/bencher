@@ -106,6 +106,7 @@ class Bench(BenchPlotServer):
             bench_name (str): The name of the benchmark and output folder for the figures
             worker (Callable): A function that accepts a class of type (worker_input_config)
             worker_input_config (ParametrizedSweep): A class defining the parameters of the function.
+            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
         """
         self.bench_name = bench_name
         self.worker = None
@@ -162,7 +163,7 @@ class Bench(BenchPlotServer):
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
-
+            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
 
         Raises:
             ValueError: If a result variable is not set
