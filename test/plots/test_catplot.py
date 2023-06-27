@@ -1,6 +1,3 @@
-import unittest
-import panel as pn
-
 from bencher.plotting.plot_collection import PlotInput
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
@@ -22,7 +19,7 @@ class TestCatPlot(TestPlotsCommon):
         )
     )
     def test_plot_name(self, plot_name) -> None:
-        bench_cfg = self.create_bench_cfg()
+        bench_cfg = self.create_bench_cfg(plot_name)
 
         plt_cnt_cfg = PltCntCfg(float_cnt=0, cat_cnt=1)
         pl_in = PlotInput(
