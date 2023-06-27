@@ -30,8 +30,7 @@ def example_floats2D(run_cfg: BenchRunCfg) -> Bench:
 
     bench.plot_sweep(
         input_vars=[cfg.param.theta, cfg.param.offset],
-        result_vars=[ExampleBenchCfgOut.param.out_sin,
-                     ExampleBenchCfgOut.param.out_cos],
+        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         const_vars=[
             (cfg.param.sigma, 0.1),
             (cfg.param.noise_distribution, NoiseDistribution.gaussian),
@@ -60,10 +59,8 @@ def example_floats2D(run_cfg: BenchRunCfg) -> Bench:
     )
 
     bench.plot_sweep(
-        input_vars=[cfg.param.theta, cfg.param.offset,
-                    cfg.param.postprocess_fn],
-        result_vars=[ExampleBenchCfgOut.param.out_sin,
-                     ExampleBenchCfgOut.param.out_cos],
+        input_vars=[cfg.param.theta, cfg.param.offset, cfg.param.postprocess_fn],
+        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         const_vars=[
             (cfg.param.sigma, 0.1),
             (cfg.param.noise_distribution, NoiseDistribution.gaussian),
@@ -82,8 +79,7 @@ def example_floats2D(run_cfg: BenchRunCfg) -> Bench:
             cfg.param.postprocess_fn,
             cfg.param.noise_distribution,
         ],
-        result_vars=[ExampleBenchCfgOut.param.out_sin,
-                     ExampleBenchCfgOut.param.out_cos],
+        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         const_vars=[
             (cfg.param.sigma, 0.1),
             (cfg.param.noise_distribution, NoiseDistribution.gaussian),

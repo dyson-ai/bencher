@@ -50,8 +50,7 @@ def example_floats(run_cfg: BenchRunCfg) -> Bench:
     )
 
     bench.plot_sweep(
-        input_vars=[ExampleBenchCfgIn.param.theta,
-                    ExampleBenchCfgIn.param.noisy],
+        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noisy],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         title="Float 1D and Bool Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
@@ -60,10 +59,8 @@ def example_floats(run_cfg: BenchRunCfg) -> Bench:
     )
 
     bench.plot_sweep(
-        input_vars=[ExampleBenchCfgIn.param.theta,
-                    ExampleBenchCfgIn.param.noisy],
-        result_vars=[ExampleBenchCfgOut.param.out_sin,
-                     ExampleBenchCfgOut.param.out_cos],
+        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noisy],
+        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         title="Float 1D and Bool Example with multiple outputs",
         description="""Following from the previous example here the second output is added to the result variables""",
         post_description="Another column is added for the result variable that shows cos(theta)",

@@ -25,10 +25,8 @@ class TestBencherHashing(unittest.TestCase):
         self.assertEqual(
             ex.param.var_float.hash_persistent(), ex2.param.var_float.hash_persistent()
         )
-        self.assertEqual(ex.param.var_int.hash_persistent(),
-                         ex2.param.var_int.hash_persistent())
-        self.assertEqual(ex.param.var_enum.hash_persistent(),
-                         ex2.param.var_enum.hash_persistent())
+        self.assertEqual(ex.param.var_int.hash_persistent(), ex2.param.var_int.hash_persistent())
+        self.assertEqual(ex.param.var_enum.hash_persistent(), ex2.param.var_enum.hash_persistent())
 
         print(ex.__repr__())
         print(ex2.__repr__())
@@ -58,8 +56,7 @@ class TestBencherHashing(unittest.TestCase):
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
 
         self.assertNotEqual(
-            len(get_sweep_hash_isolated_process()
-                ), 0, "make sure the hash is getting returned"
+            len(get_sweep_hash_isolated_process()), 0, "make sure the hash is getting returned"
         )
 
         self.assertEqual(
