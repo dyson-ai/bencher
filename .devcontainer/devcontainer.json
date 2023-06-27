@@ -17,7 +17,8 @@
 				"github.vscode-github-actions",
 				"ms-python.python",
 				"ms-python.pylint",
-				"njpwerner.autodocstring"
+				"njpwerner.autodocstring",
+				"charliermarsh.ruff"
 			]
 		}
 	}
