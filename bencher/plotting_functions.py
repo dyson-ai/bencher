@@ -8,16 +8,15 @@ import holoviews as hv
 import pandas as pd
 import seaborn as sns
 import plotly.express as px
-
 import logging
 
+from textwrap import wrap
 from holoviews import opts
 from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec, ResultList
 from bencher.bench_cfg import PltCfgBase, BenchCfg
 
 hv.extension("plotly")
 
-from textwrap import wrap
 
 
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
