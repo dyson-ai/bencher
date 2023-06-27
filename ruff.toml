@@ -1,9 +1,0 @@
-# Same as Black.
-line-length = 100
-
-ignore =["E501"] #line length
-
-# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
-[per-file-ignores]
-"__init__.py" = ["E402","F401"]
-"path/to/file.py" = ["E402"]
