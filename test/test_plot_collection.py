@@ -70,18 +70,19 @@ class TestPlotCollection(unittest.TestCase):
             plot_coll.remove("plot_3")
         except KeyError:
             pass
+        assert len(plot_coll.plotters) == 1
 
     def test_add_uninitialised_class(self):
         plot_coll = PlotCollection()
         with self.assertRaises(ValueError):
             plot_coll.add_plotter_source(TestPlotProvider)
 
-    def test_add_list_scalar(self):
+    def test_add_not_a_list(self):
         plot_coll = PlotCollection()
 
         plot_coll.add_plotter_source(TestPlotProvider())
         with self.assertRaises(ValueError):
-            plot_coll.add_list("plot_1")
+            plot_coll.add_list("plot_1") #try adding a variable that is not a list
 
     def test_add_list_empty(self):
         plot_coll = PlotCollection()
