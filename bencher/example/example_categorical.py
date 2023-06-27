@@ -1,3 +1,5 @@
+# pylint: disable=duplicate-code
+
 from bencher.bencher import Bench, BenchRunCfg
 import pathlib
 
@@ -47,7 +49,8 @@ def example_categorical(run_cfg: BenchRunCfg) -> Bench:
     )
 
     bench.plot_sweep(
-        input_vars=[ExampleBenchCfgIn.param.noisy, ExampleBenchCfgIn.param.noise_distribution],
+        input_vars=[ExampleBenchCfgIn.param.noisy,
+                    ExampleBenchCfgIn.param.noise_distribution],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         title="Categorical 2D Example",
         description="""Adding another categorical value creates a facet plot over that dimension""",
