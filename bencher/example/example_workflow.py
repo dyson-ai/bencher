@@ -83,7 +83,7 @@ def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
     Returns:
         Bench: results of the parameter sweep
     """
-    if bench == None:
+    if bench is None:
         bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
 
     run_cfg.debug = False
@@ -134,7 +134,7 @@ def example_floats3D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
     Returns:
         Bench: results of the parameter sweep
     """
-    if bench == None:
+    if bench is None:
         bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
 
     run_cfg.debug = False
