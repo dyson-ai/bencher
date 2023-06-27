@@ -6,7 +6,6 @@ from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut
 
 
 class TestPlotsCommon(unittest.TestCase):
-
     def create_bench_cfg(self, plot_name: str) -> bch.BenchCfg:
         """Given a plot name, run a sweep and plot with that plotting function
 

@@ -14,16 +14,14 @@ class TestCatPlot(TestPlotsCommon):
     @settings(deadline=10000)
     @given(
         st.sampled_from(
-            [PlotTypes.swarmplot, PlotTypes.barplot,
-                PlotTypes.boxenplot, PlotTypes.violinplot]
+            [PlotTypes.swarmplot, PlotTypes.barplot, PlotTypes.boxenplot, PlotTypes.violinplot]
         )
     )
     def test_plot_name(self, plot_name) -> None:
         bench_cfg = self.create_bench_cfg(plot_name)
 
         plt_cnt_cfg = PltCntCfg(float_cnt=0, cat_cnt=1)
-        pl_in = PlotInput(
-            bench_cfg, ExampleBenchCfgOut.param.out_cos, plt_cnt_cfg)
+        pl_in = PlotInput(bench_cfg, ExampleBenchCfgOut.param.out_cos, plt_cnt_cfg)
         cp = Catplot()
         plot_fn = getattr(cp, plot_name)
         result = plot_fn(pl_in)
