@@ -18,3 +18,4 @@ from .bench_vars import (
     hash_sha1,
 )
 from .plotting.plot_library import PlotLibrary, PlotTypes
+from .plotting.plot_filter import PlotInput, VarRange, PlotFilter
