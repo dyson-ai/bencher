@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 import matplotlib.pyplot as plt
 import pandas as pd
