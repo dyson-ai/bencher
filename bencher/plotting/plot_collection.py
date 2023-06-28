@@ -1,7 +1,7 @@
 from __future__ import annotations
 import panel as pn
 import inspect
-from typing import List
+from typing import List, Callable
 import logging
 
 
@@ -34,19 +34,23 @@ class PlotCollection:
                 "You need to pass an instance of a class not the class type, Add () to the end of the class name"
             )
 
-    def add(self, plot_name: str) -> PlotCollection:
+    def add(self, plot_name: str, plot_fn: Callable = None) -> PlotCollection:
         """Add a plotting method to the list of active plotting functions
 
         Args:
             plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum PlotTypes (which is also a string)
+            plot_fn (Callable): A user defined plotting function.  If no function is supplied, the name of the function is looked up from the list of plotter sources that have been added to the plot collection.
 
         Returns:
             PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add("barplot").remove("swarmplot")
         """
-        if plot_name in self.plotter_providers:
-            self.plotters[plot_name] = self.plotter_providers[plot_name]
+        if plot_fn is None:
+            if plot_name in self.plotter_providers:
+                self.plotters[plot_name] = self.plotter_providers[plot_name]
+            else:
+                raise ValueError("This plot was not found in the list of available plots")
         else:
-            raise ValueError("This plot was not found in the list of available plots")
+            self.plotters[plot_name] = plot_fn
         return self
 
     def add_list(self, plot_names: List[str]) -> PlotCollection:
