@@ -19,4 +19,3 @@ class PlotTypes(StrEnum):
     xarray = auto()
 
     imshow = auto()
-    surface_plotly = auto()
