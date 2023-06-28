@@ -1,3 +1,5 @@
+from typing import Optional
+
 import panel as pn
 import plotly.express as px
 
@@ -14,7 +16,7 @@ class Plots2D:
         result_vars=VarRange(1, 1),
     )
 
-    def imshow(self, pl_in: PlotInput) -> pn.panel | None:
+    def imshow(self, pl_in: PlotInput) -> ->Optional[pn.panel]:
         """use the imshow plotting method to display 2D data
 
         Args:

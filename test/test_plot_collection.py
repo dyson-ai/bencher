@@ -7,10 +7,10 @@ from bencher.plotting.plot_collection import PlotCollection, PlotProvider
 
 
 class TestPlotProvider:
-    def plot_1(self) -> pn.panel | None:
+    def plot_1(self) -> Optional[pn.panel]:
         return [pn.pane.Markdown("Test plot 1", name="plot_1")]
 
-    def plot_2(self) -> pn.panel | None:
+    def plot_2(self) -> Optional[pn.panel]:
         return [pn.pane.Markdown("Test plot 2", name="plot_2")]
 
 
