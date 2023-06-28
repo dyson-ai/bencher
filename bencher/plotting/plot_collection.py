@@ -1,13 +1,14 @@
 from __future__ import annotations
-import panel as pn
+
 import inspect
-from typing import List, Callable
 import logging
+from typing import Callable, List
 
+import panel as pn
 
-from bencher.bench_cfg import PltCntCfg, BenchCfg
+from bencher.bench_cfg import BenchCfg, PltCntCfg
 from bencher.bench_vars import ParametrizedSweep
-from bencher.plotting.plot_filter import PlotProvider, PlotInput
+from bencher.plotting.plot_filter import PlotInput, PlotProvider
 
 
 class PlotCollection:
@@ -91,9 +92,12 @@ class PlotCollection:
         tabs = pn.Accordion()
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
-            for plt_instance in plots:
-                logging.info(f"plotting: {plt_instance.name}")
-                tabs.append(plt_instance)
+            if plots is not None:
+                if type(plots) != list:
+                    plots = [plots]
+                for plt_instance in plots:
+                    logging.info(f"plotting: {plt_instance.name}")
+                    tabs.append(plt_instance)
         if len(tabs) > 0:
             tabs.active = [0]  # set the first plot as active
         return tabs
