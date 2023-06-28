@@ -1,11 +1,13 @@
-from typing import List, Tuple
-import seaborn as sns
-import panel as pn
+from typing import Tuple
+
 import matplotlib.pyplot as plt
 import pandas as pd
-from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
-from bencher.plt_cfg import PltCfgBase
+import panel as pn
+import seaborn as sns
+
+from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
+from bencher.plt_cfg import PltCfgBase
 
 
 class Catplot:
@@ -31,32 +33,31 @@ class Catplot:
         return df, sns_cfg
 
     @staticmethod
-    def plot_postprocess(fg: plt.figure, sns_cfg: PltCfgBase, name: str) -> List[pn.panel]:
+    def plot_postprocess(fg: plt.figure, sns_cfg: PltCfgBase, name: str) -> pn.panel | None:
         fg.fig.suptitle(sns_cfg.title)
         fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
         fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
         plt.tight_layout()
-        return [pn.panel(fg.fig, name=name)]
+        return pn.panel(fg.fig, name=name)
 
-    def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> List[pn.panel]:
+    def catplot_common(self, pl_in: PlotInput, kind: str, name: str) -> pn.panel | None:
         if self.float_0_cat_at_least1_vec_1_res_1.matches(pl_in.plt_cnt_cfg):
             df, sns_cfg = self.plot_setup(pl_in)
             sns_cfg.kind = kind
             fg = sns.catplot(df, **sns_cfg.as_sns_args())
             return self.plot_postprocess(fg, sns_cfg, name)
-        return []
 
-    def swarmplot(self, pl_in: PlotInput) -> List[pn.panel]:
+    def swarmplot(self, pl_in: PlotInput) -> pn.panel | None:
         return self.catplot_common(pl_in, "swarm", PlotTypes.swarmplot)
 
-    def violinplot(self, pl_in: PlotInput) -> List[pn.panel]:
+    def violinplot(self, pl_in: PlotInput) -> pn.panel | None:
         return self.catplot_common(pl_in, "violin", PlotTypes.violinplot)
 
-    def boxplot(self, pl_in: PlotInput) -> List[pn.panel]:
+    def boxplot(self, pl_in: PlotInput) -> pn.panel | None:
         return self.catplot_common(pl_in, "box", PlotTypes.boxplot)
 
-    def barplot(self, pl_in: PlotInput) -> List[pn.panel]:
+    def barplot(self, pl_in: PlotInput) -> pn.panel | None:
         return self.catplot_common(pl_in, "bar", PlotTypes.barplot)
 
-    def boxenplot(self, pl_in: PlotInput) -> List[pn.panel]:
+    def boxenplot(self, pl_in: PlotInput) -> pn.panel | None:
         return self.catplot_common(pl_in, "boxen", PlotTypes.boxenplot)
