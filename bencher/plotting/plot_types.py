@@ -18,4 +18,5 @@ class PlotTypes(StrEnum):
     dataframe_mean = auto()
     xarray = auto()
 
-    pcolormesh = auto()
+    imshow = auto()
+    surface_plotly = auto()
