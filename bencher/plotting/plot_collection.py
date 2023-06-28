@@ -87,7 +87,10 @@ class PlotCollection:
         Args:
             bench_cfg (BenchCfg): A config of the input vars
             rv (ParametrizedSweep): a config of the result variable
-            plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
+            plt_cnt_cfg (PltCntCfg): A config of how many input types there are
+        Raises:
+            ValueError: If the plot does not inherit from a pn.viewable.Viewable type
+        """
 
         tabs = pn.Accordion()
         for plt_fn in self.plotters.values():
@@ -96,6 +99,10 @@ class PlotCollection:
                 if type(plots) != list:
                     plots = [plots]
                 for plt_instance in plots:
+                    if not isinstance(plt_instance, pn.viewable.Viewable):
+                        raise ValueError(
+                            "The plot must be a viewable type (pn.viewable.Viewable or pn.panel)"
+                        )
                     logging.info(f"plotting: {plt_instance.name}")
                     tabs.append(plt_instance)
         if len(tabs) > 0:
