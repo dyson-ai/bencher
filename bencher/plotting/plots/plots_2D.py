@@ -1,13 +1,8 @@
-from typing import List, Tuple
-import seaborn as sns
+from typing import List
 import panel as pn
-import matplotlib.pyplot as plt
-import pandas as pd
 from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
-from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
 
-import plotly.graph_objects as go
 import plotly.express as px
 
 
