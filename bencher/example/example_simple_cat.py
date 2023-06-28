@@ -1,4 +1,5 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
+# pylint: disable=duplicate-code
 
 import bencher as bch
 

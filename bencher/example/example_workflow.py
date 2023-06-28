@@ -1,3 +1,6 @@
+# pylint: disable=duplicate-code
+
+
 import bencher as bch
 import numpy as np
 
@@ -98,11 +101,13 @@ def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
     )
     recovered_p1 = res.get_optimal_vec(VolumeResult.param.p1_dis, res.input_vars)
     print(f"recovered p1: {recovered_p1}, distance: {np.linalg.norm(recovered_p1 - p1[:2])}")
-    assert np.linalg.norm(recovered_p1 - p1[:2]) < 0.15  # within tolerance of sampling
+    # within tolerance of sampling
+    assert np.linalg.norm(recovered_p1 - p1[:2]) < 0.15
 
     recovered_p2 = res.get_optimal_vec(VolumeResult.param.p2_dis, res.input_vars)
     print(f"recovered p2: {recovered_p2} distance: {np.linalg.norm(recovered_p2 - p2[:2])}")
-    assert np.linalg.norm(recovered_p2 - p2[:2]) < 0.15  # within tolerance of sampling
+    # within tolerance of sampling
+    assert np.linalg.norm(recovered_p2 - p2[:2]) < 0.15
 
     run_cfg.use_optuna = True
     for rv in res.result_vars:
@@ -150,11 +155,13 @@ def example_floats3D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
 
     recovered_p1 = res.get_optimal_vec(VolumeResult.param.p1_dis, res.input_vars)
     print(f"recovered p1: {recovered_p1}, distance: {np.linalg.norm(recovered_p1 - p1)}")
-    assert np.linalg.norm(recovered_p1 - p1) < 0.15  # within tolerance of sampling
+    # within tolerance of sampling
+    assert np.linalg.norm(recovered_p1 - p1) < 0.15
 
     recovered_p2 = res.get_optimal_vec(VolumeResult.param.p2_dis, res.input_vars)
     print(f"recovered p2: {recovered_p2} distance: {np.linalg.norm(recovered_p2 - p2)}")
-    assert np.linalg.norm(recovered_p2 - p2) < 0.15  # within tolerance of sampling
+    # within tolerance of sampling
+    assert np.linalg.norm(recovered_p2 - p2) < 0.15
 
     run_cfg.use_optuna = True
     for rv in res.result_vars:

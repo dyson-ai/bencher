@@ -22,7 +22,7 @@ class TestPlotLibrary(unittest.TestCase):
     # Tests that the all PlotCollection contains all possible plots
     def test_all_plot_collection(self) -> None:
         all_plots = PlotLibrary.all()
-        for pt in [p for p in PlotTypes]:
+        for pt in list(PlotTypes):
             self.assertIn(pt, all_plots.plotters)
         self.assertEqual(len(all_plots.plotters), len(PlotTypes))
 

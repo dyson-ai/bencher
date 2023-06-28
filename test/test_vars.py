@@ -4,18 +4,20 @@ import os
 from bencher.example.benchmark_data import AllSweepVars
 
 
-def get_sweep_hash_isolated_process():
+def get_sweep_hash_isolated_process() -> str:
     """get has values from a separate process as by default hashes across process are not the same"""
     os.system(
         "python3 -c 'from bencher.example.benchmark_data import AllSweepVars;ex = AllSweepVars();print(ex.__repr__());print(ex.hash_persistent())' > hashed_vars_comparison_tmp"
     )
-    res = open("hashed_vars_comparison_tmp", "r", encoding="utf-8").read()
+
+    with open("hashed_vars_comparison_tmp", "r", encoding="utf-8") as myfile:
+        res = myfile.read()
     os.remove("hashed_vars_comparison_tmp")
     return res
 
 
 class TestBencherHashing(unittest.TestCase):
-    def test_sweep_hashes(self):
+    def test_sweep_hashes(self) -> None:
         """check that separate instances with identical data have the same hash"""
         ex = AllSweepVars()
         ex2 = AllSweepVars()

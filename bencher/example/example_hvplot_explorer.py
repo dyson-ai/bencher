@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 from bencher import Bench, BenchRunCfg, ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
