@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 class VarRange:
     def __init__(self, lower_bound: int = 0, upper_bound: int = -1) -> None:
-        """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers.
+        """A VarRange represents bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers.
 
         Args:
             lower_bound (int, optional): The smallest acceptable value to matches(). Passing None will result in a lower bound of 0 (as matches only accepts positive integers). Defaults to 0.
@@ -22,7 +22,7 @@ class VarRange:
             val (int): A positive integer representing a number of items
 
         Returns:
-            bool: True if the items is within the range, False otherwise.
+            bool: True if the item is within the range, False otherwise.
 
         Raises:
             ValueError: If val < 0
