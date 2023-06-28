@@ -1,5 +1,5 @@
 """A server for display plots of benchmark results"""
-
+import os
 import logging
 from typing import Tuple, List
 from diskcache import Cache
@@ -31,6 +31,9 @@ class BenchPlotServer:
         """
         if plots_instance is None:
             plots_instance = self.load_data_from_cache(bench_name)
+        if plot_cfg.port is not None:
+            os.environ["BOKEH_ALLOW_WS_ORIGIN"] = f"localhost:{plot_cfg.port}"
+
         self.serve(bench_name, plots_instance, port=plot_cfg.port)
 
     def load_data_from_cache(self, bench_name: str) -> Tuple[BenchCfg, List[pn.panel]] | None:
