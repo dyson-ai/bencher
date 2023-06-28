@@ -84,10 +84,12 @@ class PlotCollection:
             rv (ParametrizedSweep): a config of the result variable
             plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
 
-        tabs = pn.Tabs()
+        tabs = pn.Accordion()
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
             for plt_instance in plots:
                 logging.info(f"plotting: {plt_instance.name}")
                 tabs.append(plt_instance)
+        if len(tabs) > 0:
+            tabs.active = [0]  # set the first plot as active
         return tabs

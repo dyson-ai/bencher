@@ -6,12 +6,6 @@ from bencher.plotting.plot_types import PlotTypes
 
 
 class TestPlotLibrary(unittest.TestCase):
-    # Tests that the default PlotCollection contains a reasonable set of plots
-    def test_default_plot_collection(self) -> None:
-        default_plots = PlotLibrary.default()
-        self.assertIn(PlotTypes.swarmplot, default_plots.plotters)
-        self.assertEqual(len(default_plots.plotters), 1)
-
     # Tests that the tables PlotCollection only contains table plots
     def test_tables_plot_collection(self) -> None:
         tables_plots = PlotLibrary.tables()
@@ -41,6 +35,7 @@ class TestPlotLibrary(unittest.TestCase):
     def test_removing_plot_not_in_active_plots(self) -> None:
         plt_col = PlotLibrary.default()
         plt_col.remove(PlotTypes.swarmplot)
+        plt_col.remove(PlotTypes.imshow)
         self.assertEqual(len(plt_col.plotters), 0)
         with self.assertRaises(KeyError):
             plt_col.remove(PlotTypes.swarmplot)

@@ -1,5 +1,6 @@
 # pylint: disable=duplicate-code
 from bencher import Bench, BenchRunCfg
+import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import (
@@ -19,7 +20,12 @@ def example_floats2D(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Floats", bench_function, ExampleBenchCfgIn)
+    bench = Bench(
+        "Bencher_Example_Floats",
+        bench_function,
+        ExampleBenchCfgIn,
+        plot_lib=bch.PlotLibrary.default(),
+    )
 
     cfg = ExampleBenchCfgIn()
     cfg.param.theta.samples = 3

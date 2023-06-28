@@ -17,3 +17,5 @@ class PlotTypes(StrEnum):
     dataframe_flat = auto()
     dataframe_mean = auto()
     xarray = auto()
+
+    imshow = auto()
