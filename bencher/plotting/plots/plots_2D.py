@@ -42,3 +42,4 @@ class Plots2D:
                 ),
                 name=PlotTypes.imshow,
             )
+        return None

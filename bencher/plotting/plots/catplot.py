@@ -46,6 +46,7 @@ class Catplot:
             sns_cfg.kind = kind
             fg = sns.catplot(df, **sns_cfg.as_sns_args())
             return self.plot_postprocess(fg, sns_cfg, name)
+        return None
 
     def swarmplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
         return self.catplot_common(pl_in, "swarm", PlotTypes.swarmplot)
