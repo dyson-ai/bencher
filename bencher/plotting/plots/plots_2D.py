@@ -32,5 +32,20 @@ class Plots2D:
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
             mean = da.mean("repeat")
-            return [pn.panel(px.imshow(mean), name=PlotTypes.imshow)]
+            fv_x = pl_in.plt_cnt_cfg.float_vars[0]
+            fv_y = pl_in.plt_cnt_cfg.float_vars[1]
+            title = f"{pl_in.rv.name} vs ({fv_x.name} vs {fv_y.name})"
+            xlabel = f"{fv_x.name} [{fv_x.units}]"
+            ylabel = f"{fv_y.name} [{fv_y.units}]"
+            color_label = f"{pl_in.rv.name} [{pl_in.rv.units}]"
+            return [
+                pn.panel(
+                    px.imshow(
+                        mean,
+                        title=title,
+                        labels={"x": xlabel, "y": ylabel, "color": color_label},
+                    ),
+                    name=PlotTypes.imshow,
+                )
+            ]
         return []
