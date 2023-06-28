@@ -1,9 +1,9 @@
 from typing import List
 import panel as pn
+import plotly.express as px
+
 from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
 from bencher.plotting.plot_types import PlotTypes
-
-import plotly.express as px
 
 
 class Plots2D:
