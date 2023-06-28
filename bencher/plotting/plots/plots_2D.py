@@ -21,6 +21,14 @@ class Plots2D:
     )
 
     def imshow(self, pl_in: PlotInput) -> List[pn.panel]:
+        """use the imshow plotting method to display 2D data
+
+        Args:
+            pl_in (PlotInput): The data to plot
+
+        Returns:
+            List[pn.panel]: A panel with a image representation of the data
+        """
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
             mean = da.mean("repeat")
