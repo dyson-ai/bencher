@@ -34,6 +34,5 @@ class TestPlotsCommon(unittest.TestCase):
             plot_name (str): expected name of the plot
         """
 
-        self.assertIsInstance(result, pn.pane.panel)
-        self.assertIsInstance(result[0], pn.viewable.Viewable)
-        self.assertEqual(result[0].name, plot_name)
+        self.assertIsInstance(result, pn.viewable.Viewable)
+        self.assertEqual(result.name, plot_name)
