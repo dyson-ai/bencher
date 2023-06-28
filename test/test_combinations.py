@@ -8,6 +8,7 @@ from strenum import StrEnum
 from enum import auto
 from typing import List
 from param import Parameter
+from itertools import combinations
 
 
 class Enum1(StrEnum):
@@ -76,7 +77,6 @@ result_var_permutations = [
     # [BenchCfgTestOut.param.outvec3],
 ]
 
-from itertools import combinations
 
 # the function used to generate all possible combination or permutations of input
 generator_func = combinations

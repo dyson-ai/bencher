@@ -1,5 +1,5 @@
 import unittest
-from hypothesis import given, settings, strategies as st  # pylint: disable=unused-import
+from hypothesis import given, strategies as st  # pylint: disable=unused-import
 import pytest
 from bencher.bench_vars import IntSweep
 

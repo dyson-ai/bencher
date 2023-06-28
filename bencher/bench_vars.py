@@ -9,7 +9,6 @@ import re
 from datetime import datetime
 from typing import List
 import hashlib
-from sys import byteorder
 
 
 def hash_sha1(var: any) -> str:
@@ -354,7 +353,7 @@ class IntSweep(Integer):
         else:
             self.sample_values = sample_values
             self.samples = len(self.sample_values)
-            if not "default" in params:
+            if "default" not in params:
                 self.default = sample_values[0]
 
     def values(self, debug) -> List[int]:
@@ -408,7 +407,7 @@ class FloatSweep(Number):
         else:
             self.sample_values = sample_values
             self.samples = len(self.sample_values)
-            if not "default" in params:
+            if "default" not in params:
                 self.default = sample_values[0]
 
     def values(self, debug) -> List[float]:
