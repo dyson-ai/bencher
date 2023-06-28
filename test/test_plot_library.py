@@ -6,7 +6,6 @@ from bencher.plotting.plot_types import PlotTypes
 
 
 class TestPlotLibrary(unittest.TestCase):
-
     # Tests that the tables PlotCollection only contains table plots
     def test_tables_plot_collection(self) -> None:
         tables_plots = PlotLibrary.tables()
