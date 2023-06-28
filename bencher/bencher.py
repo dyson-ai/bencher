@@ -22,7 +22,7 @@ from bencher.bench_vars import (
 from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
-
+from bencher.plotting.plot_collection import PlotCollection
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -98,6 +98,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
+        plot_lib: PlotCollection = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -105,6 +106,7 @@ class Bench(BenchPlotServer):
             bench_name (str): The name of the benchmark and output folder for the figures
             worker (Callable): A function that accepts a class of type (worker_input_config)
             worker_input_config (ParametrizedSweep): A class defining the parameters of the function.
+            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
         """
         self.bench_name = bench_name
         self.worker = None
@@ -121,6 +123,7 @@ class Bench(BenchPlotServer):
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
+        self.plot_lib = plot_lib
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -160,7 +163,7 @@ class Bench(BenchPlotServer):
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
-
+            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
 
         Raises:
             ValueError: If a result variable is not set
@@ -207,7 +210,7 @@ class Bench(BenchPlotServer):
         )
 
         bench_cfg.param.update(run_cfg.param.values())
-        bench_cfg.plot_lib = plot_lib
+        bench_cfg.plot_lib = plot_lib if plot_lib is not None else self.plot_lib
 
         print("plot_lib", bench_cfg.plot_lib)
 
