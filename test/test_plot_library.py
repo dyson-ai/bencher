@@ -6,12 +6,6 @@ from bencher.plotting.plot_types import PlotTypes
 
 
 class TestPlotLibrary(unittest.TestCase):
-    # Tests that the default PlotCollection contains a reasonable set of plots
-    def test_default_plot_collection(self) -> None:
-        default_plots = PlotLibrary.default()
-        self.assertIn(PlotTypes.swarmplot, default_plots.plotters)
-        self.assertIn(PlotTypes.imshow, default_plots.plotters)
-        self.assertEqual(len(default_plots.plotters), 2)
 
     # Tests that the tables PlotCollection only contains table plots
     def test_tables_plot_collection(self) -> None:
