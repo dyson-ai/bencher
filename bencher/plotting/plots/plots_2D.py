@@ -40,7 +40,7 @@ class Plots2D:
                     title=title,
                     labels={"x": xlabel, "y": ylabel, "color": color_label},
                 ),
-                name=PlotTypes.imshow,
+                name=PlotTypes.heatmap_2D,
             )
         return None
 

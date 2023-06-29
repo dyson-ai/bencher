@@ -18,5 +18,5 @@ class PlotTypes(StrEnum):
     dataframe_mean = auto()
     xarray = auto()
 
-    imshow = auto()
+    heatmap_2D = auto()
     heatmap_1D = auto()
