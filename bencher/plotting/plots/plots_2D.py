@@ -26,6 +26,18 @@ class Heatmap:
         z: ParametrizedSweep,
         name: str,
     ) -> pn.panel:
+        """given a dataframe and result variables, use imshow to plot a heatmap
+
+        Args:
+            df (xr.DataArray): data to plo
+            x (ParametrizedSweep): x variable
+            y (ParametrizedSweep): y variable
+            z (ParametrizedSweep): z variable
+            name (str): name of the plot
+
+        Returns:
+            pn.panel: A heatmap
+        """
         title = f"{z.name} vs ({x.name} vs {y.name})"
         xlabel = f"{x.name} [{x.units}]"
         ylabel = f"{y.name} [{y.units}]"
