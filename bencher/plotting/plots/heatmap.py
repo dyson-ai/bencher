@@ -12,7 +12,7 @@ from holoviews import opts
 import hvplot.xarray
 
 
-class Plots2D:
+class Heatmap:
     # shared plot filter for 2d plots
     plot_filter = PlotFilter(
         float_range=VarRange(2, 2),
@@ -29,15 +29,13 @@ class Plots2D:
         z: ParametrizedSweep,
         name: str,
     ) -> pn.panel:
-
         title = f"{z.name} vs ({x.name} vs {y.name})"
         xlabel = f"{x.name} [{x.units}]"
         ylabel = f"{y.name} [{y.units}]"
         color_label = f"{z.name} [{z.units}]"
 
-        # return pn.panel(
-        #     df.hvplot.heatmap(x=x.name, y=y.name, C=z.name, height=500, width=500, colorbar=False)
-        # )
+        # TODO set up a holoview version
+        # return pn.panel(df.hvplot.heatmap(x=x.name, y=y.name, C=z.name, colorbar=True))
         return pn.panel(
             px.imshow(
                 df,
@@ -79,17 +77,8 @@ class Plots2D:
             List[pn.panel]: A panel with a image representation of the data
         """
         if len(pl_in.bench_cfg.input_vars) == 1:
-
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
             mean = da.mean("repeat", keepdims=True, keep_attrs=True)
-
-            # hv.extension("bokeh")
-
-            # hm = hv.HeatMap(da)
-
-            # hm = da.hvplot.heatmap(mean)
-            # hm = hm * hv.Labels(hm).opts(padding=0)
-            # hm.opts(opts.HeatMap(colorbar=True))
 
             return [
                 self.imshow_wrapper(
@@ -106,6 +95,5 @@ class Plots2D:
                     pl_in.rv,
                     PlotTypes.heatmap_1D,
                 ),
-                # pn.panel(hm, name="heatmap_holo"),
             ]
         return None
