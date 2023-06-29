@@ -1,7 +1,5 @@
-from typing import Optional, Tuple
+from typing import Optional
 
-import matplotlib.pyplot as plt
-import pandas as pd
 import panel as pn
 import seaborn as sns
 
