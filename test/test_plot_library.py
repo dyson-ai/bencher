@@ -35,7 +35,7 @@ class TestPlotLibrary(unittest.TestCase):
     def test_removing_plot_not_in_active_plots(self) -> None:
         plt_col = PlotLibrary.default()
         plt_col.remove(PlotTypes.swarmplot)
-        plt_col.remove(PlotTypes.imshow)
+        plt_col.remove(PlotTypes.heatmap_2D)
         self.assertEqual(len(plt_col.plotters), 0)
         with self.assertRaises(KeyError):
             plt_col.remove(PlotTypes.swarmplot)

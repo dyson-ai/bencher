@@ -427,15 +427,15 @@ class Bench(BenchPlotServer):
         Returns:
             _type_: _description_
         """
-        iv_repeats = IntSweep(
+        bench_cfg.iv_repeat = IntSweep(
             default=repeats,
             bounds=[1, repeats],
             samples=repeats,
             samples_debug=2 if repeats > 2 else 1,
             units="repeats",
         )
-        iv_repeats.name = "repeat"
-        extra_vars = [iv_repeats]
+        bench_cfg.iv_repeat.name = "repeat"
+        extra_vars = [bench_cfg.iv_repeat]
 
         if bench_cfg.over_time:
             if type(time_src) == str:
