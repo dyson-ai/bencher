@@ -31,11 +31,10 @@ class TestPlotLibrary(unittest.TestCase):
         with self.assertRaises(ValueError):
             plt_col.add("invalid_plot")
 
-    # Test that removing a plot that is not in the list of active plots does not raise an error
+    # Test that removing a plot that is not in the list of active plots raises an Keyerror
     def test_removing_plot_not_in_active_plots(self) -> None:
-        plt_col = PlotLibrary.default()
-        plt_col.remove(PlotTypes.swarmplot)
-        plt_col.remove(PlotTypes.heatmap_2D)
-        self.assertEqual(len(plt_col.plotters), 0)
+        plt_col = PlotLibrary.tables()
+        plt_col.remove(PlotTypes.dataframe_multi_index)
+        self.assertEqual(len(plt_col.plotters), 1)  # 2 plots in tables by default and 1 removed
         with self.assertRaises(KeyError):
             plt_col.remove(PlotTypes.swarmplot)
