@@ -1,13 +1,14 @@
 from __future__ import annotations
-import panel as pn
+
 import inspect
-from typing import List, Callable
 import logging
+from typing import Callable, List
 
+import panel as pn
 
-from bencher.bench_cfg import PltCntCfg, BenchCfg
+from bencher.bench_cfg import BenchCfg, PltCntCfg
 from bencher.bench_vars import ParametrizedSweep
-from bencher.plotting.plot_filter import PlotProvider, PlotInput
+from bencher.plotting.plot_filter import PlotInput, PlotProvider
 
 
 class PlotCollection:
@@ -86,14 +87,24 @@ class PlotCollection:
         Args:
             bench_cfg (BenchCfg): A config of the input vars
             rv (ParametrizedSweep): a config of the result variable
-            plt_cnt_cfg (PltCntCfg): A config of how many input types there are"""
+            plt_cnt_cfg (PltCntCfg): A config of how many input types there are
+        Raises:
+            ValueError: If the plot does not inherit from a pn.viewable.Viewable type
+        """
 
         tabs = pn.Accordion()
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
-            for plt_instance in plots:
-                logging.info(f"plotting: {plt_instance.name}")
-                tabs.append(plt_instance)
+            if plots is not None:
+                if type(plots) != list:
+                    plots = [plots]
+                for plt_instance in plots:
+                    if not isinstance(plt_instance, pn.viewable.Viewable):
+                        raise ValueError(
+                            "The plot must be a viewable type (pn.viewable.Viewable or pn.panel)"
+                        )
+                    logging.info(f"plotting: {plt_instance.name}")
+                    tabs.append(plt_instance)
         if len(tabs) > 0:
             tabs.active = [0]  # set the first plot as active
         return tabs

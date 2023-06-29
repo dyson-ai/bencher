@@ -1,14 +1,16 @@
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
+from bencher.bench_cfg import PltCntCfg
+from bencher.example.benchmark_data import ExampleBenchCfgOut
 from bencher.plotting.plot_collection import PlotInput
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.tables import Tables
-from bencher.bench_cfg import PltCntCfg
-from bencher.example.benchmark_data import ExampleBenchCfgOut
-from hypothesis import given, settings, strategies as st
 
 from .test_plots_common import TestPlotsCommon
 
 
-class TestCatPlot(TestPlotsCommon):
+class TestTables(TestPlotsCommon):
     @settings(deadline=10000)
     @given(
         st.sampled_from(

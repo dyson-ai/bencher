@@ -1,8 +1,9 @@
-from typing import List
+from typing import Optional
+
 import panel as pn
 import plotly.express as px
 
-from bencher.plotting.plot_filter import PlotFilter, VarRange, PlotInput
+from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 
 
@@ -15,7 +16,7 @@ class Plots2D:
         result_vars=VarRange(1, 1),
     )
 
-    def imshow(self, pl_in: PlotInput) -> List[pn.panel]:
+    def imshow(self, pl_in: PlotInput) -> Optional[pn.panel]:
         """use the imshow plotting method to display 2D data
 
         Args:
@@ -33,14 +34,12 @@ class Plots2D:
             xlabel = f"{fv_x.name} [{fv_x.units}]"
             ylabel = f"{fv_y.name} [{fv_y.units}]"
             color_label = f"{pl_in.rv.name} [{pl_in.rv.units}]"
-            return [
-                pn.panel(
-                    px.imshow(
-                        mean,
-                        title=title,
-                        labels={"x": xlabel, "y": ylabel, "color": color_label},
-                    ),
-                    name=PlotTypes.imshow,
-                )
-            ]
-        return []
+            return pn.panel(
+                px.imshow(
+                    mean,
+                    title=title,
+                    labels={"x": xlabel, "y": ylabel, "color": color_label},
+                ),
+                name=PlotTypes.imshow,
+            )
+        return None
