@@ -5,6 +5,11 @@ import plotly.express as px
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
+from bencher.bench_vars import ParametrizedSweep
+import xarray as xr
+import holoviews as hv
+from holoviews import opts
+import hvplot.xarray
 
 
 class Plots2D:
@@ -16,11 +21,23 @@ class Plots2D:
         result_vars=VarRange(1, 1),
     )
 
-    def imshow_wrapper(self, df, x, y, z, name) -> pn.panel:
+    def imshow_wrapper(
+        self,
+        df: xr.DataArray,
+        x: ParametrizedSweep,
+        y: ParametrizedSweep,
+        z: ParametrizedSweep,
+        name: str,
+    ) -> pn.panel:
+
         title = f"{z.name} vs ({x.name} vs {y.name})"
         xlabel = f"{x.name} [{x.units}]"
         ylabel = f"{y.name} [{y.units}]"
         color_label = f"{z.name} [{z.units}]"
+
+        # return pn.panel(
+        #     df.hvplot.heatmap(x=x.name, y=y.name, C=z.name, height=500, width=500, colorbar=False)
+        # )
         return pn.panel(
             px.imshow(
                 df,
@@ -37,7 +54,7 @@ class Plots2D:
             pl_in (PlotInput): The data to plot
 
         Returns:
-            List[pn.panel]: A panel with a image representation of the data
+            pn.panel: A panel with a image representation of the data
         """
         if len(pl_in.bench_cfg.input_vars) == 2:
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
@@ -62,12 +79,17 @@ class Plots2D:
             List[pn.panel]: A panel with a image representation of the data
         """
         if len(pl_in.bench_cfg.input_vars) == 1:
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
-            mean = da.mean("repeat")
 
-            # mean = mean.to_dataframe().reset_index()
-            mean["repeat"] = 1
-            print(mean)
+            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+            mean = da.mean("repeat", keepdims=True, keep_attrs=True)
+
+            # hv.extension("bokeh")
+
+            # hm = hv.HeatMap(da)
+
+            # hm = da.hvplot.heatmap(mean)
+            # hm = hm * hv.Labels(hm).opts(padding=0)
+            # hm.opts(opts.HeatMap(colorbar=True))
 
             return [
                 self.imshow_wrapper(
@@ -84,44 +106,6 @@ class Plots2D:
                     pl_in.rv,
                     PlotTypes.heatmap_1D,
                 ),
+                # pn.panel(hm, name="heatmap_holo"),
             ]
-            # print(pl_in.plt_cnt_cfg.cat_vars)
-            # print(pl_in.plt_cnt_cfg.float_vars)
-            # print(mean)
-
-            # print(mean.to_dataframe().reset_index())
-
-            fv_x = pl_in.bench_cfg.iv_repeats
-            fv_y = pl_in.bench_cfg.input_vars[0]
-
-            title = f"{pl_in.rv.name} vs ({fv_x.name} vs {fv_y.name})"
-            xlabel = f"{fv_x.name} [{fv_x.units}]"
-            ylabel = f"{fv_y.name} [{fv_y.units}]"
-            color_label = f"{pl_in.rv.name} [{pl_in.rv.units}]"
-            return [
-                pn.panel(
-                    px.imshow(
-                        mean,
-                        title=title,
-                        labels={"x": xlabel, "y": ylabel, "color": color_label},
-                    ),
-                    name=PlotTypes.heatmap_1D,
-                ),
-            ]
-
-            # print(mean.values)
-            fv_x = pl_in.bench_cfg.input_vars[0]
-            fv_x = pl_in.bench_cfg.input_vars[0]
-
-            title = f"{pl_in.rv.name} vs {fv_x.name}"
-            xlabel = f"{fv_x.name} [{fv_x.units}]"
-            color_label = f"{pl_in.rv.name} [{pl_in.rv.units}]"
-            return pn.panel(
-                px.imshow(
-                    [mean.values],
-                    title=title,
-                    labels={"x": xlabel, "y": ylabel, "color": color_label},
-                ),
-                name=PlotTypes.heatmap_1D,
-            )
         return None
