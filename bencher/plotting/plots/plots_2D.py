@@ -29,7 +29,7 @@ class Heatmap:
         """given a dataframe and result variables, use imshow to plot a heatmap
 
         Args:
-            df (xr.DataArray): data to plo
+            df (xr.DataArray): data to plot
             x (ParametrizedSweep): x variable
             y (ParametrizedSweep): y variable
             z (ParametrizedSweep): z variable
@@ -83,7 +83,7 @@ class Heatmap:
             pl_in (PlotInput): The data to plot
 
         Returns:
-            List[pn.panel]: A panel with a image representation of the data
+            Optional[pn.panel]: A panel with a image representation of the data
         """
         if len(pl_in.bench_cfg.input_vars) == 1:
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
