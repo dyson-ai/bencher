@@ -19,3 +19,4 @@ class PlotTypes(StrEnum):
     xarray = auto()
 
     imshow = auto()
+    heatmap_1D = auto()
