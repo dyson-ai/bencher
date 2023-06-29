@@ -20,3 +20,5 @@ class PlotTypes(StrEnum):
 
     heatmap_2D = auto()
     heatmap_1D = auto()
+
+    lineplot = auto()
