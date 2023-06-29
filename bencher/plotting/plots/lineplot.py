@@ -10,7 +10,7 @@ from bencher.plt_cfg import PltCfgBase
 
 
 class Lineplot:
-    # shared plot filter for catplots
+    # shared plot filter for lineplots
     plot_filter = PlotFilter(
         float_range=VarRange(1, 1),
         cat_range=VarRange(0, 1),
@@ -19,6 +19,14 @@ class Lineplot:
     )
 
     def lineplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        """generate a line plot
+
+        Args:
+            pl_in (PlotInput): data to plot
+
+        Returns:
+            Optional[pn.panel]: a line plot of the data
+        """
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
             df, sns_cfg = Catplot.plot_setup(pl_in)
             sns_cfg = PltCfgBase()
