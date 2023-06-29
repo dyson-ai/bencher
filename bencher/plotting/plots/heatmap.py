@@ -7,9 +7,6 @@ from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 from bencher.bench_vars import ParametrizedSweep
 import xarray as xr
-import holoviews as hv
-from holoviews import opts
-import hvplot.xarray
 
 
 class Heatmap:
