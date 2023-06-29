@@ -1,8 +1,10 @@
 """Example on how to sweep over function with vector outputs"""
 
-import bencher as bch
+from math import cos, sin
+
 import numpy as np
-from math import sin, cos
+
+import bencher as bch
 
 
 class OffsetCfg(bch.ParametrizedSweep):

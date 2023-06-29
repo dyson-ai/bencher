@@ -6,18 +6,18 @@ You can define a subclass which contains an input configuration which can be pas
 import math
 import random
 from enum import auto
+
 from strenum import StrEnum
 
-
 from bencher.bench_vars import (
-    ParametrizedSweep,
-    IntSweep,
-    FloatSweep,
-    EnumSweep,
     BoolSweep,
-    StringSweep,
-    ResultVar,
+    EnumSweep,
+    FloatSweep,
+    IntSweep,
     OptDir,
+    ParametrizedSweep,
+    ResultVar,
+    StringSweep,
 )
 
 

@@ -2,11 +2,11 @@ from typing import Optional
 
 import panel as pn
 import plotly.express as px
+import xarray as xr
 
+from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
-from bencher.bench_vars import ParametrizedSweep
-import xarray as xr
 
 
 class Heatmap:

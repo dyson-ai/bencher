@@ -1,19 +1,20 @@
-import os
 import errno
-import matplotlib.pyplot as plt
-import panel as pn
-import numpy as np
-import plotly.graph_objs as go
-import holoviews as hv
-import pandas as pd
-import seaborn as sns
-import plotly.express as px
 import logging
-
+import os
 from textwrap import wrap
+
+import holoviews as hv
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import panel as pn
+import plotly.express as px
+import plotly.graph_objs as go
+import seaborn as sns
 from holoviews import opts
-from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec, ResultList
-from bencher.bench_cfg import PltCfgBase, BenchCfg
+
+from bencher.bench_cfg import BenchCfg, PltCfgBase
+from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultVec
 
 hv.extension("plotly")
 

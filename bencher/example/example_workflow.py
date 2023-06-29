@@ -1,8 +1,9 @@
 # pylint: disable=duplicate-code
 
 
-import bencher as bch
 import numpy as np
+
+import bencher as bch
 
 
 class VolumeSample(bch.ParametrizedSweep):

@@ -1,14 +1,13 @@
 # you need this import to be able to reference a class from a static method in that class
 from __future__ import annotations
 
-# """This file has some examples for how to perform basic benchmarking parameter sweeps"""
-
-from bencher import Bench, BenchRunCfg, FloatSweep, ParametrizedSweep, BoolSweep
-from bencher.example.benchmark_data import ExampleBenchCfgOut
 import math
-
-from typing import Type
 from pickle import PicklingError, UnpicklingError
+from typing import Type
+
+# """This file has some examples for how to perform basic benchmarking parameter sweeps"""
+from bencher import Bench, BenchRunCfg, BoolSweep, FloatSweep, ParametrizedSweep
+from bencher.example.benchmark_data import ExampleBenchCfgOut
 
 
 class ExpensiveNonPickleableResource:
