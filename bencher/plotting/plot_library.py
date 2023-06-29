@@ -2,7 +2,7 @@ from __future__ import annotations
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.tables import Tables
-from bencher.plotting.plots.plots_2D import Heatmap
+from bencher.plotting.plots.heatmap import Heatmap
 
 from bencher.plotting.plot_types import PlotTypes
 
