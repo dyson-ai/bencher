@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-import bencher as bch
-import logging
 import argparse
 import copy
+import logging
+from typing import Any, Callable, List, Tuple
+
 import param
-
-from str2bool import str2bool
 import xarray as xr
-from typing import List, Callable, Tuple, Any
-
-from bencher.bench_vars import TimeSnapshot, TimeEvent, describe_variable, OptDir, hash_sha1
 from pandas import DataFrame
+from str2bool import str2bool
+
+import bencher as bch
+from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
 
 
 def to_filename(

@@ -1,7 +1,9 @@
 from __future__ import annotations
-from bencher.bench_cfg import PltCntCfg, BenchCfg
-from bencher.bench_vars import ParametrizedSweep
+
 from dataclasses import dataclass
+
+from bencher.bench_cfg import BenchCfg, PltCntCfg
+from bencher.bench_vars import ParametrizedSweep
 
 
 class VarRange:

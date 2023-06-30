@@ -1,12 +1,14 @@
+import logging
+from copy import deepcopy
+
+import panel as pn
 import seaborn as sns
 import xarray as xr
-from copy import deepcopy
-import panel as pn
-import logging
-from bencher.bench_cfg import PltCfgBase, PltCntCfg, BenchCfg, describe_benchmark
+
+import bencher.plotting_functions as plt_func
+from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
 from bencher.bench_vars import ParametrizedSweep, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
-import bencher.plotting_functions as plt_func
 
 
 class BenchPlotter:

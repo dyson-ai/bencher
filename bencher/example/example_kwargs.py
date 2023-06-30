@@ -1,11 +1,12 @@
+import math
+
 from bencher import (
     Bench,
     FloatSweep,
-    StringSweep,
-    ResultVar,
     ParametrizedSweep,
+    ResultVar,
+    StringSweep,
 )
-import math
 
 
 def bench_function(

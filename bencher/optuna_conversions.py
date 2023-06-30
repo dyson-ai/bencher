@@ -1,23 +1,23 @@
-import param
 from typing import List
-from bencher.bench_vars import (
-    TimeSnapshot,
-    TimeEvent,
-    IntSweep,
-    FloatSweep,
-    EnumSweep,
-    StringSweep,
-    BoolSweep,
-    ParametrizedSweep,
-    OptDir,
-)
-import optuna
-from bencher.bench_cfg import BenchCfg
-import panel as pn
 
-from optuna.visualization import plot_param_importances
-from optuna.visualization import plot_pareto_front
 import numpy as np
+import optuna
+import panel as pn
+import param
+from optuna.visualization import plot_param_importances, plot_pareto_front
+
+from bencher.bench_cfg import BenchCfg
+from bencher.bench_vars import (
+    BoolSweep,
+    EnumSweep,
+    FloatSweep,
+    IntSweep,
+    OptDir,
+    ParametrizedSweep,
+    StringSweep,
+    TimeEvent,
+    TimeSnapshot,
+)
 
 
 def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:

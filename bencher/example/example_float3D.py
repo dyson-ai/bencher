@@ -1,6 +1,7 @@
 # pylint: disable=duplicate-code
 
 import numpy as np
+
 import bencher as bch
 
 

@@ -1,28 +1,29 @@
-import panel as pn
 import logging
 from datetime import datetime
-import xarray as xr
-import numpy as np
 from itertools import product
 from typing import Callable, List
-from diskcache import Cache
+
+import numpy as np
+import panel as pn
 import param
+import xarray as xr
+from diskcache import Cache
 from sortedcontainers import SortedDict
 
-from bencher.bench_vars import (
-    IntSweep,
-    TimeSnapshot,
-    TimeEvent,
-    ParametrizedSweep,
-    ResultVar,
-    ResultVec,
-    ResultList,
-    hash_sha1,
-)
-from bencher.plt_cfg import BenchPlotter
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
+from bencher.bench_vars import (
+    IntSweep,
+    ParametrizedSweep,
+    ResultList,
+    ResultVar,
+    ResultVec,
+    TimeEvent,
+    TimeSnapshot,
+    hash_sha1,
+)
 from bencher.plotting.plot_collection import PlotCollection
+from bencher.plt_cfg import BenchPlotter
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")

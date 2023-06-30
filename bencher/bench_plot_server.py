@@ -1,12 +1,13 @@
 """A server for display plots of benchmark results"""
-import os
 import logging
-from typing import Tuple, List
-from diskcache import Cache
-import panel as pn
+import os
+from typing import List, Tuple
 
+import panel as pn
+from diskcache import Cache
+
+from bencher.bench_cfg import BenchCfg, BenchPlotSrvCfg
 from bencher.plt_cfg import BenchPlotter
-from bencher.bench_cfg import BenchPlotSrvCfg, BenchCfg
 
 logging.basicConfig(level=logging.INFO)
 

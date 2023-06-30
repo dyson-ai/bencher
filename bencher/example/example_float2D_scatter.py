@@ -1,12 +1,13 @@
+import random
+
 from bencher import (
     Bench,
     BenchRunCfg,
-    ParametrizedSweep,
     FloatSweep,
+    ParametrizedSweep,
     ResultVar,
     ResultVec,
 )
-import random
 
 
 class GaussianDist(ParametrizedSweep):

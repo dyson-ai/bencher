@@ -1,13 +1,13 @@
 # pylint: disable=duplicate-code
-from bencher import Bench, BenchRunCfg
 import bencher as bch
+from bencher import Bench, BenchRunCfg
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import (
     ExampleBenchCfgIn,
     ExampleBenchCfgOut,
-    bench_function,
     NoiseDistribution,
+    bench_function,
 )
 
 

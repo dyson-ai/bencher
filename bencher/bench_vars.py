@@ -1,14 +1,15 @@
 # pylint: skip-file
-from param import Parameterized, Number, Selector, Integer, Boolean
-import param
-from enum import Enum, auto
-from strenum import StrEnum
-import numpy as np
-from pandas import Timestamp
+import hashlib
 import re
 from datetime import datetime
+from enum import Enum, auto
 from typing import List
-import hashlib
+
+import numpy as np
+import param
+from pandas import Timestamp
+from param import Boolean, Integer, Number, Parameterized, Selector
+from strenum import StrEnum
 
 
 def hash_sha1(var: any) -> str:

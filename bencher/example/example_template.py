@@ -1,7 +1,6 @@
-import panel as pn
-import numpy as np
 import holoviews as hv
-
+import numpy as np
+import panel as pn
 
 pn.extension(sizing_mode="stretch_width")
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
+
 from bencher.plotting.plot_collection import PlotCollection
+from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
-from bencher.plotting.plots.tables import Tables
 from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
-
-from bencher.plotting.plot_types import PlotTypes
+from bencher.plotting.plots.tables import Tables
 
 
 class PlotLibrary:
