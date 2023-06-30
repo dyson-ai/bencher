@@ -29,12 +29,30 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         run_cfg=run_cfg,
         plot_lib=plot_lib,
     )
+
+    bencher.plot_sweep(
+        title="Example 1D Float",
+        input_vars=[ExampleBenchCfgIn.param.theta],
+        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+        description=example_plot_library.__doc__,
+        run_cfg=run_cfg,
+        plot_lib=plot_lib,
+    )
+
+    bencher.plot_sweep(
+        title="Example Float Cat",
+        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
+        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+        description=example_plot_library.__doc__,
+        run_cfg=run_cfg,
+        plot_lib=plot_lib,
+    )
     return bencher
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.repeats = 10
-    ex_run_cfg.print_pandas = True
-
+    ex_run_cfg.repeats = 5
     example_plot_library(ex_run_cfg).plot()

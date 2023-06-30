@@ -3,6 +3,7 @@ from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.tables import Tables
 from bencher.plotting.plots.heatmap import Heatmap
+from bencher.plotting.plots.lineplot import Lineplot
 
 from bencher.plotting.plot_types import PlotTypes
 
@@ -21,6 +22,7 @@ class PlotLibrary:
         plt_col.add_plotter_source(Catplot())
         plt_col.add_plotter_source(Tables())
         plt_col.add_plotter_source(Heatmap())
+        plt_col.add_plotter_source(Lineplot())
         return plt_col
 
     @staticmethod
@@ -33,6 +35,7 @@ class PlotLibrary:
         plt_col = PlotLibrary.setup_sources()
         plt_col.add(PlotTypes.swarmplot)
         plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
+        plt_col.add(PlotTypes.lineplot)
         return plt_col
 
     @staticmethod
