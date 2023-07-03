@@ -28,7 +28,7 @@ class Lineplot:
             Optional[pn.panel]: a line plot of the data
         """
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
-            df, sns_cfg = Catplot.plot_setup(pl_in)
+            df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
             sns_cfg = PltCfgBase()
 
             x = pl_in.plt_cnt_cfg.float_vars[0]
