@@ -50,7 +50,9 @@ def example_floats2D_scatter(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Floats", bench_fn, GaussianDist)
+    bench = bch.Bench(
+        "Bencher_Example_Floats_Scatter", bench_fn, GaussianDist, plot_lib=bch.PlotLibrary.default()
+    )
 
     bench.plot_sweep(
         result_vars=[
