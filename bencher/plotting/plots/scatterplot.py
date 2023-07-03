@@ -20,8 +20,6 @@ class Scatter:
             pn.pane: A panel pane with a scatter plot
         """
 
-
-        print("CFGGGG",pl_in.plt_cnt_cfg.vector_len)    
         if PlotFilter(
             float_range=VarRange(None, None),
             cat_range=VarRange(None, None),
