@@ -43,3 +43,4 @@ class Scatter:
             h.set_axis_labels(f"{names[0]} [{pl_in.rv.units}]", f"{names[1]} [{pl_in.rv.units}]")
             plt.tight_layout()
             return pn.panel(h.fig, name=PlotTypes.scatter2D_sns)
+        return None
