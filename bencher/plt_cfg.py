@@ -7,7 +7,7 @@ import xarray as xr
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedSweep, ResultVar
+from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec
 from bencher.optuna_conversions import collect_optuna_plots
 
 
@@ -124,6 +124,11 @@ class BenchPlotter:
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
 
         for rv in bench_cfg.result_vars:
+            plt_cnt_cfg.result_vars = 1
+            if type(rv) == ResultVec:
+                plt_cnt_cfg.vector_len = rv.size
+            else:
+                plt_cnt_cfg.vector_len = 1
             if bench_cfg.plot_lib is not None:
                 plot_rows.append(bench_cfg.plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
             # todo enable this check in future pr
