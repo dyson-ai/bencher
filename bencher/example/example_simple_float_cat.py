@@ -3,7 +3,7 @@ from bencher import Bench, BenchRunCfg
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-
+import bencher as bch
 
 def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
     """Example of how to perform a parameter sweep for categorical variables
@@ -20,7 +20,7 @@ def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfgIn.param.theta,
-            ExampleBenchCfgIn.param.postprocess_fn,
+            ExampleBenchCfgIn.param.noise_distribution,
         ],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
     
@@ -28,6 +28,7 @@ def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
         run_cfg=run_cfg,
+        plot_lib = bch.PlotLibrary().default().add(bch.PlotTypes.stacked_area_plot)
     )
 
 
