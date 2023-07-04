@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import panel as pn
 import seaborn as sns
+from typing import Optional
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
@@ -10,14 +11,14 @@ from bencher.plotting_functions import wrap_long_time_labels
 class Scatter:
     """A class to display the result data as a scatter plot"""
 
-    def scatter2D_sns(self, pl_in: PlotInput) -> pn.panel:
+    def scatter2D_sns(self, pl_in: PlotInput) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D scatter plot from seaborn
 
         Args:
             pl_in (PlotInput): data to plot
 
         Returns:
-            pn.pane: A panel pane with a scatter plot
+            Optional[pn.pane]: A panel pane with a scatter plot
         """
 
         if PlotFilter(
