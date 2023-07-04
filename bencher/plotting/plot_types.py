@@ -23,3 +23,5 @@ class PlotTypes(StrEnum):
     heatmap_1D = auto()
 
     lineplot = auto()
+
+    scatter2D_sns = auto()

@@ -5,6 +5,7 @@ from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
+from bencher.plotting.plots.scatterplot import Scatter
 from bencher.plotting.plots.tables import Tables
 
 
@@ -23,6 +24,7 @@ class PlotLibrary:
         plt_col.add_plotter_source(Tables())
         plt_col.add_plotter_source(Heatmap())
         plt_col.add_plotter_source(Lineplot())
+        plt_col.add_plotter_source(Scatter())
         return plt_col
 
     @staticmethod
@@ -36,6 +38,7 @@ class PlotLibrary:
         plt_col.add(PlotTypes.swarmplot)
         plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
         plt_col.add(PlotTypes.lineplot)
+        plt_col.add(PlotTypes.scatter2D_sns)
         return plt_col
 
     @staticmethod
