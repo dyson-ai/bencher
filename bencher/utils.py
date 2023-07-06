@@ -22,12 +22,7 @@ def get_input_and_results(self) -> Tuple[dict, dict]:
     inputs = {}
     results = {}
     for k, v in self.param.params().items():
-        if (
-            isinstance(v, ResultVar)
-            or isinstance(v, ResultVec)
-            or isinstance(v, ResultList)
-            or isinstance(v, ResultSeries)
-        ):
+        if isinstance(v, (ResultList, ResultSeries, ResultVar, ResultVec)):
             results[k] = v
         else:
             inputs[k] = v
