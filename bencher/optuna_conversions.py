@@ -75,10 +75,10 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     # plot_cols.extend(collect_optuna_plots(bench_cfg, False))
 
     studies = [bench_cfg_to_study(bench_cfg, True)]
-    titles = ["##Parameter Importance"]
+    titles = ["## Parameter Importance"]
     if bench_cfg.repeats > 1:
         studies.append(bench_cfg_to_study(bench_cfg, False))
-        titles = ["#Parameter Importance With Repeats", "##Parameter Importance Without Repeats"]
+        titles = ["# Parameter Importance With Repeats", "## Parameter Importance Without Repeats"]
 
     cols = pn.Row()
     for study, title in zip(studies, titles):
@@ -128,7 +128,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
             param_str.extend(summarise_trial(study.best_trial, bench_cfg))
 
         param_str = "\n    ".join(param_str)
-        rows.append(pn.pane.Markdown(f"##Best Parameters\n    {param_str}"))
+        rows.append(pn.pane.Markdown(f"## Best Parameters\n    {param_str}"))
         cols.append(rows)
 
     return [cols]
