@@ -90,12 +90,17 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
         param_str = []
 
         print("tgtnam", target_names)
-        # exit()
 
         rows.append(pn.pane.Markdown(title))
 
         if len(target_names) > 1:
             if len(target_names) <= 3:
+                # rows.append(plot_param_importances(study, target_name=target_names))
+                for tgt in target_names:
+                    rows.append(
+                        plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
+                    )
+
                 rows.append(
                     plot_pareto_front(
                         study, target_names=target_names, include_dominated_trials=False
@@ -123,12 +128,18 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
         else:
             # cols.append(plot_optimization_history(study)) #TODO, maybe more clever when this is plotted?
-            if bench_cfg.repeats > 1 and len(target_names) > 1:
+
+            # If there is only 1 parameter then there is no point is plotting relative importance.  Only worth plotting if there are multiple repeats of the same value so that you can compare the parameter vs to repeat to get a sense of the how much chance affects the results
+            if bench_cfg.repeats > 1:
                 rows.append(plot_param_importances(study, target_name=target_names[0]))
             param_str.extend(summarise_trial(study.best_trial, bench_cfg))
 
         param_str = "\n    ".join(param_str)
-        rows.append(pn.pane.Markdown(f"## Best Parameters\n    {param_str}"))
+        rows.append(
+            pn.Row(
+                pn.pane.Markdown(f"## Best Parameters\n    {param_str}"), height=500, scroll=True
+            )
+        )
         cols.append(rows)
 
     return [cols]
