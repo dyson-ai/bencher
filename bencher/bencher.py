@@ -629,3 +629,15 @@ class Bench(BenchPlotServer):
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
+
+    def get_panel(
+        self,
+        main_plot: bool = True,
+    ) -> pn.pane:
+        if main_plot:
+            return self.plots_instance[-1][0]
+        else:
+            return self.plots_instance[-1]
+
+    def get_best_params(self, bench_cfg: BenchCfg) -> dict:
+        return bench_cfg.studies[0].best_trials[0].params

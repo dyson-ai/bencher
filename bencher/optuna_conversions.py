@@ -75,6 +75,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     # plot_cols.extend(collect_optuna_plots(bench_cfg, False))
 
     studies = [bench_cfg_to_study(bench_cfg, True)]
+    bench_cfg.studies = studies
     titles = ["# Analysis"]
     if bench_cfg.repeats > 1:
         studies.append(bench_cfg_to_study(bench_cfg, False))

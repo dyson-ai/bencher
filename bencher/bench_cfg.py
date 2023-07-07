@@ -483,6 +483,9 @@ class BenchCfg(BenchRunCfg):
 
         return self.ds.to_dataframe().reset_index()
 
+    def get_best_trial_params(self):
+        return self.studies[0].best_trials[0].params
+
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
