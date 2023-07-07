@@ -75,7 +75,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     # plot_cols.extend(collect_optuna_plots(bench_cfg, False))
 
     studies = [bench_cfg_to_study(bench_cfg, True)]
-    titles = ["## Parameter Importance"]
+    titles = ["# Analysis"]
     if bench_cfg.repeats > 1:
         studies.append(bench_cfg_to_study(bench_cfg, False))
         titles = ["# Parameter Importance With Repeats", "## Parameter Importance Without Repeats"]
@@ -130,16 +130,17 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
             # cols.append(plot_optimization_history(study)) #TODO, maybe more clever when this is plotted?
 
             # If there is only 1 parameter then there is no point is plotting relative importance.  Only worth plotting if there are multiple repeats of the same value so that you can compare the parameter vs to repeat to get a sense of the how much chance affects the results
-            if bench_cfg.repeats > 1:
+            if bench_cfg.repeats > 1 and len(bench_cfg.input_vars) > 1:
                 rows.append(plot_param_importances(study, target_name=target_names[0]))
             param_str.extend(summarise_trial(study.best_trial, bench_cfg))
 
+        kwargs = {"height": 500, "scroll": True} if len(param_str) > 30 else {}
+
         param_str = "\n    ".join(param_str)
         rows.append(
-            pn.Row(
-                pn.pane.Markdown(f"## Best Parameters\n    {param_str}"), height=500, scroll=True
-            )
+            pn.Row(pn.pane.Markdown(f"## Best Parameters\n    {param_str}"), **kwargs),
         )
+
         cols.append(rows)
 
     return [cols]
