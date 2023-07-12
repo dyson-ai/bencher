@@ -356,6 +356,10 @@ class BenchCfg(BenchRunCfg):
     ds = xr.Dataset()
     plot_lib = None
 
+    # def __init__(self, **params):
+    #     super().__init__(**params)
+    #     self.studies = None
+
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
@@ -482,9 +486,6 @@ class BenchCfg(BenchRunCfg):
         """
 
         return self.ds.to_dataframe().reset_index()
-
-    def get_best_trial_params(self):
-        return self.studies[0].best_trials[0].params
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
