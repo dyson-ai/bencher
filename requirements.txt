@@ -1,5 +1,5 @@
 #data managment
-pandas==2.0.3
+pandas
 xarray
 param
 numpy
@@ -9,10 +9,10 @@ strenum
 diskcache
 
 #plotting
-seaborn==0.12.2
-matplotlib==3.7.2
+seaborn
+matplotlib
 panel
-hvplot
+hvplot==0.8.4
 plotly
 optuna
 scikit-learn #needed by optuna 
