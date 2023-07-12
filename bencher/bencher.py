@@ -634,10 +634,26 @@ class Bench(BenchPlotServer):
         self,
         main_plot: bool = True,
     ) -> pn.pane:
+        """Get the panel instance where bencher collates results
+
+        Args:
+            main_plot (bool, optional): return the last added page. Defaults to True.
+
+        Returns:
+            pn.pane: results panel
+        """
         if main_plot:
             return self.plots_instance[-1][0]
         else:
             return self.plots_instance[-1]
 
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
+        """Get a dictionary of the best found parameters found during the sweep
+
+        Args:
+            bench_cfg (BenchCfg): Results
+
+        Returns:
+            dict: dictionary of best params
+        """
         return bench_cfg.studies[0].best_trials[0].params
