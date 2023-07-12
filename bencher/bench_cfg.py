@@ -359,6 +359,10 @@ class BenchCfg(BenchRunCfg):
         self.ds = xr.Dataset()
         self.plot_lib = None
 
+    # def __init__(self, **params):
+    #     super().__init__(**params)
+    #     self.studies = None
+
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
