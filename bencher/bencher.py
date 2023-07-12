@@ -644,8 +644,7 @@ class Bench(BenchPlotServer):
         """
         if main_plot:
             return self.plots_instance[-1][0]
-        else:
-            return self.plots_instance[-1]
+        return self.plots_instance[-1]
 
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
         """Get a dictionary of the best found parameters found during the sweep
