@@ -23,7 +23,8 @@ class PlotTypes(StrEnum):
     heatmap_1D = auto()
 
     lineplot = auto()
+    lineplot_hv = auto()
 
     scatter2D_sns = auto()
 
-    hv_interactive = auto()
+    # hv_interactive = auto()

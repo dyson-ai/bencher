@@ -36,7 +36,7 @@ if __name__ == "__main__":
     import hvplot
 
     df = bench_out.ds.to_dataframe()
-    df = df.reset_index()
+    # df = df.reset_index()
 
     hvexplorer = hvplot.explorer(df)
-    hvexplorer.servable()
+    hvexplorer.show()

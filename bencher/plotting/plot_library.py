@@ -40,8 +40,9 @@ class PlotLibrary:
         plt_col.add(PlotTypes.swarmplot)
         plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
         plt_col.add(PlotTypes.lineplot)
+        plt_col.add(PlotTypes.lineplot_hv)
         plt_col.add(PlotTypes.scatter2D_sns)
-        plt_col.add(PlotTypes.hv_interactive)
+        # plt_col.add(PlotTypes.hv_interactive)
 
         return plt_col
 
