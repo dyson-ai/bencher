@@ -37,4 +37,4 @@ template = pn.template.FastListTemplate(
     main=[
         pn.pane.HoloViews(hv.DynamicMap(sine) + hv.DynamicMap(cosine), sizing_mode="stretch_both")
     ],
-).servable()
+).show()
