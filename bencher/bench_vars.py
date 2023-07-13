@@ -11,6 +11,7 @@ from pandas import Timestamp
 from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 
+import bencher.utils as bch_util
 
 def hash_sha1(var: any) -> str:
     """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
@@ -77,6 +78,13 @@ class ParametrizedSweep(Parameterized):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return param_hash(self, True, False)
 
+    def update_from_kwargs(self,**kwargs):
+        bch_util.update_from_kwargs(self,**kwargs)
+
+    def get_results_values_as_dict(self)->dict:
+        return bch_util.get_results_values_as_dict(self)
+    # def reset_params(self):
+        # self.param.r
 
 # slots that are shared across all Sweep classes
 # param does not work with multiple inheritance so define here
