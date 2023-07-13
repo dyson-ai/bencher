@@ -24,6 +24,7 @@ class PlotTypes(StrEnum):
 
     lineplot = auto()
     lineplot_hv = auto()
+    lineplot_hv_subplot = auto()
 
     scatter2D_sns = auto()
 

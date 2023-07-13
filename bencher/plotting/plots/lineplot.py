@@ -67,10 +67,27 @@ class Lineplot:
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
 
             da = da.mean("repeat")
-
             # mean = da.mean("repeat", keepdims=True, keep_attrs=True)
+            return pn.panel(da.hvplot.line(), name=PlotTypes.lineplot_hv)
+        return None
 
-            # df = da.to_dataframe()
-            # return pn.panel(mean.hvplot())
-            return pn.panel(da.hvplot.line(name=PlotTypes.lineplot_hv))
+    def lineplot_hv_subplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        """generate a line plot
+
+        Args:
+            pl_in (PlotInput): data to plot
+
+        Returns:
+            Optional[pn.panel]: a line plot of the data
+        """
+        if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+            da = da.mean("repeat")
+
+            lines = pl_in.plt_cnt_cfg.cat_vars[0].values(False)
+            print(lines)
+            return pn.panel(
+                da.hvplot.line(subplots=True),
+                name=PlotTypes.lineplot_hv_subplot,
+            )
         return None
