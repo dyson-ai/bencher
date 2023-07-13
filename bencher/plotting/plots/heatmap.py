@@ -4,6 +4,9 @@ import panel as pn
 import plotly.express as px
 import xarray as xr
 
+import hvplot.xarray
+import hvplot.pandas
+
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
@@ -67,12 +70,26 @@ class Heatmap:
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
             mean = da.mean("repeat")
 
-            return self.imshow_wrapper(
-                mean,
-                pl_in.bench_cfg.input_vars[0],
-                pl_in.bench_cfg.input_vars[1],
-                pl_in.rv,
-                PlotTypes.heatmap_2D,
+            x = pl_in.plt_cnt_cfg.float_vars[0]
+            y = pl_in.plt_cnt_cfg.float_vars[1]
+            z = pl_in.rv
+
+            title = f"{z.name} vs ({x.name} vs {y.name})"
+            xlabel = f"{x.name} [{x.units}]"
+            ylabel = f"{y.name} [{y.units}]"
+            color_label = f"{z.name} [{z.units}]"
+
+            return pn.panel(
+                mean.hvplot.heatmap(
+                    x=x.name,
+                    y=y.name,
+                    C=z.name,
+                    title=title,
+                    label=pl_in.rv.name,
+                    colorbar=True,
+                    clabel=color_label,
+                ),
+                name=PlotTypes.heatmap_2D,
             )
         return None
 
