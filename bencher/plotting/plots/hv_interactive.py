@@ -1,9 +1,6 @@
 from typing import Optional, Tuple
 
-import matplotlib.pyplot as plt
-import pandas as pd
 import panel as pn
-import seaborn as sns
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
@@ -13,7 +10,7 @@ import hvplot.xarray  # noqa
 import holoviews as hv
 
 
-class HvInteractive:
+class HvInteractive():
 
     float_0_cat_at_least1_vec_1_res_1 = PlotFilter(
         float_range=VarRange(0, 0),
@@ -33,6 +30,10 @@ class HvInteractive:
             y = pl_in.rv
             ds = pl_in.bench_cfg.ds[pl_in.rv.name]
             title = f"{x.name} vs {y.name}"
+
+            if pl_in.plt_cnt_cfg.cat_cnt > 1:
+                c = pl_in.plt_cnt_cfg.cat_vars[1].name
+                ds = ds.set_index(c)
 
             pt = hv.Overlay()
 

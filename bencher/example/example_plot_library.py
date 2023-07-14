@@ -20,28 +20,38 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     plot_lib = bch.PlotLibrary.all()
 
+    # bencher.plot_sweep(
+    #     title="Example 1D Categorical",
+    #     input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
+    #     const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+    #     result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+    #     description=example_plot_library.__doc__,
+    #     run_cfg=run_cfg,
+    #     plot_lib=plot_lib,
+    # )
+
+    # bencher.plot_sweep(
+    #     title="Example 1D Float",
+    #     input_vars=[ExampleBenchCfgIn.param.theta],
+    #     const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+    #     result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+    #     description=example_plot_library.__doc__,
+    #     run_cfg=run_cfg,
+    #     plot_lib=plot_lib,
+    # )
+
     bencher.plot_sweep(
-        title="Example 1D Categorical",
-        input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
+        title="Example Float Cat Single",
+        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
         const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
-        run_cfg=run_cfg,
+        run_cfg=bch.BenchRunCfg(repeats=1),
         plot_lib=plot_lib,
     )
 
     bencher.plot_sweep(
-        title="Example 1D Float",
-        input_vars=[ExampleBenchCfgIn.param.theta],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
-        result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
-        description=example_plot_library.__doc__,
-        run_cfg=run_cfg,
-        plot_lib=plot_lib,
-    )
-
-    bencher.plot_sweep(
-        title="Example Float Cat",
+        title="Example Float Cat Repeats",
         input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
         const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
@@ -49,6 +59,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         run_cfg=run_cfg,
         plot_lib=plot_lib,
     )
+
     return bencher
 
 

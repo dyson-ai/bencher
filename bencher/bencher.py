@@ -24,6 +24,7 @@ from bencher.bench_vars import (
 )
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
+from bencher.plotting.plot_library import PlotLibrary
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -99,7 +100,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
-        plot_lib: PlotCollection = None,
+        plot_lib: PlotCollection = PlotLibrary.default(),
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
