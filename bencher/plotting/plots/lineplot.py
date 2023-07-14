@@ -82,6 +82,9 @@ class Lineplot(PlotBase):
 
             pt = hv.Overlay()
 
+            # look into:
+            # https://holoviews.org/user_guide/Dimensioned_Containers.html
+
             df = da.to_dataframe()
             df = df.pivot_table(columns=[col.name], index=[x.name], values=[y.name])[y.name]
             print(df)
@@ -118,9 +121,21 @@ class Lineplot(PlotBase):
             if pl_in.plt_cnt_cfg.cat_cnt > 0:
                 col = pl_in.plt_cnt_cfg.cat_vars[0].name
 
-            stats, std = self.calculate_stats(da)
-
             pt = hv.Overlay()
+            hvds = hv.Dataset(da)
+            import numpy as np
+
+            # to read
+            # https://medium.com/@shouke.wei/data-visualization-with-hvplot-iii-interactive-multiple-plots-e73124742df4
+
+            pt *= hvds.to(hv.Curve, x.name, "repeat")
+            # pt *= hv.Curve(hvds, kdims=[x.name], vdims=[y.name])
+            # pt *= hv.Spread(hvds.aggregate(y.name, np.mean, np.std), kdims=[y.name])
+
+            return pn.Column(pt, name="spead")
+            # return da.to(hv.Spread)
+
+            stats, std = self.calculate_stats(da)
 
             kwargs = {"x": x.name, "y": "mean"}
 
