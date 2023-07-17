@@ -5,7 +5,8 @@ import panel as pn
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 
-import hvplot.xarray  # noqa
+import hvplot.xarray  # noqa pylint: disable=unused-import
+
 import holoviews as hv
 
 

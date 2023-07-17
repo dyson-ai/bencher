@@ -4,8 +4,8 @@ import panel as pn
 import plotly.express as px
 import xarray as xr
 
-import hvplot.xarray  # noqa
-import hvplot.pandas  # noqa
+import hvplot.xarray  # noqa pylint: disable=unused-import
+
 
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange

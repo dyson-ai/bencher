@@ -1,6 +1,6 @@
 # THIS IS NOT A WORKING EXAMPLE YET
 
-# pylint: disable=duplicate-code
+# pylint: disable=duplicate-code,unused-argument
 
 
 import bencher as bch
