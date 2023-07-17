@@ -128,11 +128,24 @@ class Lineplot(PlotBase):
             # to read
             # https://medium.com/@shouke.wei/data-visualization-with-hvplot-iii-interactive-multiple-plots-e73124742df4
 
-            pt *= hvds.to(hv.Curve, x.name, "repeat")
+            # pt *= hvds.to(hv.Curve, x.name, "repeat")
             # pt *= hv.Curve(hvds, kdims=[x.name], vdims=[y.name])
             # pt *= hv.Spread(hvds.aggregate(y.name, np.mean, np.std), kdims=[y.name])
+            return None
+            print(hvds)
 
-            return pn.Column(pt, name="spead")
+            pt += hvds
+
+            pt *= hv.Spread(
+                hvds.aggregate("repeat", np.mean, np.std), kdims=[x.name], vdims=[y.name]
+            )
+            pt *= hv.Curve(hvds.aggregate("repeat", np.mean), kdims=[x.name], vdims=[y.name])
+
+            col = pn.Column(name="spread")
+
+            col.append(pt)
+
+            return col
             # return da.to(hv.Spread)
 
             stats, std = self.calculate_stats(da)
