@@ -13,9 +13,6 @@ from strenum import StrEnum
 import holoviews as hv
 
 
-# import bencher.utils as bch_util
-
-
 def hash_sha1(var: any) -> str:
     """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
     return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
