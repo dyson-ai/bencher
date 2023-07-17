@@ -21,9 +21,9 @@ class HvInteractive:
         result_vars=VarRange(1, 1),
     )
 
-    def hv_interactive(pl_in: PlotInput) -> pn.panel:
-        ds = pl_in.bench_cfg.ds[pl_in.rv.name]
-        return pn.panel(ds.interactive().hvplot(), label="hv interactive")
+    # def hv_interactive(pl_in: PlotInput) -> pn.panel:
+    #     ds = pl_in.bench_cfg.ds[pl_in.rv.name]
+    #     return pn.panel(ds.interactive().hvplot(), label="hv interactive")
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.float_0_cat_at_least1_vec_1_res_1.matches(pl_in.plt_cnt_cfg):
