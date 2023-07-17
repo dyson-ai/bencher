@@ -1,13 +1,9 @@
-from typing import Optional, Tuple
+from typing import Optional
 
-import matplotlib.pyplot as plt
-import pandas as pd
 import panel as pn
-import seaborn as sns
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
-from bencher.plt_cfg import PltCfgBase
 
 import hvplot.xarray  # noqa
 import holoviews as hv

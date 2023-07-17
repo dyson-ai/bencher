@@ -3,7 +3,7 @@ import hashlib
 import re
 from datetime import datetime
 from enum import Enum, auto
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import param
@@ -11,6 +11,7 @@ from pandas import Timestamp
 from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 import holoviews as hv
+from collections import namedtuple
 
 
 def hash_sha1(var: any) -> str:
@@ -69,10 +70,6 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
                 print(f"value:{v}, hash:{hash_sha1(v)}")
                 curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
     return curhash
-
-
-from collections import namedtuple
-from typing import Tuple, List
 
 
 def make_namedtuple(class_name: str, **fields) -> namedtuple:
