@@ -1,13 +1,10 @@
 from typing import Optional
-
 import panel as pn
+import hvplot.xarray  # noqa pylint: disable=unused-import
+import holoviews as hv
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
-from bencher.plotting.plot_types import PlotTypes  # noqa
-
-import hvplot.xarray  # noqa pylint: disable=unused-import
-
-import holoviews as hv
+from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
 
 
 class HvInteractive:
