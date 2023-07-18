@@ -54,52 +54,52 @@ class Lineplot(PlotBase):
             return Catplot.plot_postprocess(fg, sns_cfg, PlotTypes.lineplot)
         return None
 
-    def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        """generate a line plot
+    # def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    #     """generate a line plot
 
-        Args:
-            pl_in (PlotInput): data to plot
+    #     Args:
+    #         pl_in (PlotInput): data to plot
 
-        Returns:
-            Optional[pn.panel]: a line plot of the data
-        """
-        if self.plot_filter.matches(pl_in.plt_cnt_cfg):
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+    #     Returns:
+    #         Optional[pn.panel]: a line plot of the data
+    #     """
+    #     if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+    #         da = pl_in.bench_cfg.ds[pl_in.rv.name]
 
-            x = pl_in.plt_cnt_cfg.float_vars[0]
-            y = pl_in.rv
-            title = self.title(x, y)
+    #         x = pl_in.plt_cnt_cfg.float_vars[0]
+    #         y = pl_in.rv
+    #         title = self.title(x, y)
 
-            col = None
-            if pl_in.plt_cnt_cfg.cat_cnt > 0:
-                col = pl_in.plt_cnt_cfg.cat_vars[0]
+    #         col = None
+    #         if pl_in.plt_cnt_cfg.cat_cnt > 0:
+    #             col = pl_in.plt_cnt_cfg.cat_vars[0]
 
-            da[col.name] = ["absolute", "negate"]
+    #         da[col.name] = ["absolute", "negate"]
 
-            kwargs = {"x": x.name, "y": y.name}
+    #         kwargs = {"x": x.name, "y": y.name}
 
-            print(kwargs)
+    #         print(kwargs)
 
-            pt = hv.Overlay()
+    #         pt = hv.Overlay()
 
-            # look into:
-            # https://holoviews.org/user_guide/Dimensioned_Containers.html
+    #         # look into:
+    #         # https://holoviews.org/user_guide/Dimensioned_Containers.html
 
-            df = da.to_dataframe()
-            df = df.pivot_table(columns=[col.name], index=[x.name], values=[y.name])[y.name]
-            print(df)
-            # dag = da.groupby(col.name)[y.name]
-            # dag = da.groupby(col.name)
-            pt = df.hvplot.line()
-            # pt *= dag.hvplot.line()
-            # pt *= df.hvplot.line(y=col.values(False))
-            # pt *= da.hvplot.line(groupby=col.name, **kwargs)
-            # pt.opts(shared_axes=False, title=title)
-            pt.opts(title=title)
+    #         df = da.to_dataframe()
+    #         df = df.pivot_table(columns=[col.name], index=[x.name], values=[y.name])[y.name]
+    #         print(df)
+    #         # dag = da.groupby(col.name)[y.name]
+    #         # dag = da.groupby(col.name)
+    #         pt = df.hvplot.line()
+    #         # pt *= dag.hvplot.line()
+    #         # pt *= df.hvplot.line(y=col.values(False))
+    #         # pt *= da.hvplot.line(groupby=col.name, **kwargs)
+    #         # pt.opts(shared_axes=False, title=title)
+    #         pt.opts(title=title)
 
-            # mean = da.mean("repeat", keepdims=True, keep_attrs=True)
-            return pn.Column(pt, name=PlotTypes.lineplot_hv)
-        return None
+    #         # mean = da.mean("repeat", keepdims=True, keep_attrs=True)
+    #         return pn.Column(pt, name=PlotTypes.lineplot_hv)
+    #     return None
 
     # def lineplot_hv_repeats(self, pl_in: PlotInput) -> Optional[pn.panel]:
     #     """generate a line plot
