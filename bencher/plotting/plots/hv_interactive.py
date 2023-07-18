@@ -3,7 +3,7 @@ from typing import Optional
 import panel as pn
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
-from bencher.plotting.plot_types import PlotTypes
+from bencher.plotting.plot_types import PlotTypes  # noqa
 
 import hvplot.xarray  # noqa pylint: disable=unused-import
 
