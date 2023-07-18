@@ -45,6 +45,6 @@ class HvInteractive:
                     color="black",
                 )
 
-            return pn.Column(pt.opts(height=600, title=title), name=PlotTypes.scatter_hv)
+            return pn.Column(pt.opts(height=600, title=title), name="scatter_hv")
 
         return None
