@@ -50,10 +50,6 @@ class InteractiveExplorer(bch.ParametrizedSweep):
         # print(self.theta)
 
         return self.get_results_values_as_dict()
-    https://holoviews.org/reference/containers/bokeh/GridSpace.html
-    def sine_curve(phase, freq):
-        xvals = [0.1 * i for i in range(100)]
-        return hv.Curve((xvals, [np.sin(phase + freq * x) for x in xvals]))
 
     def plot_hv(self, *args, **kwargs):
         print("plotting")
@@ -69,10 +65,26 @@ class InteractiveExplorer(bch.ParametrizedSweep):
         return self.plot_hv()
 
 
+# https://holoviews.org/reference/containers/bokeh/GridSpace.html
+def sine_curve(phase, freq):
+    xvals = [0.1 * i for i in range(100)]
+    return hv.Curve((xvals, [np.sin(phase + freq * x) for x in xvals]))
+
+
 if __name__ == "__main__":
     phases = [0, np.pi / 2, np.pi, 3 * np.pi / 2]
     frequencies = [0.5, 0.75, 1.0, 1.25]
     curve_dict_2D = {(p, f): sine_curve(p, f) for p in phases for f in frequencies}
+
+    gridspace = hv.GridSpace(curve_dict_2D, kdims=["phase", "frequency"])
+    hv.output(size=50)
+    hmap = hv.HoloMap(gridspace)
+    hmap += hv.GridSpace(hmap)
+
+    mn = pn.Row()
+    mn.append(hmap)
+
+    mn.show()
 
     explorer = InteractiveExplorer()
 
