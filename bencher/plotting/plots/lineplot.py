@@ -2,8 +2,8 @@ from typing import Optional
 
 import panel as pn
 import seaborn as sns
-import hvplot.xarray
-import hvplot.pandas
+import hvplot.xarray  # noqa pylint: disable=unused-import
+
 import holoviews as hv
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes

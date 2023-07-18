@@ -4,8 +4,8 @@ import panel as pn
 import plotly.express as px
 import xarray as xr
 
-import hvplot.xarray
-import hvplot.pandas
+import hvplot.xarray  # noqa pylint: disable=unused-import
+
 
 from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
@@ -75,8 +75,6 @@ class Heatmap:
             z = pl_in.rv
 
             title = f"{z.name} vs ({x.name} vs {y.name})"
-            xlabel = f"{x.name} [{x.units}]"
-            ylabel = f"{y.name} [{y.units}]"
             color_label = f"{z.name} [{z.units}]"
 
             return pn.panel(

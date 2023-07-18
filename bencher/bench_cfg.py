@@ -355,7 +355,7 @@ class BenchCfg(BenchRunCfg):
 
     def __init__(self, **params):
         super().__init__(**params)
-        self.studies = None
+        self.studies = []
         self.ds = xr.Dataset()
         self.plot_lib = None
 

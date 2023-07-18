@@ -18,7 +18,8 @@
 				"ms-python.python",
 				"ms-python.pylint",
 				"njpwerner.autodocstring",
-				"charliermarsh.ruff"
+				"charliermarsh.ruff",
+				"formulahendry.code-runner"
 			]
 		}
 	}

@@ -3,7 +3,7 @@ import hashlib
 import re
 from datetime import datetime
 from enum import Enum, auto
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import param
@@ -11,9 +11,7 @@ from pandas import Timestamp
 from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 import holoviews as hv
-
-
-# import bencher.utils as bch_util
+from collections import namedtuple
 
 
 def hash_sha1(var: any) -> str:
@@ -74,10 +72,6 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     return curhash
 
 
-from collections import namedtuple
-from typing import Tuple, List
-
-
 def make_namedtuple(class_name: str, **fields) -> namedtuple:
     """Convenience method for making a named tuple
 
@@ -128,9 +122,6 @@ class ParametrizedSweep(Parameterized):
 
         self.param.update(**used_params)
 
-    # def get_results_values_as_dict(self) -> dict:
-    # return bch_util.get_results_values_as_dict(self)
-
     def get_input_and_results(self, include_name: bool = False) -> Tuple[dict, dict]:
         """Get dictionaries of input parameters and result parameters
 
@@ -168,9 +159,6 @@ class ParametrizedSweep(Parameterized):
 
     def get_inputs_as_dims(self):
         return [iv.to_dim() for iv in self.get_inputs_only()]
-
-    # def reset_params(self):
-    # self.param.r
 
 
 # slots that are shared across all Sweep classes
