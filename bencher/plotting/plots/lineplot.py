@@ -80,7 +80,12 @@ class Lineplot:
         Returns:
             Optional[pn.panel]: a line plot of the data
         """
-        if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+        if PlotFilter(
+            float_range=VarRange(1, 1),
+            cat_range=VarRange(1, 1),
+            vector_len=VarRange(1, 1),
+            result_vars=VarRange(1, 1),
+        ).matches(pl_in.plt_cnt_cfg):
             da = pl_in.bench_cfg.ds[pl_in.rv.name]
             da = da.mean("repeat")
 
