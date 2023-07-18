@@ -101,90 +101,90 @@ class Lineplot(PlotBase):
             return pn.Column(pt, name=PlotTypes.lineplot_hv)
         return None
 
-    def lineplot_hv_repeats(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        """generate a line plot
+    # def lineplot_hv_repeats(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    #     """generate a line plot
 
-        Args:
-            pl_in (PlotInput): data to plot
+    #     Args:
+    #         pl_in (PlotInput): data to plot
 
-        Returns:
-            Optional[pn.panel]: a line plot of the data
-        """
-        if self.plot_filter.matches(pl_in.plt_cnt_cfg):
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+    #     Returns:
+    #         Optional[pn.panel]: a line plot of the data
+    #     """
+    #     if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+    #         da = pl_in.bench_cfg.ds[pl_in.rv.name]
 
-            x = pl_in.plt_cnt_cfg.float_vars[0]
-            y = pl_in.rv
-            title = self.title(x, y)
+    #         x = pl_in.plt_cnt_cfg.float_vars[0]
+    #         y = pl_in.rv
+    #         title = self.title(x, y)
 
-            col = None
-            if pl_in.plt_cnt_cfg.cat_cnt > 0:
-                col = pl_in.plt_cnt_cfg.cat_vars[0].name
+    #         col = None
+    #         if pl_in.plt_cnt_cfg.cat_cnt > 0:
+    #             col = pl_in.plt_cnt_cfg.cat_vars[0].name
 
-            pt = hv.Overlay()
-            hvds = hv.Dataset(da)
-            import numpy as np
+    #         pt = hv.Overlay()
+    #         hvds = hv.Dataset(da)
+    #         import numpy as np
 
-            # to read
-            # https://medium.com/@shouke.wei/data-visualization-with-hvplot-iii-interactive-multiple-plots-e73124742df4
+    #         # to read
+    #         # https://medium.com/@shouke.wei/data-visualization-with-hvplot-iii-interactive-multiple-plots-e73124742df4
 
-            # pt *= hvds.to(hv.Curve, x.name, "repeat")
-            # pt *= hv.Curve(hvds, kdims=[x.name], vdims=[y.name])
-            # pt *= hv.Spread(hvds.aggregate(y.name, np.mean, np.std), kdims=[y.name])
-            return None
-            print(hvds)
+    #         # pt *= hvds.to(hv.Curve, x.name, "repeat")
+    #         # pt *= hv.Curve(hvds, kdims=[x.name], vdims=[y.name])
+    #         # pt *= hv.Spread(hvds.aggregate(y.name, np.mean, np.std), kdims=[y.name])
+    #         # return None
+    #         print(hvds)
 
-            pt += hvds
+    #         pt += hvds
 
-            pt *= hv.Spread(
-                hvds.aggregate("repeat", np.mean, np.std), kdims=[x.name], vdims=[y.name]
-            )
-            pt *= hv.Curve(hvds.aggregate("repeat", np.mean), kdims=[x.name], vdims=[y.name])
+    #         pt *= hv.Spread(
+    #             hvds.aggregate("repeat", np.mean, np.std), kdims=[x.name], vdims=[y.name]
+    #         )
+    #         pt *= hv.Curve(hvds.aggregate("repeat", np.mean), kdims=[x.name], vdims=[y.name])
 
-            col = pn.Column(name="spread")
+    #         col = pn.Column(name="spread")
 
-            col.append(pt)
+    #         col.append(pt)
 
-            return col
-            # return da.to(hv.Spread)
+    #         return col
+    #         # return da.to(hv.Spread)
 
-            stats, std = self.calculate_stats(da)
+    #         stats, std = self.calculate_stats(da)
 
-            kwargs = {"x": x.name, "y": "mean"}
+    #         kwargs = {"x": x.name, "y": "mean"}
 
-            std_kwargs = kwargs | {"y": "std_low", "y2": "std_high"}
+    #         std_kwargs = kwargs | {"y": "std_low", "y2": "std_high"}
 
-            pt *= stats.hvplot.area(**std_kwargs).opts(alpha=0.2)
-            # pt *= hv.Spread(std).opts(alpha=0.2)
-            pt *= stats.hvplot.line(**kwargs)
+    #         pt *= stats.hvplot.area(**std_kwargs).opts(alpha=0.2)
+    #         # pt *= hv.Spread(std).opts(alpha=0.2)
+    #         pt *= stats.hvplot.line(**kwargs)
 
-            pt.opts(title=title)
+    #         pt.opts(title=title)
 
-            return pn.Column(pt, name=PlotTypes.lineplot_hv_repeats)
-        return None
+    #         return pn.Column(pt, name=PlotTypes.lineplot_hv_repeats)
+    #     return None
 
-    def lineplot_hv_subplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        """generate a line plot
+    # def lineplot_hv_subplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    #     """generate a line plot
 
-        Args:
-            pl_in (PlotInput): data to plot
+    #     Args:
+    #         pl_in (PlotInput): data to plot
 
-        Returns:
-            Optional[pn.panel]: a line plot of the data
-        """
-        if PlotFilter(
-            float_range=VarRange(1, 1),
-            cat_range=VarRange(1, 1),
-            vector_len=VarRange(1, 1),
-            result_vars=VarRange(1, 1),
-        ).matches(pl_in.plt_cnt_cfg):
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
-            da = da.mean("repeat")
+    #     Returns:
+    #         Optional[pn.panel]: a line plot of the data
+    #     """
+    #     if PlotFilter(
+    #         float_range=VarRange(1, 1),
+    #         cat_range=VarRange(1, 1),
+    #         vector_len=VarRange(1, 1),
+    #         result_vars=VarRange(1, 1),
+    #     ).matches(pl_in.plt_cnt_cfg):
+    #         da = pl_in.bench_cfg.ds[pl_in.rv.name]
+    #         da = da.mean("repeat")
 
-            lines = pl_in.plt_cnt_cfg.cat_vars[0].values(False)
-            print(lines)
-            return pn.Column(
-                da.hvplot.line(subplots=True),
-                name=PlotTypes.lineplot_hv_subplot,
-            )
-        return None
+    #         lines = pl_in.plt_cnt_cfg.cat_vars[0].values(False)
+    #         print(lines)
+    #         return pn.Column(
+    #             da.hvplot.line(subplots=True),
+    #             name=PlotTypes.lineplot_hv_subplot,
+    #         )
+    #     return None
