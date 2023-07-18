@@ -1,7 +1,6 @@
 #data managment
 pandas
 xarray
-param
 numpy
 strenum
 
@@ -11,7 +10,6 @@ diskcache
 #plotting
 seaborn
 matplotlib
-panel
 hvplot==0.8.4
 plotly
 optuna

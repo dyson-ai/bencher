@@ -106,5 +106,5 @@ class PlotCollection:
                     logging.info(f"plotting: {plt_instance.name}")
                     tabs.append(plt_instance)
         if len(tabs) > 0:
-            tabs.active = [0]  # set the first plot as active
+            tabs.active = list(range(len(tabs)))  # set all plots as active
         return tabs

@@ -1,13 +1,10 @@
 from typing import Optional
-
 import panel as pn
+import hvplot.xarray  # noqa pylint: disable=unused-import
+import holoviews as hv
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
-from bencher.plotting.plot_types import PlotTypes
-
-import hvplot.xarray  # noqa pylint: disable=unused-import
-
-import holoviews as hv
+from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
 
 
 class HvInteractive:
@@ -29,6 +26,10 @@ class HvInteractive:
             ds = pl_in.bench_cfg.ds[pl_in.rv.name]
             title = f"{x.name} vs {y.name}"
 
+            if pl_in.plt_cnt_cfg.cat_cnt > 1:
+                c = pl_in.plt_cnt_cfg.cat_vars[1].name
+                ds = ds.set_index(c)
+
             pt = hv.Overlay()
 
             pt *= ds.mean("repeat").hvplot(x=x.name, y=y.name, kind="bar")
@@ -41,6 +42,6 @@ class HvInteractive:
                     color="black",
                 )
 
-            return pn.Column(pt.opts(height=600, title=title), name=PlotTypes.scatter_hv)
+            return pn.Column(pt.opts(height=600, title=title), name="scatter_hv")
 
         return None
