@@ -23,7 +23,7 @@ class PlotTypes(StrEnum):
     heatmap_1D = auto()
 
     lineplot = auto()
-    lineplot_hv = auto()
+    # lineplot_hv = auto()
     lineplot_hv_subplot = auto()
     lineplot_hv_repeats = auto()
 
