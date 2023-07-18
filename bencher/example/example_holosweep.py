@@ -1,4 +1,3 @@
-# pylint: disable=duplicate-code
 # THIS IS NOT A WORKING EXAMPLE YET
 
 # pylint: disable=duplicate-code,unused-argument
