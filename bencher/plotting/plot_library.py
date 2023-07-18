@@ -26,7 +26,7 @@ class PlotLibrary:
         plt_col.add_plotter_source(Heatmap())
         plt_col.add_plotter_source(Lineplot())
         plt_col.add_plotter_source(Scatter())
-        plt_col.add_plotter_source(HvInteractive())
+        # plt_col.add_plotter_source(HvInteractive())
         return plt_col
 
     @staticmethod
