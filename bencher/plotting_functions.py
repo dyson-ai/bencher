@@ -315,6 +315,8 @@ def plot_surface_holo(
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """
 
+    hv.extension("plotly")
+
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     alpha = 0.3

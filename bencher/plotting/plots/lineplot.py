@@ -2,11 +2,16 @@ from typing import Optional
 
 import panel as pn
 import seaborn as sns
+import hvplot.xarray  # noqa pylint: disable=unused-import
 
+import holoviews as hv
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plt_cfg import PltCfgBase
+
+
+hv.extension("bokeh")
 
 
 class Lineplot:
@@ -47,4 +52,47 @@ class Lineplot:
             fg = sns.relplot(df, **sns_cfg.as_sns_args())
 
             return Catplot.plot_postprocess(fg, sns_cfg, PlotTypes.lineplot)
+        return None
+
+    def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        """generate a line plot
+
+        Args:
+            pl_in (PlotInput): data to plot
+
+        Returns:
+            Optional[pn.panel]: a line plot of the data
+        """
+        if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+
+            da = da.mean("repeat")
+            # mean = da.mean("repeat", keepdims=True, keep_attrs=True)
+            return pn.panel(da.hvplot.line(), name=PlotTypes.lineplot_hv)
+        return None
+
+    def lineplot_hv_subplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        """generate a line plot
+
+        Args:
+            pl_in (PlotInput): data to plot
+
+        Returns:
+            Optional[pn.panel]: a line plot of the data
+        """
+        if PlotFilter(
+            float_range=VarRange(1, 1),
+            cat_range=VarRange(1, 1),
+            vector_len=VarRange(1, 1),
+            result_vars=VarRange(1, 1),
+        ).matches(pl_in.plt_cnt_cfg):
+            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+            da = da.mean("repeat")
+
+            lines = pl_in.plt_cnt_cfg.cat_vars[0].values(False)
+            print(lines)
+            return pn.panel(
+                da.hvplot.line(subplots=True),
+                name=PlotTypes.lineplot_hv_subplot,
+            )
         return None

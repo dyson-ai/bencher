@@ -1,3 +1,4 @@
+# THIS IS NOT A WORKING EXAMPLE YET
 # pylint: disable=duplicate-code
 from bencher import Bench, BenchRunCfg, ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     import hvplot
 
     df = bench_out.ds.to_dataframe()
-    df = df.reset_index()
+    # df = df.reset_index()
 
     hvexplorer = hvplot.explorer(df)
-    hvexplorer.servable()
+    hvexplorer.show()
