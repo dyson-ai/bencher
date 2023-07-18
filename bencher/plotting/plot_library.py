@@ -7,7 +7,8 @@ from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
 from bencher.plotting.plots.scatterplot import Scatter
 from bencher.plotting.plots.tables import Tables
-from bencher.plotting.plots.hv_interactive import HvInteractive
+
+# from bencher.plotting.plots.hv_interactive import HvInteractive
 
 
 class PlotLibrary:
