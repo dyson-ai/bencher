@@ -3,15 +3,15 @@ import hashlib
 import re
 from datetime import datetime
 from enum import Enum, auto
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import param
 from pandas import Timestamp
 from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
-
-# import bencher.utils as bch_util
+import holoviews as hv
+from collections import namedtuple
 
 
 def hash_sha1(var: any) -> str:
@@ -72,10 +72,6 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     return curhash
 
 
-from collections import namedtuple
-from typing import Tuple, List
-
-
 def make_namedtuple(class_name: str, **fields) -> namedtuple:
     """Convenience method for making a named tuple
 
@@ -86,6 +82,27 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
         namedtuple: a named tuple with the fields as values
     """
     return namedtuple(class_name, fields)(*fields.values())
+
+
+def to_dim(self) -> hv.Dimension:
+    """Takes a sweep variable and turns it into a holoview dimension
+
+    Returns:
+        hv.Dimension:
+    """
+    if hasattr(self, "bounds"):
+        return hv.Dimension(
+            (self.name, self.name),
+            range=tuple(self.bounds),
+            unit=self.units,
+            default=self.default,
+        )
+    return hv.Dimension(
+        (self.name, self.name),
+        unit=self.units,
+        values=self.values(False),
+        default=self.default,
+    )
 
 
 class ParametrizedSweep(Parameterized):
@@ -104,9 +121,6 @@ class ParametrizedSweep(Parameterized):
                     used_params[key] = kwargs[key]
 
         self.param.update(**used_params)
-
-    # def get_results_values_as_dict(self) -> dict:
-    # return bch_util.get_results_values_as_dict(self)
 
     def get_input_and_results(self, include_name: bool = False) -> Tuple[dict, dict]:
         """Get dictionaries of input parameters and result parameters
@@ -143,8 +157,8 @@ class ParametrizedSweep(Parameterized):
         """
         return list(self.get_input_and_results().inputs.values())
 
-    # def reset_params(self):
-    # self.param.r
+    def get_inputs_as_dims(self):
+        return [iv.to_dim() for iv in self.get_inputs_only()]
 
 
 # slots that are shared across all Sweep classes
@@ -390,6 +404,9 @@ class EnumSweep(Selector):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
+    def to_dim(self) -> hv.Dimension:
+        return to_dim(self)
+
 
 def int_float_sampling_str(name, samples) -> str:
     """Generate a string representation of the of the sampling procedure
@@ -461,6 +478,29 @@ class IntSweep(Integer):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
+    def to_dim(self) -> hv.Dimension:
+        return to_dim(self)
+
+    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    def _validate_value(self, val, allow_None):
+        if callable(val):
+            return
+
+        if allow_None and val is None:
+            return
+
+        if not isinstance(val, (int, np.integer)):
+            raise ValueError(
+                "Integer parameter %r must be an integer, " "not type %r." % (self.name, type(val))
+            )
+
+    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    def _validate_step(self, val, step):
+        if step is not None and not isinstance(step, (int, np.integer)):
+            raise ValueError(
+                "Step can only be None or an " "integer value, not type %r" % type(step)
+            )
+
 
 class FloatSweep(Number):
     """A class to represent a parameter sweep of floats"""
@@ -508,6 +548,9 @@ class FloatSweep(Number):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def to_dim(self) -> hv.Dimension:
+        return to_dim(self)
 
 
 class OptDir(StrEnum):
