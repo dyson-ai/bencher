@@ -12,9 +12,9 @@ import panel as pn
 class InteractiveExplorer(bch.ParametrizedSweep):
     ###INPUTS
     theta = bch.FloatSweep(
-        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=30
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
     )
-    offset = bch.FloatSweep(default=0, bounds=[0, 0.3], doc="dc offset", units="v", samples=30)
+    offset = bch.FloatSweep(default=0, bounds=[0, 0.3], doc="dc offset", units="v", samples=10)
     # noisy = bch.BoolSweep(
     #     default=False, doc="Optionally add random noise to the output of the function"
     # )
@@ -95,6 +95,7 @@ if __name__ == "__main__":
 
     hmap = hv.DynamicMap(explorer.call_and_plot, kdims=explorer.get_inputs_as_dims(True))
     main.append(dmap)
+    main.append(hmap)
     main.append(hmap.grid("theta"))
 
     # plot_fn = hv.DynamicMap(explorer.plot_model)
