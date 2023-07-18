@@ -7,7 +7,8 @@ from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
 from bencher.plotting.plots.scatterplot import Scatter
 from bencher.plotting.plots.tables import Tables
-from bencher.plotting.plots.hv_interactive import HvInteractive
+
+# from bencher.plotting.plots.hv_interactive import HvInteractive
 
 
 class PlotLibrary:
@@ -26,7 +27,7 @@ class PlotLibrary:
         plt_col.add_plotter_source(Heatmap())
         plt_col.add_plotter_source(Lineplot())
         plt_col.add_plotter_source(Scatter())
-        plt_col.add_plotter_source(HvInteractive())
+        # plt_col.add_plotter_source(HvInteractive())
         return plt_col
 
     @staticmethod
@@ -37,13 +38,13 @@ class PlotLibrary:
             PlotCollection: sensible default for PlotCollection
         """
         plt_col = PlotLibrary.setup_sources()
-        plt_col.add(PlotTypes.scatter_hv)
+        # plt_col.add(PlotTypes.scatter_hv)
 
-        # plt_col.add(PlotTypes.swarmplot)
+        plt_col.add(PlotTypes.swarmplot)
         plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
         plt_col.add(PlotTypes.lineplot)
-        plt_col.add(PlotTypes.lineplot_hv)
-        plt_col.add(PlotTypes.lineplot_hv_subplot)
+        # plt_col.add(PlotTypes.lineplot_hv)
+        # plt_col.add(PlotTypes.lineplot_hv_subplot)
         plt_col.add(PlotTypes.scatter2D_sns)
         # plt_col.add(PlotTypes.hv_interactive)
 

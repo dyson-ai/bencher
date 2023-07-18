@@ -24,6 +24,7 @@ from bencher.bench_vars import (
 )
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
+from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")

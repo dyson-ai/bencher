@@ -7,6 +7,16 @@
 			"label": "autoformat",
 			"type": "shell",
 			"command": "ruff . --fix && black ."
+		},
+		{
+			"label": "sa: Set Active File",
+			"type": "shell",
+			"command": "echo ${file} > ${workspaceFolder}/.vscode/cfg/active_file.cfg; echo Setting the current file: ${file} as the active file."
+		},
+		{
+			"label": "ra: Run Active File",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/cfg/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE"
 		}
 	]
 }
