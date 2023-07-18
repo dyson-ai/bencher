@@ -84,13 +84,21 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def to_dim(self) -> hv.Dimension:
+def as_dim(self, compute_values=False) -> hv.Dimension:
     """Takes a sweep variable and turns it into a holoview dimension
 
     Returns:
         hv.Dimension:
     """
     if hasattr(self, "bounds"):
+        if compute_values:
+            return hv.Dimension(
+                (self.name, self.name),
+                range=tuple(self.bounds),
+                unit=self.units,
+                values=self.values(False),
+            )
+
         return hv.Dimension(
             (self.name, self.name),
             range=tuple(self.bounds),
@@ -157,8 +165,8 @@ class ParametrizedSweep(Parameterized):
         """
         return list(self.get_input_and_results().inputs.values())
 
-    def get_inputs_as_dims(self):
-        return [iv.to_dim() for iv in self.get_inputs_only()]
+    def get_inputs_as_dims(self, compute_values=False):
+        return [iv.as_dim(compute_values) for iv in self.get_inputs_only()]
 
 
 # slots that are shared across all Sweep classes
@@ -404,8 +412,8 @@ class EnumSweep(Selector):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def to_dim(self) -> hv.Dimension:
-        return to_dim(self)
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 def int_float_sampling_str(name, samples) -> str:
@@ -478,8 +486,8 @@ class IntSweep(Integer):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def to_dim(self) -> hv.Dimension:
-        return to_dim(self)
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -549,8 +557,8 @@ class FloatSweep(Number):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def to_dim(self) -> hv.Dimension:
-        return to_dim(self)
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 class OptDir(StrEnum):

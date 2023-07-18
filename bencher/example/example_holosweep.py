@@ -90,10 +90,12 @@ if __name__ == "__main__":
 
     # main.append(bt)
     # main.append(bt_bn)
-
+    # print(explorer.get_inputs_as_dims())
     dmap = hv.DynamicMap(explorer.call_and_plot, kdims=explorer.get_inputs_as_dims())
+
+    hmap = hv.DynamicMap(explorer.call_and_plot, kdims=explorer.get_inputs_as_dims(True))
     main.append(dmap)
-    # main.append(dmap.)
+    main.append(hmap.grid("theta"))
 
     # plot_fn = hv.DynamicMap(explorer.plot_model)
 
