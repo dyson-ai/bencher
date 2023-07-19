@@ -489,6 +489,9 @@ class BenchCfg(BenchRunCfg):
     def get_best_trial_params(self):
         return self.studies[0].best_trials[0].params
 
+    def get_pareto_front_params(self):
+        return [p.params for p in self.studies[0].trials]
+
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
