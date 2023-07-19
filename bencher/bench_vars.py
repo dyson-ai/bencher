@@ -227,7 +227,7 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug) -> List[bool]:
+    def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return [True, False]
@@ -246,7 +246,7 @@ class TimeBase(Selector):
 
     __slots__ = shared_slots
 
-    def values(self, debug) -> List[str]:
+    def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -342,7 +342,7 @@ class StringSweep(Selector):
             self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
 
-    def values(self, debug) -> List[str]:
+    def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -386,7 +386,7 @@ class EnumSweep(Selector):
             self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
 
-    def values(self, debug) -> List[Enum]:
+    def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -443,7 +443,7 @@ class IntSweep(Integer):
             if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug) -> List[int]:
+    def values(self, debug=False) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
@@ -520,7 +520,7 @@ class FloatSweep(Number):
             if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug) -> List[float]:
+    def values(self, debug=False) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         samps = self.samples_debug if debug else self.samples
         if self.sample_values is None:
