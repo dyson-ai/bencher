@@ -54,8 +54,9 @@ class InteractiveExplorer(bch.ParametrizedSweep):
     def plot_hv(self, *args, **kwargs):
         print("plotting")
         origin = [0, 0]
-        res = [self.out_sin, self.out_cos]
+        res = (self.out_sin, self.out_cos)
         points = [origin, res]
+        points = [res]
         # return hv.Points(points) * hv.Curve(points)
         return hv.Points(points)
 
@@ -68,23 +69,26 @@ class InteractiveExplorer(bch.ParametrizedSweep):
 # https://holoviews.org/reference/containers/bokeh/GridSpace.html
 def sine_curve(phase, freq):
     xvals = [0.1 * i for i in range(100)]
+    return hv.Points([(phase, freq)])
     return hv.Curve((xvals, [np.sin(phase + freq * x) for x in xvals]))
 
 
 if __name__ == "__main__":
-    phases = [0, np.pi / 2, np.pi, 3 * np.pi / 2]
-    frequencies = [0.5, 0.75, 1.0, 1.25]
-    curve_dict_2D = {(p, f): sine_curve(p, f) for p in phases for f in frequencies}
+    # phases = [0, np.pi / 2, np.pi, 3 * np.pi / 2]
+    # frequencies = [0.5, 0.75, 1.0, 1.25]
+    # curve_dict_2D = {(p, f): sine_curve(p, f) for p in phases for f in frequencies}
 
-    gridspace = hv.GridSpace(curve_dict_2D, kdims=["phase", "frequency"])
-    hv.output(size=50)
-    hmap = hv.HoloMap(gridspace)
-    hmap += hv.GridSpace(hmap)
+    # gridspace = hv.GridSpace(curve_dict_2D, kdims=["phase", "frequency"])
+    # hv.output(size=50)
+    # hmap = hv.HoloMap(gridspace)
+    # hmap += hv.GridSpace(hmap)
 
-    mn = pn.Row()
-    mn.append(hmap)
+    # mn = pn.Row()
+    # mn.append(hmap)
 
-    mn.show()
+    hv.extension("bokeh")
+
+    # mn.show()
 
     explorer = InteractiveExplorer()
 
@@ -111,12 +115,12 @@ if __name__ == "__main__":
         # opts.GridSpace(shared_xaxis=True, shared_yaxis=True),
         opts.GridSpace(shared_xaxis=False, shared_yaxis=False),
         opts.Image(shared_axes=False),
-        # opts.Image(cmap="viridis", width=400, height=400),
+        opts.Image(cmap="viridis", width=400, height=400),
         opts.Labels(
             text_color="white", text_font_size="8pt", text_align="left", text_baseline="bottom"
         ),
         opts.Path(color="white"),
-        opts.Spread(width=600),
+        opts.Spread(width=600, alpha=0.6),
         opts.Overlay(show_legend=False),
     )
     print(ds.kdims)
@@ -144,22 +148,21 @@ if __name__ == "__main__":
         bencher.get_panel().append(ds_red.to(hv.Image))
         bencher.get_panel().append(ds_agg.to(hv.Image))
 
-    bencher.get_panel().append(ds_red.to(hv.Curve))
-
-    bencher.get_panel().append(ds_agg.to(hv.Curve).grid())
+    bencher.get_panel().append(ds_red.to(hv.Curve) * ds_red.to(hv.Spread))
+    bencher.get_panel().append(ds_red.to(hv.Curve).grid("offset"))
 
     # bencher.get_panel().append(ds_agg.to(hv.Curve).grid("offset").opts(height=200))
     # bencher.get_panel().append(ds_agg.to(hv.Curve, "theta").grid("offset"))
 
     # bencher.get_panel().append(hv.Curve(ds, kdims=["theta", "offset"], vdims=["out_sin"]))
 
-    bencher.get_panel().append(ds_agg.to(hv.Curve) * ds_agg.to(hv.Spread).opts(alpha=0.2))
+    bencher.get_panel().append(ds_agg.to(hv.Curve) * ds_agg.to(hv.Spread))
     bencher.get_panel().append(ds_agg.to(hv.Curve).grid() * ds_agg.to(hv.Spread).grid())
 
     # bencher.get_panel().append(
     #     hv.Curve(ds).reduce(["repeat"]) * hv.Spread(ds).reduce(["repeat"]).opts(alpha=0.2)
     # )
-    bencher.get_panel().append(hv.Curve(ds_agg) * hv.Spread(ds_agg).opts(alpha=0.2))
+    bencher.get_panel().append(hv.Curve(ds_agg) * hv.Spread(ds_agg))
 
     bencher.plot()
 
