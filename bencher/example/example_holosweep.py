@@ -48,12 +48,13 @@ if __name__ == "__main__":
 
     res = bch_wv.plot_sweep(
         "phase",
-        input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
+        # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
+        input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.out_sin],
         run_cfg=bch.BenchRunCfg(repeats=5),
     )
 
-    bch_wv.plots_instance.append(res.to_curve())
+    # bch_wv.plots_instance.append(res.to_curve())
     # bch_wv.plots_instance.append(res.to_curve().overlay("phase"))
     # bch_wv.plots_instance.append(res.to_curve().overlay("freq"))
     # bch_wv.plots_instance.append(res.to_curve().overlay("phase").layout())
