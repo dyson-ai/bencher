@@ -1,6 +1,4 @@
 {
-	// See https://go.microsoft.com/fwlink/?LinkId=733558
-	// for the documentation about the tasks.json format
 	"version": "2.0.0",
 	"tasks": [
 		{
@@ -11,12 +9,17 @@
 		{
 			"label": "sa: Set Active File",
 			"type": "shell",
-			"command": "echo ${file} > ${workspaceFolder}/.vscode/cfg/active_file.cfg; echo Setting the current file: ${file} as the active file."
+			"command": "mkdir ${workspaceFolder}/.vscode/cfg/;echo ${file} > $_/active_file.cfg; echo Setting the current file: ${file} as the active file."
 		},
 		{
 			"label": "ra: Run Active File",
 			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/cfg/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE"
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/cfg/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": True
+			}
 		}
 	]
 }
