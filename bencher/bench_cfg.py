@@ -497,9 +497,7 @@ class BenchCfg(BenchRunCfg):
     def get_hv_dataset(self, reduce=True):
         print(self.ds)
         if reduce:
-            # return hv.Dataset(self.ds).reduce(
-            # dimensions=["repeat"], function=np.mean, spreadfn=np.std, method="nearest"
-            # )
+            return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
             # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
         return hv.Dataset(self.ds)
 
