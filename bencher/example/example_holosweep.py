@@ -6,11 +6,9 @@
 import bencher as bch
 import holoviews as hv
 import math
-import panel as pn
 import random
 import numpy as np
 from holoviews import opts
-import random
 
 
 class InteractiveExplorer(bch.ParametrizedSweep):
