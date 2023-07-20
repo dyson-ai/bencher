@@ -495,8 +495,10 @@ class BenchCfg(BenchRunCfg):
         return [p.params for p in self.studies[0].trials]
 
     def get_hv_dataset(self, reduce=True):
+        print(self.ds)
         if reduce:
             return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
+            # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
         return hv.Dataset(self.ds)
 
     def to_curve(self, reduce=True):
