@@ -9,6 +9,8 @@ import param
 import xarray as xr
 from pandas import DataFrame
 from str2bool import str2bool
+import holoviews as hv
+import numpy as np
 
 import bencher as bch
 from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
@@ -491,6 +493,35 @@ class BenchCfg(BenchRunCfg):
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
+
+    def get_hv_dataset(self, reduce=True):
+        if reduce:
+            return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
+        return hv.Dataset(self.ds)
+
+    def to_curve(self, reduce=True):
+        ds = self.get_hv_dataset(reduce)
+        pt = ds.to(hv.Curve)
+        if reduce:
+            pt *= ds.to(hv.Spread).opts(alpha=0.2)
+        return pt
+
+    def to_error_bar(self):
+        return self.get_hv_dataset(True).to(hv.ErrorBars)
+
+    def to_points(self, reduce=True):
+        ds = self.get_hv_dataset(reduce)
+        pt = ds.to(hv.Points)
+        if reduce:
+            pt *= ds.to(hv.ErrorBars)
+        return pt
+
+    def to_bar(self, reduce=True):
+        ds = self.get_hv_dataset(reduce)
+        pt = ds.to(hv.Bars)
+        if reduce:
+            pt *= ds.to(hv.ErrorBars)
+        return pt
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
