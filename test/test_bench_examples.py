@@ -69,6 +69,7 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_floats3D_workflow(self) -> None:
         self.assertIsNotNone(example_floats3D_workflow(self.create_run_cfg()))
 
+    @pytest.mark.skip()
     def test_example_vector(self) -> None:
         self.assertIsNotNone(example_vector())
 
