@@ -100,7 +100,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
-        plot_lib: PlotCollection = PlotLibrary.default(),
+        plot_lib: PlotCollection = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
