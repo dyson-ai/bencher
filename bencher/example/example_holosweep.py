@@ -62,9 +62,9 @@ class InteractiveExplorer(bch.ParametrizedSweep):
     def plot_hv(self, *args, **kwargs):
         print("plotting")
         origin = [0, 0]
-        res = (self.out_sin, self.out_cos)
-        points = [origin, res]
-        points = [res]
+        result = (self.out_sin, self.out_cos)
+        points = [origin, result]
+        points = [result]
         # return hv.Points(points) * hv.Curve(points)
         return hv.Points(points)
 
