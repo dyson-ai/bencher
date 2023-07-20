@@ -9,6 +9,8 @@ import math
 import panel as pn
 import random
 import numpy as np
+from holoviews import opts
+import random
 
 
 class InteractiveExplorer(bch.ParametrizedSweep):
@@ -19,6 +21,14 @@ class InteractiveExplorer(bch.ParametrizedSweep):
     offset = bch.FloatSweep(default=0, bounds=[0, 0.3], doc="dc offset", units="v", samples=10)
     noisy = bch.BoolSweep(
         default=False, doc="Optionally add random noise to the output of the function"
+    )
+
+    phase = bch.FloatSweep(
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
+    )
+
+    freq = bch.FloatSweep(
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
     )
 
     # noise_distribution = bch.EnumSweep(NoiseDistribution, doc=NoiseDistribution.__doc__)
@@ -66,158 +76,70 @@ class InteractiveExplorer(bch.ParametrizedSweep):
         return self.plot_hv()
 
 
-# https://holoviews.org/reference/containers/bokeh/GridSpace.html
-def sine_curve(phase, freq):
-    xvals = [0.1 * i for i in range(100)]
-    return hv.Points([(phase, freq)])
-    return hv.Curve((xvals, [np.sin(phase + freq * x) for x in xvals]))
+class Waves(bch.ParametrizedSweep):
+    phase = bch.FloatSweep(
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=4
+    )
+
+    freq = bch.FloatSweep(default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=4)
+
+    theta = bch.FloatSweep(
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=20
+    )
+
+    noise = bch.FloatSweep(default=0.0, bounds=[0.0, 1.0], doc="noise", units="rad", samples=3)
+
+    out_sin = bch.ResultVar(
+        units="v", direction=bch.OptDir.minimize, doc="sin of theta with some noise"
+    )
+
+    out_cos = bch.ResultVar(
+        units="v", direction=bch.OptDir.minimize, doc="sin of theta with some noise"
+    )
+
+    # https://holoviews.org/reference/containers/bokeh/GridSpace.html
+    def sine_curve(self, phase=0.0, freq=1.0, theta=0.0) -> hv.Points:
+        print(f"phase:{phase} freq:{freq}")
+        # return hv.Points([(phase, freq)]) * hv.Text(phase, freq, f"{phase},{freq}")
+        xvals = [0.1 * i for i in range(100)]
+
+        return hv.Curve((xvals, [np.sin(phase + freq * x) for x in xvals]))
+
+    # https://holoviews.org/reference/containers/bokeh/GridSpace.html
+    def calc(self, phase=0.0, freq=1.0, theta=0.0, noise=0.0):
+        self.out_sin = np.sin(phase + freq * theta) + random.uniform(0, noise)
+        self.out_cos = np.cos(phase + freq * theta) + random.uniform(0, noise)
+        return self.get_results_values_as_dict()
 
 
 if __name__ == "__main__":
-    # phases = [0, np.pi / 2, np.pi, 3 * np.pi / 2]
-    # frequencies = [0.5, 0.75, 1.0, 1.25]
-    # curve_dict_2D = {(p, f): sine_curve(p, f) for p in phases for f in frequencies}
-
-    # gridspace = hv.GridSpace(curve_dict_2D, kdims=["phase", "frequency"])
-    # hv.output(size=50)
-    # hmap = hv.HoloMap(gridspace)
-    # hmap += hv.GridSpace(hmap)
-
-    # mn = pn.Row()
-    # mn.append(hmap)
-
-    hv.extension("bokeh")
-
-    # mn.show()
-
-    explorer = InteractiveExplorer()
-
-    bencher = bch.Bench("holoviews", explorer.__call__)
-
-    res = bencher.plot_sweep(
-        "holosweep",
-        [explorer.param.theta, explorer.param.offset],
-        [explorer.param.out_sin],
-        run_cfg=bch.BenchRunCfg(repeats=10),
-    )
-
-    # res = bencher.plot_sweep(
-    #     "holosweep",
-    #     [explorer.param.theta],
-    #     [explorer.param.out_sin],
-    #     run_cfg=bch.BenchRunCfg(repeats=10),
-    # )
-
-    ds = hv.Dataset(res.ds)
-    from holoviews import opts
-
     opts.defaults(
         # opts.GridSpace(shared_xaxis=True, shared_yaxis=True),
-        opts.GridSpace(shared_xaxis=False, shared_yaxis=False),
-        opts.Image(shared_axes=False),
-        opts.Image(cmap="viridis", width=400, height=400),
-        opts.Labels(
-            text_color="white", text_font_size="8pt", text_align="left", text_baseline="bottom"
-        ),
-        opts.Path(color="white"),
-        opts.Spread(width=600, alpha=0.6),
-        opts.Overlay(show_legend=False),
+        opts.GridSpace(shared_xaxis=False, shared_yaxis=False, width=500),
+        opts.NdLayout(shared_axes=False, shared_datasource=False, width=500),
+        opts.Overlay(width=500, legend_position="right", show_legend=False),
+        opts.Curve(width=500),
+        opts.Spread(alpha=0.2),
     )
-    print(ds.kdims)
-    print(ds.vdims)
-    print(ds)
+    wv = Waves()
 
-    print(res.ds)
+    bch_wv = bch.Bench("waves", wv.calc, plot_lib=bch.PlotLibrary.default().add("lineplot_hv"))
 
-    iv = [v.name for v in res.input_vars]
-    rv = [r.name for r in res.result_vars]
-    # hv.Dataset.aggregate()
-    ds_red = ds.reduce(["repeat"], np.mean, np.std)
-    ds_agg = ds.aggregate(iv, np.mean, np.std)
-    # ds_agg_rv = ds.aggregate(rv, np.mean, np.std)
+    res = bch_wv.plot_sweep(
+        "phase",
+        input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
+        const_vars=[(wv.param.noise, 1.0)],
+        result_vars=[wv.param.out_sin],
+        run_cfg=bch.BenchRunCfg(repeats=5),
+    )
 
-    # ds_agg.
+    bch_wv.plots_instance.append(res.to_curve())
+    bch_wv.plots_instance.append(res.to_curve().overlay("phase"))
+    bch_wv.plots_instance.append(res.to_curve().overlay("freq"))
+    bch_wv.plots_instance.append(res.to_curve().overlay("phase").layout())
+    bch_wv.plots_instance.append(res.to_curve().overlay("freq").layout())
+    bch_wv.plots_instance.append(res.to_curve().layout("phase"))
+    bch_wv.plots_instance.append(res.to_curve().layout("freq"))
+    bch_wv.plots_instance.append(res.to_curve().layout())
 
-    bencher.get_panel().append(ds.to(hv.Table))
-    bencher.get_panel().append(ds_red.to(hv.Table))
-    bencher.get_panel().append(ds_agg.to(hv.Table))
-    # bencher.get_panel().append(ds_agg_rv.to(hv.Table))
-
-    if len(iv) == 2:
-        bencher.get_panel().append(ds.to(hv.Image))
-        bencher.get_panel().append(ds_red.to(hv.Image))
-        bencher.get_panel().append(ds_agg.to(hv.Image))
-
-    bencher.get_panel().append(ds_red.to(hv.Curve) * ds_red.to(hv.Spread))
-    bencher.get_panel().append(ds_red.to(hv.Curve).grid("offset"))
-
-    # bencher.get_panel().append(ds_agg.to(hv.Curve).grid("offset").opts(height=200))
-    # bencher.get_panel().append(ds_agg.to(hv.Curve, "theta").grid("offset"))
-
-    # bencher.get_panel().append(hv.Curve(ds, kdims=["theta", "offset"], vdims=["out_sin"]))
-
-    bencher.get_panel().append(ds_agg.to(hv.Curve) * ds_agg.to(hv.Spread))
-    bencher.get_panel().append(ds_agg.to(hv.Curve).grid() * ds_agg.to(hv.Spread).grid())
-
-    # bencher.get_panel().append(
-    #     hv.Curve(ds).reduce(["repeat"]) * hv.Spread(ds).reduce(["repeat"]).opts(alpha=0.2)
-    # )
-    bencher.get_panel().append(hv.Curve(ds_agg) * hv.Spread(ds_agg))
-
-    bencher.plot()
-
-    main = pn.Column()
-
-    # curv_dict = explorer.
-
-    # for inp in explorer.get_inputs_only():
-    #     fslider = pn.widgets.FloatSlider(name=inp.name, start=inp.bounds[0], end=inp.bounds[1])
-    #     s_bind = pn.bind(explorer.__call__, theta=fslider)
-    #     main.append(
-    #         pn.Row(
-    #             f"# {inp.name}",
-    #             fslider,
-    #             s_bind,
-    #             pn.widgets.EditableRangeSlider(
-    #                 name=inp.name,
-    #                 start=inp.bounds[0],
-    #                 end=inp.bounds[1],
-    #             ),
-    #             pn.widgets.Checkbox(),
-    #         )
-    #     )
-
-    # bt = pn.widgets.Button()
-    # bt_bn = pn.bind(explorer.plot_hv, bt)
-
-    # main.append(bt)
-    # main.append(bt_bn)
-    # print(explorer.get_inputs_as_dims())
-
-    dmap = hv.DynamicMap(explorer.call_and_plot, kdims=explorer.get_inputs_as_dims())
-
-    ds = dmap.apply(hv.Dataset)
-
-    print(ds)
-
-    hmap = hv.DynamicMap(explorer.call_and_plot, kdims=explorer.get_inputs_as_dims(True))
-    main.append(dmap)
-    # main.append(hmap)
-    main.append(ds.to(hv.Point, "theta").grid())
-    # main.append(ds.to(hv.Point,"theta").grid("theta"))
-    # main.append(hmap.overlay("theta").grid("offset"))
-    # main.append(hmap.grid("theta"))
-
-    # plot_fn = hv.DynamicMap(explorer.plot_model)
-
-    # main = pn.Row(
-    #     pn.Column(*bch.get_inputs_only(explorer)),
-    #     plot_fn,
-    #     name="StickMan Interactive",
-    # )
-
-    main.show()
-
-    # ex_run_cfg = bch.BenchRunCfg()
-
-    # example_floats(ex_run_cfg).plot()
+    bch_wv.plot()
