@@ -1,4 +1,5 @@
 import unittest
+import pytest
 from bencher import BenchRunCfg
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
@@ -69,7 +70,7 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_floats3D_workflow(self) -> None:
         self.assertIsNotNone(example_floats3D_workflow(self.create_run_cfg()))
 
-    @pytest.mark.skip()
+    @pytest.mark.skip
     def test_example_vector(self) -> None:
         self.assertIsNotNone(example_vector())
 
