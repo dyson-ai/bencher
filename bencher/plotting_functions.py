@@ -9,12 +9,13 @@ import numpy as np
 import pandas as pd
 import panel as pn
 import plotly.express as px
-import plotly.graph_objs as go
 import seaborn as sns
 from holoviews import opts
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultVec
+import plotly.graph_objs as go
+
 
 hv.extension("plotly")
 
@@ -252,12 +253,10 @@ def plot_surface_plotly(
     bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D surface plot
-
     Args:
         bench_cfg (BenchCfg): description of benchmark
         rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
-
     Returns:
         pn.pane.Plotly: A 2d surface plot as a holoview in a pane
     """
@@ -305,12 +304,10 @@ def plot_surface_holo(
     bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
     """Given a benchCfg generate a 2D surface plot
-
     Args:
         bench_cfg (BenchCfg): description of benchmark
         rv (ParametrizedSweep): result variable to plot
         xr_cfg (PltCfgBase): config of x,y variables
-
     Returns:
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """

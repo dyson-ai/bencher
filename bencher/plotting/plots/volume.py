@@ -4,6 +4,7 @@ import panel as pn
 import plotly.graph_objs as go
 import logging
 import xarray as xr
+import holoviews as hv
 
 from bencher.bench_cfg import BenchCfg
 from bencher.bench_vars import ParametrizedSweep
@@ -61,6 +62,8 @@ def plot_volume_plotly(
         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
     """
 
+    hv.extension("plotly")
+
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     da = bench_cfg.ds[rv.name]
@@ -99,7 +102,7 @@ def plot_volume_plotly(
 
     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig, name=PlotTypes.volume_plotly)
+    return pn.panel(pn.pane.Plotly(fig), name=PlotTypes.volume_plotly)
 
 
 def plot_cone_plotly(
@@ -115,7 +118,7 @@ def plot_cone_plotly(
     Returns:
         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
     """
-
+    hv.extension("plotly")
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     names = rv.index_names()
@@ -160,7 +163,7 @@ def plot_cone_plotly(
 
     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig, name=PlotTypes.cone_plotly)
+    return pn.panel(pn.pane.Plotly(fig), name=PlotTypes.cone_plotly)
 
 
 class VolumePlot:
