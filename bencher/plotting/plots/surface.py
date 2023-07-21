@@ -64,10 +64,8 @@ class SurfacePlot:
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
         ).matches(pl_in.plt_cnt_cfg):
-            hv.extension("bokeh")
-
-            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_cfg.debug)
             hv.extension("plotly")
+            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_cfg.debug)
             bench_cfg = pl_in.bench_cfg
             rv = pl_in.rv
 
@@ -97,9 +95,11 @@ class SurfacePlot:
 
             if bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
-                upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-                lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-                return surface * upper * lower
+                surface *= (
+                    hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                )
+                surface *= (
+                    hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                )
             return pn.Column(surface, name=PlotTypes.surface_hv)
-
         return None
