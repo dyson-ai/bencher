@@ -13,7 +13,13 @@ import holoviews as hv
 import numpy as np
 
 import bencher as bch
-from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1,BoolSweep
+from bencher.bench_vars import (
+    OptDir,
+    TimeEvent,
+    TimeSnapshot,
+    describe_variable,
+    hash_sha1,
+)
 
 
 def to_filename(
@@ -497,15 +503,16 @@ class BenchCfg(BenchRunCfg):
         return [p.params for p in self.studies[0].trials]
 
     def get_hv_dataset(self, reduce=None):
+        ds = convert_dataset_bool_dims_to_str(self.ds)
         if reduce is None:
             reduce = self.repeats > 1
         if reduce:
-            return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
+            return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
             # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
 
         if self.repeats == 1:
-            return hv.Dataset(self.ds.squeeze("repeat", drop=True))
-        return hv.Dataset(self.ds)
+            return hv.Dataset(ds.squeeze("repeat", drop=True))
+        return hv.Dataset(ds)
 
     def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type)
@@ -589,13 +596,51 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     return benchmark_sampling_str
 
 
+def convert_dataarray_bool_dims_to_str(dataarray: xr.DataArray) -> xr.DataArray:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataarray.coords:
+        if dataarray.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataarray.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataarray.assign_coords(bool_coords)
+    return dataarray
+
+
+def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataset.coords:
+        if dataset.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataset.assign_coords(bool_coords)
+    return dataset
+
+
 class DimsCfg:
     """A class to store data about the sampling and result dimensions"""
 
     def __init__(self, bench_cfg: BenchCfg) -> None:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
 
-        self.dim_ranges=[]
+        self.dim_ranges = []
         # for i in bench_cfg.all_vars:
         #     if isinstance(i,BoolSweep):
         #         self.dim_ranges.append(i.values(bench_cfg.debug,as_str=True))

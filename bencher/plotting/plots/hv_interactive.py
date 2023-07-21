@@ -5,6 +5,7 @@ import holoviews as hv  # noqa pylint: disable=unused-import
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
+import xarray as xr
 
 
 class HvInteractive:
