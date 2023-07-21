@@ -79,13 +79,13 @@ class HvInteractive:
         # return None
 
     def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+        if False & self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
             print(pl_in.bench_cfg.get_hv_dataset())
             return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
         return None
 
     def lineplot_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
+        if False & self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
                 pl_in.bench_cfg.to_curve().overlay(pl_in.bench_cfg.input_vars[-1].name),
                 name=PlotTypes.lineplot_hv_overlay,
@@ -93,7 +93,7 @@ class HvInteractive:
         return None
 
     def lineplot_hv_layout(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
+        if False & self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
                 pl_in.bench_cfg.to_curve().layout(),
                 name=PlotTypes.lineplot_hv_layout,
