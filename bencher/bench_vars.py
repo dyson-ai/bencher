@@ -235,11 +235,9 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug=False, as_str=False) -> List[bool]:
+    def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
-        if as_str:
-            return ["True", "False"]
         return [True, False]
 
     def sampling_str(self, debug: bool) -> str:
@@ -404,7 +402,7 @@ class EnumSweep(Selector):
         print(self.sampling_str(debug))
         return self.objects
 
-    def sampling_str(self, debug: bool, **kwargs) -> str:
+    def sampling_str(self, debug: bool) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:

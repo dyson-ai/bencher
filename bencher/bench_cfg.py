@@ -13,13 +13,7 @@ import holoviews as hv
 import numpy as np
 
 import bencher as bch
-from bencher.bench_vars import (
-    OptDir,
-    TimeEvent,
-    TimeSnapshot,
-    describe_variable,
-    hash_sha1,
-)
+from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
 
 
 def to_filename(
