@@ -501,6 +501,9 @@ class BenchCfg(BenchRunCfg):
             # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
         return hv.Dataset(self.ds)
 
+    def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
+        return self.get_hv_dataset(reduce).to(hv_type)
+
     def to_curve(self, reduce=True):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)

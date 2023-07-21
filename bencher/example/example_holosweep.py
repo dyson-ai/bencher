@@ -60,7 +60,7 @@ if __name__ == "__main__":
     # bch_wv.plots_instance.append(res.to_curve().overlay("phase").layout())
     # bch_wv.plots_instance.append(res.to_curve().overlay("freq").layout())
     # bch_wv.plots_instance.append(res.to_curve().layout("phase"))
-    # bch_wv.plots_instance.append(res.to_curve().layout("freq"))
+    bch_wv.plots_instance.append(res.to_curve().layout("freq"))
     # bch_wv.plots_instance.append(res.to_curve().layout())
 
     bch_wv.plot()

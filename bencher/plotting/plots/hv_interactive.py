@@ -15,6 +15,13 @@ class HvInteractive:
         result_vars=VarRange(1, 1),
     )
 
+    lineplot_filter = PlotFilter(
+        float_range=VarRange(1, None),
+        cat_range=VarRange(0, 0),
+        vector_len=VarRange(1, 1),
+        result_vars=VarRange(1, 1),
+    )
+
     # def hv_interactive(pl_in: PlotInput) -> pn.panel:
     #     ds = pl_in.bench_cfg.ds[pl_in.rv.name]
     #     return pn.panel(ds.interactive().hvplot(), label="hv interactive")
@@ -47,13 +54,26 @@ class HvInteractive:
         return None
 
     def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if PlotFilter(
-            float_range=VarRange(1, None),
-            cat_range=VarRange(-1, -1),
-            vector_len=VarRange(1, 1),
-            result_vars=VarRange(1, 1),
-        ).matches(pl_in.plt_cnt_cfg):
-            print("lineplothv")
-            print(pl_in.plt_cnt_cfg.cat_cnt, pl_in.plt_cnt_cfg.cat_vars)
-            return pn.panel(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
+        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+            return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
+        return None
+
+    def lineplot_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        # lp = self.lineplot_hv(pl_in)
+        # if lp is not None:
+        #     return lp.pop().overlay(pl_in.bench_cfg.input_vars[-1].name)
+        # return lp
+        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+            return pn.Column(
+                pl_in.bench_cfg.to_curve().overlay(pl_in.bench_cfg.input_vars[-1].name),
+                name=PlotTypes.lineplot_hv_overlay,
+            )
+        return None
+
+    def lineplot_hv_layout(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+            return pn.Column(
+                pl_in.bench_cfg.to_curve().layout(),
+                name=PlotTypes.lineplot_hv_layout,
+            )
         return None
