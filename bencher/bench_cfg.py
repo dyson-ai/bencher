@@ -13,7 +13,7 @@ import holoviews as hv
 import numpy as np
 
 import bencher as bch
-from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
+from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1,BoolSweep
 
 
 def to_filename(
@@ -479,14 +479,16 @@ class BenchCfg(BenchRunCfg):
             logging.info(f"Maximum value of {iv.name}: {output[-1]}")
         return output
 
-    def get_dataframe(self) -> DataFrame:
+    def get_dataframe(self, reset_index=True) -> DataFrame:
         """Get the xarray results as a pandas dataframe
 
         Returns:
             pd.DataFrame: The xarray results array as a pandas dataframe
         """
-
-        return self.ds.to_dataframe().reset_index()
+        ds = self.ds.to_dataframe()
+        if reset_index:
+            return ds.reset_index()
+        return ds
 
     def get_best_trial_params(self):
         return self.studies[0].best_trials[0].params
@@ -592,6 +594,13 @@ class DimsCfg:
 
     def __init__(self, bench_cfg: BenchCfg) -> None:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
+
+        self.dim_ranges=[]
+        # for i in bench_cfg.all_vars:
+        #     if isinstance(i,BoolSweep):
+        #         self.dim_ranges.append(i.values(bench_cfg.debug,as_str=True))
+        #     else:
+        #         self.dim_ranges.append(i.values(bench_cfg.debug))
         self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]

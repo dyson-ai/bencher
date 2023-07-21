@@ -72,3 +72,6 @@ if __name__ == "__main__":
     bch_wv.plots_instance.append(res.to_curve().layout())
 
     bch_wv.plot()
+
+
+# todo  https://discourse.holoviz.org/t/pointdraw-as-parameterized-class/3539

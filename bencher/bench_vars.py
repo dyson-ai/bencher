@@ -235,9 +235,11 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug=False) -> List[bool]:
+    def values(self, debug=False, as_str=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
+        if as_str:
+            return ["True", "False"]
         return [True, False]
 
     def sampling_str(self, debug: bool) -> str:
@@ -247,6 +249,9 @@ class BoolSweep(Boolean):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 class TimeBase(Selector):
@@ -399,7 +404,7 @@ class EnumSweep(Selector):
         print(self.sampling_str(debug))
         return self.objects
 
-    def sampling_str(self, debug: bool) -> str:
+    def sampling_str(self, debug: bool, **kwargs) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:

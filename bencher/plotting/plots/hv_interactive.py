@@ -36,6 +36,12 @@ class HvInteractive:
 
     def bar_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
+            ben = pl_in.bench_cfg
+            print("bar")
+            print(ben.get_dataframe())
+            print(ben.ds)
+            print(ben.get_hv_dataset())
+            print(ben.get_hv_dataset(False))
             pt = pl_in.bench_cfg.to_bar()
             # pt *= pl_in.bench_cfg.to_scatter().opts(color="k")
             # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
