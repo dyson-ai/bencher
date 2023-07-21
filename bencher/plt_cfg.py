@@ -120,9 +120,8 @@ class BenchPlotter:
         Returns:
             pn.Row: A panel row with plots in it
         """
-        plot_rows = pn.Row(
-            name=bench_cfg.bench_name, scroll=True, height=1000
-        )  # todo remove the scroll and make it resize dynamically
+        # todo remove the scroll and make it resize dynamically
+        plot_rows = pn.Row(name=bench_cfg.bench_name, scroll=True)
 
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
 

@@ -58,7 +58,7 @@ class SurfacePlot:
         Returns:
             pn.pane.holoview: A 2d surface plot as a holoview in a pane
         """
-        if PlotFilter(
+        if False & PlotFilter(
             float_range=VarRange(2, 2),
             cat_range=VarRange(-1, None),
             vector_len=VarRange(1, 1),
@@ -95,9 +95,12 @@ class SurfacePlot:
 
             if bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
-                upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-                lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-                return surface * upper * lower
+                surface *= (
+                    hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                )
+                surface *= (
+                    hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                )
             return pn.Column(surface, name=PlotTypes.surface_hv)
 
         return None
