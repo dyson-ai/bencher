@@ -18,8 +18,7 @@
 				"ms-python.pylint",
 				"njpwerner.autodocstring",
 				"charliermarsh.ruff",
-				"formulahendry.code-runner",
-				"donjayamanne.githistory"
+				"formulahendry.code-runner"
 			]
 		}
 	}
