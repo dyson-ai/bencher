@@ -5,6 +5,25 @@ from typing import List
 import numpy as np
 
 
+def convert_bool_dims_to_str(dataarray: xr.DataArray) -> xr.DataArray:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataarray.coords:
+        if dataarray.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataarray.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataarray.assign_coords(bool_coords)
+    return dataarray
+
+
 def create_dataarray(power_on_coord_range: List[str | bool]) -> hv.Bars:
     """Create a 2D dataarray where voltage is measured when the power_on = True and power_on =False for two samples and plot with hv.Bars
 
@@ -16,6 +35,8 @@ def create_dataarray(power_on_coord_range: List[str | bool]) -> hv.Bars:
         data=[[1.5, 1.6], [0.01, -0.02]],
         coords=dict(power_on=(power_on_coord_range), sample_num=([1, 2])),
     )
+
+    da = convert_bool_dims_to_str(da)
 
     hv_ds = hv.Dataset(da)
     print(f"datarray: {da}")
