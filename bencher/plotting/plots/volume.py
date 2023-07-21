@@ -86,7 +86,6 @@ def plot_volume_plotly(
 
     layout = go.Layout(
         title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
-        autosize=True,
         width=700,
         height=700,
         margin=dict(t=50, b=50, r=50, l=50),

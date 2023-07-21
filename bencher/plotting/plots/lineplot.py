@@ -4,14 +4,13 @@ import panel as pn
 import seaborn as sns
 import hvplot.xarray  # noqa pylint: disable=unused-import
 
-import holoviews as hv
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plots.plot_base import PlotBase
 
-hv.extension("bokeh")
+# hv.extension("bokeh")
 
 
 class Lineplot(PlotBase):
