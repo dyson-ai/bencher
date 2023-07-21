@@ -126,6 +126,7 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
+        self.hmap = {}
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -535,7 +536,7 @@ class Bench(BenchPlotServer):
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
         logging.debug(f"result {result}")
-
+        self.hmap[tuple(sorted(function_input.items()))] = result["image"]
         for rv in bench_cfg.result_vars:
             if type(result) == dict:
                 result_value = result[rv.name]
@@ -573,6 +574,8 @@ class Bench(BenchPlotServer):
                 else:
                     self.ds_dynamic[dataset_key] = new_dataarray
             else:
+               
+
                 raise RuntimeError("Unsupported result type")
 
     def clear_tag_from_cache(self, tag: str):

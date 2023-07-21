@@ -9,6 +9,7 @@ import random
 import numpy as np
 from holoviews import opts
 import panel as pn
+import holoviews as hv
 
 
 class Waves(bch.ParametrizedSweep):
@@ -27,6 +28,8 @@ class Waves(bch.ParametrizedSweep):
     out_sin = bch.ResultVar(units="v", doc="sin of theta with some noise")
     out_cos = bch.ResultVar(units="v", doc="cos of theta with some noise")
 
+    # out_img = hv.Image()
+
     def calc(self, phase=0.0, freq=1.0, theta=0.0, noisy=True) -> dict:
         if noisy:
             noise = 1.0
@@ -35,7 +38,15 @@ class Waves(bch.ParametrizedSweep):
 
         self.out_sin = np.sin(phase + freq * theta) + random.uniform(0, noise)
         self.out_cos = np.cos(phase + freq * theta) + random.uniform(0, noise)
-        return self.get_results_values_as_dict()
+
+        # self.image = hv.Text
+
+        pt = hv.Text(0, 0, f"{phase}\n{freq}\n {theta}")
+        pt *= hv.Ellipse(0, 0, 1)
+
+        return self.get_results_values_as_dict() | {"image": pt}
+
+    # def draw(self,phase=0.0, freq=1.0, theta=0.0, noisy=True):
 
 
 if __name__ == "__main__":
@@ -45,7 +56,7 @@ if __name__ == "__main__":
     )
     wv = Waves()
 
-    bch_wv = bch.Bench("waves", wv.calc)
+    bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
     res = bch_wv.plot_sweep(
         "phase",
@@ -54,6 +65,17 @@ if __name__ == "__main__":
         result_vars=[wv.param.out_sin],
         run_cfg=bch.BenchRunCfg(repeats=1),
     )
+
+    dic = {}
+    # for i in wv.param.freq.values():
+    print(bch_wv.hmap)
+    bch_wv.append(hv.HoloMap(bch_wv.hmap).grid())
+
+    # wip, set bencher so that it creates a holomap of the "image" type during the call
+    #construct a holomap at the same time
+    bch_wv.append(wv.calc()["image"])
+    bch_wv.plot()
+
     # bch_wv.append(res.to_curve().layout())
 
     # res = bch_wv.plot_sweep(
