@@ -51,6 +51,11 @@ class Lineplot(PlotBase):
 
             fg = sns.relplot(df, **sns_cfg.as_sns_args())
 
+            # TODO try to set this during the initial plot rather than after
+            for ax in fg.axes.flatten():
+                for tick in ax.get_xticklabels():
+                    tick.set_rotation(45)
+
             return Catplot.plot_postprocess(fg, sns_cfg, PlotTypes.lineplot)
         return None
 
