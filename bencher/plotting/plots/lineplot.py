@@ -11,7 +11,7 @@ from bencher.plotting.plots.catplot import Catplot
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plots.plot_base import PlotBase
 
-hv.extension("bokeh")
+# hv.extension("bokeh")
 
 
 class Lineplot(PlotBase):

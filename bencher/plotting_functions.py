@@ -17,7 +17,7 @@ from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultV
 import plotly.graph_objs as go
 
 
-hv.extension("plotly")
+# hv.extension("plotly")
 
 
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
@@ -312,7 +312,7 @@ def plot_surface_holo(
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """
 
-    hv.extension("plotly")
+    # hv.extension("plotly")
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
