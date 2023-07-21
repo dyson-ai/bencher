@@ -1,6 +1,6 @@
 # Bencher
 
-## Continuous Integration Status
+## Continuous Integration Status 
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/dyson-ai/bencher/branch/main/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/dyson-ai/bencher)
