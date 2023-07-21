@@ -9,7 +9,12 @@
 		{
 			"label": "sa: Set Active File",
 			"type": "shell",
-			"command": "mkdir ${workspaceFolder}/.vscode/cfg/;echo ${file} > $_/active_file.cfg; echo Setting the current file: ${file} as the active file."
+			"command": "mkdir ${workspaceFolder}/.vscode/cfg/;echo ${file} > $_/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
 		},
 		{
 			"label": "ra: Run Active File",
