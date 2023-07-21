@@ -80,6 +80,9 @@ class HvInteractive:
 
     def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if False & self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+            # print(pl_in.bench_cfg.get_hv_dataset())
+            # print(pl_in.bench_cfg.get_dataframe(False))
+            # return pn.Column(pl_in.bench_cfg.get_hv_dataset().to(hv.Table))
             print(pl_in.bench_cfg.get_hv_dataset())
             return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
         return None

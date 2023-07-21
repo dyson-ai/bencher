@@ -3,12 +3,12 @@ from copy import deepcopy
 
 import panel as pn
 import seaborn as sns
-import xarray as xr
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec
+from bencher.bench_vars import ParametrizedSweep, ResultVec, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
+import xarray as xr
 
 
 class BenchPlotter:
@@ -68,6 +68,8 @@ class BenchPlotter:
 
             if append_cols is not None:
                 plot_cols.extend(append_cols)
+            # plot_cols.append(pn.Column(pn.Row()))#attempt to add spacer to stop overlapping but does not work todo
+
             plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
 
             tabs = pn.Tabs(plot_cols, name=bench_cfg.title)
@@ -118,9 +120,9 @@ class BenchPlotter:
         Returns:
             pn.Row: A panel row with plots in it
         """
-        plot_rows = pn.Row(
-            name=bench_cfg.bench_name, scroll=True, height=1000
-        )  # todo remove the scroll and make it resize dynamically
+        # todo remove the scroll and make it resize dynamically
+        plot_rows = pn.Row(name=bench_cfg.bench_name, scroll=True)
+
         plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
 
         for rv in bench_cfg.result_vars:
@@ -322,11 +324,9 @@ class BenchPlotter:
     @staticmethod
     def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-
         Args:
             sns_cfg (PltCfgBase): See PltCfgBase definition
             plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
         Returns:
             PltCfgBase: See PltCfgBase definition
         """
