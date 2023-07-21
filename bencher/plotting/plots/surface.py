@@ -1,14 +1,12 @@
 from typing import Optional
 
 import panel as pn
-import plotly.graph_objs as go
 import logging
 import xarray as xr
 
-from bencher.bench_cfg import BenchCfg
-from bencher.bench_vars import ParametrizedSweep, ResultVar
+from bencher.bench_vars import ResultVar
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
-from bencher.plt_cfg import PltCfgBase, BenchPlotter
+from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
 
 from bencher.plotting_functions import wrap_long_time_labels

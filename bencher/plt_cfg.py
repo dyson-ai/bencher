@@ -3,11 +3,10 @@ from copy import deepcopy
 
 import panel as pn
 import seaborn as sns
-import xarray as xr
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedSweep, ResultVar, ResultVec
+from bencher.bench_vars import ParametrizedSweep, ResultVec
 from bencher.optuna_conversions import collect_optuna_plots
 
 

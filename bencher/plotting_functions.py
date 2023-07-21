@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 import panel as pn
 import plotly.express as px
-import plotly.graph_objs as go
 import seaborn as sns
 from holoviews import opts
 
