@@ -8,6 +8,7 @@ import math
 import random
 import numpy as np
 from holoviews import opts
+import panel as pn
 
 
 class Waves(bch.ParametrizedSweep):
@@ -53,6 +54,7 @@ if __name__ == "__main__":
         result_vars=[wv.param.out_sin],
         run_cfg=bch.BenchRunCfg(repeats=1),
     )
+    # bch_wv.append(res.to_curve().layout())
 
     res = bch_wv.plot_sweep(
         "phase",
@@ -68,8 +70,17 @@ if __name__ == "__main__":
     # bch_wv.plots_instance.append(res.to_curve().overlay("phase").layout())
     # bch_wv.plots_instance.append(res.to_curve().overlay("freq").layout())
     # bch_wv.plots_instance.append(res.to_curve().layout("phase"))
-    bch_wv.plots_instance.append(res.to_curve().layout("freq"))
-    bch_wv.plots_instance.append(res.to_curve().layout())
+    # bch_wv.append(res.to_curve().overlay("phase"))
+    gspec = pn.GridSpec()
+
+    gspec[0, 0] = res.to_curve()
+
+    bch_wv.append(gspec)
+
+    # bch_wv.append(res.to_curve().layout("phase"))
+
+    # bch_wv.append(res.to_curve().layout("freq"))
+    # bch_wv.append(res.to_curve().layout())
 
     bch_wv.plot()
 
