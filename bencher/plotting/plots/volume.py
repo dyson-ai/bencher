@@ -5,12 +5,11 @@ import plotly.graph_objs as go
 import logging
 import xarray as xr
 
+from bencher.bench_cfg import BenchCfg
+from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
-
-from bencher.bench_cfg import BenchCfg, PltCfgBase
-from bencher.bench_vars import ParametrizedSweep
 
 from bencher.plotting_functions import wrap_long_time_labels
 
