@@ -39,6 +39,8 @@ class HvInteractive:
 
     def bar_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+
             pt = pl_in.bench_cfg.to_bar()
             return pn.Column(pt, name=PlotTypes.bar_hv)
 
@@ -46,6 +48,8 @@ class HvInteractive:
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+
             # pt = pl_in.bench_cfg.to_bar()
             pt = pl_in.bench_cfg.to_scatter()
             # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
@@ -80,6 +84,8 @@ class HvInteractive:
 
     def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+
             # print(pl_in.bench_cfg.get_hv_dataset())
             # print(pl_in.bench_cfg.get_dataframe(False))
             # return pn.Column(pl_in.bench_cfg.get_hv_dataset().to(hv.Table))
@@ -89,6 +95,8 @@ class HvInteractive:
 
     def lineplot_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+
             return pn.Column(
                 pl_in.bench_cfg.to_curve().overlay(pl_in.bench_cfg.input_vars[-1].name),
                 name=PlotTypes.lineplot_hv_overlay,
@@ -97,6 +105,8 @@ class HvInteractive:
 
     def lineplot_hv_layout(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+
             return pn.Column(
                 pl_in.bench_cfg.to_curve().layout(),
                 name=PlotTypes.lineplot_hv_layout,

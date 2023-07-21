@@ -64,6 +64,8 @@ class SurfacePlot:
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
         ).matches(pl_in.plt_cnt_cfg):
+            hv.extension("bokeh")
+            
             xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_cfg.debug)
             hv.extension("plotly")
             bench_cfg = pl_in.bench_cfg
