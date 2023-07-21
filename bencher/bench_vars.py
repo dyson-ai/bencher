@@ -248,6 +248,9 @@ class BoolSweep(Boolean):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
+
 
 class TimeBase(Selector):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""

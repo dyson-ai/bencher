@@ -647,6 +647,9 @@ class Bench(BenchPlotServer):
             return self.plots_instance[-1][0]
         return self.plots_instance[-1]
 
+    def append(self, pane: pn.panel):
+        self.get_panel().append(pane)
+
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
         """Get a dictionary of the best found parameters found during the sweep
 

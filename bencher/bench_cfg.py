@@ -479,14 +479,16 @@ class BenchCfg(BenchRunCfg):
             logging.info(f"Maximum value of {iv.name}: {output[-1]}")
         return output
 
-    def get_dataframe(self) -> DataFrame:
+    def get_dataframe(self, reset_index=True) -> DataFrame:
         """Get the xarray results as a pandas dataframe
 
         Returns:
             pd.DataFrame: The xarray results array as a pandas dataframe
         """
-
-        return self.ds.to_dataframe().reset_index()
+        ds = self.ds.to_dataframe()
+        if reset_index:
+            return ds.reset_index()
+        return ds
 
     def get_best_trial_params(self):
         return self.studies[0].best_trials[0].params
@@ -494,31 +496,49 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce=True):
-        print(self.ds)
+    def get_hv_dataset(self, reduce=None):
+        ds = convert_dataset_bool_dims_to_str(self.ds)
+        if reduce is None:
+            reduce = self.repeats > 1
         if reduce:
-            return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
+            return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
             # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
-        return hv.Dataset(self.ds)
 
-    def to_curve(self, reduce=True):
+        if self.repeats == 1:
+            return hv.Dataset(ds.squeeze("repeat", drop=True))
+        return hv.Dataset(ds)
+
+    def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
+        return self.get_hv_dataset(reduce).to(hv_type)
+
+    def to_curve(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
-        if reduce:
+        if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
     def to_error_bar(self):
         return self.get_hv_dataset(True).to(hv.ErrorBars)
 
-    def to_points(self, reduce=True):
+    def to_points(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_bar(self, reduce=True):
+    def to_scatter(self):
+        ds = self.get_hv_dataset(False)
+        pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
+        return pt
+        # ds = self.get_hv_dataset(reduce)
+        # pt = ds.to(hv.Points)
+        # if reduce:
+        # pt *= ds.to(hv.ErrorBars)
+        # return pt
+
+    def to_bar(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
@@ -570,11 +590,51 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     return benchmark_sampling_str
 
 
+def convert_dataarray_bool_dims_to_str(dataarray: xr.DataArray) -> xr.DataArray:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataarray.coords:
+        if dataarray.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataarray.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataarray.assign_coords(bool_coords)
+    return dataarray
+
+
+def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataset.coords:
+        if dataset.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataset.assign_coords(bool_coords)
+    return dataset
+
+
 class DimsCfg:
     """A class to store data about the sampling and result dimensions"""
 
     def __init__(self, bench_cfg: BenchCfg) -> None:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
+
+        self.dim_ranges = []
         self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]

@@ -44,6 +44,10 @@ class PlotLibrary:
         plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
         plt_col.add(PlotTypes.lineplot)
         plt_col.add(PlotTypes.lineplot_hv)
+        plt_col.add(PlotTypes.lineplot_hv_overlay)
+        plt_col.add(PlotTypes.lineplot_hv_layout)
+        plt_col.add(PlotTypes.scatter_hv)
+        plt_col.add(PlotTypes.bar_hv)
         # plt_col.add(PlotTypes.lineplot_hv_subplot)
         plt_col.add(PlotTypes.scatter2D_sns)
         # plt_col.add(PlotTypes.hv_interactive)
