@@ -7,7 +7,7 @@ import xarray as xr
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
-
+from bencher.plotting.plot_types import PlotTypes
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.bench_vars import ParametrizedSweep
@@ -100,7 +100,7 @@ def plot_volume_plotly(
 
     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig, name="volume_plotly")
+    return pn.pane.Plotly(fig, name=PlotTypes.volume_plotly)
 
 
 def plot_cone_plotly(
@@ -161,7 +161,7 @@ def plot_cone_plotly(
 
     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig, name="cone_plotly")
+    return pn.pane.Plotly(fig, name=PlotTypes.cone_plotly)
 
 
 class VolumePlot:
