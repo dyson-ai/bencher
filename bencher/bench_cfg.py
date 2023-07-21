@@ -11,7 +11,6 @@ from pandas import DataFrame
 from str2bool import str2bool
 import holoviews as hv
 import numpy as np
-import pandas as pd
 
 import bencher as bch
 from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
@@ -496,29 +495,6 @@ class BenchCfg(BenchRunCfg):
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
-
-    def wrap_long_time_labels(self) -> BenchCfg:
-        """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
-
-        Args:
-            bench_cfg (BenchCfg):
-
-        Returns:
-            BenchCfg: updated config with wrapped labels
-        """
-        if self.over_time:
-            if self.ds.coords["over_time"].dtype == np.datetime64:
-                # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
-                self.ds.coords["over_time"] = [
-                    pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
-                    for t in self.ds.coords.coords["over_time"].values
-                ]
-                # wrap very long time event labels because otherwise the graphs are unreadable
-            if self.time_event is not None:
-                self.ds.coords["over_time"] = [
-                    "\n".join(wrap(t, 20)) for t in self.ds.coords["over_time"].values
-                ]
-        return self
 
     def get_hv_dataset(self, reduce=None):
         ds = convert_dataset_bool_dims_to_str(self.ds)
