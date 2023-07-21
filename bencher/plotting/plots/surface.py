@@ -98,6 +98,6 @@ class SurfacePlot:
                 upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
                 lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
                 return surface * upper * lower
-            return pn.panel(surface, name=PlotTypes.surface_hv)
+            return pn.Column(surface, name=PlotTypes.surface_hv)
 
         return None
