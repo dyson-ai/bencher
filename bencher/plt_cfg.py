@@ -129,11 +129,17 @@ class BenchPlotter:
                 plt_cnt_cfg.vector_len = rv.size
             else:
                 plt_cnt_cfg.vector_len = 1
+
             if bench_cfg.plot_lib is not None:
+                print(f"float {plt_cnt_cfg.float_cnt}")
+                print(f"cat {plt_cnt_cfg.cat_cnt}")
+                print(f"vec {plt_cnt_cfg.vector_len}")
                 plot_rows.append(bench_cfg.plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
             # todo enable this check in future pr
             # if len(plot_rows) == 0:  # use the old plotting method as a backup
-            plot_rows.append(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+            plot_rows.append(
+                pn.panel(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+            )
 
         return plot_rows
 
@@ -220,27 +226,6 @@ class BenchPlotter:
                                 f"3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
                             )
                         )
-
-            elif plt_cnt_cfg.float_cnt == 3:
-                xr_cfg = BenchPlotter.plot_float_cnt_3(sns_cfg, plt_cnt_cfg, bench_cfg.debug)
-                if plt_cnt_cfg.cat_cnt < 1:
-                    if type(rv) == ResultVar:
-                        surf_col.append(plt_func.plot_volume_plotly(bench_cfg, rv, xr_cfg))
-                    else:
-                        surf_col.append(plt_func.plot_cone_plotly(bench_cfg, rv, xr_cfg))
-                else:
-                    surf_col.append(
-                        pn.pane.Markdown(
-                            "3D (float,float,cat) inputs -> (float) output plots are not supported yet"
-                        )
-                    )
-            else:
-                surf_col.append(
-                    pn.pane.Markdown(
-                        "4D and higher continous variable sweeps plots are not currently supported.  2D continous inputs + an arbirary number of categorical input are supported.  Please consider relocating to a universe with >4 spatial dimensions so that you have the nessisary physiology to view 4D tensors. "
-                    )
-                )
-
         return surf_col
 
     @staticmethod
@@ -362,39 +347,6 @@ class BenchPlotter:
                 xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
             if plt_cnt_cfg.cat_cnt >= 2:
                 logging.info("surface plot with 2> categorical")
-                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-        return xr_cfg
-
-    @staticmethod
-    def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
-        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        xr_cfg = PltCfgBase(**sns_cfg.as_dict())
-
-        if plt_cnt_cfg.float_cnt >= 3:
-            logging.info("volume plot")
-            sns_cfg.plot_callback = None  # all further plots are surfaces
-            xr_cfg.plot_callback_xra = xr.plot.plot
-            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-            xr_cfg.z = plt_cnt_cfg.float_vars[2].name
-            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-            xr_cfg.zlabel = f"{xr_cfg.z} [{plt_cnt_cfg.float_vars[2].units}]"
-            if plt_cnt_cfg.cat_cnt >= 1:
-                logging.info("volume plot with 1 categorical")
-                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-            if plt_cnt_cfg.cat_cnt >= 2:
-                logging.info("volume plot with 2> categorical")
                 xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
                 xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
         return xr_cfg
