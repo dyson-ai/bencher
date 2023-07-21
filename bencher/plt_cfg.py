@@ -215,20 +215,7 @@ class BenchPlotter:
                 sns_cfg = BenchPlotter.plot_float_cnt_1(sns_cfg, plt_cnt_cfg)
             sns_cfg = BenchPlotter.get_axes_and_title(rv, sns_cfg, plt_cnt_cfg)
             surf_col.append(plt_func.plot_sns(bench_cfg, rv, sns_cfg))
-        else:
-            if plt_cnt_cfg.float_cnt == 2:
-                xr_cfg = BenchPlotter.plot_float_cnt_2(plt_cnt_cfg, rv, bench_cfg.debug)
-                if plt_cnt_cfg.cat_cnt == 0:
-                    surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
-                else:
-                    try:
-                        surf_col.append(plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg))
-                    except (TypeError, KeyError) as e:
-                        surf_col.append(
-                            pn.pane.Markdown(
-                                f"3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
-                            )
-                        )
+
         return surf_col
 
     @staticmethod
@@ -321,33 +308,3 @@ class BenchPlotter:
             sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
 
         return sns_cfg
-
-    @staticmethod
-    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
-        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        xr_cfg = PltCfgBase()
-        if plt_cnt_cfg.float_cnt == 2:
-            logging.info(f"surface plot: {rv.name}")
-            xr_cfg.plot_callback_xra = xr.plot.plot
-            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-            xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
-            xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
-
-            if plt_cnt_cfg.cat_cnt >= 1:
-                logging.info("surface plot with 1 categorical")
-                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-            if plt_cnt_cfg.cat_cnt >= 2:
-                logging.info("surface plot with 2> categorical")
-                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-        return xr_cfg
