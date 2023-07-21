@@ -6,8 +6,9 @@ import seaborn as sns
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
-from bencher.bench_vars import ParametrizedSweep, ResultVec,ResultVar
+from bencher.bench_vars import ParametrizedSweep, ResultVec, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
+import xarray as xr
 
 
 class BenchPlotter:
@@ -216,7 +217,7 @@ class BenchPlotter:
             surf_col.append(plt_func.plot_sns(bench_cfg, rv, sns_cfg))
         else:
             if plt_cnt_cfg.float_cnt == 2:
-                xr_cfg = plot_float_cnt_2(plt_cnt_cfg, rv, bench_cfg.debug)
+                xr_cfg = BenchPlotter.plot_float_cnt_2(plt_cnt_cfg, rv, bench_cfg.debug)
                 if plt_cnt_cfg.cat_cnt == 0:
                     surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
                 else:

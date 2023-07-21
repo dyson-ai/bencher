@@ -14,6 +14,8 @@ from holoviews import opts
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultVec
+import plotly.graph_objs as go
+
 
 hv.extension("plotly")
 
