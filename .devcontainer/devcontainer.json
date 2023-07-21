@@ -14,12 +14,12 @@
 		"vscode": {
 			"extensions": [
 				"mhutchie.git-graph",
-				"github.vscode-github-actions",
 				"ms-python.python",
 				"ms-python.pylint",
 				"njpwerner.autodocstring",
 				"charliermarsh.ruff",
-				"formulahendry.code-runner"
+				"formulahendry.code-runner",
+				"donjayamanne.githistory"
 			]
 		}
 	}
