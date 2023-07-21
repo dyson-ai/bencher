@@ -641,11 +641,6 @@ class DimsCfg:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
 
         self.dim_ranges = []
-        # for i in bench_cfg.all_vars:
-        #     if isinstance(i,BoolSweep):
-        #         self.dim_ranges.append(i.values(bench_cfg.debug,as_str=True))
-        #     else:
-        #         self.dim_ranges.append(i.values(bench_cfg.debug))
         self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]

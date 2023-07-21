@@ -30,6 +30,13 @@ class HvInteractive:
         result_vars=VarRange(1, 1),
     )
 
+    lineplot_multi_filter = PlotFilter(
+        float_range=VarRange(2, None),
+        cat_range=VarRange(0, 0),
+        vector_len=VarRange(1, 1),
+        result_vars=VarRange(1, 1),
+    )
+
     # def hv_interactive(pl_in: PlotInput) -> pn.panel:
     #     ds = pl_in.bench_cfg.ds[pl_in.rv.name]
     #     return pn.panel(ds.interactive().hvplot(), label="hv interactive")
@@ -91,11 +98,7 @@ class HvInteractive:
         return None
 
     def lineplot_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        # lp = self.lineplot_hv(pl_in)
-        # if lp is not None:
-        #     return lp.pop().overlay(pl_in.bench_cfg.input_vars[-1].name)
-        # return lp
-        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+        if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
                 pl_in.bench_cfg.to_curve().overlay(pl_in.bench_cfg.input_vars[-1].name),
                 name=PlotTypes.lineplot_hv_overlay,
@@ -103,7 +106,7 @@ class HvInteractive:
         return None
 
     def lineplot_hv_layout(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if self.lineplot_filter.matches(pl_in.plt_cnt_cfg):
+        if self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
                 pl_in.bench_cfg.to_curve().layout(),
                 name=PlotTypes.lineplot_hv_layout,
