@@ -30,6 +30,6 @@ class PlotTypes(StrEnum):
     # lineplot_hv_repeats = auto()
 
     scatter2D_sns = auto()
-    # scatter_hv = auto()
+    scatter_hv = auto()
 
     # hv_interactive = auto()
