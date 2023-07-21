@@ -494,34 +494,48 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce=True):
-        print(self.ds)
+    def get_hv_dataset(self, reduce=None):
+        if reduce is None:
+            reduce = self.repeats > 1
         if reduce:
             return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std)
             # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
+
+        if self.repeats == 1:
+            return hv.Dataset(self.ds.squeeze("repeat", drop=True))
         return hv.Dataset(self.ds)
 
     def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type)
 
-    def to_curve(self, reduce=True):
+    def to_curve(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
-        if reduce:
+        if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
     def to_error_bar(self):
         return self.get_hv_dataset(True).to(hv.ErrorBars)
 
-    def to_points(self, reduce=True):
+    def to_points(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_bar(self, reduce=True):
+    def to_scatter(self):
+        ds = self.get_hv_dataset(False)
+        pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
+        return pt
+        # ds = self.get_hv_dataset(reduce)
+        # pt = ds.to(hv.Points)
+        # if reduce:
+        # pt *= ds.to(hv.ErrorBars)
+        # return pt
+
+    def to_bar(self, reduce=None):
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:

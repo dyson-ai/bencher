@@ -51,7 +51,7 @@ if __name__ == "__main__":
         # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.out_sin],
-        run_cfg=bch.BenchRunCfg(repeats=5),
+        run_cfg=bch.BenchRunCfg(repeats=1),
     )
 
     res = bch_wv.plot_sweep(
