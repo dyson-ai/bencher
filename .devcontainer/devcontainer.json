@@ -25,6 +25,7 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
+	"postCreateCommand": "flit install",
 	"customizations": {
 		"vscode": {
 			"extensions": [
