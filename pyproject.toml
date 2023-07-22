@@ -1,15 +1,13 @@
-
-
 [project]
-name =  "bencher"
+name =  "holobench"
 authors = [
     {name = "Austin Gregg-Smith", email = "blooop@gmail.com"},
 ]
 description = "A package for benchmarking the performance of arbitrary functions"
 readme = "README.md"
 
-requires-python = ">=3.10."
-dynamic = ["version"]
+requires-python = ">=3.10"
+python-version = ["0.0.2"]
 
 dependencies = [
   "holoviews[reccomended]==1.16.2",
@@ -17,6 +15,7 @@ dependencies = [
   "diskcache",
   "optuna",
   "xarray",
+  "plotly",
   "sortedcontainers",
   "pandas==2.0.1",
   "strenum",
