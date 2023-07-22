@@ -7,6 +7,16 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
+			"label": "flit install",
+			"type": "shell",
+			"command": "flit install"
+		},
+		{
+			"label": "flit publish",
+			"type": "shell",
+			"command": "flit publish"
+		},
+		{
 			"label": "sa: Set Active File",
 			"type": "shell",
 			"command": "mkdir ${workspaceFolder}/.vscode/cfg/;echo ${file} > $_/active_file.cfg; echo Setting the current file: ${file} as the active file.",
