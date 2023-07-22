@@ -7,6 +7,7 @@ import numpy as np
 import panel as pn
 import param
 import xarray as xr
+import holoviews as hv
 from diskcache import Cache
 from sortedcontainers import SortedDict
 
@@ -18,6 +19,7 @@ from bencher.bench_vars import (
     ResultList,
     ResultVar,
     ResultVec,
+    ResultHmap,
     TimeEvent,
     TimeSnapshot,
     hash_sha1,
@@ -126,7 +128,6 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
-        self.hmap = {}
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -306,6 +307,7 @@ class Bench(BenchPlotServer):
         bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
+        bench_cfg.hmap_kdims = dims_name
         for idx_tuple, function_input_vars in func_inputs:
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(
@@ -499,6 +501,8 @@ class Bench(BenchPlotServer):
             for k, v in function_input.items():
                 logging.info(f"\t {k}:{v}")
 
+        # store a tuple of the inputs as keys for a holomap
+        fn_inp_with_rep = tuple(function_input.values())
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
@@ -533,10 +537,14 @@ class Bench(BenchPlotServer):
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
+        # construct a dict for a holomap
+        if "hmap" in result:
+            # print(isinstance(result["hmap"], hv.element.Element))
+            bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
+
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
         logging.debug(f"result {result}")
-        self.hmap[tuple(sorted(function_input.items()))] = result["image"]
         for rv in bench_cfg.result_vars:
             if type(result) == dict:
                 result_value = result[rv.name]
@@ -573,9 +581,8 @@ class Bench(BenchPlotServer):
                     )
                 else:
                     self.ds_dynamic[dataset_key] = new_dataarray
+            # elif: type(rv) ==
             else:
-               
-
                 raise RuntimeError("Unsupported result type")
 
     def clear_tag_from_cache(self, tag: str):

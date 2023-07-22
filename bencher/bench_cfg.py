@@ -360,6 +360,8 @@ class BenchCfg(BenchRunCfg):
         self.studies = []
         self.ds = xr.Dataset()
         self.plot_lib = None
+        self.hmap = {}
+        self.hmap_kdims = None
 
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
@@ -511,24 +513,24 @@ class BenchCfg(BenchRunCfg):
     def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type)
 
-    def to_curve(self, reduce=None):
+    def to_curve(self, reduce=None) -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
-    def to_error_bar(self):
+    def to_error_bar(self) -> hv.Bars:
         return self.get_hv_dataset(True).to(hv.ErrorBars)
 
-    def to_points(self, reduce=None):
+    def to_points(self, reduce=None) -> hv.Points:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self):
+    def to_scatter(self) -> hv.Scatter:
         ds = self.get_hv_dataset(False)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
@@ -538,12 +540,18 @@ class BenchCfg(BenchRunCfg):
         # pt *= ds.to(hv.ErrorBars)
         # return pt
 
-    def to_bar(self, reduce=None):
+    def to_bar(self, reduce=None) -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
+
+    def to_nd_layout(self) -> hv.NdLayout:
+        return hv.NdLayout(self.hmap, kdims=self.hmap_kdims)
+
+    def to_holomap(self) -> hv.HoloMap:
+        return hv.HoloMap(self.to_nd_layout())
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
