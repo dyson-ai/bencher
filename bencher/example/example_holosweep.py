@@ -30,8 +30,6 @@ class Waves(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
-    # hmap = bch.ResultHmap(doc="Plot of trig curve")
-
     def calc(self, phase=0.0, freq=1.0, theta=0.0, noisy=True) -> dict:
         if noisy:
             noise = 1.0

@@ -579,7 +579,6 @@ class Bench(BenchPlotServer):
                     )
                 else:
                     self.ds_dynamic[dataset_key] = new_dataarray
-            # elif: type(rv) ==
             else:
                 raise RuntimeError("Unsupported result type")
 
