@@ -35,7 +35,8 @@ test = [
     "pytest-mock<3.10.2",
     "pytest-runner",
     "pytest==7.4.0",
-    "hypothesis==6.82.0"
+    "hypothesis==6.82.0",
+    "ruff==0.0.280"
 ]
 
 [project.urls]
