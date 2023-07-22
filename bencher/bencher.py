@@ -36,61 +36,61 @@ for handler in logging.root.handlers:
 
 def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> xr.DataArray:
     """This is terrible, I need to do this in a better way, but [] does not like *args syntax and the () version of the set function doesn't either"""
-    match len(index_tuple):
-        case 1:
-            data_array[index_tuple[0]] = value
-        case 2:
-            data_array[index_tuple[0], index_tuple[1]] = value
-        case 3:
-            data_array[index_tuple[0], index_tuple[1], index_tuple[2]] = value
-        case 4:
-            data_array[index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]] = value
-        case 5:
-            data_array[
-                index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3], index_tuple[4]
-            ] = value
-        case 6:
-            data_array[
-                index_tuple[0],
-                index_tuple[1],
-                index_tuple[2],
-                index_tuple[3],
-                index_tuple[4],
-                index_tuple[5],
-            ] = value
-        case 7:
-            data_array[
-                index_tuple[0],
-                index_tuple[1],
-                index_tuple[2],
-                index_tuple[3],
-                index_tuple[4],
-                index_tuple[5],
-                index_tuple[6],
-            ] = value
-        case 8:
-            data_array[
-                index_tuple[0],
-                index_tuple[1],
-                index_tuple[2],
-                index_tuple[3],
-                index_tuple[4],
-                index_tuple[5],
-                index_tuple[6],
-                index_tuple[7],
-            ] = value
-        case 9:
-            data_array[
-                index_tuple[0],
-                index_tuple[1],
-                index_tuple[2],
-                index_tuple[3],
-                index_tuple[4],
-                index_tuple[5],
-                index_tuple[6],
-                index_tuple[7],
-                index_tuple[8],
-            ] = value
+    tup_len = len(index_tuple)
+    if tup_len == 1:
+        data_array[index_tuple[0]] = value
+    elif tup_len == 2:
+        data_array[index_tuple[0], index_tuple[1]] = value
+    elif tup_len == 3:
+        data_array[index_tuple[0], index_tuple[1], index_tuple[2]] = value
+    elif tup_len == 4:
+        data_array[index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3]] = value
+    elif tup_len == 5:
+        data_array[
+            index_tuple[0], index_tuple[1], index_tuple[2], index_tuple[3], index_tuple[4]
+        ] = value
+    elif tup_len == 6:
+        data_array[
+            index_tuple[0],
+            index_tuple[1],
+            index_tuple[2],
+            index_tuple[3],
+            index_tuple[4],
+            index_tuple[5],
+        ] = value
+    elif tup_len == 7:
+        data_array[
+            index_tuple[0],
+            index_tuple[1],
+            index_tuple[2],
+            index_tuple[3],
+            index_tuple[4],
+            index_tuple[5],
+            index_tuple[6],
+        ] = value
+    elif tup_len == 8:
+        data_array[
+            index_tuple[0],
+            index_tuple[1],
+            index_tuple[2],
+            index_tuple[3],
+            index_tuple[4],
+            index_tuple[5],
+            index_tuple[6],
+            index_tuple[7],
+        ] = value
+    elif tup_len == 9:
+        data_array[
+            index_tuple[0],
+            index_tuple[1],
+            index_tuple[2],
+            index_tuple[3],
+            index_tuple[4],
+            index_tuple[5],
+            index_tuple[6],
+            index_tuple[7],
+            index_tuple[8],
+        ] = value
     return data_array
 
 

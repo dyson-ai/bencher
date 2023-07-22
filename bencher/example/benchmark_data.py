@@ -65,14 +65,12 @@ def calculate_noise(config: NoiseCfg) -> float:
 
     noise = 0.0
     if config.noisy:
-        match config.noise_distribution:
-            case NoiseDistribution.uniform:
-                noise = random.uniform(0, config.sigma)
-            case NoiseDistribution.gaussian:
-                noise = random.gauss(0, config.sigma)
-            case NoiseDistribution.lognorm:
-                noise = random.lognormvariate(0, config.sigma)
-
+        if config.noise_distribution == NoiseDistribution.uniform:
+            noise = random.uniform(0, config.sigma)
+        elif config.noise_distribution == NoiseDistribution.gaussian:
+            noise = random.gauss(0, config.sigma)
+        elif config.noise_distribution == NoiseDistribution.lognorm:
+            noise = random.lognormvariate(0, config.sigma)
     return noise
 
 
