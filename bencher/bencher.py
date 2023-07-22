@@ -536,9 +536,10 @@ class Bench(BenchPlotServer):
             result = self.worker_wrapper(bench_cfg, function_input)
 
         # construct a dict for a holomap
-        if "hmap" in result:
-            # print(isinstance(result["hmap"], hv.element.Element))
-            bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
+        if type(result) == dict:  # todo holomaps with named types
+            if "hmap" in result:
+                # print(isinstance(result["hmap"], hv.element.Element))
+                bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
 
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
