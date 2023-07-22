@@ -7,7 +7,6 @@ import numpy as np
 import panel as pn
 import param
 import xarray as xr
-import holoviews as hv
 from diskcache import Cache
 from sortedcontainers import SortedDict
 
@@ -19,7 +18,6 @@ from bencher.bench_vars import (
     ResultList,
     ResultVar,
     ResultVec,
-    ResultHmap,
     TimeEvent,
     TimeSnapshot,
     hash_sha1,

@@ -2,7 +2,6 @@ import holoviews as hv
 import numpy as np
 import param
 from holoviews import opts, streams
-from holoviews.operation.datashader import regrid
 from holoviews.plotting.links import DataLink
 
 import panel as pn
@@ -57,7 +56,7 @@ class Explorer(param.Parameterized):
             return None
         else:
             # modify with your "other" data
-            if self.lines == True:
+            if self.lines is True:
                 return hv.Path(other_data[self.selection.index[0]]).opts(shared_axes=False)
             else:
                 return hv.operation.datashader.regrid(
