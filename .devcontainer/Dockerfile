@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/python:3.8
+FROM mcr.microsoft.com/devcontainers/python:3.9
 
 RUN python -m pip install --upgrade pip \
     && python -m pip install 'flit>=3.8.0'

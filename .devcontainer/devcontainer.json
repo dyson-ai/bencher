@@ -33,7 +33,8 @@
 				"ms-python.pylint",
 				"njpwerner.autodocstring",
 				"charliermarsh.ruff",
-				"mhutchie.git-graph"
+				"mhutchie.git-graph",
+				"bungcip.better-toml"
 			]
 		}
 	},

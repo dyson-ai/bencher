@@ -1,6 +1,6 @@
 [project]
 name =  "holobench"
-version = "0.0.3"
+version = "0.0.4"
 
 authors = [
     {name = "Austin Gregg-Smith", email = "blooop@gmail.com"},
@@ -8,10 +8,10 @@ authors = [
 description = "A package for benchmarking the performance of arbitrary functions"
 readme = "README.md"
 
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 dependencies = [
-  "holoviews[reccomended]==1.16.2",
+  "holoviews[reccomended]",
   "hvplot==0.8.4",
   "diskcache",
   "optuna",
