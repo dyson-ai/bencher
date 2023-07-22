@@ -305,6 +305,7 @@ class Bench(BenchPlotServer):
         bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
+        bench_cfg.hmap_kdims = dims_name
         for idx_tuple, function_input_vars in func_inputs:
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(
@@ -498,6 +499,8 @@ class Bench(BenchPlotServer):
             for k, v in function_input.items():
                 logging.info(f"\t {k}:{v}")
 
+        # store a tuple of the inputs as keys for a holomap
+        fn_inp_with_rep = tuple(function_input.values())
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
@@ -532,10 +535,15 @@ class Bench(BenchPlotServer):
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
 
+        # construct a dict for a holomap
+        if type(result) == dict:  # todo holomaps with named types
+            if "hmap" in result:
+                # print(isinstance(result["hmap"], hv.element.Element))
+                bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
+
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
         logging.debug(f"result {result}")
-
         for rv in bench_cfg.result_vars:
             if type(result) == dict:
                 result_value = result[rv.name]

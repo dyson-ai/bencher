@@ -14,6 +14,7 @@ from .bench_vars import (
     ResultVec,
     ResultList,
     ResultSeries,
+    ResultHmap,
     OptDir,
     hash_sha1,
 )

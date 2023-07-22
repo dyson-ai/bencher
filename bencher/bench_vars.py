@@ -152,10 +152,13 @@ class ParametrizedSweep(Parameterized):
             inputs.pop("name")
         return make_namedtuple("inputresult", inputs=inputs, results=results)
 
-    def get_results_values_as_dict(self) -> dict:
+    def get_results_values_as_dict(self, holomap=None) -> dict:
         """Get a dictionary of result variables with the name and the current value"""
         values = self.param.values()
-        return {key: values[key] for key in self.get_input_and_results().results}
+        output = {key: values[key] for key in self.get_input_and_results().results}
+        if holomap is not None:
+            output |= {"hmap": holomap}
+        return output
 
     def get_inputs_only(self) -> List[param.Parameter]:
         """Return a list of input parameters
@@ -584,6 +587,14 @@ class ResultVar(Number):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.direction))
+
+
+class ResultHmap(param.Parameter):
+    """A class to represent a holomap return type"""
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 
 class ResultVec(param.List):

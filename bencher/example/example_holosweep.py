@@ -9,23 +9,26 @@ import random
 import numpy as np
 from holoviews import opts
 import panel as pn
+import holoviews as hv
 
 
 class Waves(bch.ParametrizedSweep):
     phase = bch.FloatSweep(
-        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=4
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5
     )
 
     freq = bch.FloatSweep(default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=4)
 
     theta = bch.FloatSweep(
-        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=20
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
     )
 
     noisy = bch.BoolSweep(default=True)
 
     out_sin = bch.ResultVar(units="v", doc="sin of theta with some noise")
     out_cos = bch.ResultVar(units="v", doc="cos of theta with some noise")
+
+    out_sum = bch.ResultVar(units="v", doc="The sum")
 
     def calc(self, phase=0.0, freq=1.0, theta=0.0, noisy=True) -> dict:
         if noisy:
@@ -35,25 +38,61 @@ class Waves(bch.ParametrizedSweep):
 
         self.out_sin = np.sin(phase + freq * theta) + random.uniform(0, noise)
         self.out_cos = np.cos(phase + freq * theta) + random.uniform(0, noise)
-        return self.get_results_values_as_dict()
+
+        # self.image = hv.Text
+
+        pt = hv.Text(0, 0, f"{phase}\n{freq}\n {theta}")
+        pt *= hv.Ellipse(0, 0, 1)
+        pt = hv.Points([theta, self.out_sin])
+
+        return self.get_results_values_as_dict(holomap=pt)
+
+    def calc_vec(self, phase=0.0, freq=1.0, noisy=True) -> dict:
+        if noisy:
+            noise = 1.0
+        else:
+            noise = 0.0
+
+        theta = np.arange(0, 6, 0.1)
+        dat = np.sin(phase + freq * theta) + random.uniform(0, noise)
+
+        self.out_sum = sum(dat)
+        hmap = hv.Curve((theta, dat), "theta", "voltage")
+        return self.get_results_values_as_dict(holomap=hmap)
 
 
 if __name__ == "__main__":
     opts.defaults(
-        opts.NdLayout(shared_axes=False, shared_datasource=False, width=500),
+        # opts.NdLayout(shared_axes=False, shared_datasource=False, width=500),
         opts.Overlay(width=500, legend_position="right"),
     )
     wv = Waves()
 
-    bch_wv = bch.Bench("waves", wv.calc)
+    bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
     res = bch_wv.plot_sweep(
         "phase",
         # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.out_sin],
-        run_cfg=bch.BenchRunCfg(repeats=1),
+        run_cfg=bch.BenchRunCfg(repeats=3),
     )
+
+    bch_wv.append(res.to_curve().layout("freq"))
+
+    bch_wv.worker = wv.calc_vec
+    res = bch_wv.plot_sweep(
+        "holo",
+        input_vars=[wv.param.freq, wv.param.phase],
+        result_vars=[wv.param.out_sum],
+        run_cfg=bch.BenchRunCfg(repeats=3),
+    )
+
+    bch_wv.append(res.to_holomap())
+
+    # bch_wv.append(ndlay.grid("freq"))
+    bch_wv.plot()
+
     # bch_wv.append(res.to_curve().layout())
 
     # res = bch_wv.plot_sweep(
