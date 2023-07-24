@@ -557,7 +557,10 @@ class BenchCfg(BenchRunCfg):
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
 
     def to_grid(self):
-        return self.to_holomap().grid(self.inputs_as_str())
+        inputs = self.inputs_as_str()
+        if len(inputs) > 2:
+            inputs = inputs[:2]
+        return self.to_holomap().grid(inputs)
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
