@@ -17,7 +17,10 @@ from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultV
 import plotly.graph_objs as go
 
 
-hv.extension("plotly")
+# hv.extension("plotly")
+
+
+hv.extension("bokeh", "plotly")
 
 
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
@@ -312,7 +315,10 @@ def plot_surface_holo(
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """
 
-    hv.extension("plotly")
+    bke = "matplotlib"
+
+    hv.extension("bokeh", bke)
+    # hv.extension("plotly")
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
@@ -324,11 +330,12 @@ def plot_surface_holo(
 
     opts.defaults(
         opts.Surface(
-            colorbar=True,
-            width=800,
-            height=800,
-            zlabel=xr_cfg.zlabel,
-            title=xr_cfg.title,
+            backend=bke
+            # colorbar=True,
+            # width=800,
+            # height=800,
+            # zlabel=xr_cfg.zlabel,
+            # title=xr_cfg.title,
             # image_rtol=0.002,
         )
     )
@@ -336,11 +343,26 @@ def plot_surface_holo(
     # hv.config.image_rtol = 1.0
 
     ds = hv.Dataset(mean)
-    surface = ds.to(hv.Surface)
+    # return hv.output(ds.to(hv.Surface).opts(backend=bke), backend=bke)
+    hv.output(backend=bke)
+    return ds.to(hv.Surface).opts(backend=bke)
+
+    # if bench_cfg.repeats > 1:
+    #     std_dev = da.std("repeat")
+    #     upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+    #     lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+    #     return surface * upper * lower
+    # return surface
 
     if bench_cfg.repeats > 1:
         std_dev = da.std("repeat")
-        upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        return surface * upper * lower
-    return surface
+        surface *= (
+            hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False, backend=bke)
+        )
+        surface *= (
+            hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False, backend=bke)
+        )
+    return pn.Column(
+        # surface
+        surface.opts(width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend=bke)
+    )
