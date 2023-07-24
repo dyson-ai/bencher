@@ -58,7 +58,14 @@ class Waves(bch.ParametrizedSweep):
 
         self.out_sum = sum(dat)
         hmap = hv.Curve((theta, dat), "theta", "voltage")
-        return self.get_results_values_as_dict(holomap=hmap)
+
+        pt = hv.Text(0, 0, f"{phase}\n{freq}")
+        pt *= hv.Ellipse(0, 0, 1)
+
+        pt = hv.Image(np.ones([100, 100]) * freq * phase * 100)
+        # pt = hv.Points([theta, self.out_sin])
+
+        return self.get_results_values_as_dict(holomap=pt)
 
 
 if __name__ == "__main__":
@@ -70,15 +77,15 @@ if __name__ == "__main__":
 
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
-    res = bch_wv.plot_sweep(
-        "phase",
-        # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
-        input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
-        result_vars=[wv.param.out_sin],
-        run_cfg=bch.BenchRunCfg(repeats=3),
-    )
+    # res = bch_wv.plot_sweep(
+    #     "phase",
+    #     # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
+    #     input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
+    #     result_vars=[wv.param.out_sin],
+    #     run_cfg=bch.BenchRunCfg(repeats=3),
+    # )
 
-    bch_wv.append(res.to_curve().layout("freq"))
+    # bch_wv.append(res.to_curve().layout("freq"))
 
     bch_wv.worker = wv.calc_vec
     res = bch_wv.plot_sweep(
@@ -88,7 +95,11 @@ if __name__ == "__main__":
         run_cfg=bch.BenchRunCfg(repeats=3),
     )
 
-    bch_wv.append(res.to_holomap())
+    # bch_wv.append(res.to_holomap())
+    bch_wv.append(res.to_nd_layout())
+    # bch_wv.append(res.to_holomap().layout().)
+
+    # bch_wv.append(res.to_holomap())
 
     # bch_wv.append(ndlay.grid("freq"))
     bch_wv.plot()

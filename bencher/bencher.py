@@ -491,6 +491,8 @@ class Bench(BenchPlotServer):
         self.worker_wrapper_call_count += 1
         function_input = dict(zip(dims_name, function_input_vars))
 
+        fn_inp_with_rep = tuple(function_input.values())
+
         if constant_inputs is not None:
             function_input |= constant_inputs
 
@@ -500,7 +502,6 @@ class Bench(BenchPlotServer):
                 logging.info(f"\t {k}:{v}")
 
         # store a tuple of the inputs as keys for a holomap
-        fn_inp_with_rep = tuple(function_input.values())
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
             fn_inputs_sorted = list(SortedDict(function_input).items())
