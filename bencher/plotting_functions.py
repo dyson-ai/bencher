@@ -315,11 +315,6 @@ def plot_surface_holo(
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """
 
-    bke = "matplotlib"
-
-    hv.extension("bokeh", bke)
-    # hv.extension("plotly")
-
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     alpha = 0.3
@@ -328,24 +323,23 @@ def plot_surface_holo(
 
     mean = da.mean("repeat")
 
-    opts.defaults(
-        opts.Surface(
-            backend=bke
-            # colorbar=True,
-            # width=800,
-            # height=800,
-            # zlabel=xr_cfg.zlabel,
-            # title=xr_cfg.title,
-            # image_rtol=0.002,
-        )
-    )
+    # opts.defaults(
+    #     opts.Surface(
+    #         backend=bke
+    #         # colorbar=True,
+    #         # width=800,
+    #         # height=800,
+    #         # zlabel=xr_cfg.zlabel,
+    #         # title=xr_cfg.title,
+    #         # image_rtol=0.002,
+    #     )
+    # )
     # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
     # hv.config.image_rtol = 1.0
 
     ds = hv.Dataset(mean)
     # return hv.output(ds.to(hv.Surface).opts(backend=bke), backend=bke)
-    hv.output(backend=bke)
-    return ds.to(hv.Surface).opts(backend=bke)
+    surface = ds.to(hv.Surface)
 
     # if bench_cfg.repeats > 1:
     #     std_dev = da.std("repeat")
@@ -357,12 +351,21 @@ def plot_surface_holo(
     if bench_cfg.repeats > 1:
         std_dev = da.std("repeat")
         surface *= (
-            hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False, backend=bke)
+            hv.Dataset(mean + std_dev)
+            .to(hv.Surface)
+            .opts(alpha=alpha, colorbar=False, backend="plotly")
         )
         surface *= (
-            hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False, backend=bke)
+            hv.Dataset(mean - std_dev)
+            .to(hv.Surface)
+            .opts(alpha=alpha, colorbar=False, backend="plotly")
         )
     return pn.Column(
         # surface
-        surface.opts(width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend=bke)
+        hv.render(
+            surface.opts(
+                width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend="plotly"
+            ),
+            backend="plotly",
+        )
     )

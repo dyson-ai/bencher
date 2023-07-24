@@ -123,7 +123,7 @@ if __name__ == "__main__":
     # bch_wv.plots_instance.append(res.to_grid().opts(backend="bokeh"))
     # bch_wv.append(res.to_holomap().layout().)
 
-    # bch_wv.append(res.to_holomap())
+    bch_wv.append(res.to_holomap())
 
     # bch_wv.append(ndlay.grid("freq"))
     bch_wv.plot()
