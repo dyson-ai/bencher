@@ -9,7 +9,7 @@
 		{
 			"label": "flit install",
 			"type": "shell",
-			"command": "flit install"
+			"command": "flit install --symlink"
 		},
 		{
 			"label": "flit publish",
