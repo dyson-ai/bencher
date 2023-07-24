@@ -35,7 +35,8 @@
 				"njpwerner.autodocstring",
 				"charliermarsh.ruff",
 				"mhutchie.git-graph",
-				"bungcip.better-toml"
+				"bungcip.better-toml",
+				"eamodio.gitlens"
 			]
 		}
 	},
