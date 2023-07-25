@@ -25,12 +25,12 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "black==23.3.0",
+  "black==23.7.0",
   "check-manifest",
   "pre-commit",
   "pylint",
   "pytest-cov",
-  "pytest-mock<3.10.2",
+  "pytest-mock<3.11.2",
   "pytest-runner",
   "pytest",
   "hypothesis",
