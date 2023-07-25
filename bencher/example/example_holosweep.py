@@ -35,7 +35,7 @@ class Waves(bch.ParametrizedSweep):
 
     noisy = bch.BoolSweep(default=True)
 
-    out_sin = bch.ResultVar(units="v", doc="sin of theta with some noise")
+    fn_output = bch.ResultVar(units="v", doc="sin of theta with some noise")
     # out_cos = bch.ResultVar(units="v", doc="cos of theta with some noise")
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
@@ -46,12 +46,11 @@ class Waves(bch.ParametrizedSweep):
         else:
             noise = 0.0
 
-        self.out_sin = np.sin(phase + freq * theta) + random.uniform(0, noise)
-        self.out_cos = np.cos(phase + freq * theta) + random.uniform(0, noise)
+        self.fn_output = np.sin(phase + freq * theta) + random.uniform(0, noise)
 
         pt = hv.Text(0, 0, f"{phase}\n{freq}\n {theta}")
         pt *= hv.Ellipse(0, 0, 1)
-        pt = hv.Points([theta, self.out_sin])
+        pt = hv.Points([theta, self.fn_output])
 
         return self.get_results_values_as_dict(holomap=pt)
 
@@ -96,7 +95,7 @@ if __name__ == "__main__":
         "phase",
         # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
-        result_vars=[wv.param.out_sin],
+        result_vars=[wv.param.fn_output],
         run_cfg=bch.BenchRunCfg(repeats=3),
     )
 
@@ -138,7 +137,7 @@ if __name__ == "__main__":
     #     "phase",
     #     input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
     #     # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
-    #     result_vars=[wv.param.out_sin],
+    #     result_vars=[wv.param.fn_output],
     #     run_cfg=bch.BenchRunCfg(repeats=5),
     # )
 
