@@ -40,13 +40,21 @@ class Waves(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
-    def calc(self, phase=0.0, freq=1.0, theta=0.0, noisy=True) -> dict:
+    def calc(
+        self, phase=0.0, freq=1.0, theta=0.0, noisy=True, compute_fn: Function = Function.fn_sin
+    ) -> dict:
         if noisy:
             noise = 1.0
         else:
             noise = 0.0
 
-        self.fn_output = np.sin(phase + freq * theta) + random.uniform(0, noise)
+        match compute_fn:
+            case Function.fn_sin:
+                self.fn_output = np.sin(phase + freq * theta)
+            case Function.fn_cos:
+                self.fn_output = np.cos(phase + freq * theta)
+
+        self.fn_output += random.uniform(0, noise)
 
         pt = hv.Text(0, 0, f"{phase}\n{freq}\n {theta}")
         pt *= hv.Ellipse(0, 0, 1)
@@ -76,10 +84,7 @@ class Waves(bch.ParametrizedSweep):
         pt = hv.Text(0, 0, f"{compute_fn}\n{phase}\n{freq}")
         pt *= hv.Ellipse(0, 0, 1)
 
-        # return self.get_results_values_as_dict(holomap=pt)
-        return pt
-
-    # def plot()
+        return self.get_results_values_as_dict(holomap=pt)
 
 
 if __name__ == "__main__":
@@ -93,33 +98,29 @@ if __name__ == "__main__":
 
     res = bch_wv.plot_sweep(
         "phase",
-        # input_vars=[wv.param.theta, wv.param.freq, wv.param.phase, wv.param.noisy],
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.fn_output],
         run_cfg=bch.BenchRunCfg(repeats=3),
     )
+    bch_wv.append_tab(wv.to_dynamic_map(wv.calc))
 
-    # bch_wv.append(res.to_holomap())
-    # bch_wv.append(res.to_curve().layout("freq"))
-
-    # bch_wv.worker = wv.calc_vec
-    # res = bch_wv.plot_sweep(
-    #     "holo",
-    #     input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
-    #     result_vars=[wv.param.out_sum],
-    #     run_cfg=bch.BenchRunCfg(repeats=3, auto_plot=False),
-    # )
+    bch_wv.worker = wv.calc_vec
+    res = bch_wv.plot_sweep(
+        "holo",
+        input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
+        result_vars=[wv.param.out_sum],
+        run_cfg=bch.BenchRunCfg(repeats=3, auto_plot=False),
+    )
 
     # bch_wv.append(res.to_heatmap())
     # bch_wv.append(res.to_holomap())
     # bch_wv.append_tab(res.to_nd_layout())  # doesn't work on the same page yet.. TODO
 
+    bch_wv.append(res.to_grid())
+
     bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec, "theta"))
 
     # bch_wv.append_tab(wv.to_holomap(wv.calc_vec, "theta"))
-
-    # hv.DynamicMap(callback=wv.calc_vec, kdims=wv.get_inputs_as_dims(remove_dims="theta"))
-    # )
 
     # bch_wv.append(hv.HoloMap(res.hmap, res.hmap_kdims).opts(backend="bokeh"))
     # bch_wv.plots_instance.append(res.to_grid().opts(backend="bokeh"))

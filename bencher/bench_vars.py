@@ -181,11 +181,18 @@ class ParametrizedSweep(Parameterized):
 
         return [iv.as_dim(compute_values) for iv in inputs]
 
-    def to_dynamic_map(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
+    def to_dynamic_map(
+        self,
+        callback,
+        remove_dims: str | List[str] = None,
+    ) -> hv.DynamicMap:
+        def callback_wrapper(**kwargs):
+            return callback(**kwargs)["hmap"]
+
         return hv.DynamicMap(
-            callback=callback,
+            callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
-        )
+        ).opts(shared_axes=False)
 
     def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
         return hv.HoloMap(
