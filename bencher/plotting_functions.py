@@ -17,10 +17,10 @@ from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultV
 import plotly.graph_objs as go
 
 
-# hv.extension("plotly")
-
-
 hv.extension("bokeh", "plotly")
+# hv.extension("plotly", "bokeh")
+
+# hv.extension("plotly")
 
 
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
@@ -321,11 +321,12 @@ def plot_surface_holo(
 
     da = bench_cfg.ds[rv.name]
 
+    # hv.extension("plotly")
+    # hv.extension("bokeh", "plotly")
+
     mean = da.mean("repeat")
 
-    # opts.defaults(
-    #     opts.Surface(
-    #         backend=bke
+    # opts.defaults(opts.Surface(backend="plotly"))
     #         # colorbar=True,
     #         # width=800,
     #         # height=800,
@@ -340,6 +341,8 @@ def plot_surface_holo(
     ds = hv.Dataset(mean)
     # return hv.output(ds.to(hv.Surface).opts(backend=bke), backend=bke)
     surface = ds.to(hv.Surface)
+    # return hv.render(surface, backend="plotly")
+    # return surface
 
     # if bench_cfg.repeats > 1:
     #     std_dev = da.std("repeat")
@@ -361,7 +364,7 @@ def plot_surface_holo(
             .opts(alpha=alpha, colorbar=False, backend="plotly")
         )
     return pn.Column(
-        # surface
+        # using render disabled the holoviews sliders :(
         hv.render(
             surface.opts(
                 width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend="plotly"

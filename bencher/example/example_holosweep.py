@@ -117,14 +117,16 @@ if __name__ == "__main__":
 
     # hv.extension("bokeh")
 
-    # bch_wv.append(res.to_holomap().opts(backend="bokeh"))
+    bch_wv.append(res.to_heatmap())
+
+    bch_wv.append(res.to_holomap())
 
     # bch_wv.append(hv.HoloMap(res.hmap, res.hmap_kdims).opts(backend="bokeh"))
     # bch_wv.plots_instance.append(res.to_grid().opts(backend="bokeh"))
     # bch_wv.append(res.to_holomap().layout().)
 
     # bch_wv.append(res.to_holomap())
-    bch_wv.append(res.to_grid())
+    # bch_wv.append(res.to_grid())
 
     # bch_wv.append(ndlay.grid("freq"))
     bch_wv.plot()

@@ -547,6 +547,9 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
+    def to_heatmap(self, reduce=None) -> hv.HeatMap:
+        return self.to(hv.HeatMap, reduce)
+
     def to_nd_layout(self) -> hv.NdLayout:
         return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
