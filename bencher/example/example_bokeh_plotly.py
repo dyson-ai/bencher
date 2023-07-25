@@ -1,9 +1,6 @@
 import holoviews as hv
 import numpy as np
 import panel as pn
-from holoviews import opts
-import matplotlib.pyplot as plt
-import matplotlib
 
 # hv.extension("bokeh", "plotly")
 backend1 = "plotly"

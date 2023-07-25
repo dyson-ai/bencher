@@ -7,7 +7,6 @@ import bencher as bch
 import math
 import random
 import numpy as np
-from holoviews import opts
 import panel as pn
 import holoviews as hv
 
@@ -75,7 +74,7 @@ class Waves(bch.ParametrizedSweep):
                 dat = np.cos(phase + freq * theta) + random.uniform(0, noise)
 
         self.out_sum = sum(dat)
-        hmap = hv.Curve((theta, dat), "theta", "voltage")
+        hv.Curve((theta, dat), "theta", "voltage")
 
         pt = hv.Text(0, 0, f"{compute_fn}\n{phase}\n{freq}")
         pt *= hv.Ellipse(0, 0, 1)
