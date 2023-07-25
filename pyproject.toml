@@ -32,7 +32,7 @@ test = [
     "pre-commit",
     "pylint",
     "pytest-cov",
-    "pytest-mock<3.10.2",
+    "pytest-mock<3.11.2",
     "pytest-runner",
     "pytest",
     "hypothesis",
