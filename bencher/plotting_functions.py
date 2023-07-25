@@ -326,30 +326,11 @@ def plot_surface_holo(
 
     mean = da.mean("repeat")
 
-    # opts.defaults(opts.Surface(backend="plotly"))
-    #         # colorbar=True,
-    #         # width=800,
-    #         # height=800,
-    #         # zlabel=xr_cfg.zlabel,
-    #         # title=xr_cfg.title,
-    #         # image_rtol=0.002,
-    #     )
-    # )
     # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
     # hv.config.image_rtol = 1.0
 
     ds = hv.Dataset(mean)
-    # return hv.output(ds.to(hv.Surface).opts(backend=bke), backend=bke)
     surface = ds.to(hv.Surface)
-    # return hv.render(surface, backend="plotly")
-    # return surface
-
-    # if bench_cfg.repeats > 1:
-    #     std_dev = da.std("repeat")
-    #     upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-    #     lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-    #     return surface * upper * lower
-    # return surface
 
     if bench_cfg.repeats > 1:
         std_dev = da.std("repeat")
