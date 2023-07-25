@@ -547,11 +547,26 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
+    def to_heatmap(self, reduce=None) -> hv.HeatMap:
+        return self.to(hv.HeatMap, reduce)
+
     def to_nd_layout(self) -> hv.NdLayout:
-        return hv.NdLayout(self.hmap, kdims=self.hmap_kdims)
+        return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
+            shared_axes=False, shared_datasource=False
+        )
 
     def to_holomap(self) -> hv.HoloMap:
-        return hv.HoloMap(self.to_nd_layout())
+        # return hv.HoloMap(self.hmap, self.hmap_kdims)
+        return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+
+    def to_grid(self):
+        inputs = self.inputs_as_str()
+        if len(inputs) > 2:
+            inputs = inputs[:2]
+        return self.to_holomap().grid(inputs)
+
+    def inputs_as_str(self) -> List[str]:
+        return [i.name for i in self.input_vars]
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:

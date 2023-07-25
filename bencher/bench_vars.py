@@ -168,8 +168,43 @@ class ParametrizedSweep(Parameterized):
         """
         return list(self.get_input_and_results().inputs.values())
 
-    def get_inputs_as_dims(self, compute_values=False):
-        return [iv.as_dim(compute_values) for iv in self.get_inputs_only()]
+    def get_inputs_as_dims(
+        self, compute_values=False, remove_dims: str | List[str] = None
+    ) -> List[hv.Dimension]:
+        inputs = self.get_inputs_only()
+
+        if remove_dims is not None:
+            if type(remove_dims) == str:
+                remove_dims = [remove_dims]
+            filtered_inputs = [i for i in inputs if i.name not in remove_dims]
+            inputs = filtered_inputs
+
+        return [iv.as_dim(compute_values) for iv in inputs]
+
+    def to_dynamic_map(
+        self,
+        callback,
+        remove_dims: str | List[str] = None,
+    ) -> hv.DynamicMap:
+        def callback_wrapper(**kwargs):
+            return callback(**kwargs)["hmap"]
+
+        return hv.DynamicMap(
+            callback=callback_wrapper,
+            kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
+        ).opts(shared_axes=False)
+
+    def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
+        return hv.HoloMap(
+            hv.DynamicMap(
+                callback=callback,
+                kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims),
+            )
+        )
+        # return hv.HoloMap(self.to_dynamic_map(callback=callback, remove_dims=remove_dims))
+        # return hv.DynamicMap(
+        #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
+        # )
 
 
 # slots that are shared across all Sweep classes

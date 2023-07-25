@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "0.0.7"
+version = "0.0.8"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -25,12 +25,12 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "black==23.7.0",
+  "black==23.3.0",
   "check-manifest",
   "pre-commit",
   "pylint",
   "pytest-cov",
-  "pytest-mock<3.11.2",
+  "pytest-mock<3.10.2",
   "pytest-runner",
   "pytest",
   "hypothesis",

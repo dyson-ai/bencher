@@ -17,7 +17,10 @@ from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultV
 import plotly.graph_objs as go
 
 
-hv.extension("plotly")
+hv.extension("bokeh", "plotly")
+# hv.extension("plotly", "bokeh")
+
+# hv.extension("plotly")
 
 
 def wrap_long_time_labels(bench_cfg: BenchCfg) -> BenchCfg:
@@ -312,26 +315,17 @@ def plot_surface_holo(
         pn.pane.holoview: A 2d surface plot as a holoview in a pane
     """
 
-    hv.extension("plotly")
-
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     alpha = 0.3
 
     da = bench_cfg.ds[rv.name]
 
+    # hv.extension("plotly")
+    # hv.extension("bokeh", "plotly")
+
     mean = da.mean("repeat")
 
-    opts.defaults(
-        opts.Surface(
-            colorbar=True,
-            width=800,
-            height=800,
-            zlabel=xr_cfg.zlabel,
-            title=xr_cfg.title,
-            # image_rtol=0.002,
-        )
-    )
     # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
     # hv.config.image_rtol = 1.0
 
@@ -340,7 +334,22 @@ def plot_surface_holo(
 
     if bench_cfg.repeats > 1:
         std_dev = da.std("repeat")
-        upper = hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        lower = hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
-        return surface * upper * lower
-    return surface
+        surface *= (
+            hv.Dataset(mean + std_dev)
+            .to(hv.Surface)
+            .opts(alpha=alpha, colorbar=False, backend="plotly")
+        )
+        surface *= (
+            hv.Dataset(mean - std_dev)
+            .to(hv.Surface)
+            .opts(alpha=alpha, colorbar=False, backend="plotly")
+        )
+    return pn.Column(
+        # using render disabled the holoviews sliders :(
+        hv.render(
+            surface.opts(
+                width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend="plotly"
+            ),
+            backend="plotly",
+        )
+    )

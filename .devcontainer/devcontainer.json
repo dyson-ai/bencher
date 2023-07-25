@@ -25,7 +25,7 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
-	"postCreateCommand": "flit install",
+	"postCreateCommand": "flit install --symlink",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -35,7 +35,8 @@
 				"njpwerner.autodocstring",
 				"charliermarsh.ruff",
 				"mhutchie.git-graph",
-				"bungcip.better-toml"
+				"eamodio.gitlens",
+				"tamasfe.even-better-toml"
 			]
 		}
 	},
