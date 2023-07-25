@@ -115,7 +115,7 @@ class Bench(BenchPlotServer):
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
-        self.plots_instance = pn.Tabs(tabs_location="left", name=self.bench_name)
+        self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
         # The number of times the wrapped worker was called
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
@@ -264,7 +264,7 @@ class Bench(BenchPlotServer):
             self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
 
-        self.plots_instance = BenchPlotter.plot(bench_cfg, self.plots_instance)
+        self.pane = BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
@@ -332,7 +332,7 @@ class Bench(BenchPlotServer):
         """
         if run_cfg is None:
             run_cfg = self.last_run_cfg
-        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.plots_instance)
+        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -653,11 +653,14 @@ class Bench(BenchPlotServer):
             pn.pane: results panel
         """
         if main_plot:
-            return self.plots_instance[-1][0]
-        return self.plots_instance[-1]
+            return self.pane[-1][0]
+        return self.pane[-1]
 
-    def append(self, pane: pn.panel):
+    def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)
+
+    def append_tab(self, pane: pn.panel):
+        self.pane.append(pane)
 
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
         """Get a dictionary of the best found parameters found during the sweep
