@@ -91,11 +91,13 @@ if __name__ == "__main__":
 
     run_cfg = bch.BenchRunCfg()
     run_cfg.use_sample_cache = True
-    # run_cfg.only_hash_tag = True
+    run_cfg.only_hash_tag = True
     # run_cfg.auto_plot = False
 
     wv = Waves()
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
+
+    # bch_wv.clear_tag_from_cache("")
     res = bch_wv.plot_sweep(
         "phase",
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
