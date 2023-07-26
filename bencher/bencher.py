@@ -522,7 +522,9 @@ class Bench(BenchPlotServer):
                 )
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and function_input_signature_pure in self.sample_cache:
+            elif bench_run_cfg.only_hash_tag and (
+                function_input_signature_pure in self.sample_cache
+            ):
                 logging.info(
                     f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
