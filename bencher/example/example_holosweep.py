@@ -91,6 +91,7 @@ if __name__ == "__main__":
 
     run_cfg = bch.BenchRunCfg()
     run_cfg.use_sample_cache = True
+    # run_cfg.only_hash_tag = True
     # run_cfg.auto_plot = False
 
     wv = Waves()
@@ -101,21 +102,26 @@ if __name__ == "__main__":
         result_vars=[wv.param.fn_output],
         run_cfg=run_cfg,
     )
+    # hv.extension("matplotlib")
     bch_wv.append(res.to_grid())
-    bch_wv.append_tab(wv.to_dynamic_map(wv.calc))
+    # bch_wv.append(hv.output(res.to_grid(), holomap="gif"))
 
-    bch_wv.worker = wv.calc_vec
-    res = bch_wv.plot_sweep(
-        "holo",
-        input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
-        result_vars=[wv.param.out_sum],
-        run_cfg=run_cfg,
-    )
+    # bch_wv.append(hv.output(res.to_grid(), holomap="gif"))
 
-    # # bch_wv.append_tab(res.to_heatmap())
-    bch_wv.append_tab(res.to_nd_layout())
+    # bch_wv.append_tab(wv.to_dynamic_map(wv.calc))
+
+    # bch_wv.worker = wv.calc_vec
+    # res = bch_wv.plot_sweep(
+    #     "holo",
+    #     input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
+    #     result_vars=[wv.param.out_sum],
+    #     run_cfg=run_cfg,
+    # )
+
+    # # # bch_wv.append_tab(res.to_heatmap())
+    # bch_wv.append_tab(res.to_nd_layout())
     # bch_wv.append_tab(res.to_grid())
-    bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec))
+    # bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec))
 
     # bch_wv.append_tab(res.to_nd_layout())  # doesn't work on the same page yet.. TODO
 
