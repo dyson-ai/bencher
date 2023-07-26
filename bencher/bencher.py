@@ -514,15 +514,18 @@ class Bench(BenchPlotServer):
             function_input_signature_benchmark_context = hash_sha1(
                 (function_input_signature_pure, bench_cfg_sample_hash)
             )
-            print("inputs", fn_inputs_sorted)
-            print("pure", function_input_signature_pure)
+            # logging.info(f"inputs: {fn_inputs_sorted}")
+            logging.info(f"pure: {function_input_signature_pure}")
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
                     f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
                 )
+                logging.info(f"In cache: {bench_cfg_sample_hash}")
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and function_input_signature_pure in self.sample_cache:
+            elif bench_run_cfg.only_hash_tag and (
+                function_input_signature_pure in self.sample_cache
+            ):
                 logging.info(
                     f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
