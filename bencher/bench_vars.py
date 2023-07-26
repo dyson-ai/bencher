@@ -437,16 +437,20 @@ class EnumSweep(Selector):
 
     def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        print(self.sampling_str(debug))
-        return self.objects
+        if debug:
+            outputs = [self.objects[0], self.objects[-1]]
+        else:
+            outputs = self.objects
+        print(self.sampling_str(outputs, debug))
+        return outputs
 
-    def sampling_str(self, debug: bool) -> str:
+    def sampling_str(self, outputs, debug: bool) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:
             debug (bool): If true then self.samples_debug is used
         """
-        object_str = ",".join([i for i in self.objects])
+        object_str = ",".join([i for i in outputs])
         return f"sampling {self.name} from: [{object_str}]"
 
     def hash_persistent(self) -> str:
