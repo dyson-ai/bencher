@@ -331,7 +331,11 @@ class Bench(BenchPlotServer):
 
         """
         if run_cfg is None:
-            run_cfg = self.last_run_cfg
+            if self.last_run_cfg is not None:
+                run_cfg = self.last_run_cfg
+            else:
+                run_cfg = BenchRunCfg()
+
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def load_history_cache(
