@@ -100,14 +100,14 @@ class Investment(EconomicClimate):
 
 
 class PersonalFinances(Mortgage):
-    inflation = bch.FloatSweep(default=8, bounds=[0.5, 15], units="%", samples=5)
+    inflation = bch.FloatSweep(default=8, bounds=[0.5, 15], units="%", samples=4)
 
     net_income = bch.FloatSweep(default=3000, bounds=(0, 5000))
     savings = bch.FloatSweep(default=1000, bounds=(0, 3000))
     mortgage_payment = bch.FloatSweep(default=1000, bounds=(500, 2000))
 
-    monthly_contribution = bch.FloatSweep(default=0, bounds=[0, 1000], units="$", samples=5)
-    investment_interest = bch.FloatSweep(default=6.0, bounds=(0.01, 10), units="%", samples=5)
+    monthly_contribution = bch.FloatSweep(default=0, bounds=[0, 1000], units="$", samples=4)
+    investment_interest = bch.FloatSweep(default=6.0, bounds=(0.01, 10), units="%", samples=4)
     tax_rate = bch.IntSweep(default=0, bounds=(0, 40), samples=2)
     period = bch.IntSweep(default=12, bounds=[1, 12], units="month")
     starting_value = bch.FloatSweep(default=1000, bounds=(0, 2000), samples=3)
@@ -185,10 +185,29 @@ bench = bch.Bench("Mortgage", mort_sim.calc_loan)
 bench.plot_sweep("lol")
 
 bench.worker = inv.call
+
+res = bench.plot_sweep(
+    title="Investment Calculator",
+    description="This calculator lets you calculate the value of your investment over time",
+    input_vars=[
+        # inv.param.period,
+        inv.param.interest,
+        inv.param.monthly_contribution,
+        inv.param.inflation,
+    ],
+    # const_vars=[(inv.param.interest, .06)],
+    result_vars=[inv.param.portfolio_value],
+    # plot_lib=bch.PlotLibrary.default().add(bch.PlotTypes.lineplot_hv),
+)
+
+bench.append(res.to_grid())
+# grid(["inflation", "monthly_contribution"]))
 bench.append_tab(inv.to_dynamic_map(inv.call))
 
+# bench.append_tab(inv.to_holomap(inv.call).layout(kdims=["inflation"]))
 
-bench.append_tab(pf.to_dynamic_map(pf.call_vec))
+
+# bench.append_tab(pf.to_dynamic_map(pf.call_vec))
 
 bench.plot()
 
@@ -213,24 +232,6 @@ res = bench.plot_sweep(
 # bench.append(res.to_grid().overlay("month"))
 
 bench.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
-
-
-# res = bench.plot_sweep(
-#     title="Investment Calculator",
-#     description="This calculator lets you calculate the value of your investment over time",
-#     input_vars=[
-#         inv.param.period,
-#         inv.param.interest,
-#         inv.param.monthly_contribution,
-#         inv.param.inflation,
-#     ],
-#     # const_vars=[(inv.param.interest, .06)],
-#     result_vars=[inv.param.portfolio_value],
-#     # plot_lib=bch.PlotLibrary.default().add(bch.PlotTypes.lineplot_hv),
-# )
-
-# bench.append(res.to_holomap().overlay("month"))
-# grid(["inflation", "monthly_contribution"]))
 
 
 # res = bench.plot_sweep(
