@@ -331,7 +331,11 @@ class Bench(BenchPlotServer):
 
         """
         if run_cfg is None:
-            run_cfg = self.last_run_cfg
+            if self.last_run_cfg is not None:
+                run_cfg = self.last_run_cfg
+            else:
+                run_cfg = BenchRunCfg()
+
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def load_history_cache(
@@ -510,24 +514,32 @@ class Bench(BenchPlotServer):
             function_input_signature_benchmark_context = hash_sha1(
                 (function_input_signature_pure, bench_cfg_sample_hash)
             )
-            print("inputs", fn_inputs_sorted)
-            print("pure", function_input_signature_pure)
+            # logging.info(f"inputs: {fn_inputs_sorted}")
+            # logging.info(f"pure: {function_input_signature_pure}")
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
                     f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
                 )
+                logging.info(f"Context in cache: {function_input_signature_benchmark_context}")
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and function_input_signature_pure in self.sample_cache:
+            elif bench_run_cfg.only_hash_tag and (
+                function_input_signature_pure in self.sample_cache
+            ):
                 logging.info(
                     f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
                 )
+                logging.info(f"Pure in cache: {function_input_signature_pure}")
                 result = self.sample_cache[function_input_signature_pure]
                 self.worker_cache_call_count += 1
             else:
+                logging.info(f"Context not In cache: {function_input_signature_benchmark_context}")
+                logging.info(f"Pure not cache: {function_input_signature_pure}")
+
                 logging.info(
                     "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
                 )
+
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_cfg.tag

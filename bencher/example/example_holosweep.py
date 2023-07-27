@@ -9,7 +9,7 @@ import random
 import numpy as np
 import panel as pn
 import holoviews as hv
-
+import typing
 
 from strenum import StrEnum
 from enum import auto
@@ -18,14 +18,24 @@ from enum import auto
 class Function(StrEnum):
     fn_cos = auto()
     fn_sin = auto()
+    fn_log = auto()
+    fn_arctan = auto()
+
+    def call(self, arg) -> float:
+        """Calls the function defined by the name of the enum
+
+        Returns:
+            float: The result of calling the function defined by the enum
+        """
+        return getattr(np, self.removeprefix("fn_"))(arg)
 
 
 class Waves(bch.ParametrizedSweep):
     phase = bch.FloatSweep(
-        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=2
+        default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5
     )
 
-    freq = bch.FloatSweep(default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=2)
+    freq = bch.FloatSweep(default=1, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5)
 
     theta = bch.FloatSweep(
         default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
@@ -33,57 +43,43 @@ class Waves(bch.ParametrizedSweep):
 
     compute_fn = bch.EnumSweep(Function)
 
-    noisy = bch.BoolSweep(default=True)
+    # noisy = bch.BoolSweep(default=True)
 
     fn_output = bch.ResultVar(units="v", doc="sin of theta with some noise")
     # out_cos = bch.ResultVar(units="v", doc="cos of theta with some noise")
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
-    def calc(
-        self, phase=0.0, freq=1.0, theta=0.0, noisy=True, compute_fn: Function = Function.fn_sin
-    ) -> dict:
-        if noisy:
-            noise = 1.0
-        else:
-            noise = 0.0
+    def calc(self, plot=True, **kwargs) -> dict:
+        self.update_params_from_kwargs(**kwargs)
+        # if self.noisy:
+        noise = 0.1
+        # else:
+        # noise = 0.0
 
-        match compute_fn:
-            case Function.fn_sin:
-                self.fn_output = np.sin(phase + freq * theta)
-            case Function.fn_cos:
-                self.fn_output = np.cos(phase + freq * theta)
+        self.fn_output = self.compute_fn.call(self.phase + self.freq * self.theta) + random.uniform(
+            0, noise
+        )
 
-        self.fn_output += random.uniform(0, noise)
+        return self.get_results_values_as_dict(holomap=self.plot(plot))
 
-        pt = hv.Text(0, 0, f"{phase}\n{freq}\n {theta}")
-        pt *= hv.Ellipse(0, 0, 1)
-        pt = hv.Points([theta, self.fn_output])
+    def plot(self, plot=True) -> hv.Points:
+        if plot:
+            pt = hv.Text(0, 0, f"{self.phase}\n{self.freq}\n {self.theta}")
+            pt *= hv.Ellipse(0, 0, 1)
+            pt = hv.Points([self.theta, self.fn_output])
+            return pt
+        return None
 
-        return self.get_results_values_as_dict(holomap=pt)
-
-    def calc_vec(
-        self, phase=0.0, freq=1.0, noisy=True, compute_fn: Function = Function.fn_sin
-    ) -> dict:
-        if noisy:
-            noise = 1.0
-        else:
-            noise = 0.0
-
-        theta = np.arange(0, 6, 0.1)
-
-        match compute_fn:
-            case Function.fn_sin:
-                dat = np.sin(phase + freq * theta) + random.uniform(0, noise)
-            case Function.fn_cos:
-                dat = np.cos(phase + freq * theta) + random.uniform(0, noise)
-
+    def calc_vec(self, **kwargs) -> dict:
+        theta = self.param.theta.values()
+        kwargs.pop("theta", 0)
+        dat = [self.calc(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
+        # print(dat)
         self.out_sum = sum(dat)
-        hv.Curve((theta, dat), "theta", "voltage")
-
-        pt = hv.Text(0, 0, f"{compute_fn}\n{phase}\n{freq}")
-        pt *= hv.Ellipse(0, 0, 1)
-
+        pt = hv.Curve((theta, dat), "theta", "voltage")
+        # pt = hv.Text(0, 0, f"{self.compute_fn}\n{self.phase}\n{self.freq}")
+        # pt *= hv.Ellipse(0, 0, 1)
         return self.get_results_values_as_dict(holomap=pt)
 
 
@@ -92,33 +88,48 @@ if __name__ == "__main__":
     #     # opts.NdLayout(shared_axes=False, shared_datasource=False, width=500),
     #     opts.Overlay(width=500, legend_position="right"),
     # )
-    wv = Waves()
 
+    run_cfg = bch.BenchRunCfg()
+    run_cfg.use_sample_cache = True
+    run_cfg.only_hash_tag = True
+    # run_cfg.auto_plot = False
+
+    wv = Waves()
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
+    # bch_wv.clear_tag_from_cache("")
     res = bch_wv.plot_sweep(
         "phase",
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.fn_output],
-        run_cfg=bch.BenchRunCfg(repeats=3),
+        run_cfg=run_cfg,
     )
-    bch_wv.append_tab(wv.to_dynamic_map(wv.calc))
+    # hv.extension("matplotlib")
+    bch_wv.append(res.to_grid())
+    # bch_wv.append(hv.output(res.to_grid(), holomap="gif"))
 
-    bch_wv.worker = wv.calc_vec
-    res = bch_wv.plot_sweep(
-        "holo",
-        input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
-        result_vars=[wv.param.out_sum],
-        run_cfg=bch.BenchRunCfg(repeats=3, auto_plot=False),
-    )
+    # bch_wv.append(hv.output(res.to_grid(), holomap="gif"))
 
-    # bch_wv.append(res.to_heatmap())
-    # bch_wv.append(res.to_holomap())
+    # bch_wv.append_tab(wv.to_dynamic_map(wv.calc))
+
+    # bch_wv.worker = wv.calc_vec
+    # res = bch_wv.plot_sweep(
+    #     "holo",
+    #     input_vars=[wv.param.freq, wv.param.phase, wv.param.compute_fn],
+    #     result_vars=[wv.param.out_sum],
+    #     run_cfg=run_cfg,
+    # )
+
+    # # # bch_wv.append_tab(res.to_heatmap())
+    # bch_wv.append_tab(res.to_nd_layout())
+    # bch_wv.append_tab(res.to_grid())
+    # bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec))
+
     # bch_wv.append_tab(res.to_nd_layout())  # doesn't work on the same page yet.. TODO
 
-    bch_wv.append(res.to_grid())
+    # bch_wv.append(res.to_grid())
 
-    bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec, "theta"))
+    # bch_wv.append_tab(wv.to_dynamic_map(wv.calc_vec, "theta"))
 
     # bch_wv.append_tab(wv.to_holomap(wv.calc_vec, "theta"))
 

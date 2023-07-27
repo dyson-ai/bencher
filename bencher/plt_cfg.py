@@ -25,89 +25,89 @@ class BenchPlotter:
 
         if main_tab is None:
             main_tab = pn.Tabs(tabs_location="left")
+        if bench_cfg.auto_plot:
+        
+            if len(bench_cfg.result_vars) == 0:
+                tabs = pn.Column(name=bench_cfg.title)
+                tabs.append(pn.pane.Markdown(f"{bench_cfg.description}"))
 
-        if len(bench_cfg.result_vars) == 0:
-            tabs = pn.Column(name=bench_cfg.title)
-            tabs.append(pn.pane.Markdown(f"{bench_cfg.description}"))
+            else:
+                plot_cols = pn.Column(name="Plots View")
+                plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
+                benmark_str = describe_benchmark(bench_cfg)
+                plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
+                if bench_cfg.over_time:
+                    if len(bench_cfg.ds.coords["over_time"]) > 1:
+                        plot_cols.append(pn.pane.Markdown("## Results Over Time"))
+                        plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
+                    else:
+                        plot_cols.append(
+                            pn.pane.Markdown(
+                                "Results over time needs at least 2 time snapshots to plot"
+                            )
+                        )
 
-        else:
-            plot_cols = pn.Column(name="Plots View")
-            plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
-            benmark_str = describe_benchmark(bench_cfg)
-            plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
-            if bench_cfg.over_time:
-                if len(bench_cfg.ds.coords["over_time"]) > 1:
-                    plot_cols.append(pn.pane.Markdown("## Results Over Time"))
-                    plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
+                plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
+                if bench_cfg.over_time:
+                    bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
+                    bench_deep.over_time = False
+                    bench_deep.iv_time = []
+                    last_time = bench_deep.ds.coords["over_time"][-1]
+                    try:
+                        bench_deep.ds = bench_deep.ds.sel(over_time=last_time)
+                        plot_cols.append(BenchPlotter.plot_results_row(bench_deep))
+                    except ValueError as e:
+                        warning = f"failed to load historical data: {e}"
+                        plot_cols.append(pn.pane.Markdown(warning))
+                        logging.warning(warning)
+
                 else:
-                    plot_cols.append(
-                        pn.pane.Markdown(
-                            "Results over time needs at least 2 time snapshots to plot"
+                    plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
+
+                if bench_cfg.use_optuna:
+                    plot_cols.extend(collect_optuna_plots(bench_cfg))
+
+                if append_cols is not None:
+                    plot_cols.extend(append_cols)
+                # plot_cols.append(pn.Column(pn.Row()))#attempt to add spacer to stop overlapping but does not work todo
+
+                plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
+
+                tabs = pn.Tabs(plot_cols, name=bench_cfg.title)
+
+                if bench_cfg.serve_xarray:
+                    tabs.append(
+                        pn.Column(
+                            pn.pane.Markdown(
+                                """This page shows the with the inputs of the parameter sweep and the results in its native N-D xarray dataset format."""
+                            ),
+                            bench_cfg.ds,
+                            name="Xarray Dataset View",
+                        )
+                    )
+                if bench_cfg.serve_pandas:
+                    tabs.append(
+                        pn.Column(
+                            pn.pane.Markdown(
+                                """This page shows the with the inputs of the parameter sweep and the results as a pandas multiindex."""
+                            ),
+                            bench_cfg.ds.to_dataframe(),
+                            name="Pandas Dataframe MultiIndex View",
                         )
                     )
 
-            plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
-            if bench_cfg.over_time:
-                bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
-                bench_deep.over_time = False
-                bench_deep.iv_time = []
-                last_time = bench_deep.ds.coords["over_time"][-1]
-                try:
-                    bench_deep.ds = bench_deep.ds.sel(over_time=last_time)
-                    plot_cols.append(BenchPlotter.plot_results_row(bench_deep))
-                except ValueError as e:
-                    warning = f"failed to load historical data: {e}"
-                    plot_cols.append(pn.pane.Markdown(warning))
-                    logging.warning(warning)
-
-            else:
-                plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
-
-            if bench_cfg.use_optuna:
-                plot_cols.extend(collect_optuna_plots(bench_cfg))
-
-            if append_cols is not None:
-                plot_cols.extend(append_cols)
-            # plot_cols.append(pn.Column(pn.Row()))#attempt to add spacer to stop overlapping but does not work todo
-
-            plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
-
-            tabs = pn.Tabs(plot_cols, name=bench_cfg.title)
-
-            if bench_cfg.serve_xarray:
-                tabs.append(
-                    pn.Column(
-                        pn.pane.Markdown(
-                            """This page shows the with the inputs of the parameter sweep and the results in its native N-D xarray dataset format."""
-                        ),
-                        bench_cfg.ds,
-                        name="Xarray Dataset View",
+                    tabs.append(
+                        pn.Column(
+                            pn.pane.Markdown(
+                                """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
+                            ),
+                            bench_cfg.get_dataframe(),
+                            name="Pandas Dataframe Flattened View",
+                        )
                     )
-                )
-            if bench_cfg.serve_pandas:
-                tabs.append(
-                    pn.Column(
-                        pn.pane.Markdown(
-                            """This page shows the with the inputs of the parameter sweep and the results as a pandas multiindex."""
-                        ),
-                        bench_cfg.ds.to_dataframe(),
-                        name="Pandas Dataframe MultiIndex View",
-                    )
-                )
 
-                tabs.append(
-                    pn.Column(
-                        pn.pane.Markdown(
-                            """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
-                        ),
-                        bench_cfg.get_dataframe(),
-                        name="Pandas Dataframe Flattened View",
-                    )
-                )
-
-        main_tab.append(tabs)
+            main_tab.append(tabs)
         main_tab.servable()
-
         return main_tab
 
     @staticmethod
