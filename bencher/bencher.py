@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
+import warnings
 
 import numpy as np
 import panel as pn
@@ -323,7 +324,7 @@ class Bench(BenchPlotServer):
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -337,6 +338,16 @@ class Bench(BenchPlotServer):
                 run_cfg = BenchRunCfg()
 
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+
+    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+        """Launches a webserver with plots of the benchmark results, blocking
+
+        Args:
+            run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
+
+        """
+        warnings.warn("deprecated", DeprecationWarning)
+        return self.show(run_cfg)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
