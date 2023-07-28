@@ -101,10 +101,10 @@ if __name__ == "__main__":
     # hv.extension("matplotlib")
     # bch_wv.append(res.to_holomap())
 
-    hv.save(res.to_holomap(), "holomap.mp4")
-    # bch_wv.append(res.to_nd_layout())
-    bch_wv.append(hv.output(res.to_holomap(), holomap="mp4"))
-    bch_wv.append(hv.output(res.to_holomap(), holomap="gif"))
+    # hv.save(res.to_holomap(), "holomap.mp4")
+    bch_wv.append(res.to_nd_layout())
+    # bch_wv.append(hv.output(res.to_holomap(), holomap="mp4"))
+    # bch_wv.append(hv.output(res.to_holomap(), holomap="gif"))
 
     # hv.output(res.to_nd_layout(), filename="lol.mp4", backend="matplotlib")
     # hv.output(res.to_nd_layout(), filename="lol.png", backend="matplotlib")
