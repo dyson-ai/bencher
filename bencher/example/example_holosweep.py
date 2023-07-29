@@ -30,7 +30,7 @@ class Function(StrEnum):
         return getattr(np, self.removeprefix("fn_"))(arg)
 
 
-class Waves(bch.ParametrizedSweep):
+class PlotFunctions(bch.ParametrizedSweep):
     phase = bch.FloatSweep(
         default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5
     )
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     run_cfg.only_hash_tag = True
     # run_cfg.auto_plot = False
 
-    wv = Waves()
+    wv = PlotFunctions()
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
     # bch_wv.clear_tag_from_cache("")

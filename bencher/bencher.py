@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
+import warnings
 
 import numpy as np
 import panel as pn
@@ -323,7 +324,7 @@ class Bench(BenchPlotServer):
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -337,6 +338,16 @@ class Bench(BenchPlotServer):
                 run_cfg = BenchRunCfg()
 
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+
+    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+        """Launches a webserver with plots of the benchmark results, blocking
+
+        Args:
+            run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
+
+        """
+        warnings.warn("deprecated", DeprecationWarning)
+        return self.show(run_cfg)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -517,28 +528,37 @@ class Bench(BenchPlotServer):
             # logging.info(f"inputs: {fn_inputs_sorted}")
             # logging.info(f"pure: {function_input_signature_pure}")
             if function_input_signature_benchmark_context in self.sample_cache:
+                # logging.info(
+                #     f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
+                # )
                 logging.info(
-                    f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
+                    f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
-                logging.info(f"Context in cache: {function_input_signature_benchmark_context}")
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
             elif bench_run_cfg.only_hash_tag and (
                 function_input_signature_pure in self.sample_cache
             ):
+                # logging.info(
+                #     f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
+                # )
                 logging.info(
-                    f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
+                    f"Hash: {function_input_signature_benchmark_context} not found in context cache"
                 )
-                logging.info(f"Pure in cache: {function_input_signature_pure}")
+                logging.info(
+                    f"Hash: {function_input_signature_pure} was found in the function cache, loading..."
+                )
+
                 result = self.sample_cache[function_input_signature_pure]
                 self.worker_cache_call_count += 1
             else:
-                logging.info(f"Context not In cache: {function_input_signature_benchmark_context}")
-                logging.info(f"Pure not cache: {function_input_signature_pure}")
+                logging.info(f"Context not in cache: {function_input_signature_benchmark_context}")
+                logging.info(f"Function inputs not cache: {function_input_signature_pure}")
+                logging.info("Calling benchmark function")
 
-                logging.info(
-                    "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
-                )
+                # logging.info(
+                #     "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
+                # )
 
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
