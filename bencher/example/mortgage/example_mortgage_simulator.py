@@ -11,6 +11,8 @@ class EconomicClimate(bch.ParametrizedSweep):
 
 class Mortgage(EconomicClimate):
     # INPUTS
+    inflation = bch.FloatSweep(default=8, bounds=[0.5, 15], units="%", samples=5)
+
     principal = bch.FloatSweep(default=200000, bounds=(0, 1000000), units="$")
     interest = bch.FloatSweep(default=6, bounds=(1, 10), samples=5, units="%")
     period = bch.IntSweep(default=24, bounds=(1, 30 * 12), units="months")
@@ -42,35 +44,8 @@ class Mortgage(EconomicClimate):
 
         return self.get_results_values_as_dict()
 
-
-class Investment(EconomicClimate):
-    monthly_contribution = bch.FloatSweep(default=0, bounds=[0, 1000], units="$", samples=5)
-    interest = bch.FloatSweep(default=6.0, bounds=(0, 10), units="%", samples=5)
-    tax_rate = bch.IntSweep(default=0, bounds=(0, 40), samples=2)
-    period = bch.IntSweep(default=12, bounds=[1, 12], units="month")
-    starting_value = bch.FloatSweep(default=1000, bounds=(0, 2000), samples=3)
-
-    portfolio_value = bch.ResultVar(default=0, units="$")
-
     def call(self, **kwargs):
-        self.update_params_from_kwargs(**kwargs)
-        self.portfolio_value = self.starting_value
-        values = []
-        for i in range(self.period):
-            self.portfolio_value += self.monthly_contribution
-            new_interest = self.portfolio_value * (self.interest / 100.0)
-            self.portfolio_value += new_interest * (1 + self.tax_rate)
-            self.portfolio_value *= 1 - (self.inflation / 100.0)
-            values.append((i, self.portfolio_value))
-        return self.get_results_values_as_dict(
-            hv.Curve(values)
-            # hv.Curve(values)
-        )
-
-    # @param.depends()
-    def plot(self, **kwargs):
-        kwargs["period"] = 12
-        return self.call(**kwargs)["hmap"]
+        return self.calc_loan(**kwargs)
 
 
 # res = bench.plot_sweep(
@@ -176,10 +151,10 @@ mort_sim = Mortgage()
 inv = Investment()
 pf = PersonalFinances()
 
-bench = bch.Bench("Mortgage", mort_sim.calc_loan)
+# bench = bch.Bench("Mortgage", mort_sim.calc_loan)
 
 
-# pn.Row(inv.to_dynamic_map(inv.call)).show()
+pn.Row(inv.to_dynamic_map(inv.call)).show()
 
 
 bench.plot_sweep("lol")
