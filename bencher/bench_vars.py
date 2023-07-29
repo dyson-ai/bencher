@@ -183,9 +183,12 @@ class ParametrizedSweep(Parameterized):
 
     def to_dynamic_map(
         self,
-        callback,
+        callback=None,
         remove_dims: str | List[str] = None,
     ) -> hv.DynamicMap:
+        if callback is None:
+            callback = self.call
+
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
 
@@ -205,6 +208,12 @@ class ParametrizedSweep(Parameterized):
         # return hv.DynamicMap(
         #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
         # )
+
+    def call(self):
+        raise NotImplementedError
+
+    def plot(self, **kwargs):
+        return self.call(**kwargs)["hmap"]
 
 
 # slots that are shared across all Sweep classes
