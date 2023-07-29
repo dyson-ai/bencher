@@ -184,6 +184,7 @@ class ParametrizedSweep(Parameterized):
     def to_dynamic_map(
         self,
         callback=None,
+        name=None,
         remove_dims: str | List[str] = None,
     ) -> hv.DynamicMap:
         if callback is None:
@@ -195,6 +196,7 @@ class ParametrizedSweep(Parameterized):
         return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
+            name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
     def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
@@ -635,6 +637,9 @@ class ResultVar(Number):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.direction))
+
+    def as_dim(self) -> hv.Dimension:
+        return hv.Dimension((self.name, self.name), unit=self.units)
 
 
 class ResultHmap(param.Parameter):

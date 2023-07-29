@@ -691,7 +691,7 @@ class Bench(BenchPlotServer):
     def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)
 
-    def append_tab(self, pane: pn.panel):
+    def append_tab(self, pane: pn.panel, name: str = None):
         self.pane.append(pane)
 
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
@@ -704,3 +704,8 @@ class Bench(BenchPlotServer):
             dict: dictionary of best params
         """
         return bench_cfg.studies[0].best_trials[0].params
+
+
+def to_bench(param_class: ParametrizedSweep) -> Bench:
+    instance = param_class()
+    return Bench(param_class.name, instance.call)

@@ -500,6 +500,7 @@ class BenchCfg(BenchRunCfg):
 
     def get_hv_dataset(self, reduce=None):
         ds = convert_dataset_bool_dims_to_str(self.ds)
+        # todo improve reduce logic
         if reduce is None:
             reduce = self.repeats > 1
         if reduce:
