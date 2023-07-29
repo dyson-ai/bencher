@@ -57,8 +57,12 @@ class PlotFunctions(bch.ParametrizedSweep):
         self.fn_output = self.compute_fn.call(self.phase + self.freq * self.theta) + random.uniform(
             0, noise
         )
+        print(self.get_results_values_as_dict())
 
         return self.get_results_values_as_dict(holomap=self.plot(plot))
+
+    def calc_hmal(self, **kwargs):
+        return self.calc(**kwargs)["hmap"]
 
     def plot(self, plot=True) -> hv.Points:
         if plot:
@@ -84,8 +88,29 @@ if __name__ == "__main__":
     run_cfg.use_sample_cache = True
     # run_cfg.only_hash_tag = True
     # run_cfg.auto_plot = False
-
     wv = PlotFunctions()
+
+    main = pn.Row()
+
+    # main.append()
+    from holoviews.streams import Pipe
+    from holoviews import streams
+
+    pipe = Pipe(data=[])
+    # main.append(hv.DynamicMap(callback=wv.calc_hmal, streams=[pipe]))
+    # pointer = streams.PointerXY(x=1, y=1)
+
+    main.append(hv.DynamicMap(wv.calc_hmal))
+
+    # main.append(hv.DynamicMap(wv.calc_hmal, streams=[pipe]))
+    # main.append(hv.DynamicMap(lambda x, y: wv.calc_hmal(phase=x, freq=y), streams=[pipe]))
+
+    # main.append(hv.Bu)
+    main.show()
+
+    # pipe.send("")
+    # main.show()
+
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
     bch_wv.clear_tag_from_cache("")
