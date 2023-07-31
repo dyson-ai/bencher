@@ -25,7 +25,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "black==23.3.0",
+  "black==23.7.0",
   "check-manifest",
   "pre-commit",
   "pylint",
