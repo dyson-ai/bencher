@@ -127,6 +127,7 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
+        self.cache_size = int(20e9)
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -224,12 +225,15 @@ class Bench(BenchPlotServer):
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
-            self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
+            # default to 20Gb cache
+            self.sample_cache = Cache(
+                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
+            )
             if bench_cfg.clear_sample_cache:
                 self.clear_tag_from_cache(bench_cfg.tag)
 
         calculate_results = True
-        with Cache("cachedir/benchmark_inputs") as c:
+        with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             if run_cfg.clear_cache:
                 c.delete(bench_cfg_hash)
                 logging.info("cleared cache")
@@ -284,7 +288,7 @@ class Bench(BenchPlotServer):
             )
 
     def cache_results(self, bench_cfg: BenchCfg, bench_cfg_hash: int) -> None:
-        with Cache("cachedir/benchmark_inputs") as c:
+        with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             logging.info(f"saving results with key: {bench_cfg_hash}")
             self.bench_cfg_hashes.append(bench_cfg_hash)
             c[bench_cfg_hash] = bench_cfg
@@ -362,7 +366,7 @@ class Bench(BenchPlotServer):
         Returns:
             xr.Dataset: historical data as an xr dataset
         """
-        with Cache("cachedir/history") as c:
+        with Cache("cachedir/history", size_limit=self.cache_size) as c:
             if clear_history:
                 logging.info("clearing history")
             else:
@@ -622,7 +626,9 @@ class Bench(BenchPlotServer):
             tag(str): clear samples with this tag
         """
         if self.sample_cache is None:
-            self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
+            self.sample_cache = Cache(
+                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
+            )
         logging.info(f"clearing the sample cache for tag: {tag}")
         removed_vals = self.sample_cache.evict(tag)
         logging.info(f"removed: {removed_vals} items from the cache")
@@ -685,7 +691,9 @@ class Bench(BenchPlotServer):
             pn.pane: results panel
         """
         if main_plot:
-            return self.pane[-1][0]
+            if len(self.pane) > 0:
+                return self.pane[-1][0]
+            return self.pane
         return self.pane[-1]
 
     def append(self, pane: pn.panel) -> None:
