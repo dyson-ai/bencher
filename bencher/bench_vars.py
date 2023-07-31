@@ -441,16 +441,15 @@ class EnumSweep(Selector):
             outputs = [self.objects[0], self.objects[-1]]
         else:
             outputs = self.objects
-        print(self.sampling_str(outputs, debug))
         return outputs
 
-    def sampling_str(self, outputs, debug: bool) -> str:
+    def sampling_str(self, debug=False) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:
             debug (bool): If true then self.samples_debug is used
         """
-        object_str = ",".join([i for i in outputs])
+        object_str = ",".join([i for i in self.values(debug)])
         return f"sampling {self.name} from: [{object_str}]"
 
     def hash_persistent(self) -> str:
