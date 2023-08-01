@@ -133,6 +133,10 @@ class PltCntCfg(param.Parameterized):
 
 class BenchPlotSrvCfg(param.Parameterized):
     port: int = param.Integer(None, doc="The port to launch panel with")
+    allow_ws_origin = param.Boolean(
+        False,
+        doc="Add the port to the whilelist, (warning will disable remote access if set to true)",
+    )
 
 
 class BenchRunCfg(BenchPlotSrvCfg):
