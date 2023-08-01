@@ -127,7 +127,7 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
-        self.cache_size = int(20e9)
+        self.cache_size = int(50e9)
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -268,6 +268,11 @@ class Bench(BenchPlotServer):
 
             self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
+
+        if self.sample_cache is not None:
+            logging.info(
+                f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
+            )
 
         self.pane = BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg

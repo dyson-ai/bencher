@@ -533,8 +533,8 @@ class BenchCfg(BenchRunCfg):
         #     return hv.Dataset(ds.squeeze("repeat", drop=True))
         # return hv.Dataset(ds)
 
-    def to(self, hv_type: hv.Chart, reduce="auto") -> hv.Chart:
-        return self.get_hv_dataset(reduce).to(hv_type)
+    def to(self, hv_type: hv.Chart, reduce="auto", **kwargs) -> hv.Chart:
+        return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce="auto") -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
@@ -570,8 +570,8 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_heatmap(self, reduce="auto") -> hv.HeatMap:
-        return self.to(hv.HeatMap, reduce)
+    def to_heatmap(self, reduce="auto", **kwargs) -> hv.HeatMap:
+        return self.to(hv.HeatMap, reduce, **kwargs)
 
     def to_nd_layout(self) -> hv.NdLayout:
         return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
