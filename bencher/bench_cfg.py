@@ -227,6 +227,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     headless: bool = param.Boolean(False, doc="Run the benchmarks headlessly")
 
+    render_plotly = param.Boolean(
+        True,
+        doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probalby stop working.",
+    )
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments
@@ -498,22 +503,40 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce=None):
+    def get_hv_dataset(self, reduce="auto"):
         ds = convert_dataset_bool_dims_to_str(self.ds)
+
         if reduce is None:
-            reduce = self.repeats > 1
-        if reduce:
-            return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
-            # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
+            raise RuntimeError("none is deprecated")
 
-        if self.repeats == 1:
-            return hv.Dataset(ds.squeeze("repeat", drop=True))
-        return hv.Dataset(ds)
+        if reduce == "auto":
+            if self.repeats > 1:
+                reduce = "reduce"
+            else:
+                reduce = "squeeze"
 
-    def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
+        result_vars_str = [r.name for r in self.result_vars]
+        hvds = hv.Dataset(ds, vdims=result_vars_str)
+        if reduce == "squeeze":
+            return hvds.reduce(["repeat"], np.mean, np.std)
+        if reduce == "reduce":
+            return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
+        return hvds
+
+        # if reduce is None:
+        #     reduce = self.repeats > 1
+        # if reduce:
+        #     return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
+        #     # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
+
+        # if self.repeats == 1:
+        #     return hv.Dataset(ds.squeeze("repeat", drop=True))
+        # return hv.Dataset(ds)
+
+    def to(self, hv_type: hv.Chart, reduce="auto") -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type)
 
-    def to_curve(self, reduce=None) -> hv.Curve:
+    def to_curve(self, reduce="auto") -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
@@ -521,9 +544,9 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset(True).to(hv.ErrorBars)
+        return self.get_hv_dataset("reduce").to(hv.ErrorBars)
 
-    def to_points(self, reduce=None) -> hv.Points:
+    def to_points(self, reduce="auto") -> hv.Points:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
@@ -531,7 +554,7 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_scatter(self) -> hv.Scatter:
-        ds = self.get_hv_dataset(False)
+        ds = self.get_hv_dataset("none")
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
         # ds = self.get_hv_dataset(reduce)
@@ -540,14 +563,14 @@ class BenchCfg(BenchRunCfg):
         # pt *= ds.to(hv.ErrorBars)
         # return pt
 
-    def to_bar(self, reduce=None) -> hv.Bars:
+    def to_bar(self, reduce="auto") -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_heatmap(self, reduce=None) -> hv.HeatMap:
+    def to_heatmap(self, reduce="auto") -> hv.HeatMap:
         return self.to(hv.HeatMap, reduce)
 
     def to_nd_layout(self) -> hv.NdLayout:

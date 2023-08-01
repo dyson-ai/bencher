@@ -344,12 +344,11 @@ def plot_surface_holo(
             .to(hv.Surface)
             .opts(alpha=alpha, colorbar=False, backend="plotly")
         )
-    return pn.Column(
-        # using render disabled the holoviews sliders :(
-        hv.render(
-            surface.opts(
-                width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend="plotly"
-            ),
-            backend="plotly",
-        )
+
+    surface = surface.opts(
+        width=800, height=800, zlabel=xr_cfg.zlabel, title=xr_cfg.title, backend="plotly"
     )
+    # using render disabled the holoviews sliders :(
+    # hv.extension("plotly")
+    out = hv.render(surface, backend="plotly") if bench_cfg.render_plotly else surface
+    return pn.Column(out)
