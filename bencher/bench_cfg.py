@@ -509,7 +509,7 @@ class BenchCfg(BenchRunCfg):
 
     def get_hv_dataset(self, reduce="auto"):
         ds = convert_dataset_bool_dims_to_str(self.ds)
-
+        # todo improve reduce logic
         if reduce is None:
             raise RuntimeError("none is deprecated")
 
