@@ -12,6 +12,7 @@ from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 import holoviews as hv
 from collections import namedtuple
+import panel as pn
 
 
 def hash_sha1(var: any) -> str:
@@ -84,7 +85,7 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def as_dim(self, compute_values=False) -> hv.Dimension:
+def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
     """Takes a sweep variable and turns it into a holoview dimension
 
     Returns:
@@ -96,7 +97,7 @@ def as_dim(self, compute_values=False) -> hv.Dimension:
                 (self.name, self.name),
                 range=tuple(self.bounds),
                 unit=self.units,
-                values=self.values(False),
+                values=self.values(debug),
             )
 
         return hv.Dimension(
@@ -108,9 +109,13 @@ def as_dim(self, compute_values=False) -> hv.Dimension:
     return hv.Dimension(
         (self.name, self.name),
         unit=self.units,
-        values=self.values(False),
+        values=self.values(debug),
         default=self.default,
     )
+
+
+def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
+    return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values(debug)))
 
 
 class ParametrizedSweep(Parameterized):
@@ -286,8 +291,8 @@ class BoolSweep(Boolean):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
 
 class TimeBase(Selector):
@@ -409,6 +414,9 @@ class StringSweep(Selector):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
+
 
 class EnumSweep(Selector):
     """A class to reprsent a parameter sweep of enums"""
@@ -456,8 +464,8 @@ class EnumSweep(Selector):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
 
 def int_float_sampling_str(name, samples) -> str:
@@ -530,8 +538,8 @@ class IntSweep(Integer):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -601,8 +609,11 @@ class FloatSweep(Number):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
+
+    def as_slider(self, debug=False):
+        return as_slider(self, debug)
 
 
 class OptDir(StrEnum):

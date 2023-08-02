@@ -316,7 +316,10 @@ class Bench(BenchPlotServer):
         bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
-        bench_cfg.hmap_kdims = dims_name
+        bench_cfg.hmap_kdims = sorted(dims_name)
+        # bench_cfg.hmap_dims[]
+        # for d in bench_cfg.hmap_kdims:
+
         for idx_tuple, function_input_vars in func_inputs:
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(

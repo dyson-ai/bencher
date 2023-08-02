@@ -14,6 +14,7 @@ import numpy as np
 
 import bencher as bch
 from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
+from bencher.utils import hmap_canonical_input
 
 
 def to_filename(
@@ -371,6 +372,7 @@ class BenchCfg(BenchRunCfg):
         self.plot_lib = None
         self.hmap = {}
         self.hmap_kdims = None
+        self.iv_repeat = None
 
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
@@ -585,6 +587,18 @@ class BenchCfg(BenchRunCfg):
     def to_holomap(self) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+
+    def to_dynamic_map(self) -> hv.DynamicMap:
+        """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
+
+        def cb(**kwargs):
+            return self.hmap[hmap_canonical_input(kwargs)].opts(framewise=True, shared_axes=False)
+
+        kdims = []
+        for i in self.input_vars + [self.iv_repeat]:
+            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
+
+        return hv.DynamicMap(cb, kdims=kdims)
 
     def to_grid(self):
         inputs = self.inputs_as_str()
