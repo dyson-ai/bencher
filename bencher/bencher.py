@@ -26,6 +26,7 @@ from bencher.bench_vars import (
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
+from bencher.utils import hmap_canonical_input
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -513,9 +514,9 @@ class Bench(BenchPlotServer):
             constant_inputs (dict): input values to keep constant
         """
         self.worker_wrapper_call_count += 1
-        function_input = dict(zip(dims_name, function_input_vars))
+        function_input = SortedDict(zip(dims_name, function_input_vars))
 
-        fn_inp_with_rep = tuple(function_input.values())
+        canonical_input = hmap_canonical_input(function_input)
 
         if constant_inputs is not None:
             function_input |= constant_inputs
@@ -581,7 +582,7 @@ class Bench(BenchPlotServer):
         if type(result) == dict:  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
-                bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
+                bench_cfg.hmap[canonical_input] = result["hmap"]
 
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")

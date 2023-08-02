@@ -28,4 +28,6 @@ from .utils import (
     get_results_only,
     get_results_values_as_dict,
     get_input_and_results,
+    hmap_canonical_input,
+    get_nearest_coords,
 )
