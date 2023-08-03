@@ -1,6 +1,6 @@
 from bokeh.models import HoverTool
 import pandas as pd
-from hvplot import pandas
+from hvplot import pandas  # noqa
 import holoviews as hv
 import panel as pn
 
