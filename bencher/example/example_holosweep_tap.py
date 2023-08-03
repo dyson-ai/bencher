@@ -41,19 +41,13 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     compute_fn = bch.EnumSweep(Function)
 
-    # noisy = bch.BoolSweep(default=True)
-
     fn_output = bch.ResultVar(units="v", doc="sin of theta with some noise")
-    # out_cos = bch.ResultVar(units="v", doc="cos of theta with some noise")
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
     def calc(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
-        # if self.noisy:
         noise = 0.1
-        # else:
-        # noise = 0.0
 
         self.fn_output = self.compute_fn.call(self.phase + self.freq * self.theta) + random.uniform(
             0, noise
@@ -61,11 +55,11 @@ class PlotFunctions(bch.ParametrizedSweep):
 
         return self.get_results_values_as_dict(holomap=self.plot_holo(plot))
 
-    def plot_holo(self, plot=True) -> hv.Points:
+    def plot_holo(self, plot=True) -> hv.core.ViewableElement:
+        """Plots a generic representation of the object that is not a basic hv datatype. In this case its an image of the values of the object, but it could be any representation of the object, e.g. a screenshot of the object state"""
         if plot:
             pt = hv.Text(0, 0, f"{self.phase}\n{self.freq}\n {self.theta}")
             pt *= hv.Ellipse(0, 0, 1)
-            # pt = hv.Points([self.theta, self.fn_output])
             return pt
         return None
 
@@ -83,9 +77,8 @@ class PlotFunctions(bch.ParametrizedSweep):
 
 # from holoviews.selection import Ho
 
-if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg()
 
+def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     wv = PlotFunctions()
     bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
 
@@ -107,19 +100,15 @@ if __name__ == "__main__":
         return res.hmap[bch.hmap_canonical_input(selres)]
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
-    # tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy, sel1d])
-
-    # tap_dmap = hv.DynamicMap(hov_plot, streams=[sel1d])
 
     bch_wv.append(heatmap + tap_dmap)
-    # bch_wv.append(heatmap)
 
-    # bch_wv.append(res.to_heatmap().opts(tools=["hover"]))
-    # bch_wv.append(res.to_heatmap().opts(tools=[hover]))
+    bch_wv.append_tab(res.to_curve)
+    return bch_wv
 
-    # bch_wv.append(res.to_grid())
 
-    bch_wv.plot()
+if __name__ == "__main__":
+    example_holosweep_tap(bch.BenchRunCfg()).show()
 
 
 # todo  https://discourse.holoviz.org/t/pointdraw-as-parameterized-class/3539

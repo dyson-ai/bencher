@@ -16,6 +16,7 @@ from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_vector import example_vector
 from bencher.example.example_plot_library import example_plot_library
+from bencher.example.example_holosweep_tap import example_holosweep_tap
 
 
 class TestBenchExamples(unittest.TestCase):
@@ -76,3 +77,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_plot_library(self) -> None:
         self.assertIsNotNone(example_plot_library(self.create_run_cfg()))
+
+    def test_holosweep_tap(self) -> None:
+        self.assertIsNotNone(example_holosweep_tap(self.create_run_cfg()))
