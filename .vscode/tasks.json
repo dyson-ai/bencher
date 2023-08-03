@@ -12,6 +12,20 @@
 			"command": "pylint $(git ls-files '*.py') "
 		},
 		{
+			"label": "check CI",
+			"detail": "Runs the basic formatting and linting checks performed by CI",
+			"type": "shell",
+			"dependsOn": [
+				"autoformat",
+				"pylint",
+			],
+			"dependsOrder": "sequence",
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"
