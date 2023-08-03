@@ -115,6 +115,14 @@ def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
 
 
 def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
+    """given a sweep variable (self), return the range of values as a panel slider
+
+    Args:
+        debug (bool, optional): pass to the sweepvar to produce a full set of varaibles, or when debug=True, a reduces number of sweep vars. Defaults to False.
+
+    Returns:
+        pn.widgets.slider.DiscreteSlider: A panel slider with the values() of the sweep variable
+    """
     return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values(debug)))
 
 

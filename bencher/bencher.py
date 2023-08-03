@@ -128,7 +128,7 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
-        self.cache_size = int(100e9)
+        self.cache_size = int(100e9)  # default to 100gb
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -317,8 +317,6 @@ class Bench(BenchPlotServer):
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
         bench_cfg.hmap_kdims = sorted(dims_name)
-        # bench_cfg.hmap_dims[]
-        # for d in bench_cfg.hmap_kdims:
 
         for idx_tuple, function_input_vars in func_inputs:
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
@@ -353,13 +351,13 @@ class Bench(BenchPlotServer):
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def plot(self, run_cfg: BenchRunCfg = None) -> None:
-        """Launches a webserver with plots of the benchmark results, blocking
+        """DEPRECATED! use show() instead.  Launches a webserver with plots of the benchmark results, blocking
 
         Args:
             run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
 
         """
-        warnings.warn("deprecated", DeprecationWarning)
+        warnings.warn("show() is deprecated, use show() instead", DeprecationWarning)
         return self.show(run_cfg)
 
     def load_history_cache(
@@ -541,9 +539,6 @@ class Bench(BenchPlotServer):
             # logging.info(f"inputs: {fn_inputs_sorted}")
             # logging.info(f"pure: {function_input_signature_pure}")
             if function_input_signature_benchmark_context in self.sample_cache:
-                # logging.info(
-                #     f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
-                # )
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
@@ -552,9 +547,6 @@ class Bench(BenchPlotServer):
             elif bench_run_cfg.only_hash_tag and (
                 function_input_signature_pure in self.sample_cache
             ):
-                # logging.info(
-                #     f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
-                # )
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} not found in context cache"
                 )
@@ -568,10 +560,6 @@ class Bench(BenchPlotServer):
                 logging.info(f"Context not in cache: {function_input_signature_benchmark_context}")
                 logging.info(f"Function inputs not cache: {function_input_signature_pure}")
                 logging.info("Calling benchmark function")
-
-                # logging.info(
-                #     "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
-                # )
 
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(

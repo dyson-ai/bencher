@@ -519,6 +519,14 @@ class BenchCfg(BenchRunCfg):
         return [p.params for p in self.studies[0].trials]
 
     def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+        """Generate a holoviews dataset from the xarray dataset.
+
+        Args:
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+
+        Returns:
+            hv.Dataset: results in the form of a holoviews dataset
+        """
         ds = convert_dataset_bool_dims_to_str(self.ds)
 
         if reduce == ReduceType.AUTO:
