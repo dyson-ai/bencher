@@ -20,10 +20,10 @@ from enum import Enum, auto
 
 
 class ReduceType(Enum):
-    auto = auto()
-    squeeze = auto()
-    reduce = auto()
-    none = auto()
+    AUTO = auto()
+    SQUEEZE = auto()
+    REDUCE = auto()
+    NONE = auto()
 
 
 def to_filename(
@@ -518,24 +518,24 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: ReduceType = ReduceType.auto) -> hv.Dataset:
+    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
         ds = convert_dataset_bool_dims_to_str(self.ds)
 
-        if reduce == ReduceType.auto:
-            reduce = ReduceType.reduce if self.repeats > 1 else ReduceType.squeeze
+        if reduce == ReduceType.AUTO:
+            reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
 
         result_vars_str = [r.name for r in self.result_vars]
         hvds = hv.Dataset(ds, vdims=result_vars_str)
-        if reduce == ReduceType.reduce:
+        if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
-        if reduce == ReduceType.squeeze:
+        if reduce == ReduceType.SQUEEZE:
             return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
 
-    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.auto, **kwargs) -> hv.Chart:
+    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
 
-    def to_curve(self, reduce: ReduceType = ReduceType.auto) -> hv.Curve:
+    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
@@ -543,9 +543,9 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset(ReduceType.reduce).to(hv.ErrorBars)
+        return self.get_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
 
-    def to_points(self, reduce: ReduceType = ReduceType.auto) -> hv.Points:
+    def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
@@ -553,18 +553,18 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_scatter(self) -> hv.Scatter:
-        ds = self.get_hv_dataset(ReduceType.none)
+        ds = self.get_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
 
-    def to_bar(self, reduce: ReduceType = ReduceType.auto) -> hv.Bars:
+    def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_heatmap(self, reduce: ReduceType = ReduceType.auto, **kwargs) -> hv.HeatMap:
+    def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         return self.to(hv.HeatMap, reduce, **kwargs)
 
     def to_nd_layout(self) -> hv.NdLayout:
