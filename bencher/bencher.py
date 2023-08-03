@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
+import warnings
 
 import numpy as np
 import panel as pn
@@ -25,6 +26,7 @@ from bencher.bench_vars import (
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
+from bencher.utils import hmap_canonical_input
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -126,6 +128,7 @@ class Bench(BenchPlotServer):
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
+        self.cache_size = int(100e9)  # default to 100gb
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -223,12 +226,15 @@ class Bench(BenchPlotServer):
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
-            self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
+            # default to 20Gb cache
+            self.sample_cache = Cache(
+                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
+            )
             if bench_cfg.clear_sample_cache:
                 self.clear_tag_from_cache(bench_cfg.tag)
 
         calculate_results = True
-        with Cache("cachedir/benchmark_inputs") as c:
+        with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             if run_cfg.clear_cache:
                 c.delete(bench_cfg_hash)
                 logging.info("cleared cache")
@@ -264,6 +270,11 @@ class Bench(BenchPlotServer):
             self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
 
+        if self.sample_cache is not None:
+            logging.info(
+                f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
+            )
+
         self.pane = BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg
 
@@ -283,7 +294,7 @@ class Bench(BenchPlotServer):
             )
 
     def cache_results(self, bench_cfg: BenchCfg, bench_cfg_hash: int) -> None:
-        with Cache("cachedir/benchmark_inputs") as c:
+        with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             logging.info(f"saving results with key: {bench_cfg_hash}")
             self.bench_cfg_hashes.append(bench_cfg_hash)
             c[bench_cfg_hash] = bench_cfg
@@ -305,7 +316,8 @@ class Bench(BenchPlotServer):
         bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
-        bench_cfg.hmap_kdims = dims_name
+        bench_cfg.hmap_kdims = sorted(dims_name)
+
         for idx_tuple, function_input_vars in func_inputs:
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             self.call_worker_and_store_results(
@@ -323,7 +335,7 @@ class Bench(BenchPlotServer):
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -331,8 +343,22 @@ class Bench(BenchPlotServer):
 
         """
         if run_cfg is None:
-            run_cfg = self.last_run_cfg
+            if self.last_run_cfg is not None:
+                run_cfg = self.last_run_cfg
+            else:
+                run_cfg = BenchRunCfg()
+
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+
+    def plot(self, run_cfg: BenchRunCfg = None) -> None:
+        """DEPRECATED! use show() instead.  Launches a webserver with plots of the benchmark results, blocking
+
+        Args:
+            run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
+
+        """
+        warnings.warn("show() is deprecated, use show() instead", DeprecationWarning)
+        return self.show(run_cfg)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -347,7 +373,7 @@ class Bench(BenchPlotServer):
         Returns:
             xr.Dataset: historical data as an xr dataset
         """
-        with Cache("cachedir/history") as c:
+        with Cache("cachedir/history", size_limit=self.cache_size) as c:
             if clear_history:
                 logging.info("clearing history")
             else:
@@ -489,9 +515,9 @@ class Bench(BenchPlotServer):
             constant_inputs (dict): input values to keep constant
         """
         self.worker_wrapper_call_count += 1
-        function_input = dict(zip(dims_name, function_input_vars))
+        function_input = SortedDict(zip(dims_name, function_input_vars))
 
-        fn_inp_with_rep = tuple(function_input.values())
+        canonical_input = hmap_canonical_input(function_input)
 
         if constant_inputs is not None:
             function_input |= constant_inputs
@@ -510,24 +536,31 @@ class Bench(BenchPlotServer):
             function_input_signature_benchmark_context = hash_sha1(
                 (function_input_signature_pure, bench_cfg_sample_hash)
             )
-            print("inputs", fn_inputs_sorted)
-            print("pure", function_input_signature_pure)
+            # logging.info(f"inputs: {fn_inputs_sorted}")
+            # logging.info(f"pure: {function_input_signature_pure}")
             if function_input_signature_benchmark_context in self.sample_cache:
                 logging.info(
-                    f"Found a previously calculated value in the sample cache with the benchmark: {bench_cfg.title}, hash: {bench_cfg_sample_hash}"
+                    f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and function_input_signature_pure in self.sample_cache:
+            elif bench_run_cfg.only_hash_tag and (
+                function_input_signature_pure in self.sample_cache
+            ):
                 logging.info(
-                    f"A value including the benchmark context was not found: {bench_cfg.title} hash: {bench_cfg_sample_hash}, but was found with tag:{bench_cfg.tag} so loading those values from the cache.  Beware that depending on how you have run the benchmarks, the data in this cache could be invalid"
+                    f"Hash: {function_input_signature_benchmark_context} not found in context cache"
                 )
+                logging.info(
+                    f"Hash: {function_input_signature_pure} was found in the function cache, loading..."
+                )
+
                 result = self.sample_cache[function_input_signature_pure]
                 self.worker_cache_call_count += 1
             else:
-                logging.info(
-                    "Sample cache values Not Found for either pure function inputs or inputs within a benchmark context, calling benchmark function"
-                )
+                logging.info(f"Context not in cache: {function_input_signature_benchmark_context}")
+                logging.info(f"Function inputs not cache: {function_input_signature_pure}")
+                logging.info("Calling benchmark function")
+
                 result = self.worker_wrapper(bench_cfg, function_input)
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_cfg.tag
@@ -540,7 +573,7 @@ class Bench(BenchPlotServer):
         if type(result) == dict:  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
-                bench_cfg.hmap[fn_inp_with_rep] = result["hmap"]
+                bench_cfg.hmap[canonical_input] = result["hmap"]
 
         logging.debug(f"input_index {index_tuple}")
         logging.debug(f"input {function_input_vars}")
@@ -590,7 +623,9 @@ class Bench(BenchPlotServer):
             tag(str): clear samples with this tag
         """
         if self.sample_cache is None:
-            self.sample_cache = Cache("cachedir/sample_cache", tag_index=True)
+            self.sample_cache = Cache(
+                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
+            )
         logging.info(f"clearing the sample cache for tag: {tag}")
         removed_vals = self.sample_cache.evict(tag)
         logging.info(f"removed: {removed_vals} items from the cache")
@@ -653,7 +688,9 @@ class Bench(BenchPlotServer):
             pn.pane: results panel
         """
         if main_plot:
-            return self.pane[-1][0]
+            if len(self.pane) > 0:
+                return self.pane[-1][0]
+            return self.pane
         return self.pane[-1]
 
     def append(self, pane: pn.panel) -> None:
@@ -672,3 +709,8 @@ class Bench(BenchPlotServer):
             dict: dictionary of best params
         """
         return bench_cfg.studies[0].best_trials[0].params
+
+
+def to_bench(param_class: ParametrizedSweep) -> Bench:
+    instance = param_class()
+    return Bench(param_class.name, instance.call)

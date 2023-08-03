@@ -14,6 +14,16 @@ import numpy as np
 
 import bencher as bch
 from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
+from bencher.utils import hmap_canonical_input
+
+from enum import Enum, auto
+
+
+class ReduceType(Enum):
+    AUTO = auto()
+    SQUEEZE = auto()
+    REDUCE = auto()
+    NONE = auto()
 
 
 def to_filename(
@@ -231,6 +241,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     headless: bool = param.Boolean(False, doc="Run the benchmarks headlessly")
 
+    render_plotly = param.Boolean(
+        True,
+        doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probalby stop working.",
+    )
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments
@@ -366,6 +381,7 @@ class BenchCfg(BenchRunCfg):
         self.plot_lib = None
         self.hmap = {}
         self.hmap_kdims = None
+        self.iv_repeat = None
 
     def hash_persistent(self, include_repeats) -> str:
         """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
@@ -502,22 +518,32 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce=None):
+    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+        """Generate a holoviews dataset from the xarray dataset.
+
+        Args:
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+
+        Returns:
+            hv.Dataset: results in the form of a holoviews dataset
+        """
         ds = convert_dataset_bool_dims_to_str(self.ds)
-        if reduce is None:
-            reduce = self.repeats > 1
-        if reduce:
-            return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
-            # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
 
-        if self.repeats == 1:
-            return hv.Dataset(ds.squeeze("repeat", drop=True))
-        return hv.Dataset(ds)
+        if reduce == ReduceType.AUTO:
+            reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
 
-    def to(self, hv_type: hv.Chart, reduce=True) -> hv.Chart:
-        return self.get_hv_dataset(reduce).to(hv_type)
+        result_vars_str = [r.name for r in self.result_vars]
+        hvds = hv.Dataset(ds, vdims=result_vars_str)
+        if reduce == ReduceType.REDUCE:
+            return hvds.reduce(["repeat"], np.mean, np.std)
+        if reduce == ReduceType.SQUEEZE:
+            return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
+        return hvds
 
-    def to_curve(self, reduce=None) -> hv.Curve:
+    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
+        return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
+
+    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
@@ -525,9 +551,9 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset(True).to(hv.ErrorBars)
+        return self.get_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
 
-    def to_points(self, reduce=None) -> hv.Points:
+    def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
@@ -535,24 +561,19 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_scatter(self) -> hv.Scatter:
-        ds = self.get_hv_dataset(False)
+        ds = self.get_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
-        # ds = self.get_hv_dataset(reduce)
-        # pt = ds.to(hv.Points)
-        # if reduce:
-        # pt *= ds.to(hv.ErrorBars)
-        # return pt
 
-    def to_bar(self, reduce=None) -> hv.Bars:
+    def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_heatmap(self, reduce=None) -> hv.HeatMap:
-        return self.to(hv.HeatMap, reduce)
+    def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
+        return self.to(hv.HeatMap, reduce, **kwargs)
 
     def to_nd_layout(self) -> hv.NdLayout:
         return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
@@ -562,6 +583,18 @@ class BenchCfg(BenchRunCfg):
     def to_holomap(self) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+
+    def to_dynamic_map(self) -> hv.DynamicMap:
+        """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
+
+        def cb(**kwargs):
+            return self.hmap[hmap_canonical_input(kwargs)].opts(framewise=True, shared_axes=False)
+
+        kdims = []
+        for i in self.input_vars + [self.iv_repeat]:
+            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
+
+        return hv.DynamicMap(cb, kdims=kdims)
 
     def to_grid(self):
         inputs = self.inputs_as_str()

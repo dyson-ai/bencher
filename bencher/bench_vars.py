@@ -12,6 +12,7 @@ from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 import holoviews as hv
 from collections import namedtuple
+import panel as pn
 
 
 def hash_sha1(var: any) -> str:
@@ -84,7 +85,7 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def as_dim(self, compute_values=False) -> hv.Dimension:
+def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
     """Takes a sweep variable and turns it into a holoview dimension
 
     Returns:
@@ -96,7 +97,7 @@ def as_dim(self, compute_values=False) -> hv.Dimension:
                 (self.name, self.name),
                 range=tuple(self.bounds),
                 unit=self.units,
-                values=self.values(False),
+                values=self.values(debug),
             )
 
         return hv.Dimension(
@@ -108,9 +109,21 @@ def as_dim(self, compute_values=False) -> hv.Dimension:
     return hv.Dimension(
         (self.name, self.name),
         unit=self.units,
-        values=self.values(False),
+        values=self.values(debug),
         default=self.default,
     )
+
+
+def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
+    """given a sweep variable (self), return the range of values as a panel slider
+
+    Args:
+        debug (bool, optional): pass to the sweepvar to produce a full set of varaibles, or when debug=True, a reduces number of sweep vars. Defaults to False.
+
+    Returns:
+        pn.widgets.slider.DiscreteSlider: A panel slider with the values() of the sweep variable
+    """
+    return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values(debug)))
 
 
 class ParametrizedSweep(Parameterized):
@@ -183,16 +196,21 @@ class ParametrizedSweep(Parameterized):
 
     def to_dynamic_map(
         self,
-        callback,
+        callback=None,
+        name=None,
         remove_dims: str | List[str] = None,
     ) -> hv.DynamicMap:
+        if callback is None:
+            callback = self.call
+
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
 
         return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
-        ).opts(shared_axes=False)
+            name=name,
+        ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
     def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
         return hv.HoloMap(
@@ -205,6 +223,12 @@ class ParametrizedSweep(Parameterized):
         # return hv.DynamicMap(
         #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
         # )
+
+    def call(self):
+        pass
+
+    def plot_hmap(self, **kwargs):
+        return self.call(**kwargs)["hmap"]
 
 
 # slots that are shared across all Sweep classes
@@ -286,8 +310,8 @@ class BoolSweep(Boolean):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
 
 class TimeBase(Selector):
@@ -409,6 +433,9 @@ class StringSweep(Selector):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
+
 
 class EnumSweep(Selector):
     """A class to reprsent a parameter sweep of enums"""
@@ -437,24 +464,27 @@ class EnumSweep(Selector):
 
     def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        print(self.sampling_str(debug))
-        return self.objects
+        if debug:
+            outputs = [self.objects[0], self.objects[-1]]
+        else:
+            outputs = self.objects
+        return outputs
 
-    def sampling_str(self, debug: bool) -> str:
+    def sampling_str(self, debug=False) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:
             debug (bool): If true then self.samples_debug is used
         """
-        object_str = ",".join([i for i in self.objects])
+        object_str = ",".join([i for i in self.values(debug)])
         return f"sampling {self.name} from: [{object_str}]"
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
 
 def int_float_sampling_str(name, samples) -> str:
@@ -527,8 +557,8 @@ class IntSweep(Integer):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -598,8 +628,11 @@ class FloatSweep(Number):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def as_dim(self, compute_values=False) -> hv.Dimension:
-        return as_dim(self, compute_values=compute_values)
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values, debug=debug)
+
+    def as_slider(self, debug=False):
+        return as_slider(self, debug)
 
 
 class OptDir(StrEnum):
@@ -622,6 +655,9 @@ class ResultVar(Number):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.direction))
+
+    def as_dim(self) -> hv.Dimension:
+        return hv.Dimension((self.name, self.name), unit=self.units)
 
 
 class ResultHmap(param.Parameter):

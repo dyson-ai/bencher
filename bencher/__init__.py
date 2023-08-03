@@ -1,6 +1,4 @@
-__version__ = "0.0.0"
-
-from .bencher import Bench, BenchCfg, BenchRunCfg
+from .bencher import Bench, BenchCfg, BenchRunCfg, to_bench
 from .plt_cfg import BenchPlotter, PltCfgBase
 from .example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from .bench_plot_server import BenchPlotServer
@@ -28,4 +26,6 @@ from .utils import (
     get_results_only,
     get_results_values_as_dict,
     get_input_and_results,
+    hmap_canonical_input,
+    get_nearest_coords,
 )
