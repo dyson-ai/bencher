@@ -1,3 +1,6 @@
+# pylint: skip-file  #this is experimental still
+
+
 import time
 import numpy as np
 import holoviews as hv

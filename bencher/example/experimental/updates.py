@@ -1,3 +1,6 @@
+# pylint: skip-file  #this is experimental still
+
+
 import numpy as np
 import pandas as pd
 import holoviews as hv

@@ -1,3 +1,6 @@
+# pylint: skip-file  #this is experimental still
+
+
 from bokeh.models import HoverTool
 import pandas as pd
 from hvplot import pandas  # noqa
