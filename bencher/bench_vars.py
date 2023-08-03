@@ -11,8 +11,8 @@ from pandas import Timestamp
 from param import Boolean, Integer, Number, Parameterized, Selector
 from strenum import StrEnum
 import holoviews as hv
-from collections import namedtuple
 import panel as pn
+from bencher.utils import make_namedtuple
 
 
 def hash_sha1(var: any) -> str:
@@ -71,18 +71,6 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
                 print(f"value:{v}, hash:{hash_sha1(v)}")
                 curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
     return curhash
-
-
-def make_namedtuple(class_name: str, **fields) -> namedtuple:
-    """Convenience method for making a named tuple
-
-    Args:
-        class_name (str): name of the named tuple
-
-    Returns:
-        namedtuple: a named tuple with the fields as values
-    """
-    return namedtuple(class_name, fields)(*fields.values())
 
 
 def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
@@ -180,6 +168,14 @@ class ParametrizedSweep(Parameterized):
             List[param.Parameter]: A list of input parameters
         """
         return list(self.get_input_and_results().inputs.values())
+
+    def get_results_only(self) -> List[param.Parameter]:
+        """Return a list of input parameters
+
+        Returns:
+            List[param.Parameter]: A list of result parameters
+        """
+        return list(self.get_input_and_results(self).results.values())
 
     def get_inputs_as_dims(
         self, compute_values=False, remove_dims: str | List[str] = None

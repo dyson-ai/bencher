@@ -1,11 +1,13 @@
 """Example of how to perform a parameter sweep for categorical variables"""
 from bencher import Bench, BenchRunCfg
+import time
+
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
+def example_float_cat(run_cfg: BenchRunCfg) -> Bench:
     """Example of how to perform a parameter sweep for categorical variables
 
     Args:
@@ -56,32 +58,28 @@ def example_cat_float(run_cfg: BenchRunCfg) -> Bench:
     return bench
 
 
-if __name__ == "__main__":
-    import time
-
-    ex_run_cfg = BenchRunCfg()
+def run_example_float_cat(ex_run_cfg=BenchRunCfg()) -> None:
     ex_run_cfg.repeats = 2
     ex_run_cfg.over_time = True
-    # ex_run_cfg.debug = True
-    # ex_run_cfg.print_pandas = True
     ex_run_cfg.clear_cache = True
     ex_run_cfg.clear_history = True
     ex_run_cfg.time_event = "run 1"
     ex_run_cfg.use_optuna = True
-    # ex_run_cfg.time_src = str(datetime.now())
 
-    example_cat_float(ex_run_cfg)
+    example_float_cat(ex_run_cfg)
 
     time.sleep(1)
 
     ex_run_cfg.clear_cache = False
     ex_run_cfg.clear_history = False
     ex_run_cfg.time_event = "run 2"
-    # ex_run_cfg.time_src = str(datetime.now())
 
-    example_cat_float(ex_run_cfg)
+    example_float_cat(ex_run_cfg)
     time.sleep(1)
 
     ex_run_cfg.time_event = "run 3"
-    # ex_run_cfg.time_src = str(datetime.now())
-    example_cat_float(ex_run_cfg).plot()
+    return example_float_cat(ex_run_cfg)
+
+
+if __name__ == "__main__":
+    run_example_float_cat().plot()

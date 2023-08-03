@@ -20,12 +20,4 @@ from .bench_vars import (
 )
 from .plotting.plot_library import PlotLibrary, PlotTypes
 from .plotting.plot_filter import PlotInput, VarRange, PlotFilter
-from .utils import (
-    update_params_from_kwargs,
-    get_inputs_only,
-    get_results_only,
-    get_results_values_as_dict,
-    get_input_and_results,
-    hmap_canonical_input,
-    get_nearest_coords,
-)
+from .utils import hmap_canonical_input, get_nearest_coords, make_namedtuple
