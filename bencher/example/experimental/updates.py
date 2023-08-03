@@ -1,4 +1,3 @@
-import time
 import numpy as np
 import pandas as pd
 import holoviews as hv
@@ -8,7 +7,7 @@ import panel as pn
 # import streamz.dataframe
 
 from holoviews import opts
-from holoviews.streams import Pipe, Buffer
+from holoviews.streams import Buffer
 
 hv.extension("bokeh")
 
@@ -50,7 +49,7 @@ dfstream = Buffer(example, length=100, index=False)
 def plot():
     curve_dmap = hv.DynamicMap(hv.Curve, streams=[dfstream])
     point_dmap = hv.DynamicMap(hv.Points, streams=[dfstream])
-    viz = (curve_dmap * point_dmap).opts(
+    (curve_dmap * point_dmap).opts(
         opts.Points(color="count", line_color="black", size=5, padding=0.1, xaxis=None, yaxis=None),
         opts.Curve(line_width=1, color="black"),
     )
