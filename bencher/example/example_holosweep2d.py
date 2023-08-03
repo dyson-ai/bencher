@@ -7,9 +7,7 @@ import bencher as bch
 import math
 import random
 import numpy as np
-import panel as pn
 import holoviews as hv
-import typing
 
 from strenum import StrEnum
 from enum import auto
@@ -84,7 +82,6 @@ class PlotFunctions(bch.ParametrizedSweep):
 
 
 # from holoviews.selection import Ho
-from bokeh.models import HoverTool
 
 if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()

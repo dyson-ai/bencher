@@ -1,7 +1,3 @@
-import holoviews as hv
-import panel as pn
-from mortgage import Loan
-import param
 import bencher as bch
 
 from example_investment import Investment

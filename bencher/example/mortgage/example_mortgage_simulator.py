@@ -1,8 +1,8 @@
 import holoviews as hv
 import panel as pn
 from mortgage import Loan
-import param
 import bencher as bch
+from example.mortgage.example_investment import Investment
 
 
 class EconomicClimate(bch.ParametrizedSweep):
@@ -151,7 +151,7 @@ mort_sim = Mortgage()
 inv = Investment()
 pf = PersonalFinances()
 
-# bench = bch.Bench("Mortgage", mort_sim.calc_loan)
+bench = bch.Bench("Mortgage", mort_sim.calc_loan)
 
 
 pn.Row(inv.to_dynamic_map(inv.call)).show()

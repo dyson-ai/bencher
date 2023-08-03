@@ -9,11 +9,9 @@ import random
 import numpy as np
 import panel as pn
 import holoviews as hv
-import typing
 
 from strenum import StrEnum
 from enum import auto
-import matplotlib
 
 
 class Function(StrEnum):
@@ -94,7 +92,6 @@ if __name__ == "__main__":
 
     # main.append()
     from holoviews.streams import Pipe
-    from holoviews import streams
 
     pipe = Pipe(data=[])
     # main.append(hv.DynamicMap(callback=wv.calc_hmal, streams=[pipe]))
