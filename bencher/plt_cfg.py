@@ -26,7 +26,6 @@ class BenchPlotter:
         if main_tab is None:
             main_tab = pn.Tabs(tabs_location="left")
         if bench_cfg.auto_plot:
-        
             if len(bench_cfg.result_vars) == 0:
                 tabs = pn.Column(name=bench_cfg.title)
                 tabs.append(pn.pane.Markdown(f"{bench_cfg.description}"))
