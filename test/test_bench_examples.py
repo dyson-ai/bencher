@@ -9,7 +9,7 @@ from bencher.example.example_simple_cat import example_1D_cat
 from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_persistent import example_persistent
 from bencher.example.example_float_cat import example_cat_float
-from bencher.example.example_time_event import example_time_event
+from bencher.example.example_time_event import run_example_time_event
 from bencher.example.example_float3D import example_floats3D
 from bencher.example.example_float3D_cone import example_cone
 from bencher.example.example_custom_sweep import example_custom_sweep
@@ -54,7 +54,7 @@ class TestBenchExamples(unittest.TestCase):
         self.assertIsNotNone(example_cat_float(self.create_run_cfg()))
 
     def test_example_time_event(self) -> None:
-        self.assertIsNotNone(example_time_event(self.create_run_cfg()))
+        self.assertIsNotNone(run_example_time_event(self.create_run_cfg()))
 
     def test_example_float3D(self) -> None:
         self.assertIsNotNone(example_floats3D(self.create_run_cfg()))

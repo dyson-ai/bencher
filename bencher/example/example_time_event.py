@@ -29,8 +29,7 @@ def example_time_event(run_cfg: BenchRunCfg) -> Bench:
     return bencher
 
 
-if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
+def run_example_time_event(ex_run_cfg):
     ex_run_cfg.repeats = 1
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = True
@@ -49,4 +48,8 @@ if __name__ == "__main__":
     ex_run_cfg.time_event = (
         "*third_event has a very very long label to demonstrate automatic text wrapping"
     )
-    example_time_event(ex_run_cfg).plot()
+    return example_time_event(ex_run_cfg)
+
+
+if __name__ == "__main__":
+    run_example_time_event.plot()
