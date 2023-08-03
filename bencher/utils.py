@@ -1,5 +1,6 @@
 from collections import namedtuple
 import xarray as xr
+from sortedcontainers import SortedDict
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -11,7 +12,6 @@ def hmap_canonical_input(dic: dict) -> tuple:
     Returns:
         tuple: values of the dictionary always in the same order and hashable
     """
-    from sortedcontainers import SortedDict
 
     function_input = SortedDict(dic)
     return tuple(function_input.values())
