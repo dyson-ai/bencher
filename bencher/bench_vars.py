@@ -217,7 +217,7 @@ class ParametrizedSweep(Parameterized):
         # )
 
     def call(self):
-        raise NotImplementedError
+        pass
 
     def plot(self, **kwargs):
         return self.call(**kwargs)["hmap"]
