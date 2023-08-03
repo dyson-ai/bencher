@@ -23,6 +23,7 @@
 			"dependsOn": [
 				"autoformat",
 				"pylint",
+				"code coverage"
 			],
 			"dependsOrder": "sequence",
 			"presentation": {

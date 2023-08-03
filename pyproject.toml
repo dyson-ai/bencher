@@ -58,7 +58,7 @@ build-backend = "flit_core.buildapi"
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
-jobs = -1                                    #detect number of cores
+jobs = 8                                     #detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
