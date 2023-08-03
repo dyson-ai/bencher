@@ -136,7 +136,7 @@ class PersonalFinances(Mortgage):
 
         # self.calc_loan(**kwargs)
 
-        self.net_wealth + self.investments_value + self.installment_principal
+        self.net_wealth = self.investments_value + self.installment_principal
         print(values)
         return self.get_results_values_as_dict(
             hv.Curve(values)

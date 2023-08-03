@@ -219,7 +219,7 @@ class ParametrizedSweep(Parameterized):
     def call(self):
         pass
 
-    def plot(self, **kwargs):
+    def plot_hmap(self, **kwargs):
         return self.call(**kwargs)["hmap"]
 
 

@@ -59,9 +59,9 @@ class PlotFunctions(bch.ParametrizedSweep):
             0, noise
         )
 
-        return self.get_results_values_as_dict(holomap=self.plot(plot))
+        return self.get_results_values_as_dict(holomap=self.plot_holo(plot))
 
-    def plot(self, plot=True) -> hv.Points:
+    def plot_holo(self, plot=True) -> hv.Points:
         if plot:
             pt = hv.Text(0, 0, f"{self.phase}\n{self.freq}\n {self.theta}")
             pt *= hv.Ellipse(0, 0, 1)

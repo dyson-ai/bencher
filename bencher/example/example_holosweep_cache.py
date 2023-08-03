@@ -57,12 +57,12 @@ class PlotFunctions(bch.ParametrizedSweep):
         )
         print(self.get_results_values_as_dict())
 
-        return self.get_results_values_as_dict(holomap=self.plot(plot))
+        return self.get_results_values_as_dict(holomap=self.plot_holo(plot))
 
     def calc_hmal(self, **kwargs):
         return self.calc(**kwargs)["hmap"]
 
-    def plot(self, plot=True) -> hv.Points:
+    def plot_holo(self, plot=True) -> hv.Points:
         if plot:
             pt = hv.Text(0, 0, f"{self.phase}\n{self.freq}\n {self.theta}")
             pt *= hv.Ellipse(0, 0, 1)
@@ -70,10 +70,6 @@ class PlotFunctions(bch.ParametrizedSweep):
             pt *= hv.Polygons(
                 [(0, 0), (0, 1), (1, 1), (1, 0)],
             ).opts(alpha=0.2, color="g")
-
-            # hv.save(pt, "tmp.gif")
-            # return hv.output(pt, filename="tmp.png", backend="matplotlib")
-            # return hv.RGB.load_image("tmp.gif")
             return pt
         return None
 

@@ -31,8 +31,8 @@ class PersonalFinances(bch.ParametrizedSweep):
         inv = Investment(**kwargs)
         mort = Mortgage(**kwargs)
 
-        pt = inv.plot()
-        pt *= mort.plot()
+        pt = inv.plot_holo()
+        pt *= mort.plot_holo()
 
         return self.get_results_values_as_dict(pt.opts(legend_position="right"))
 
