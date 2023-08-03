@@ -1,6 +1,6 @@
 import bencher as bch
 import unittest
-from bencher.utils import hmap_canonical_input, make_namedtuple, get_nearest_coords
+from bencher.utils import get_nearest_coords
 
 import xarray as xr
 
