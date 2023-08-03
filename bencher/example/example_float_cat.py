@@ -1,5 +1,5 @@
 """Example of how to perform a parameter sweep for categorical variables"""
-from bencher import Bench, BenchRunCfg
+import bencher as bch
 import time
 
 
@@ -7,7 +7,7 @@ import time
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_float_cat(run_cfg: BenchRunCfg) -> Bench:
+def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """Example of how to perform a parameter sweep for categorical variables
 
     Args:
@@ -16,7 +16,7 @@ def example_float_cat(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Float_Cat", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench("Bencher_Example_Float_Cat", bench_function, ExampleBenchCfgIn)
 
     ExampleBenchCfgIn.param.theta.samples = 3
 
@@ -58,7 +58,7 @@ def example_float_cat(run_cfg: BenchRunCfg) -> Bench:
     return bench
 
 
-def run_example_float_cat(ex_run_cfg=BenchRunCfg()) -> None:
+def run_example_float_cat(ex_run_cfg=bch.BenchRunCfg()) -> None:
     ex_run_cfg.repeats = 2
     ex_run_cfg.over_time = True
     ex_run_cfg.clear_cache = True

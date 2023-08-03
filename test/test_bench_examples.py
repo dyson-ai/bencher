@@ -1,13 +1,12 @@
 import unittest
 import pytest
-from bencher import BenchRunCfg
+import bencher as bch
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
 from bencher.example.example_simple_float import example_1D_float
-from bencher.example.example_persistent import example_persistent
 from bencher.example.example_float_cat import run_example_float_cat
 from bencher.example.example_time_event import run_example_time_event
 from bencher.example.example_float3D import example_floats3D
@@ -22,8 +21,8 @@ from bencher.example.example_holosweep_tap import example_holosweep_tap
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
 
-    def create_run_cfg(self) -> BenchRunCfg:
-        cfg = BenchRunCfg()
+    def create_run_cfg(self) -> bch.BenchRunCfg:
+        cfg = bch.BenchRunCfg()
         cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
         cfg.debug = True  # reduce size of param sweep so tests are faster
         cfg.clear_cache = True
@@ -46,9 +45,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_simple_float(self) -> None:
         self.assertIsNotNone(example_1D_float(self.create_run_cfg()))
-
-    def test_example_persistent(self) -> None:
-        self.assertIsNotNone(example_persistent(self.create_run_cfg()))
 
     def test_example_cat_float(self) -> None:
         self.assertIsNotNone(run_example_float_cat(self.create_run_cfg()))

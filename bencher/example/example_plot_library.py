@@ -64,6 +64,4 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.repeats = 5
-    example_plot_library(ex_run_cfg).plot()
+    example_plot_library(bch.BenchRunCfg(repeats=5)).plot()

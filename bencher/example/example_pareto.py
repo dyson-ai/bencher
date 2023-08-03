@@ -35,8 +35,4 @@ This is a slightly unusual way of doing pareto optimisation as we are not using 
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
-    ex_run_cfg.repeats = 1
-    ex_run_cfg.print_pandas = True
-    ex_run_cfg.over_time = True
-    example_pareto(ex_run_cfg).plot()
+    example_pareto(BenchRunCfg(over_time=True, print_pandas=True)).plot()

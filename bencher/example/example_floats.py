@@ -2,13 +2,13 @@
 
 import pathlib
 
-from bencher import Bench, BenchRunCfg
+import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_floats(run_cfg: BenchRunCfg) -> Bench:
+def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """Example of how to perform a parameter sweep for floating point variables
 
     Args:
@@ -17,7 +17,7 @@ def example_floats(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Floats", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench("Bencher_Example_Floats", bench_function, ExampleBenchCfgIn)
 
     rdmepath = pathlib.Path(__file__).parent.parent.parent / "README.md"
     with open(rdmepath, "r", encoding="utf-8") as file:
@@ -88,6 +88,4 @@ def example_floats(run_cfg: BenchRunCfg) -> Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg(repeats=10)
-
-    example_floats(ex_run_cfg).plot()
+    example_floats(bch.BenchRunCfg(repeats=10)).plot()
