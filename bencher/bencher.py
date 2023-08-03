@@ -708,7 +708,7 @@ class Bench(BenchPlotServer):
     def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)
 
-    def append_tab(self, pane: pn.panel, name: str = None):
+    def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
 
     def get_best_params(self, bench_cfg: BenchCfg) -> dict:
