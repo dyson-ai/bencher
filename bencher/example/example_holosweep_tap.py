@@ -88,17 +88,18 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
     posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
+    sld1 = wv.param.phase.as_slider(run_cfg.debug)
 
     def tap_plot(x, y):
         print(x, y)
-        selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=0, repeat=1)
+        selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=sld1.value, repeat=1)
         return res.hmap[bch.hmap_canonical_input(selres)]
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
-    bch
-
     bench.append(heatmap + tap_dmap)
+
+    bench.append(sld1)
 
     bench.append_tab(res.to_curve)
     return bench
