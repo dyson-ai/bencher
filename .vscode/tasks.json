@@ -7,6 +7,11 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
+			"label": "pylint",
+			"type": "shell",
+			"command": "pylint $(git ls-files '*.py') "
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"
