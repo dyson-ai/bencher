@@ -1,23 +1,22 @@
 # pylint: skip-file
-from param import Parameterized, Number, Selector, Integer, Boolean
-import param
-from enum import Enum, auto
-from strenum import StrEnum
-import numpy as np
-from pandas import Timestamp
+import hashlib
 import re
 from datetime import datetime
-from typing import List
-import hashlib
-from sys import byteorder
+from enum import Enum, auto
+from typing import List, Tuple
+
+import numpy as np
+import param
+from pandas import Timestamp
+from param import Boolean, Integer, Number, Parameterized, Selector
+from strenum import StrEnum
+import holoviews as hv
+from collections import namedtuple
 
 
-def hash_cust(var: any):
+def hash_sha1(var: any) -> str:
+    """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
     return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
-    # hash_val = 0
-    # for ch in text:
-    # hash_val = (hash_val * 281 ^ ord(ch) * 997) & 0xFFFFFFFF
-    # return hash_val
 
 
 def capitalise_words(message: str):
@@ -62,29 +61,150 @@ def param_hash(param_type: Parameterized, hash_value: bool = True, hash_meta: bo
     if hash_value:
         for k, v in param_type.param.values().items():
             if k != "name":
-                curhash = hash_cust((curhash, hash_cust(v)))
+                curhash = hash_sha1((curhash, hash_sha1(v)))
 
     if hash_meta:
         for k, v in param_type.param.params().items():
             if k != "name":
-                print(f"key:{k}, hash:{hash_cust(k)}")
-                print(f"value:{v}, hash:{hash_cust(v)}")
-                curhash = hash_cust((curhash, hash_cust(k), hash_cust(v)))
+                print(f"key:{k}, hash:{hash_sha1(k)}")
+                print(f"value:{v}, hash:{hash_sha1(v)}")
+                curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
     return curhash
+
+
+def make_namedtuple(class_name: str, **fields) -> namedtuple:
+    """Convenience method for making a named tuple
+
+    Args:
+        class_name (str): name of the named tuple
+
+    Returns:
+        namedtuple: a named tuple with the fields as values
+    """
+    return namedtuple(class_name, fields)(*fields.values())
+
+
+def as_dim(self, compute_values=False) -> hv.Dimension:
+    """Takes a sweep variable and turns it into a holoview dimension
+
+    Returns:
+        hv.Dimension:
+    """
+    if hasattr(self, "bounds"):
+        if compute_values:
+            return hv.Dimension(
+                (self.name, self.name),
+                range=tuple(self.bounds),
+                unit=self.units,
+                values=self.values(False),
+            )
+
+        return hv.Dimension(
+            (self.name, self.name),
+            range=tuple(self.bounds),
+            unit=self.units,
+            default=self.default,
+        )
+    return hv.Dimension(
+        (self.name, self.name),
+        unit=self.units,
+        values=self.values(False),
+        default=self.default,
+    )
 
 
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return param_hash(self, True, False)
 
+    def update_params_from_kwargs(self, **kwargs) -> None:
+        """Given a dictionary of kwargs, set the parameters of the passed class 'self' to the values in the dictionary."""
+        used_params = {}
+        for key in self.param.params().keys():
+            if key in kwargs:
+                if key != "name":
+                    used_params[key] = kwargs[key]
 
-class ParametrizedOutput(Parameterized):
-    """Parent class for all Output types that need a custom hash"""
+        self.param.update(**used_params)
 
-    def hash_custom(self) -> int:
-        return param_hash(self, True, False)
+    def get_input_and_results(self, include_name: bool = False) -> Tuple[dict, dict]:
+        """Get dictionaries of input parameters and result parameters
+
+        Args:
+            self: A parametrised class
+            include_name (bool): Include the name parameter that all parametrised classes have. Default False
+
+        Returns:
+            Tuple[dict, dict]: a tuple containing the inputs and result parameters as dictionaries
+        """
+        inputs = {}
+        results = {}
+        for k, v in self.param.params().items():
+            if isinstance(v, (ResultList, ResultSeries, ResultVar, ResultVec)):
+                results[k] = v
+            else:
+                inputs[k] = v
+
+        if not include_name:
+            inputs.pop("name")
+        return make_namedtuple("inputresult", inputs=inputs, results=results)
+
+    def get_results_values_as_dict(self, holomap=None) -> dict:
+        """Get a dictionary of result variables with the name and the current value"""
+        values = self.param.values()
+        output = {key: values[key] for key in self.get_input_and_results().results}
+        if holomap is not None:
+            output |= {"hmap": holomap}
+        return output
+
+    def get_inputs_only(self) -> List[param.Parameter]:
+        """Return a list of input parameters
+
+        Returns:
+            List[param.Parameter]: A list of input parameters
+        """
+        return list(self.get_input_and_results().inputs.values())
+
+    def get_inputs_as_dims(
+        self, compute_values=False, remove_dims: str | List[str] = None
+    ) -> List[hv.Dimension]:
+        inputs = self.get_inputs_only()
+
+        if remove_dims is not None:
+            if type(remove_dims) == str:
+                remove_dims = [remove_dims]
+            filtered_inputs = [i for i in inputs if i.name not in remove_dims]
+            inputs = filtered_inputs
+
+        return [iv.as_dim(compute_values) for iv in inputs]
+
+    def to_dynamic_map(
+        self,
+        callback,
+        remove_dims: str | List[str] = None,
+    ) -> hv.DynamicMap:
+        def callback_wrapper(**kwargs):
+            return callback(**kwargs)["hmap"]
+
+        return hv.DynamicMap(
+            callback=callback_wrapper,
+            kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
+        ).opts(shared_axes=False)
+
+    def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
+        return hv.HoloMap(
+            hv.DynamicMap(
+                callback=callback,
+                kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims),
+            )
+        )
+        # return hv.HoloMap(self.to_dynamic_map(callback=callback, remove_dims=remove_dims))
+        # return hv.DynamicMap(
+        #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
+        # )
 
 
 # slots that are shared across all Sweep classes
@@ -100,8 +220,8 @@ def sweep_hash(parameter: Parameterized) -> int:
     """
     curhash = 0
     for v in parameter.values():
-        print(f"value:{v}, hash:{hash_cust(v)}")
-        curhash = hash_cust((curhash, hash_cust(v)))
+        print(f"value:{v}, hash:{hash_sha1(v)}")
+        curhash = hash_sha1((curhash, hash_sha1(v)))
     return curhash
 
 
@@ -114,7 +234,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash_cust((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_sha1((parameter.units, parameter.samples, parameter.samples_debug))
 
 
 def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
@@ -153,7 +273,7 @@ class BoolSweep(Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug) -> list[bool]:
+    def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return [True, False]
@@ -162,8 +282,12 @@ class BoolSweep(Boolean):
         """Generate a string representation of the sampling procedure"""
         return f"sampling {self.name} from: [True,False]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 class TimeBase(Selector):
@@ -171,7 +295,7 @@ class TimeBase(Selector):
 
     __slots__ = shared_slots
 
-    def values(self, debug) -> List[str]:
+    def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -184,7 +308,8 @@ class TimeBase(Selector):
         """
         return f"sampling from [The Past to {self.objects[0]}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -266,7 +391,7 @@ class StringSweep(Selector):
             self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
 
-    def values(self, debug) -> List[str]:
+    def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -280,7 +405,8 @@ class StringSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
 
@@ -309,7 +435,7 @@ class EnumSweep(Selector):
             self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
 
-    def values(self, debug) -> List[Enum]:
+    def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         print(self.sampling_str(debug))
         return self.objects
@@ -323,8 +449,12 @@ class EnumSweep(Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 def int_float_sampling_str(name, samples) -> str:
@@ -359,10 +489,10 @@ class IntSweep(Integer):
         else:
             self.sample_values = sample_values
             self.samples = len(self.sample_values)
-            if not "default" in params:
+            if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug) -> List[int]:
+    def values(self, debug=False) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
@@ -393,8 +523,32 @@ class IntSweep(Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
+
+    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    def _validate_value(self, val, allow_None):
+        if callable(val):
+            return
+
+        if allow_None and val is None:
+            return
+
+        if not isinstance(val, (int, np.integer)):
+            raise ValueError(
+                "Integer parameter %r must be an integer, " "not type %r." % (self.name, type(val))
+            )
+
+    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    def _validate_step(self, val, step):
+        if step is not None and not isinstance(step, (int, np.integer)):
+            raise ValueError(
+                "Step can only be None or an " "integer value, not type %r" % type(step)
+            )
 
 
 class FloatSweep(Number):
@@ -412,10 +566,10 @@ class FloatSweep(Number):
         else:
             self.sample_values = sample_values
             self.samples = len(self.sample_values)
-            if not "default" in params:
+            if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug) -> List[float]:
+    def values(self, debug=False) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         samps = self.samples_debug if debug else self.samples
         if self.sample_values is None:
@@ -440,8 +594,12 @@ class FloatSweep(Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_custom(self) -> int:
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
+
+    def as_dim(self, compute_values=False) -> hv.Dimension:
+        return as_dim(self, compute_values=compute_values)
 
 
 class OptDir(StrEnum):
@@ -461,12 +619,21 @@ class ResultVar(Number):
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
 
-    def hash_custom(self) -> int:
-        return hash_cust((self.units, self.direction))
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.direction))
+
+
+class ResultHmap(param.Parameter):
+    """A class to represent a holomap return type"""
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 
 class ResultVec(param.List):
-    """A class to represent vector result variable"""
+    """A class to represent fixed size vector result variable"""
 
     __slots__ = ["units", "direction", "size"]
 
@@ -477,8 +644,9 @@ class ResultVec(param.List):
         self.direction = direction
         self.size = size
 
-    def hash_custom(self) -> int:
-        return hash_cust((self.units, self.direction))
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.direction))
 
     def index_name(self, idx: int) -> str:
         """given the index of the vector, return the column name that
@@ -497,10 +665,75 @@ class ResultVec(param.List):
             index = idx
         return f"{self.name}_{index}"
 
-    def index_names(self) -> list[str]:
+    def index_names(self) -> List[str]:
         """Returns a list of all the xarray column names for the result vector
 
         Returns:
             list[str]: column names
         """
         return [self.index_name(i) for i in range(self.size)]
+
+
+class ResultSeries:
+    """A class to represent a vector of results, it also includes an index similar to pandas.series"""
+
+    def __init__(self, values=None, index=None) -> None:
+        self.values = []
+        self.index = []
+        self.set_index_and_values(values, index)
+
+    def append(self, value: float | int, index: float | int | str = None) -> None:
+        """Add a value and index to the result series
+
+        Args:
+            value (float | int): result value of the series
+            index (float | int | str, optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+        """
+
+        if index is None:
+            self.index.append(len(self.values))
+        else:
+            self.index.append(index)
+        self.values.append(value)
+
+    def set_index_and_values(
+        self, values: List[float | int], index: List[float | int | str] = None
+    ) -> None:
+        """Add values and indices to the result series
+
+        Args:
+            value (List[float | int]): result value of the series
+            index (List[float | int | str], optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+        """
+        if values is not None:
+            if index is None:
+                self.index = list(range(len(values)))
+            else:
+                self.index = index
+            self.values = values
+
+
+class ResultList(param.Parameter):
+    """A class to unknown size vector result variable"""
+
+    __slots__ = ["units", "dim_name", "dim_units", "indices"]
+
+    def __init__(
+        self,
+        index_name: str,
+        index_units: str,
+        default=ResultSeries(),
+        units="ul",
+        indices: List[float] = None,
+        instantiate=True,
+        **params,
+    ):
+        param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
+        self.units = units
+        self.dim_name = index_name
+        self.dim_units = index_units
+        self.indices = indices
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1((self.units, self.dim_name, self.dim_units))

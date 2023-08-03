@@ -1,23 +1,23 @@
-import param
 from typing import List
-from bencher.bench_vars import (
-    TimeSnapshot,
-    TimeEvent,
-    IntSweep,
-    FloatSweep,
-    EnumSweep,
-    StringSweep,
-    BoolSweep,
-    ParametrizedSweep,
-    OptDir,
-)
-import optuna
-from bencher.bench_cfg import BenchCfg
-import panel as pn
 
-from optuna.visualization import plot_param_importances
-from optuna.visualization import plot_pareto_front
 import numpy as np
+import optuna
+import panel as pn
+import param
+from optuna.visualization import plot_param_importances, plot_pareto_front
+
+from bencher.bench_cfg import BenchCfg
+from bencher.bench_vars import (
+    BoolSweep,
+    EnumSweep,
+    FloatSweep,
+    IntSweep,
+    OptDir,
+    ParametrizedSweep,
+    StringSweep,
+    TimeEvent,
+    TimeSnapshot,
+)
 
 
 def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
@@ -75,10 +75,11 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     # plot_cols.extend(collect_optuna_plots(bench_cfg, False))
 
     studies = [bench_cfg_to_study(bench_cfg, True)]
-    titles = ["##Parameter Importance"]
+    bench_cfg.studies = studies
+    titles = ["# Analysis"]
     if bench_cfg.repeats > 1:
         studies.append(bench_cfg_to_study(bench_cfg, False))
-        titles = ["#Parameter Importance With Repeats", "##Parameter Importance Without Repeats"]
+        titles = ["# Parameter Importance With Repeats", "## Parameter Importance Without Repeats"]
 
     cols = pn.Row()
     for study, title in zip(studies, titles):
@@ -90,12 +91,19 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
         param_str = []
 
         print("tgtnam", target_names)
-        # exit()
 
         rows.append(pn.pane.Markdown(title))
 
         if len(target_names) > 1:
             if len(target_names) <= 3:
+                # rows.append(plot_param_importances(study, target_name=target_names))
+                # rows.append(target_names)
+
+                # for tgt in target_names:
+                #     rows.append(
+                #         plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
+                #     )
+
                 rows.append(
                     plot_pareto_front(
                         study, target_names=target_names, include_dominated_trials=False
@@ -112,6 +120,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
                     )
                 )
             if bench_cfg.repeats > 1:
+                rows.append("repeats>1")
                 for tgt in target_names:
                     rows.append(
                         plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
@@ -123,12 +132,19 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
         else:
             # cols.append(plot_optimization_history(study)) #TODO, maybe more clever when this is plotted?
-            if bench_cfg.repeats > 1 and len(target_names) > 1:
+
+            # If there is only 1 parameter then there is no point is plotting relative importance.  Only worth plotting if there are multiple repeats of the same value so that you can compare the parameter vs to repeat to get a sense of the how much chance affects the results
+            if bench_cfg.repeats > 1 and len(bench_cfg.input_vars) > 1:
                 rows.append(plot_param_importances(study, target_name=target_names[0]))
             param_str.extend(summarise_trial(study.best_trial, bench_cfg))
 
+        kwargs = {"height": 500, "scroll": True} if len(param_str) > 30 else {}
+
         param_str = "\n    ".join(param_str)
-        rows.append(pn.pane.Markdown(f"##Best Parameters\n    {param_str}"))
+        rows.append(
+            pn.Row(pn.pane.Markdown(f"## Best Parameters\n    {param_str}"), **kwargs),
+        )
+
         cols.append(rows)
 
     return [cols]
@@ -173,21 +189,21 @@ def sweep_var_to_optuna_dist(var: param.Parameter) -> optuna.distributions.BaseD
     iv_type = type(var)
     if iv_type == IntSweep:
         return optuna.distributions.IntDistribution(var.bounds[0], var.bounds[1])
-    elif iv_type == FloatSweep:
+    if iv_type == FloatSweep:
         return optuna.distributions.FloatDistribution(var.bounds[0], var.bounds[1])
-    elif iv_type == EnumSweep or iv_type == StringSweep:
+    if iv_type in (EnumSweep, StringSweep):
         return optuna.distributions.CategoricalDistribution(var.objects)
-    elif iv_type == BoolSweep:
+    if iv_type == BoolSweep:
         return optuna.distributions.CategoricalDistribution([False, True])
-    elif iv_type == TimeSnapshot:
+    if iv_type == TimeSnapshot:
         # return optuna.distributions.IntDistribution(0, sys.maxsize)
         return optuna.distributions.FloatDistribution(0, 1e20)
         # return optuna.distributions.CategoricalDistribution([])
-    elif iv_type == TimeEvent:
-        pass
-        # return optuna.distributions.CategoricalDistribution(["now"])
-    else:
-        raise ValueError(f"This input type {iv_type} is not supported")
+    # elif iv_type == TimeEvent:
+    #     pass
+    # return optuna.distributions.CategoricalDistribution(["now"])
+
+    raise ValueError(f"This input type {iv_type} is not supported")
 
 
 def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
@@ -207,18 +223,17 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
 
     if iv_type == IntSweep:
         return trial.suggest_int(iv.name, iv.bounds[0], iv.bounds[1])
-    elif iv_type == FloatSweep:
+    if iv_type == FloatSweep:
         return trial.suggest_float(iv.name, iv.bounds[0], iv.bounds[1])
-    elif iv_type == EnumSweep or iv_type == StringSweep:
+    if iv_type in (EnumSweep, StringSweep):
         return trial.suggest_categorical(iv.name, iv.objects)
-    elif iv_type == TimeSnapshot:
+    if iv_type == TimeSnapshot:
         pass  # optuna does not like time
-    elif iv_type == TimeEvent:
+    if iv_type == TimeEvent:
         pass  # optuna does not like time
-    elif iv_type == BoolSweep:
+    if iv_type == BoolSweep:
         return trial.suggest_categorical(iv.name, [True, False])
-    else:
-        raise ValueError(f"This input type {iv_type} is not supported")
+    raise ValueError(f"This input type {iv_type} is not supported")
 
 
 def cfg_from_optuna_trial(
@@ -242,7 +257,7 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
         optuna.Study: optuna description of the study
     """
     if include_meta:
-        df = bench_cfg.ds.to_dataframe().reset_index()
+        df = bench_cfg.get_dataframe()
         all_vars = []
         for v in bench_cfg.all_vars:
             if type(v) != TimeEvent:

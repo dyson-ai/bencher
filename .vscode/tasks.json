@@ -1,0 +1,40 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "autoformat",
+			"type": "shell",
+			"command": "ruff . --fix && black ."
+		},
+		{
+			"label": "flit install",
+			"type": "shell",
+			"command": "flit install --symlink"
+		},
+		{
+			"label": "flit publish",
+			"type": "shell",
+			"command": "flit publish"
+		},
+		{
+			"label": "sa: Set Active File",
+			"type": "shell",
+			"command": "mkdir ${workspaceFolder}/.vscode/cfg/;echo ${file} > $_/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "ra: Run Active File",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/cfg/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		}
+	]
+}

@@ -22,7 +22,7 @@ def get_hash_isolated_process() -> bytes:
         [
             "python3",
             "-c",
-            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(cfg1.hash_custom())'",
+            "'from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut;import bencher as bch;cfg1 = bch.BenchCfg(input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.noise_distribution],result_vars=[ExampleBenchCfgOut.param.out_sin],const_vars=[ExampleBenchCfgIn.param.noisy],repeats=5,over_time=False);print(cfg1.hash_persistent())'",
         ],
         stdout=subprocess.PIPE,
         check=False,
@@ -123,7 +123,10 @@ class TestBencher(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(cfg1.hash_custom(), cfg2.hash_custom())
+        self.assertEqual(
+            cfg1.hash_persistent(include_repeats=True),
+            cfg2.hash_persistent(include_repeats=True),
+        )
 
     def test_bench_cfg_hash_isolated(self):
         """hash values only seem to not match if run in a separate process, so run the hash test in separate processes"""
@@ -291,7 +294,7 @@ class TestBencher(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(bench.worker_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(bench.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
 
         bench2 = self.create_bench()
         # run again without caching, the function should be called again
@@ -301,17 +304,17 @@ class TestBencher(unittest.TestCase):
             result_vars=rv,
             run_cfg=BenchRunCfg(over_time=over_time, use_cache=False, auto_plot=False),
         )
-        self.assertEqual(bench2.worker_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(bench2.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
 
         # bench3 = self.create_bench()
-        # run again with the cache turned on. The worker_call_count should not increase because it loads cached results
+        # run again with the cache turned on. The worker_wrapper_call_count should not increase because it loads cached results
         bench2.plot_sweep(
             title=title,
             input_vars=iv,
             result_vars=rv,
             run_cfg=BenchRunCfg(over_time=over_time, use_cache=True, auto_plot=False),
         )
-        self.assertEqual(bench2.worker_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(bench2.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
 
     @settings(deadline=10000)
     @given(noisy=st.booleans())
@@ -335,7 +338,7 @@ class TestBencher(unittest.TestCase):
             run_cfg=BenchRunCfg(clear_cache=True, clear_history=True, auto_plot=False),
         )
         self.assertEqual(
-            bench.worker_call_count,
+            bench.worker_wrapper_call_count,
             ExampleBenchCfgIn.param.theta.samples,
             "no cache used so the function should sample again",
         )
@@ -354,7 +357,7 @@ class TestBencher(unittest.TestCase):
         )
         # the result should be cached so the call count should be the same as before
         self.assertEqual(
-            bench2.worker_call_count,
+            bench2.worker_wrapper_call_count,
             0,
             "the worker should not be sampled as it should be loaded from the cache",
         )

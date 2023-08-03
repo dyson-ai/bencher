@@ -1,3 +1,5 @@
+# pylint: disable=duplicate-code
+
 from bencher.bencher import Bench, BenchRunCfg
 
 # All the examples will be using the data structures and benchmark function defined in this file

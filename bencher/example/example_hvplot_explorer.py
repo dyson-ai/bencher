@@ -1,12 +1,14 @@
+# THIS IS NOT A WORKING EXAMPLE YET
+# pylint: disable=duplicate-code
 from bencher import Bench, BenchRunCfg, ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-
+import hvplot
 
 bench = Bench("Bencher_Example_Simple", bench_function, ExampleBenchCfgIn)
 
 
 if __name__ == "__main__":
     bench_out = bench.plot_sweep(
-        input_vars=[ExampleBenchCfgIn.param.theta],
+        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.offset],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         title="Float 1D Example",
         description="""Bencher is a tool to make it easy to explore how input parameter affect a range of output metrics.  In these examples we are going to benchmark an example function which has been selected to show the features of bencher.
@@ -32,11 +34,5 @@ if __name__ == "__main__":
         ),
     )
 
-    print("plotting")
-    import hvplot
-
-    df = bench_out.ds.to_dataframe()
-    df = df.reset_index()
-
-    hvexplorer = hvplot.explorer(df)
-    hvexplorer.servable()
+    hvexplorer = hvplot.explorer(bench_out.get_dataframe())
+    hvexplorer.show()

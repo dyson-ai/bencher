@@ -1,33 +1,26 @@
-from bencher import (
-    Bench,
-    BenchRunCfg,
-    ParametrizedSweep,
-    ParametrizedOutput,
-    FloatSweep,
-    ResultVar,
-    ResultVec,
-)
 import random
 
+import bencher as bch
 
-class GaussianDist(ParametrizedSweep):
+
+class GaussianDist(bch.ParametrizedSweep):
     """A class to represent a gaussian distribution."""
 
-    mean = FloatSweep(
+    mean = bch.FloatSweep(
         default=0, bounds=[-1.0, 1.0], doc="mean of the gaussian distribution", samples=3
     )
-    sigma = FloatSweep(
+    sigma = bch.FloatSweep(
         default=1, bounds=[0, 1.0], doc="standard deviation of gaussian distribution", samples=4
     )
 
 
-class Example2DGaussianResult(ParametrizedOutput):
+class Example2DGaussianResult(bch.ParametrizedSweep):
     """A class to represent the properties of a volume sample."""
 
-    gauss_x = ResultVar("m", doc="x value of the 2D gaussian")
-    gauss_y = ResultVar("m", doc="y value of the 2D gaussian")
+    gauss_x = bch.ResultVar("m", doc="x value of the 2D gaussian")
+    gauss_y = bch.ResultVar("m", doc="y value of the 2D gaussian")
 
-    point2D = ResultVec(2, "m", doc="2D vector of the point")
+    point2D = bch.ResultVec(2, "m", doc="2D vector of the point")
 
 
 def bench_fn(dist: GaussianDist) -> Example2DGaussianResult:
@@ -48,7 +41,7 @@ def bench_fn(dist: GaussianDist) -> Example2DGaussianResult:
     return output
 
 
-def example_floats2D_scatter(run_cfg: BenchRunCfg) -> Bench:
+def example_floats2D_scatter(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -57,7 +50,9 @@ def example_floats2D_scatter(run_cfg: BenchRunCfg) -> Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = Bench("Bencher_Example_Floats", bench_fn, GaussianDist)
+    bench = bch.Bench(
+        "Bencher_Example_Floats_Scatter", bench_fn, GaussianDist, plot_lib=bch.PlotLibrary.default()
+    )
 
     bench.plot_sweep(
         result_vars=[
@@ -107,7 +102,7 @@ def example_floats2D_scatter(run_cfg: BenchRunCfg) -> Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = BenchRunCfg()
+    ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 50
     ex_run_cfg.over_time = True
     # ex_run_cfg.clear_history = True

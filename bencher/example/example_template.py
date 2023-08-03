@@ -1,7 +1,6 @@
-import panel as pn
-import numpy as np
 import holoviews as hv
-
+import numpy as np
+import panel as pn
 
 pn.extension(sizing_mode="stretch_width")
 
@@ -38,4 +37,4 @@ template = pn.template.FastListTemplate(
     main=[
         pn.pane.HoloViews(hv.DynamicMap(sine) + hv.DynamicMap(cosine), sizing_mode="stretch_both")
     ],
-).servable()
+).show()

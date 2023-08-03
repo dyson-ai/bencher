@@ -1,5 +1,6 @@
-import bencher as bch
 import numpy as np
+
+import bencher as bch
 
 
 class VolumeSample(bch.ParametrizedSweep):
@@ -30,7 +31,7 @@ class VolumeSample(bch.ParametrizedSweep):
     )
 
 
-class VolumeResult(bch.ParametrizedOutput):
+class VolumeResult(bch.ParametrizedSweep):
     """A class to represent the properties of a volume sample."""
 
     vec_dir = bch.ResultVec(3, "vec", doc="A vector field with an interesting shape")

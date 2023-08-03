@@ -1,9 +1,11 @@
-from bencher.bencher import Bench, BenchRunCfg
+# pylint: disable=duplicate-code
+
 import pathlib
+
+from bencher.bencher import Bench, BenchRunCfg
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-
 
 bench = Bench("Bencher_Example_Categorical", bench_function, ExampleBenchCfgIn)
 

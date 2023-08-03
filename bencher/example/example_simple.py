@@ -1,27 +1,27 @@
 # you need this import to be able to reference a class from a static method in that class
 from __future__ import annotations
 
+import math
+import random
+import time
+from datetime import datetime
+from enum import auto
+
+from strenum import StrEnum
+
 from bencher import (
     Bench,
     BenchRunCfg,
-    FloatSweep,
     EnumSweep,
-    ResultVar,
-    ParametrizedOutput,
-    ParametrizedSweep,
+    FloatSweep,
     OptDir,
+    ParametrizedSweep,
+    ResultVar,
 )
-import math
-import random
-from enum import auto
-from strenum import StrEnum
-
-from datetime import datetime
-import time
 
 
-# define a class with the output variables you want to benchmark. It must inherit from ParametrizedOutput (which inherits from param.Parametrized). Param is a python library that allows you to track metadata about parameters.  I would recommend reading at least the intro: https://param.holoviz.org/.  I have extended param with some extra metadata such is the units of the variable so that it can automaticaly be plotted.
-class OutputCfg(ParametrizedOutput):
+# define a class with the output variables you want to benchmark. It must inherit from ParametrizedSweep (which inherits from param.Parametrized). Param is a python library that allows you to track metadata about parameters.  I would recommend reading at least the intro: https://param.holoviz.org/.  I have extended param with some extra metadata such is the units of the variable so that it can automaticaly be plotted.
+class OutputCfg(ParametrizedSweep):
     """A class for defining what variables the benchmark function returns and metadata on those variables"""
 
     # Documenting the variable here with enables automatic summaries of what has been benchmarked.

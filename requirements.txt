@@ -1,7 +1,6 @@
 #data managment
-pandas==2.0.2
+pandas
 xarray
-param
 numpy
 strenum
 
@@ -9,10 +8,9 @@ strenum
 diskcache
 
 #plotting
-seaborn==0.12.2
-matplotlib==3.7.1
-panel
-hvplot
+seaborn
+matplotlib
+hvplot==0.8.4
 plotly
 optuna
 scikit-learn #needed by optuna 
@@ -22,5 +20,6 @@ pytest
 pytest-cov  
 hypothesis
 str2bool
-black==23.3.0
+black==23.7.0
+ruff
 mypy
