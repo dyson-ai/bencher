@@ -12,6 +12,26 @@
 			"command": "pylint $(git ls-files '*.py') "
 		},
 		{
+			"label": "code coverage",
+			"type": "shell",
+			"command": "coverage run -m pytest ; coverage report"
+		},
+		{
+			"label": "check CI",
+			"detail": "Runs the basic formatting and linting checks performed by CI",
+			"type": "shell",
+			"dependsOn": [
+				"autoformat",
+				"pylint",
+				"code coverage"
+			],
+			"dependsOrder": "sequence",
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"

@@ -40,6 +40,7 @@ test = [
   "hypothesis>6",
   "ruff>=0.0.28",
   "mypy>=1.4,<1.4.1",
+  "coverage<=7.2.7,>=7.2.7",
 ]
 
 [project.urls]
