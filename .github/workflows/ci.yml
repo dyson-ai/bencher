@@ -38,7 +38,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flit
-        flit install --extras all
+        flit install --extras test
     - run: |
         pylint $(git ls-files '*.py')
     - name: Test with pytest
