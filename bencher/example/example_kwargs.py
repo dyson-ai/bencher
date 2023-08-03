@@ -1,12 +1,6 @@
 import math
 
-from bencher import (
-    Bench,
-    FloatSweep,
-    ParametrizedSweep,
-    ResultVar,
-    StringSweep,
-)
+import bencher as bch
 
 
 def bench_function(
@@ -27,10 +21,10 @@ def bench_function(
     return output
 
 
-class InputCfg(ParametrizedSweep):
+class InputCfg(bch.ParametrizedSweep):
     """This class is used to define the default values and bounds of the variables to benchmark."""
 
-    theta = FloatSweep(
+    theta = bch.FloatSweep(
         default=0.0,
         bounds=[0.0, 6.0],
         doc="Input angle to the trig function",
@@ -38,7 +32,7 @@ class InputCfg(ParametrizedSweep):
         samples=10,
     )
 
-    offset = FloatSweep(
+    offset = bch.FloatSweep(
         default=0.0,
         bounds=[0.0, 3.0],
         doc="Add an offset voltage to the result of the trig function",
@@ -46,16 +40,16 @@ class InputCfg(ParametrizedSweep):
         samples=5,
     )
 
-    trig_func = StringSweep(["sin", "cos"], doc="Select what trigonometric function use")
+    trig_func = bch.StringSweep(["sin", "cos"], doc="Select what trigonometric function use")
 
 
-class OutputVoltage(ParametrizedSweep):
-    voltage = ResultVar(units="v", doc="Output voltage")
+class OutputVoltage(bch.ParametrizedSweep):
+    voltage = bch.ResultVar(units="v", doc="Output voltage")
 
 
 if __name__ == "__main__":
     # pass the objective function you have defined to bencher.  The other examples pass the InputCfg type, but this benchmark function accepts a kwargs dictionary so you don't need to pass the inputCfg type.
-    bench = Bench("Bencher_Example_Categorical", bench_function)
+    bench = bch.Bench("Bencher_Example_Categorical", bench_function)
 
     # Bencher needs to know the metadata of the variable in order to automatically sweep and plot it, so it is passed by using param's metadata syntax.  InputCfg.param.* is how to access the metadata defined in the class description.
     bench.plot_sweep(
