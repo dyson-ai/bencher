@@ -1,9 +1,10 @@
 # THIS IS NOT A WORKING EXAMPLE YET
 # pylint: disable=duplicate-code
-from bencher import Bench, BenchRunCfg, ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 import hvplot
+import bencher as bch
+from bencher import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
-bench = Bench("Bencher_Example_Simple", bench_function, ExampleBenchCfgIn)
+bench = bch.Bench("Bencher_Example_Simple", bench_function, ExampleBenchCfgIn)
 
 
 if __name__ == "__main__":
@@ -27,7 +28,7 @@ if __name__ == "__main__":
             return out
         """,
         post_description="Here you can see the output plot of sin theta between 0 and pi.  In the tabs at the top you can also view 3 tabular representations of the data",
-        run_cfg=BenchRunCfg(
+        run_cfg=bch.BenchRunCfg(
             auto_plot=True,
             use_cache=False,
             repeats=2,
