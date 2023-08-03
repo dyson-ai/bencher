@@ -511,9 +511,8 @@ class BenchCfg(BenchRunCfg):
 
     def get_hv_dataset(self, reduce="auto"):
         ds = convert_dataset_bool_dims_to_str(self.ds)
-        # todo improve reduce logic
         if reduce is None:
-            raise RuntimeError("none is deprecated")
+            raise RuntimeError("none is deprecated")  # todo remove this in future
 
         if reduce == "auto":
             if self.repeats > 1:
@@ -528,16 +527,6 @@ class BenchCfg(BenchRunCfg):
         if reduce == "reduce":
             return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
-
-        # if reduce is None:
-        #     reduce = self.repeats > 1
-        # if reduce:
-        #     return hv.Dataset(ds).reduce(["repeat"], np.mean, np.std)
-        #     # return hv.Dataset(self.ds).reduce(["repeat"], np.mean, np.std, "nearest")
-
-        # if self.repeats == 1:
-        #     return hv.Dataset(ds.squeeze("repeat", drop=True))
-        # return hv.Dataset(ds)
 
     def to(self, hv_type: hv.Chart, reduce="auto", **kwargs) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
