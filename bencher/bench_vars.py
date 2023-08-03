@@ -387,7 +387,7 @@ class TimeEvent(TimeBase):
         self.samples_debug = min(self.samples, samples_debug)
 
 
-class StringSweep(SweepBase,Selector):
+class StringSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of strings"""
 
     __slots__ = shared_slots
@@ -633,7 +633,7 @@ class ResultVar(Number):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.direction))
-    
+
     def as_dim(self) -> hv.Dimension:
         return hv.Dimension((self.name, self.name), unit=self.units)
 
