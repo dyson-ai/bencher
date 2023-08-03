@@ -54,6 +54,10 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 
+[tool.pylint.'MESSAGES CONTROL']
+disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code"
+enable = "no-else-return,consider-using-in"
+
 [tool.black]
 line-length = 100
 
