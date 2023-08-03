@@ -16,7 +16,7 @@ import bencher as bch
 from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
 from bencher.utils import hmap_canonical_input
 
-from enum import auto, Enum
+from enum import Enum, auto
 
 
 class ReduceType(Enum):
@@ -518,14 +518,11 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: ReduceType = ReduceType.auto):
+    def get_hv_dataset(self, reduce: ReduceType = ReduceType.auto) -> hv.Dataset:
         ds = convert_dataset_bool_dims_to_str(self.ds)
 
         if reduce == ReduceType.auto:
-            if self.repeats > 1:
-                reduce = ReduceType.reduce
-            else:
-                reduce = ReduceType.squeeze
+            reduce = ReduceType.reduce if self.repeats > 1 else ReduceType.squeeze
 
         result_vars_str = [r.name for r in self.result_vars]
         hvds = hv.Dataset(ds, vdims=result_vars_str)
@@ -546,7 +543,7 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset("reduce").to(hv.ErrorBars)
+        return self.get_hv_dataset(ReduceType.reduce).to(hv.ErrorBars)
 
     def to_points(self, reduce: ReduceType = ReduceType.auto) -> hv.Points:
         ds = self.get_hv_dataset(reduce)
@@ -559,11 +556,6 @@ class BenchCfg(BenchRunCfg):
         ds = self.get_hv_dataset(ReduceType.none)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
-        # ds = self.get_hv_dataset(reduce)
-        # pt = ds.to(hv.Points)
-        # if reduce:
-        # pt *= ds.to(hv.ErrorBars)
-        # return pt
 
     def to_bar(self, reduce: ReduceType = ReduceType.auto) -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
