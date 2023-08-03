@@ -18,6 +18,8 @@ from bencher.example.example_vector import example_vector
 from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 
+from bencher.example.example_sample_cache import run_example_sample_cache
+
 
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
@@ -80,3 +82,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_holosweep_tap(self) -> None:
         self.assertIsNotNone(example_holosweep_tap(self.create_run_cfg()))
+
+    def test_sample_cache(self) -> None:
+        self.assertIsNotNone(run_example_sample_cache(self.create_run_cfg()))

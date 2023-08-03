@@ -53,8 +53,7 @@ def example_sample_cache(run_cfg: bch.BenchRunCfg, trigger_crash: bool) -> bch.B
     return bencher
 
 
-if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg()
+def run_example_sample_cache(ex_run_cfg=bch.BenchRunCfg()):
     ex_run_cfg.repeats = 1
 
     # this will store the result of of every call to crashy_fn
@@ -75,6 +74,10 @@ if __name__ == "__main__":
 
     ex_run_cfg.repeats = 2
 
-    example_sample_cache(ex_run_cfg, trigger_crash=False).plot()
+    return example_sample_cache(ex_run_cfg, trigger_crash=False)
 
     # see the test_sample_cache for a more detailed explanation of the mechanisms of the cache
+
+
+if __name__ == "__main__":
+    run_example_sample_cache().plot()
