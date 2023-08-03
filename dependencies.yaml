@@ -18,6 +18,7 @@ pip:
   - buildrun: numpy
   - buildrun: scikit-learn
   - buildrun: str2bool
+  - buildrun: mypy
 
   
 
