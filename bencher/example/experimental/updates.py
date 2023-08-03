@@ -9,11 +9,12 @@ import panel as pn
 from holoviews import opts
 from holoviews.streams import Buffer
 
-hv.extension("bokeh")
-
-
 from tornado.ioloop import PeriodicCallback
 from tornado import gen
+
+
+hv.extension("bokeh")
+
 
 count = 0
 buffer = Buffer(np.zeros((0, 2)), length=50)
@@ -77,4 +78,4 @@ cb.start()
 # update_button = pn.widgets.Button(name="Update Grid", button_type="primary")
 # update_button.on_click(update_callback)
 
-pn.Row(viz).show()
+pn.Row(plot()).show()
