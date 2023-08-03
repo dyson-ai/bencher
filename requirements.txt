@@ -22,3 +22,4 @@ hypothesis
 str2bool
 black==23.7.0
 ruff
+mypy
