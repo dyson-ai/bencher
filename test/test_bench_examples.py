@@ -47,7 +47,7 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_simple_float(self) -> None:
         self.assertIsNotNone(example_1D_float(self.create_run_cfg()))
 
-    def test_example_cat_float(self) -> None:
+    def test_example_float_cat(self) -> None:
         self.assertIsNotNone(run_example_float_cat(self.create_run_cfg()))
 
     def test_example_time_event(self) -> None:

@@ -84,6 +84,7 @@ class SurfacePlot:
             # hv.config.image_rtol = 1.0
 
             ds = hv.Dataset(mean)
+            print(ds)
 
             surface = ds.to(hv.Surface)
             try:
