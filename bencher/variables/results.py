@@ -30,15 +30,7 @@ class ResultVar(Number):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1(self)
-
-
-class ResultHmap(param.Parameter):
-    """A class to represent a holomap return type"""
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1(self)
+        return hash_sha1((self.units, self.direction))
 
 
 class ResultVec(param.List):
@@ -146,3 +138,11 @@ class ResultList(param.Parameter):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1((self.units, self.dim_name, self.dim_units))
+
+
+class ResultHmap(param.Parameter):
+    """A class to represent a holomap return type"""
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
