@@ -1,6 +1,8 @@
 from collections import namedtuple
 import xarray as xr
 from sortedcontainers import SortedDict
+import hashlib
+import re
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -45,3 +47,34 @@ def get_nearest_coords(ds: xr.Dataset, **kwargs) -> dict:
     for k, v in cd.items():
         cd2[k] = v["data"]
     return cd2
+
+
+def hash_sha1(var: any) -> str:
+    """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
+
+
+def capitalise_words(message: str):
+    """Given a string of lowercase words, capitalise them
+
+    Args:
+        message (str): lower case string
+
+    Returns:
+        _type_: capitalised string
+    """
+    capitalized_message = " ".join([word.capitalize() for word in message.split(" ")])
+    return capitalized_message
+
+
+def un_camel(camel: str) -> str:
+    """Given a snake_case string return a CamelCase string
+
+    Args:
+        camel (str): camelcase string
+
+    Returns:
+        str: uncamelcased string
+    """
+
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))

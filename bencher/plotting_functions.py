@@ -13,7 +13,8 @@ import seaborn as sns
 from holoviews import opts
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
-from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultVec
+from bencher.bench_vars import ResultList, ResultVar, ResultVec
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 import plotly.graph_objs as go
 
 

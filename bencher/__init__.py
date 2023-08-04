@@ -9,7 +9,6 @@ from .bench_vars import (
     TimeSnapshot,
     EnumSweep,
     BoolSweep,
-    ParametrizedSweep,
     ResultVar,
     ResultVec,
     ResultList,
@@ -21,3 +20,4 @@ from .bench_vars import (
 from .plotting.plot_library import PlotLibrary, PlotTypes
 from .plotting.plot_filter import PlotInput, VarRange, PlotFilter
 from .utils import hmap_canonical_input, get_nearest_coords, make_namedtuple
+from .variables.parametrised_sweep import ParametrizedSweep

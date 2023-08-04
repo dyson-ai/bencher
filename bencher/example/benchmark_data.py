@@ -15,11 +15,11 @@ from bencher.bench_vars import (
     FloatSweep,
     IntSweep,
     OptDir,
-    ParametrizedSweep,
     ResultVar,
     StringSweep,
 )
 
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 class PostprocessFn(StrEnum):
     """Apply a postprocessing step to the data"""

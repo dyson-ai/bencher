@@ -13,11 +13,14 @@ from bencher.bench_vars import (
     FloatSweep,
     IntSweep,
     OptDir,
-    ParametrizedSweep,
+    
     StringSweep,
     TimeEvent,
     TimeSnapshot,
 )
+
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+
 
 
 def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
