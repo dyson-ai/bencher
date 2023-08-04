@@ -19,7 +19,7 @@ dependencies = [
   "xarray>=2023.7,<=2023.7",
   "plotly>=5.15,<=5.15",
   "sortedcontainers>=2.4,<=2.4",
-  "pandas>=2.0,>=2.0.1",
+  "pandas>=2.0,<=2.0.1",
   "strenum>0.4",
   "seaborn>0.1.2",
   "scikit-learn>=1.3",
