@@ -13,13 +13,14 @@ import seaborn as sns
 from holoviews import opts
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
-from bencher.bench_vars import ParametrizedSweep, ResultList, ResultVar, ResultVec
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 import plotly.graph_objs as go
+
+from bencher.variables.results import ResultVar, ResultVec, ResultList
 
 
 hv.extension("bokeh", "plotly")
 # hv.extension("plotly", "bokeh")
-
 # hv.extension("plotly")
 
 

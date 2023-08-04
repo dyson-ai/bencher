@@ -7,8 +7,8 @@ from typing import Callable, List
 import panel as pn
 
 from bencher.bench_cfg import BenchCfg, PltCntCfg
-from bencher.bench_vars import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotInput, PlotProvider
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
 class PlotCollection:

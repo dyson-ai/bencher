@@ -13,16 +13,15 @@ from sortedcontainers import SortedDict
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
-from bencher.bench_vars import (
-    IntSweep,
-    ParametrizedSweep,
-    ResultList,
-    ResultVar,
-    ResultVec,
-    TimeEvent,
-    TimeSnapshot,
-    hash_sha1,
-)
+
+
+from bencher.variables.sweep_base import hash_sha1
+from bencher.variables.inputs import IntSweep
+from bencher.variables.time import TimeSnapshot, TimeEvent
+from bencher.variables.results import ResultVar, ResultVec, ResultList
+
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import

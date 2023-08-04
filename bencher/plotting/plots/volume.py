@@ -6,7 +6,8 @@ import logging
 import xarray as xr
 
 from bencher.bench_cfg import BenchCfg
-from bencher.bench_vars import ParametrizedSweep
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
