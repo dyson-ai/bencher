@@ -241,6 +241,8 @@ def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> L
 
 
 class SweepBase(param.Parameter):
+    # __slots__ = shared_slots
+
     def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider
 
@@ -280,8 +282,31 @@ class SweepBase(param.Parameter):
             default=self.default,
         )
 
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_extra_vars(self)
 
-class BoolSweep(Boolean, SweepBase):
+    def sampling_str(self, debug=False) -> str:
+        """Generate a string representation of the of the sampling procedure
+
+        Args:
+            debug (bool): If true then self.samples_debug is used
+        """
+
+        samples = self.values(debug)
+        object_str = ",".join([str(i) for i in samples])
+        # return f"sampling {self.name} from: [{object_str}]"
+        return f"sampling {self.name} from {object_str} in {len(samples)} samples"
+
+    def int_float_sampling_str(name, samples) -> str:
+        """Generate a string representation of the of the sampling procedure
+
+        Args:
+            debug (bool): If true then self.samples_debug is used
+        """
+
+
+class BoolSweep(SweepBase, Boolean):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
@@ -295,39 +320,19 @@ class BoolSweep(Boolean, SweepBase):
 
     def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        print(self.sampling_str(debug))
+        # print(self.sampling_str(debug))
         return [True, False]
 
-    def sampling_str(self, debug: bool) -> str:
-        """Generate a string representation of the sampling procedure"""
-        return f"sampling {self.name} from: [True,False]"
 
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
-
-
-class TimeBase(Selector):
+class TimeBase(SweepBase, Selector):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
 
     __slots__ = shared_slots
 
     def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        print(self.sampling_str(debug))
+        # print(self.sampling_str(debug))
         return self.objects
-
-    def sampling_str(self, debug: bool) -> str:
-        """Generate a string representation of the time sample
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-        return f"sampling from [The Past to {self.objects[0]}]"
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
 
 
 class TimeSnapshot(TimeBase):
@@ -410,17 +415,8 @@ class StringSweep(SweepBase, Selector):
 
     def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        print(self.sampling_str(debug))
+        # print(self.sampling_str(debug))
         return self.objects
-
-    def sampling_str(self, debug: bool) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-        object_str = ",".join([i for i in self.objects])
-        return f"sampling {self.name} from: [{object_str}]"
 
 
 class EnumSweep(SweepBase, Selector):
@@ -455,25 +451,6 @@ class EnumSweep(SweepBase, Selector):
         else:
             outputs = self.objects
         return outputs
-
-    def sampling_str(self, debug=False) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-        object_str = ",".join([i for i in self.values(debug)])
-        return f"sampling {self.name} from: [{object_str}]"
-
-
-def int_float_sampling_str(name, samples) -> str:
-    """Generate a string representation of the of the sampling procedure
-
-    Args:
-        debug (bool): If true then self.samples_debug is used
-    """
-
-    return f"sampling {name} from {samples} in {len(samples)} samples"
 
 
 class IntSweep(SweepBase, Integer):
@@ -523,14 +500,6 @@ class IntSweep(SweepBase, Integer):
                 return [self.sample_values[i] for i in indices]
             else:
                 return self.sample_values
-
-    def sampling_str(self, debug: bool) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-        debug (bool): If true then self.samples_debug is used
-        """
-        return int_float_sampling_str(self.name, self.values(debug))
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -588,14 +557,6 @@ class FloatSweep(SweepBase, Number):
             else:
                 return self.sample_values
 
-    def sampling_str(self, debug: bool) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-        return int_float_sampling_str(self.name, self.values(debug))
-
 
 class OptDir(StrEnum):
     minimize = auto()
@@ -617,6 +578,9 @@ class ResultVar(Number):
     def as_dim(self) -> hv.Dimension:
         return hv.Dimension((self.name, self.name), unit=self.units)
 
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 class ResultHmap(param.Parameter):
     """A class to represent a holomap return type"""
