@@ -1,7 +1,8 @@
 import unittest
 from hypothesis import given, strategies as st  # pylint: disable=unused-import
 import pytest
-from bencher.bench_vars import IntSweep
+
+from bencher.variables.inputs import IntSweep
 
 
 class TestVarSweeps(unittest.TestCase):

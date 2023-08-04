@@ -4,7 +4,7 @@ import param
 from param import Parameterized
 import holoviews as hv
 from bencher.utils import make_namedtuple, hash_sha1
-from .results import ResultVar, ResultList, ResultVec, ResultSeries
+from bencher.variables.results import ResultVar, ResultList, ResultVec, ResultSeries
 
 
 class ParametrizedSweep(Parameterized):

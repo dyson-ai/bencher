@@ -3,7 +3,7 @@ from typing import List
 
 from pandas import Timestamp
 from param import Selector
-from .sweep_base import SweepBase, shared_slots
+from bencher.variables.sweep_base import SweepBase, shared_slots
 
 
 class TimeBase(SweepBase, Selector):
@@ -31,9 +31,9 @@ class TimeSnapshot(TimeBase):
         **params,
     ):
         if type(datetime_src) == str:
-            Selector.__init__(self, [datetime_src], instantiate=True, **params)
+            TimeBase.__init__(self, [datetime_src], instantiate=True, **params)
         else:
-            Selector.__init__(
+            TimeBase.__init__(
                 self,
                 [Timestamp(datetime_src)],
                 instantiate=True,
@@ -60,7 +60,7 @@ class TimeEvent(TimeBase):
         samples_debug: int = 2,
         **params,
     ):
-        Selector.__init__(
+        TimeBase.__init__(
             self,
             [time_event],
             instantiate=True,

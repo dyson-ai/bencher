@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 import param
 from param import Parameterized
@@ -61,7 +61,22 @@ def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> L
 
 
 class SweepBase(param.Parameter):
-    def values(self):
+    # def __init__(self, **params):
+    # super().__init__(**params)
+    # self.units = ""
+    # slots = ["units", "samples", "samples_debug"]
+
+    # __slots__ = shared_slots
+
+    def values(self, debug: bool) -> List[Any]:
+        """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
+
+        Args:
+            debug (bool): Return a reduced set of samples to enable fast debugging of a data generation and plotting pipeline. Ideally when debug is true, 2 samples will be returned
+
+        Returns:
+            List[Any]: A list of samples from the variable
+        """
         raise NotImplementedError
 
     def hash_persistent(self) -> str:
@@ -79,13 +94,6 @@ class SweepBase(param.Parameter):
         object_str = ",".join([str(i) for i in samples])
         # return f"sampling {self.name} from: [{object_str}]"
         return f"sampling {self.name} from {object_str} in {len(samples)} samples"
-
-    def int_float_sampling_str(name, samples) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
 
     def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider
@@ -121,7 +129,7 @@ class SweepBase(param.Parameter):
             )
         return hv.Dimension(
             (self.name, self.name),
-            unit=self.units,
+            unit=self.units,  # pylint: disable=no-member
             values=self.values(debug),
             default=self.default,
         )

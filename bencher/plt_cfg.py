@@ -6,9 +6,10 @@ import seaborn as sns
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
-from bencher.bench_vars import ResultVec, ResultVar
 from bencher.optuna_conversions import collect_optuna_plots
 from bencher.variables.parametrised_sweep import ParametrizedSweep
+
+from bencher.variables.results import ResultVar, ResultVec
 
 import xarray as xr
 

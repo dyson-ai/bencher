@@ -16,7 +16,7 @@ from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 import plotly.graph_objs as go
 
-from .variables.results import ResultVar, ResultVec, ResultList
+from bencher.variables.results import ResultVar, ResultVec, ResultList
 
 
 hv.extension("bokeh", "plotly")

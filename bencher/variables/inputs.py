@@ -1,12 +1,11 @@
 # pylint: skip-file
 
-
 from enum import Enum
 from typing import List
 
 import numpy as np
 from param import Boolean, Integer, Number, Selector
-from .sweep_base import SweepBase, shared_slots
+from bencher.variables.sweep_base import SweepBase, shared_slots
 
 
 class BoolSweep(SweepBase, Boolean):
@@ -21,7 +20,7 @@ class BoolSweep(SweepBase, Boolean):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug=False) -> List[bool]:
+    def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         # print(self.sampling_str(debug))
         return [True, False]
@@ -68,7 +67,7 @@ class EnumSweep(SweepBase, Selector):
             selector_list = enum_type  # already a list of enums
         else:
             # create a list of enums from the enum type definition
-            selector_list = [e for e in enum_type]
+            selector_list = list(enum_type)
         Selector.__init__(self, selector_list, **params)
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
@@ -102,8 +101,7 @@ class IntSweep(SweepBase, Integer):
             if samples is None:
                 if self.bounds is None:
                     raise RuntimeError("You must define bounds for integer types")
-                else:
-                    self.samples = 1 + self.bounds[1] - self.bounds[0]
+                self.samples = 1 + self.bounds[1] - self.bounds[0]
             else:
                 self.samples = samples
             self.sample_values = None
@@ -124,17 +122,13 @@ class IntSweep(SweepBase, Integer):
                     self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
                 )
             ]
-        else:
-            if debug:
-                indices = [
-                    int(i)
-                    for i in np.linspace(
-                        0, len(self.sample_values) - 1, self.samples_debug, dtype=int
-                    )
-                ]
-                return [self.sample_values[i] for i in indices]
-            else:
-                return self.sample_values
+        if debug:
+            indices = [
+                int(i)
+                for i in np.linspace(0, len(self.sample_values) - 1, self.samples_debug, dtype=int)
+            ]
+            return [self.sample_values[i] for i in indices]
+        return self.sample_values
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -180,14 +174,10 @@ class FloatSweep(SweepBase, Number):
         samps = self.samples_debug if debug else self.samples
         if self.sample_values is None:
             return np.linspace(self.bounds[0], self.bounds[1], samps)
-        else:
-            if debug:
-                indices = [
-                    int(i)
-                    for i in np.linspace(
-                        0, len(self.sample_values) - 1, self.samples_debug, dtype=int
-                    )
-                ]
-                return [self.sample_values[i] for i in indices]
-            else:
-                return self.sample_values
+        if debug:
+            indices = [
+                int(i)
+                for i in np.linspace(0, len(self.sample_values) - 1, self.samples_debug, dtype=int)
+            ]
+            return [self.sample_values[i] for i in indices]
+        return self.sample_values

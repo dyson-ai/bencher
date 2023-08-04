@@ -7,16 +7,11 @@ import param
 from optuna.visualization import plot_param_importances, plot_pareto_front
 
 from bencher.bench_cfg import BenchCfg
-from bencher.bench_vars import (
-    BoolSweep,
-    EnumSweep,
-    FloatSweep,
-    IntSweep,
-    OptDir,
-    StringSweep,
-    TimeEvent,
-    TimeSnapshot,
-)
+
+
+from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
+from bencher.variables.time import TimeSnapshot, TimeEvent
+from bencher.variables.results import OptDir
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 

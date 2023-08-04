@@ -9,15 +9,9 @@ from enum import auto
 
 from strenum import StrEnum
 
-from bencher.bench_vars import (
-    BoolSweep,
-    EnumSweep,
-    FloatSweep,
-    IntSweep,
-    OptDir,
-    ResultVar,
-    StringSweep,
-)
+
+from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
+from bencher.variables.results import ResultVar, OptDir
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
