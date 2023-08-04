@@ -1,6 +1,5 @@
 """Example of how to perform a parameter sweep for categorical variables"""
 import bencher as bch
-import time
 
 
 # All the examples will be using the data structures and benchmark function defined in this file
@@ -44,7 +43,7 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         run_cfg=run_cfg,
     )
 
-    # this does not work yet because it tries to find min and max of categorical values
+    # # this does not work yet because it tries to find min and max of categorical values
     # bench.plot_sweep(
     #     input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
     #     result_vars=[ExampleBenchCfgOut.param.out_sin],
@@ -68,14 +67,11 @@ def run_example_float_cat(ex_run_cfg=bch.BenchRunCfg()) -> None:
 
     example_float_cat(ex_run_cfg)
 
-    time.sleep(1)
-
     ex_run_cfg.clear_cache = False
     ex_run_cfg.clear_history = False
     ex_run_cfg.time_event = "run 2"
 
     example_float_cat(ex_run_cfg)
-    time.sleep(1)
 
     ex_run_cfg.time_event = "run 3"
     return example_float_cat(ex_run_cfg)
