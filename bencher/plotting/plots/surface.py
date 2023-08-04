@@ -89,7 +89,7 @@ class SurfacePlot:
             try:
                 surface = surface.opts(colorbar=True)
             except Exception as e:
-                logging.warn(e)
+                logging.warning(e)
 
             if bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
