@@ -13,11 +13,14 @@ def objective(trial):
 study = optuna.create_study(sampler=TPESampler())
 study.optimize(objective, n_trials=10)
 
+rast_range = 1.5
+
 
 class ToyOptimisationProblem(bch.ParametrizedSweep):
-    input1 = bch.FloatSweep(default=0, bounds=[-1, 1], samples=10)
-    input2 = bch.FloatSweep(default=0, bounds=[-1, 1], samples=10)
-    offset = bch.FloatSweep(default=0, bounds=[-1, 1])
+    input1 = bch.FloatSweep(default=0, bounds=[-rast_range, rast_range], samples=10)
+    input2 = bch.FloatSweep(default=0, bounds=[-rast_range, rast_range], samples=10)
+    offset = bch.FloatSweep(default=0, bounds=[-rast_range, rast_range])
+
     bump_scale = bch.FloatSweep(default=1.5, bounds=[1, 10])
 
     # RESULTS
@@ -38,9 +41,6 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
             + self.bump_scale * np.size(x)
             + self.offset
         )
-        # if enumVal == exampleEnum.enum3:
-        # output -= 1.0
-        # print(getHostname(), "inp", x, offset, enumVal, "out", output)
         return self.get_results_values_as_dict()
 
 
