@@ -10,7 +10,6 @@ from bencher.plotting.plot_types import PlotTypes
 
 from bencher.plotting_functions import wrap_long_time_labels
 import holoviews as hv
-from holoviews import opts
 
 
 from bencher.variables.results import ResultVar
@@ -85,7 +84,12 @@ class SurfacePlot:
             # hv.config.image_rtol = 1.0
 
             ds = hv.Dataset(mean)
+
             surface = ds.to(hv.Surface)
+            try:
+                surface = surface.opts(colorbar=True)
+            except Exception as e:
+                logging.warn(e)
 
             if bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
@@ -106,7 +110,6 @@ class SurfacePlot:
                 zlabel=xr_cfg.zlabel,
                 title=xr_cfg.title,
                 backend="plotly",
-                colorbar=True,
             )
 
             if bench_cfg.render_plotly:

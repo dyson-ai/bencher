@@ -216,20 +216,7 @@ class BenchPlotter:
                 sns_cfg = BenchPlotter.plot_float_cnt_1(sns_cfg, plt_cnt_cfg)
             sns_cfg = BenchPlotter.get_axes_and_title(rv, sns_cfg, plt_cnt_cfg)
             surf_col.append(plt_func.plot_sns(bench_cfg, rv, sns_cfg))
-        else:
-            if plt_cnt_cfg.float_cnt == 2:
-                xr_cfg = BenchPlotter.plot_float_cnt_2(plt_cnt_cfg, rv, bench_cfg.debug)
-                if plt_cnt_cfg.cat_cnt == 0:
-                    surf_col.append(plt_func.plot_surface_plotly(bench_cfg, rv, xr_cfg))
-                else:
-                    try:
-                        surf_col.append(plt_func.plot_surface_holo(bench_cfg, rv, xr_cfg))
-                    except (TypeError, KeyError) as e:
-                        surf_col.append(
-                            pn.pane.Markdown(
-                                f"3D (cat,float,cat) inputs -> (float) output plots are not supported yet, error:{e}"
-                            )
-                        )
+
         return surf_col
 
     @staticmethod
