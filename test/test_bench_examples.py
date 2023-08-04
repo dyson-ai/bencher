@@ -1,5 +1,4 @@
 import unittest
-import pytest
 import bencher as bch
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
@@ -13,7 +12,6 @@ from bencher.example.example_float3D import example_floats3D
 from bencher.example.example_float3D_cone import example_cone
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
-from bencher.example.example_vector import example_vector
 from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.example_float2D_scatter import example_floats2D_scatter
@@ -67,10 +65,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_floats3D_workflow(self) -> None:
         self.assertIsNotNone(example_floats3D_workflow(self.create_run_cfg()))
-
-    @pytest.mark.skip
-    def test_example_vector(self) -> None:
-        self.assertIsNotNone(example_vector())
 
     def test_plot_library(self) -> None:
         self.assertIsNotNone(example_plot_library(self.create_run_cfg()))

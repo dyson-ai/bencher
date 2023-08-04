@@ -114,35 +114,35 @@ class ResultSeries:
             self.values = values
 
 
-class ResultList(param.Parameter):
-    """A class to unknown size vector result variable"""
-
-    __slots__ = ["units", "dim_name", "dim_units", "indices"]
-
-    def __init__(
-        self,
-        index_name: str,
-        index_units: str,
-        default=ResultSeries(),
-        units="ul",
-        indices: List[float] = None,
-        instantiate=True,
-        **params,
-    ):
-        param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
-        self.units = units
-        self.dim_name = index_name
-        self.dim_units = index_units
-        self.indices = indices
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1((self.units, self.dim_name, self.dim_units))
-
-
 class ResultHmap(param.Parameter):
     """A class to represent a holomap return type"""
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)
+
+
+# class ResultList(param.Parameter):
+#     """A class to unknown size vector result variable"""
+
+#     __slots__ = ["units", "dim_name", "dim_units", "indices"]
+
+#     def __init__(
+#         self,
+#         index_name: str,
+#         index_units: str,
+#         default=ResultSeries(),
+#         units="ul",
+#         indices: List[float] = None,
+#         instantiate=True,
+#         **params,
+#     ):
+#         param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
+#         self.units = units
+#         self.dim_name = index_name
+#         self.dim_units = index_units
+#         self.indices = indices
+
+#     def hash_persistent(self) -> str:
+#         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+#         return hash_sha1((self.units, self.dim_name, self.dim_units))
