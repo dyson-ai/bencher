@@ -92,8 +92,6 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
         if rv.size == 2:
             plt.figure(figsize=(4, 4))
             fg = plot_scatter2D_sns(bench_cfg, rv)
-        elif rv.size == 3:
-            return plot_scatter3D_px(bench_cfg, rv)
         else:
             return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
     elif type(rv) == ResultVar:
@@ -193,37 +191,6 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
     return px.scatter(df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram")
 
 
-def plot_scatter3D_px(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plotly:
-    """Given a benchCfg generate a 3D scatter plot with plotly express
-
-    Args:
-        bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedSweep): result variable to plot
-
-    Returns:
-        pn.pane.Plotly: A 3d scatter plot as a holoview in a pane
-    """
-
-    bench_cfg = wrap_long_time_labels(bench_cfg)
-
-    df = bench_cfg.get_dataframe()
-
-    names = rv.index_names()  # get the column names of the vector result
-
-    if bench_cfg.input_vars:
-        color = bench_cfg.input_vars[0].name
-    else:
-        color = None
-
-    if bench_cfg.over_time:
-        if len(names) < 3:  # only a 2d vector result so use the time axis as the third point
-            names.insert(0, bench_cfg.iv_time[0].name)
-
-    return px.scatter_3d(
-        df, x=names[0], y=names[1], z=names[2], color=color, symbol=color, size_max=2
-    )
-
-
 def save_fig(
     bench_cfg: BenchCfg,
     sns_cfg: PltCfgBase,
@@ -264,9 +231,6 @@ def plot_surface_plotly(
     Returns:
         pn.pane.Plotly: A 2d surface plot as a holoview in a pane
     """
-
-    if type(rv) == ResultVec:
-        return plot_scatter3D_px(bench_cfg, rv)
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
