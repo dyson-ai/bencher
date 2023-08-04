@@ -41,6 +41,28 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
     return study
 
 
+def to_optuna(worker, bench_cfg: BenchCfg, n_trials=100, sampler=optuna.samplers.TPESampler()):
+    directions = []
+    for rv in bench_cfg.result_vars:
+        if rv.direction != OptDir.none:
+            directions.append(rv.direction)
+
+    study = optuna.create_study(sampler=sampler, directions=directions, study_name=bench_cfg.title)
+
+    def wrapped(trial):
+        kwargs = {}
+        for iv in bench_cfg.input_vars:
+            kwargs[iv.name] = sweep_var_to_suggest(iv, trial)
+        result = worker(**kwargs)
+        output = []
+        for rv in bench_cfg.result_vars:
+            output.append(result[rv.name])
+        return tuple(output)
+
+    study.optimize(wrapped, n_trials=n_trials)
+    return study
+
+
 def extract_study_to_dataset(study: optuna.Study, bench_cfg: BenchCfg) -> BenchCfg:
     """Extract an optuna study into an xarray dataset for easy plotting
 

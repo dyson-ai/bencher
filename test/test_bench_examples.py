@@ -15,7 +15,7 @@ from bencher.example.example_workflow import example_floats2D_workflow, example_
 from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.example_float2D_scatter import example_floats2D_scatter
-
+from bencher.example.optuna.example_optuna import optuna_rastrigin
 
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
@@ -74,3 +74,7 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_float2D_scatter(self) -> None:
         self.assertIsNotNone(example_floats2D_scatter(self.create_run_cfg()))
+
+    def test_optuna_rastrigin(self)->None
+        self.assertIsNotNone(optuna_rastrigin(self.create_run_cfg()))
+
