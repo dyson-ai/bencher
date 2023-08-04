@@ -1,5 +1,4 @@
 import unittest
-import pytest
 import bencher as bch
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
