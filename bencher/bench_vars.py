@@ -422,10 +422,6 @@ class StringSweep(SweepBase, Selector):
         object_str = ",".join([i for i in self.objects])
         return f"sampling {self.name} from: [{object_str}]"
 
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
-
 
 class EnumSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of enums"""
@@ -468,10 +464,6 @@ class EnumSweep(SweepBase, Selector):
         """
         object_str = ",".join([i for i in self.values(debug)])
         return f"sampling {self.name} from: [{object_str}]"
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
 
 
 def int_float_sampling_str(name, samples) -> str:
@@ -540,10 +532,6 @@ class IntSweep(SweepBase, Integer):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
-
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
         if callable(val):
@@ -608,10 +596,6 @@ class FloatSweep(SweepBase, Number):
         """
         return int_float_sampling_str(self.name, self.values(debug))
 
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
-
 
 class OptDir(StrEnum):
     minimize = auto()
@@ -629,10 +613,6 @@ class ResultVar(Number):
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1((self.units, self.direction))
 
     def as_dim(self) -> hv.Dimension:
         return hv.Dimension((self.name, self.name), unit=self.units)
