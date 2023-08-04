@@ -333,16 +333,16 @@ class TimeBase(Selector):
 class TimeSnapshot(TimeBase):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
 
-    __slots__ = shared_slots
-
-    def __init__(
-        self,
-        datetime_src: datetime | str,
-        units: str = "time",
-        samples: int = None,
-        samples_debug: int = 2,
-        **params,
-    ):
+    class TimeSnapshot(TimeBase):
+        __slots__ = shared_slots
+        def __init__(
+            self,
+            datetime_src: datetime | str,
+            units: str = "time",
+            samples: int = None,
+            samples_debug: int = 2,
+            **params,
+        ):
         if type(datetime_src) == str:
             Selector.__init__(self, [datetime_src], instantiate=True, **params)
         else:
@@ -363,16 +363,16 @@ class TimeSnapshot(TimeBase):
 class TimeEvent(TimeBase):
     """A class to represent a discrete event in time where the data was captured i.e a series of pull requests.  Here time is discrete and can't be interpolated, to represent time as a continous value use the TimeSnapshot class.  The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
 
-    __slots__ = shared_slots
-
-    def __init__(
-        self,
-        time_event: str,
-        units: str = "event",
-        samples: int = None,
-        samples_debug: int = 2,
-        **params,
-    ):
+    class TimeEvent(TimeBase):
+        __slots__ = shared_slots
+        def __init__(
+            self,
+            time_event: str,
+            units: str = "event",
+            samples: int = None,
+            samples_debug: int = 2,
+            **params,
+        ):
         Selector.__init__(
             self,
             [time_event],
@@ -390,16 +390,16 @@ class TimeEvent(TimeBase):
 class StringSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of strings"""
 
-    __slots__ = shared_slots
-
-    def __init__(
-        self,
-        string_list: List[str],
-        units: str = "ul",
-        samples: int = None,
-        samples_debug: int = 2,
-        **params,
-    ):
+    class StringSweep(SweepBase, Selector):
+        __slots__ = shared_slots
+        def __init__(
+            self,
+            string_list: List[str],
+            units: str = "ul",
+            samples: int = None,
+            samples_debug: int = 2,
+            **params,
+        ):
         Selector.__init__(self, string_list, instantiate=True, **params)
         self.units = units
         if samples is None:
@@ -430,11 +430,11 @@ class StringSweep(SweepBase, Selector):
 class EnumSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of enums"""
 
-    __slots__ = shared_slots
-
-    def __init__(
-        self, enum_type: Enum | List[Enum], units="ul", samples=None, samples_debug=2, **params
-    ):
+    class EnumSweep(SweepBase, Selector):
+        __slots__ = shared_slots
+        def __init__(
+            self, enum_type: Enum | List[Enum], units="ul", samples=None, samples_debug=2, **params
+        ):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = type(enum_type) is list
         if list_of_enums:
@@ -730,18 +730,18 @@ class ResultSeries:
 class ResultList(param.Parameter):
     """A class to unknown size vector result variable"""
 
-    __slots__ = ["units", "dim_name", "dim_units", "indices"]
-
-    def __init__(
-        self,
-        index_name: str,
-        index_units: str,
-        default=ResultSeries(),
-        units="ul",
-        indices: List[float] = None,
-        instantiate=True,
-        **params,
-    ):
+    class ResultList(param.Parameter):
+        __slots__ = ["units", "dim_name", "dim_units", "indices"]
+        def __init__(
+            self,
+            index_name: str,
+            index_units: str,
+            default=ResultSeries(),
+            units="ul",
+            indices: List[float] = None,
+            instantiate=True,
+            **params,
+        ):
         param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
         self.units = units
         self.dim_name = index_name
