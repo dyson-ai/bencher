@@ -91,4 +91,11 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 omit = ["*/test/*", "__init__.py"]
 
 [tool.coverage.report]
-exclude_also = ["if __name__ == .__main__.:"]
+exclude_also = [
+  "def __repr__",
+  "if False:",
+  "if 0:",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+]
