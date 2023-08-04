@@ -18,7 +18,7 @@ from bencher.bench_plot_server import BenchPlotServer
 from bencher.variables.sweep_base import hash_sha1
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec, ResultList
+from bencher.variables.results import ResultVar, ResultVec
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -595,24 +595,7 @@ class Bench(BenchPlotServer):
                             set_xarray_multidim(
                                 bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
                             )
-            elif type(rv) == ResultList:
-                # TODO generalise this for arbirary dimensions, only works for 1 input dim so far.
-                dimname = bench_cfg.input_vars[0].name
-                input_value = function_input[dimname]
 
-                new_dataarray = xr.DataArray(
-                    [result_value.values],
-                    name=rv.name,
-                    coords={dimname: [input_value], rv.dim_name: result_value.index},
-                )
-
-                dataset_key = (bench_cfg.hash_value, rv.name)
-                if dataset_key in self.ds_dynamic:
-                    self.ds_dynamic[dataset_key] = xr.concat(
-                        [self.ds_dynamic[dataset_key], new_dataarray], dimname
-                    )
-                else:
-                    self.ds_dynamic[dataset_key] = new_dataarray
             else:
                 raise RuntimeError("Unsupported result type")
 
