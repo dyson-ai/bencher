@@ -10,7 +10,6 @@ import pandas as pd
 import panel as pn
 import plotly.express as px
 import seaborn as sns
-from holoviews import opts
 
 from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep

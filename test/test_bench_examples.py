@@ -16,6 +16,7 @@ from bencher.example.example_workflow import example_floats2D_workflow, example_
 from bencher.example.example_vector import example_vector
 from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
+from bencher.example.example_float2D_scatter import example_floats2D_scatter
 
 
 class TestBenchExamples(unittest.TestCase):
@@ -76,3 +77,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_holosweep_tap(self) -> None:
         self.assertIsNotNone(example_holosweep_tap(self.create_run_cfg()))
+
+    def test_float2D_scatter(self) -> None:
+        self.assertIsNotNone(example_floats2D_scatter(self.create_run_cfg()))
