@@ -62,26 +62,6 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
-    if bench_cfg.use_holoview:
-        opts.defaults(
-            opts.Curve(
-                colorbar=True,
-                colorbar_opts={"title": rv.name},
-                width=600,
-                height=600,
-                xlabel=sns_cfg.xlabel,
-                ylabel=sns_cfg.ylabel,
-                title=sns_cfg.title,
-            )
-        )
-        ds = hv.Dataset(bench_cfg.ds[rv.name].mean("repeat"))
-
-        if bench_cfg.over_time:
-            agg = ds.aggregate("over_time", np.mean, spreadfn=np.std)
-            plot = hv.Spread(agg) * hv.Curve(agg)
-        else:
-            plot = ds.to(hv.Bars) * ds.to(hv.Scatter).opts(jitter=50)
-        return plot
     plt.rcParams.update({"figure.max_open_warning": 0})
 
     # if type(rv) == ResultVec:
