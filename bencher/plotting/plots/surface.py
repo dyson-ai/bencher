@@ -60,14 +60,13 @@ class SurfacePlot:
         Returns:
             pn.pane.holoview: A 2d surface plot as a holoview in a pane
         """
-        if False & PlotFilter(
+        if PlotFilter(
             float_range=VarRange(2, 2),
-            cat_range=VarRange(-1, None),
+            cat_range=VarRange(0, None),
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
         ).matches(pl_in.plt_cnt_cfg):
             xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_cfg.debug)
-            # hv.extension("plotly")
             bench_cfg = pl_in.bench_cfg
             rv = pl_in.rv
 
@@ -77,18 +76,11 @@ class SurfacePlot:
 
             da = bench_cfg.ds[rv.name]
 
+            # hv.extension("plotly")
+            # hv.extension("bokeh", "plotly")
+
             mean = da.mean("repeat")
 
-            opts.defaults(
-                opts.Surface(
-                    colorbar=True,
-                    width=800,
-                    height=800,
-                    zlabel=xr_cfg.zlabel,
-                    title=xr_cfg.title,
-                    # image_rtol=0.002,
-                )
-            )
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
             # hv.config.image_rtol = 1.0
 
@@ -98,11 +90,31 @@ class SurfacePlot:
             if bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
                 surface *= (
-                    hv.Dataset(mean + std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                    hv.Dataset(mean + std_dev)
+                    .to(hv.Surface)
+                    .opts(alpha=alpha, colorbar=False, backend="plotly")
                 )
                 surface *= (
-                    hv.Dataset(mean - std_dev).to(hv.Surface).opts(alpha=alpha, colorbar=False)
+                    hv.Dataset(mean - std_dev)
+                    .to(hv.Surface)
+                    .opts(alpha=alpha, colorbar=False, backend="plotly")
                 )
-            return pn.Column(surface, name=PlotTypes.surface_hv)
+
+            surface = surface.opts(
+                width=800,
+                height=800,
+                zlabel=xr_cfg.zlabel,
+                title=xr_cfg.title,
+                backend="plotly",
+                colorbar=True,
+            )
+
+            if bench_cfg.render_plotly:
+                hv.extension("plotly")
+                out = surface
+            else:
+                # using render disabled the holoviews sliders :(
+                out = hv.render(surface, backend="plotly")
+            return pn.Column(out, name=PlotTypes.surface_hv)
 
         return None
