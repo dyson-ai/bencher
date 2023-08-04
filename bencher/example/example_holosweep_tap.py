@@ -75,15 +75,11 @@ class PlotFunctions(bch.ParametrizedSweep):
         return self.get_results_values_as_dict(holomap=pt)
 
 
-# from holoviews.selection import Ho
-
-
 def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     wv = PlotFunctions()
-    bch_wv = bch.Bench("waves", wv.calc, plot_lib=None)
+    bench = bch.Bench("waves", wv.calc, plot_lib=None)
 
-    # bch_wv.clear_tag_from_cache("")
-    res = bch_wv.plot_sweep(
+    res = bench.plot_sweep(
         "phase",
         input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
         result_vars=[wv.param.fn_output],
@@ -92,19 +88,21 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
     posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
+    sld1 = wv.param.phase.as_slider(run_cfg.debug)
 
     def tap_plot(x, y):
         print(x, y)
-
-        selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=0, repeat=1)
+        selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=sld1.value, repeat=1)
         return res.hmap[bch.hmap_canonical_input(selres)]
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
-    bch_wv.append(heatmap + tap_dmap)
+    bench.append(heatmap + tap_dmap)
 
-    bch_wv.append_tab(res.to_curve)
-    return bch_wv
+    bench.append(sld1)
+
+    bench.append_tab(res.to_curve)
+    return bench
 
 
 if __name__ == "__main__":
