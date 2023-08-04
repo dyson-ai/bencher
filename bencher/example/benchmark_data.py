@@ -21,6 +21,7 @@ from bencher.bench_vars import (
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
+
 class PostprocessFn(StrEnum):
     """Apply a postprocessing step to the data"""
 

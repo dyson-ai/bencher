@@ -1,15 +1,10 @@
-from datetime import datetime
-from enum import Enum, auto
-from typing import List, Tuple
+from typing import List
 
-import numpy as np
 import param
-from pandas import Timestamp
-from param import Boolean, Integer, Number, Parameterized, Selector
-from strenum import StrEnum
+from param import Parameterized
 import holoviews as hv
 import panel as pn
-from bencher.utils import make_namedtuple, hash_sha1
+from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
 # param does not work with multiple inheritance so define here

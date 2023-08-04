@@ -15,7 +15,6 @@ from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
 from bencher.bench_vars import (
     IntSweep,
-    
     ResultList,
     ResultVar,
     ResultVec,

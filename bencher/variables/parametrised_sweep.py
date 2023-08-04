@@ -1,15 +1,10 @@
-from datetime import datetime
-from enum import Enum, auto
 from typing import List, Tuple
 
-import numpy as np
 import param
-from pandas import Timestamp
-from param import Boolean, Integer, Number, Parameterized, Selector
-from strenum import StrEnum
+from param import Parameterized
 import holoviews as hv
-import panel as pn
 from bencher.utils import make_namedtuple, hash_sha1
+from .results import ResultVar, ResultList, ResultVec, ResultSeries
 
 
 class ParametrizedSweep(Parameterized):

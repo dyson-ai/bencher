@@ -1,16 +1,11 @@
-from datetime import datetime
-from enum import Enum, auto
-from typing import List, Tuple
+from enum import auto
+from typing import List
 
-import numpy as np
 import param
-from pandas import Timestamp
-from param import Boolean, Integer, Number, Parameterized, Selector
+from param import Number
 from strenum import StrEnum
 import holoviews as hv
-import panel as pn
-from bencher.utils import make_namedtuple, hash_sha1
-from .sweep_base import SweepBase, shared_slots
+from bencher.utils import hash_sha1
 
 
 class OptDir(StrEnum):
