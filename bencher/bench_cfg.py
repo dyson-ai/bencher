@@ -13,7 +13,9 @@ import holoviews as hv
 import numpy as np
 
 import bencher as bch
-from bencher.bench_vars import OptDir, TimeEvent, TimeSnapshot, describe_variable, hash_sha1
+from .variables.sweep_base import hash_sha1, describe_variable
+from .variables.time import TimeSnapshot, TimeEvent
+from .variables.results import OptDir
 from bencher.utils import hmap_canonical_input
 
 from enum import Enum, auto

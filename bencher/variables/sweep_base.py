@@ -61,7 +61,31 @@ def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> L
 
 
 class SweepBase(param.Parameter):
-    # __slots__ = shared_slots
+    def values(self):
+        raise NotImplementedError
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_extra_vars(self)
+
+    def sampling_str(self, debug=False) -> str:
+        """Generate a string representation of the of the sampling procedure
+
+        Args:
+            debug (bool): If true then self.samples_debug is used
+        """
+
+        samples = self.values(debug)
+        object_str = ",".join([str(i) for i in samples])
+        # return f"sampling {self.name} from: [{object_str}]"
+        return f"sampling {self.name} from {object_str} in {len(samples)} samples"
+
+    def int_float_sampling_str(name, samples) -> str:
+        """Generate a string representation of the of the sampling procedure
+
+        Args:
+            debug (bool): If true then self.samples_debug is used
+        """
 
     def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider
@@ -101,26 +125,3 @@ class SweepBase(param.Parameter):
             values=self.values(debug),
             default=self.default,
         )
-
-    def hash_persistent(self) -> str:
-        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_extra_vars(self)
-
-    def sampling_str(self, debug=False) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-
-        samples = self.values(debug)
-        object_str = ",".join([str(i) for i in samples])
-        # return f"sampling {self.name} from: [{object_str}]"
-        return f"sampling {self.name} from {object_str} in {len(samples)} samples"
-
-    def int_float_sampling_str(name, samples) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
