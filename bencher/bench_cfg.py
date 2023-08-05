@@ -22,10 +22,10 @@ from enum import Enum, auto
 
 
 class ReduceType(Enum):
-    AUTO = auto()
-    SQUEEZE = auto()
-    REDUCE = auto()
-    NONE = auto()
+    auto = auto()
+    squeeze = auto()
+    reduce = auto()
+    none = auto()
 
 
 def to_filename(
