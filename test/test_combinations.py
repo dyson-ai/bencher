@@ -32,10 +32,10 @@ class BenchCfgTest(bch.ParametrizedSweep):
     float2 = bch.FloatSweep(default=0, bounds=[0, 1], doc="generic float 2", samples=3)
     int1 = bch.IntSweep(default=0, bounds=[0, 3], doc="generic int 1")
     int2 = bch.IntSweep(default=0, bounds=[0, 3], doc="generic int 2")
-    bool1 = bch.BoolSweep(doc="generic bool 1")
-    bool2 = bch.BoolSweep(doc="generic bool 2")
-    enum1 = bch.EnumSweep(Enum1)
-    enum2 = bch.EnumSweep(Enum2)
+    bool1 = bch.BOOLSWEEP(doc="generic bool 1")
+    bool2 = bch.BOOLSWEEP(doc="generic bool 2")
+    enum1 = bch.ENUMSWEEP(Enum1)
+    enum2 = bch.ENUMSWEEP(Enum2)
 
 
 class BenchCfgTestOut(bch.ParametrizedSweep):
