@@ -55,7 +55,7 @@ class Lineplot(PlotBase):
                 for tick in ax.get_xticklabels():
                     tick.set_rotation(45)
 
-            return Catplot.plot_postprocess(fg, sns_cfg, PlotTypes.lineplot)
+            return Catplot.plot_postprocess(fg, sns_cfg, PlotTypes.LINEPLOT)
         return None
 
     # def lineplot_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
