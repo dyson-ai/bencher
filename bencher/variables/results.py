@@ -8,10 +8,10 @@ import holoviews as hv
 from bencher.utils import hash_sha1
 
 
-class OptDir(StrEnum):
-    minimize = auto()
-    maximize = auto()
-    none = auto()  # If none this var will not appear in pareto plots
+class OPTDIR(StrEnum):
+    MINIMIZE = auto()
+    MAXIMIZE = auto()
+    NONE = auto()  # If none this var will not appear in pareto plots
 
 
 class ResultVar(Number):
@@ -19,7 +19,7 @@ class ResultVar(Number):
 
     __slots__ = ["units", "direction"]
 
-    def __init__(self, units="ul", direction: OptDir = OptDir.minimize, **params):
+    def __init__(self, units="ul", direction: OPTDIR = OPTDIR.MINIMIZE, **params):
         Number.__init__(self, **params)
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
@@ -38,7 +38,7 @@ class ResultVec(param.List):
 
     __slots__ = ["units", "direction", "size"]
 
-    def __init__(self, size, units="ul", direction: OptDir = OptDir.minimize, **params):
+    def __init__(self, size, units="ul", direction: OPTDIR = OPTDIR.MINIMIZE, **params):
         param.List.__init__(self, **params)
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
