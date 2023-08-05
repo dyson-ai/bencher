@@ -21,7 +21,7 @@ from bencher.utils import hmap_canonical_input
 from enum import Enum, auto
 
 
-class REDUCETYPE(Enum):
+class ReduceType(Enum):
     AUTO = auto()
     SQUEEZE = auto()
     REDUCE = auto()
@@ -520,7 +520,7 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: REDUCETYPE = REDUCETYPE.AUTO) -> hv.Dataset:
+    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
@@ -542,10 +542,10 @@ class BenchCfg(BenchRunCfg):
             return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
 
-    def to(self, hv_type: hv.Chart, reduce: REDUCETYPE = REDUCETYPE.AUTO, **kwargs) -> hv.Chart:
+    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
 
-    def to_curve(self, reduce: REDUCETYPE = REDUCETYPE.AUTO) -> hv.Curve:
+    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
@@ -555,7 +555,7 @@ class BenchCfg(BenchRunCfg):
     def to_error_bar(self) -> hv.Bars:
         return self.get_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
 
-    def to_points(self, reduce: REDUCETYPE = REDUCETYPE.AUTO) -> hv.Points:
+    def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
@@ -567,14 +567,14 @@ class BenchCfg(BenchRunCfg):
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
 
-    def to_bar(self, reduce: REDUCETYPE = REDUCETYPE.AUTO) -> hv.Bars:
+    def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
         ds = self.get_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_heatmap(self, reduce: REDUCETYPE = REDUCETYPE.AUTO, **kwargs) -> hv.HeatMap:
+    def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         return self.to(hv.HeatMap, reduce, **kwargs)
 
     def to_nd_layout(self) -> hv.NdLayout:
