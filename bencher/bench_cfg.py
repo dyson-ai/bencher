@@ -21,7 +21,7 @@ from bencher.utils import hmap_canonical_input
 from enum import Enum, auto
 
 
-class ReduceType(Enum):
+class REDUCETYPE(Enum):
     AUTO = auto()
     SQUEEZE = auto()
     REDUCE = auto()
@@ -520,7 +520,7 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+    def get_hv_dataset(self, reduce: REDUCETYPE = REDUCETYPE.AUTO) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
@@ -531,14 +531,14 @@ class BenchCfg(BenchRunCfg):
         """
         ds = convert_dataset_bool_dims_to_str(self.ds)
 
-        if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
+        if reduce == REDUCETYPE.AUTO:
+            reduce = REDUCETYPE.REDUCE if self.repeats > 1 else REDUCETYPE.SQUEEZE
 
         result_vars_str = [r.name for r in self.result_vars]
         hvds = hv.Dataset(ds, vdims=result_vars_str)
-        if reduce == ReduceType.REDUCE:
+        if reduce == REDUCETYPE.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
-        if reduce == ReduceType.SQUEEZE:
+        if reduce == REDUCETYPE.SQUEEZE:
             return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
 
