@@ -8,7 +8,7 @@ from bencher.variables.sweep_base import SweepBase, shared_slots
 # pylint: disable=super-init-not-called
 
 
-class BOOLSWEEP(SweepBase, Boolean):
+class BoolSweep(SweepBase, Boolean):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
@@ -25,7 +25,7 @@ class BOOLSWEEP(SweepBase, Boolean):
         return [True, False]
 
 
-class STRINGSWEEP(SweepBase, Selector):
+class StringSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of strings"""
 
     __slots__ = shared_slots
@@ -51,7 +51,7 @@ class STRINGSWEEP(SweepBase, Selector):
         return self.objects
 
 
-class ENUMSWEEP(SweepBase, Selector):
+class EnumSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of enums"""
 
     __slots__ = shared_slots
@@ -85,7 +85,7 @@ class ENUMSWEEP(SweepBase, Selector):
         return outputs
 
 
-class INTSWEEP(SweepBase, Integer):
+class IntSweep(SweepBase, Integer):
     """A class to reprsent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values"]
