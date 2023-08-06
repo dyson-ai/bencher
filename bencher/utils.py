@@ -78,3 +78,24 @@ def un_camel(camel: str) -> str:
     """
 
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
+
+def parse_pylint_error(error_message: str) -> dict:
+    """Parse a pylint error message into a structured representation.
+
+    Args:
+        error_message (str): The pylint error message.
+
+    Returns:
+        dict: A structured representation of the pylint error.
+    """
+    # TODO: Implement this function
+    pass
+
+def handle_error(error_message: str):
+    """Handle an error message.
+
+    Args:
+        error_message (str): The error message.
+    """
+    # TODO: Update this function to use parse_pylint_error when a pylint error is encountered
+    pass
