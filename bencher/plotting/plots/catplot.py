@@ -49,16 +49,16 @@ class Catplot:
         return None
 
     def swarmplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "swarm", PlotTypes.SWARMPLOT)
+    return self.catplot_common(pl_in, "swarm", PlotTypes.SWARMPLOT)
 
     def violinplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "violin", PlotTypes.VIOLINPLOT)
+    return self.catplot_common(pl_in, "violin", PlotTypes.VIOLINPLOT)
 
     def boxplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "box", PlotTypes.BOXPLOT)
+    return self.catplot_common(pl_in, "box", PlotTypes.BOXPLOT)
 
     def barplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "bar", PlotTypes.BARPLOT)
+    return self.catplot_common(pl_in, "bar", PlotTypes.BARPLOT)
 
     def boxenplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "boxen", PlotTypes.BOXENPLOT)
+    return self.catplot_common(pl_in, "boxen", PlotTypes.BOXENPLOT)
