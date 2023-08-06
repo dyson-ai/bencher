@@ -52,7 +52,7 @@ class Catplot:
         return self.catplot_common(pl_in, "swarm", PlotTypes.SWARMPLOT)
 
     def violinplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-    return self.catplot_common(pl_in, "violin", PlotTypes.VIOLINPLOT)
+        return self.catplot_common(pl_in, "violin", PlotTypes.VIOLINPLOT)
 
     def boxplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
     return self.catplot_common(pl_in, "box", PlotTypes.BOXPLOT)
