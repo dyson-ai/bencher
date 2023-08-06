@@ -89,6 +89,7 @@ def parse_pylint_error(error_message: str) -> dict:
         dict: A structured representation of the pylint error.
     """
     # TODO: Implement this function
+
     pass
 
 def handle_error(error_message: str):
@@ -98,4 +99,5 @@ def handle_error(error_message: str):
         error_message (str): The error message.
     """
     # TODO: Update this function to use parse_pylint_error when a pylint error is encountered
+
     pass
