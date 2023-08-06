@@ -5,6 +5,7 @@
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/blooop/bencher/branch/main/graph/badge.svg?token=AVFC5D5Z43)](https://codecov.io/gh/blooop/bencher)
 ![PyPI](https://img.shields.io/pypi/v/holobench)
+![License](https://img.shields.io/pypi/l/bencher)
 
 https://codecov.io/gh/blooop/bencher/branch/main/graphs/tree.svg?token=AVFC5D5Z43
 
