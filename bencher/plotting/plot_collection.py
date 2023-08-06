@@ -43,7 +43,7 @@ class PlotCollection:
             plot_fn (Callable): A user defined plotting function.  If no function is supplied, the name of the function is looked up from the list of plotter sources that have been added to the plot collection.
 
         Returns:
-            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add("barplot").remove("swarmplot")
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add("BARPLOT").remove("SWARMPLOT")
         """
         if plot_fn is None:
             if plot_name in self.plotter_providers:
@@ -61,7 +61,7 @@ class PlotCollection:
             plot_name (List[str]): A list of names of the plot to add. The list can contain either strings, or StrEnum PlotTypes (which is also a string)
 
         Returns:
-            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add_list(["barplot","boxplot"]).remove("swarmplot")
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.add_list(["BARPLOT","BOXPLOT"]).remove("SWARMPLOT")
         """
         for p in plot_names:
             self.add(p)
@@ -74,7 +74,7 @@ class PlotCollection:
             plot_name (str): The name of the plot to add.  This can either be a string, or from the StrEnum PlotTypes (which is also a string)
 
         Returns:
-            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.remove(swarmplot).add(barplot)
+            PlotCollection: Returns a reference to this class so that you can call with a fluent api, e.g plot_coll.remove(SWARMPLOT).add(BARPLOT)
         """
         self.plotters.pop(plot_name)
         return self
