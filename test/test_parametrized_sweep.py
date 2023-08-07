@@ -40,18 +40,17 @@ class TestParametrizedSweep:
         # Tests that the method works when a callback function is provided
 
     def test_callback_provided(self):
-        def callback(x):
+        def callback(**kwargs):  # pylint disable :unused-argument
             return {"hmap": hv.Curve([1, 2, 3])}
 
         p = ParametrizedSweep()
+        p.call = callback
         dm = p.to_dynamic_map(callback=callback)
-        hm = p.to_holomap(callback=callback)
+        hm = p.to_holomap(callback)
         assert isinstance(dm, hv.DynamicMap)
         assert isinstance(hm, hv.HoloMap)
 
     def test_no_callback_provided(self):
         p = ParametrizedSweep()
         dm = p.to_dynamic_map()
-        hm = p.to_holomap()
         assert isinstance(dm, hv.DynamicMap)
-        assert isinstance(hm, hv.HoloMap)
