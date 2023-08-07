@@ -4,6 +4,8 @@
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/blooop/bencher/branch/main/graph/badge.svg?token=AVFC5D5Z43)](https://codecov.io/gh/blooop/bencher)
+![PyPI](https://img.shields.io/pypi/v/holobench)
+![License](https://img.shields.io/pypi/l/bencher)
 
 
 ## Intro
@@ -36,4 +38,3 @@ Bencher is designed to work with stochastic pure functions with no side effects.
         store the results using the input hash as a key
     deduce the type of plot based on the input types
     return data and plot
- 
