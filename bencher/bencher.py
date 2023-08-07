@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
-import warnings
 
 import numpy as np
 import panel as pn
