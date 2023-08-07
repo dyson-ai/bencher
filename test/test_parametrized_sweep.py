@@ -40,7 +40,7 @@ class TestParametrizedSweep:
         # Tests that the method works when a callback function is provided
 
     def test_callback_provided(self):
-        def callback(**kwargs):  # pylint disable :unused-argument
+        def callback(**kwargs):  # pylint: disable=unused-argument
             return {"hmap": hv.Curve([1, 2, 3])}
 
         p = ParametrizedSweep()
