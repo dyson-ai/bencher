@@ -11,19 +11,6 @@ from bencher.utils import hash_sha1
 shared_slots = ["units", "samples", "samples_debug"]
 
 
-def sweep_hash(parameter: Parameterized) -> int:
-    """Generate a hash for a sweep variable
-
-    Returns:
-        int: hash
-    """
-    curhash = 0
-    for v in parameter.values():
-        print(f"value:{v}, hash:{hash_sha1(v)}")
-        curhash = hash_sha1((curhash, hash_sha1(v)))
-    return curhash
-
-
 def hash_extra_vars(parameter: Parameterized) -> int:
     """hash extra meta vars in the parameter
 
