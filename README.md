@@ -7,7 +7,6 @@
 ![PyPI](https://img.shields.io/pypi/v/holobench)
 ![License](https://img.shields.io/pypi/l/bencher)
 
-https://codecov.io/gh/blooop/bencher/branch/main/graphs/tree.svg?token=AVFC5D5Z43
 
 ## Intro
 
