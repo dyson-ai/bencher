@@ -17,6 +17,11 @@
 			"command": "coverage run -m pytest ; coverage report"
 		},
 		{
+			"label": "pytest duration",
+			"type": "shell",
+			"command": "pytest --durations=0"
+		},
+		{
 			"label": "check CI",
 			"detail": "Runs the basic formatting and linting checks performed by CI",
 			"type": "shell",
