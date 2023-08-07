@@ -4,7 +4,7 @@
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/blooop/bencher/branch/main/graph/badge.svg?token=AVFC5D5Z43)](https://codecov.io/gh/blooop/bencher)
-![PyPI](https://img.shields.io/pypi/v/holobench)
+![PyPI](https://img.shields.io/pypi/v/holobench)(https://pypi.org/project/holobench/)
 ![License](https://img.shields.io/pypi/l/bencher)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue)](https://www.python.org/downloads/release/python-310/)
 
