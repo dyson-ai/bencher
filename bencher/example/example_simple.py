@@ -131,4 +131,4 @@ if __name__ == "__main__":
     )
 
     # launch web server and view
-    bench.plot()
+    bench.show()

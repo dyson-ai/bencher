@@ -35,4 +35,4 @@ if __name__ == "__main__":
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = True
 
-    example_1D_float(ex_run_cfg).plot()
+    example_1D_float(ex_run_cfg).show()
