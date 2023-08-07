@@ -2,7 +2,7 @@ import bencher as bch
 import numpy as np
 import optuna
 from optuna.samplers import TPESampler
-from bencher.optuna_conversions import to_optuna, summarise_trial, summarise_study
+from bencher.optuna_conversions import to_optuna, summarise_study
 
 
 def objective(trial):
@@ -46,12 +46,10 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def optuna_rastrigin():
+def optuna_rastrigin(run_cfg=bch.BenchRunCfg()):
     explorer = ToyOptimisationProblem()
 
     bench = bch.Bench("Rastrigin", explorer.rastrigin)
-
-    run_cfg = bch.BenchRunCfg()
     run_cfg.use_optuna = True
 
     res = bench.plot_sweep(
@@ -61,7 +59,7 @@ def optuna_rastrigin():
         run_cfg=run_cfg,
     )
 
-    optu = to_optuna(explorer.rastrigin, res, n_trials=100)
+    optu = to_optuna(explorer.rastrigin, res, n_trials=10)
 
     bench.append(summarise_study(optu))
 

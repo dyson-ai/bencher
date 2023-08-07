@@ -345,7 +345,7 @@ def summarise_study(study: optuna.study.Study) -> None:
     row.append(plot_param_importances(study))
     try:
         row.append(plot_pareto_front(study))
-    except Exception as e:
+    except Exception:
         pass
 
     row.append(
