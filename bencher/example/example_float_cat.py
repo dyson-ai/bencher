@@ -78,4 +78,4 @@ def run_example_float_cat(ex_run_cfg=bch.BenchRunCfg()) -> None:
 
 
 if __name__ == "__main__":
-    run_example_float_cat().plot()
+    run_example_float_cat().show()
