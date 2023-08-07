@@ -4,7 +4,11 @@ import numpy as np
 import optuna
 import panel as pn
 import param
-from optuna.visualization import plot_param_importances, plot_pareto_front
+from optuna.visualization import (
+    plot_param_importances,
+    plot_pareto_front,
+    plot_optimization_history,
+)
 
 from bencher.bench_cfg import BenchCfg
 
@@ -48,6 +52,10 @@ def to_optuna(worker, bench_cfg: BenchCfg, n_trials=100, sampler=optuna.samplers
             directions.append(rv.direction)
 
     study = optuna.create_study(sampler=sampler, directions=directions, study_name=bench_cfg.title)
+
+    study.add_trials(
+        bench_results_to_optuna_trials(bench_cfg, True)
+    )  # add already calculated results
 
     def wrapped(trial):
         kwargs = {}
@@ -245,9 +253,7 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
         return trial.suggest_float(iv.name, iv.bounds[0], iv.bounds[1])
     if iv_type in (EnumSweep, StringSweep):
         return trial.suggest_categorical(iv.name, iv.objects)
-    if iv_type == TimeSnapshot:
-        pass  # optuna does not like time
-    if iv_type == TimeEvent:
+    if iv_type in (TimeSnapshot, TimeEvent):
         pass  # optuna does not like time
     if iv_type == BoolSweep:
         return trial.suggest_categorical(iv.name, [True, False])
@@ -265,7 +271,7 @@ def cfg_from_optuna_trial(
     return cfg
 
 
-def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
+def bench_results_to_optuna_trials(bench_cfg: BenchCfg, include_meta: bool = True) -> optuna.Study:
     """Convert an xarray dataset to an optuna study so optuna can further optimise or plot the statespace
 
     Args:
@@ -315,7 +321,11 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
                 values=values,
             )
         )
+    return trials
 
+
+def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
+    trials = bench_results_to_optuna_trials(bench_cfg, include_meta)
     study = optuna_grid_search(bench_cfg)
     optuna.logging.set_verbosity(optuna.logging.CRITICAL)
     import warnings
@@ -327,3 +337,19 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
     # remove optuna gridsearch warning as we are not using their gridsearch because it has the most inexplicably terrible performance I have ever seen in my life. How can a for loop of 400 iterations start out with 100ms per loop and increase to greater than a 1000ms after 250ish iterations!?!?!??!!??!
     study.add_trials(trials)
     return study
+
+
+def summarise_study(study: optuna.study.Study) -> None:
+    row = pn.Column(name="Optimisation Results")
+    row.append(plot_optimization_history(study))
+    row.append(plot_param_importances(study))
+    try:
+        row.append(plot_pareto_front(study))
+    except Exception as e:
+        pass
+
+    row.append(
+        pn.pane.Markdown(f"```\nBest value: {study.best_value}\nParams: {study.best_params}```")
+    )
+
+    return row

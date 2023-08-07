@@ -2,7 +2,7 @@ import bencher as bch
 import numpy as np
 import optuna
 from optuna.samplers import TPESampler
-from bencher.optuna_conversions import to_optuna
+from bencher.optuna_conversions import to_optuna, summarise_trial, summarise_study
 
 
 def objective(trial):
@@ -14,6 +14,8 @@ study = optuna.create_study(sampler=TPESampler())
 study.optimize(objective, n_trials=10)
 
 rast_range = 1.5
+
+optimal_value = 0.1234
 
 
 class ToyOptimisationProblem(bch.ParametrizedSweep):
@@ -34,7 +36,7 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
             dict: dictionary of return values
         """
         self.update_params_from_kwargs(**kwargs)
-        x = np.array([self.input1 + 0.1234, self.input2 + 0.1234])
+        x = np.array([self.input1 + optimal_value, self.input2 + optimal_value])
 
         self.output = (
             np.sum(x * x - self.bump_scale * np.cos(self.bump_scale * np.pi * x))
@@ -49,19 +51,26 @@ def optuna_rastrigin():
 
     bench = bch.Bench("Rastrigin", explorer.rastrigin)
 
+    run_cfg = bch.BenchRunCfg()
+    run_cfg.use_optuna = True
+
     res = bench.plot_sweep(
         "Rastrigin",
         input_vars=[explorer.param.input1, explorer.param.input2],
         result_vars=[explorer.param.output],
-        # run_cfg=bch.BenchRunCfg(auto_plot=False),
+        run_cfg=run_cfg,
     )
 
     optu = to_optuna(explorer.rastrigin, res, n_trials=100)
-    print(optu)
+
+    bench.append(summarise_study(optu))
+
+    bench.get_panel(False).append(
+        f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
+    )
 
     return bench
 
 
 if __name__ == "__main__":
     optuna_rastrigin().show()
-    # bench_rastrigin().show()
