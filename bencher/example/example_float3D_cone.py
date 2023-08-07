@@ -93,4 +93,4 @@ def example_cone(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_cache = True
-    example_cone(ex_run_cfg).plot()
+    example_cone(ex_run_cfg).show()

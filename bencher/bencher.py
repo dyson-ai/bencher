@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
-import warnings
 
 import numpy as np
 import panel as pn
@@ -26,6 +25,9 @@ from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
 from bencher.utils import hmap_canonical_input
+
+from bencher.optuna_conversions import to_optuna, summarise_study
+from optuna import Study
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -138,6 +140,28 @@ class Bench(BenchPlotServer):
         """
         self.worker = worker
         self.worker_input_cfg = worker_input_cfg
+
+    def to_optuna(
+        self,
+        input_vars: List[ParametrizedSweep],
+        result_vars: List[ParametrizedSweep],
+        n_trials: int = 100,
+    ) -> Study:
+        bench_cfg = BenchCfg(
+            input_vars=input_vars,
+            result_vars=result_vars,
+            bench_name=self.bench_name,
+        )
+        return self.to_optuna_from_sweep(bench_cfg, n_trials)
+
+    def to_optuna_from_sweep(
+        self,
+        bench_cfg: BenchCfg,
+        n_trials: int = 100,
+    ) -> Study:
+        optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
+        self.append(summarise_study(optu))
+        return optu
 
     def plot_sweep(
         self,
@@ -348,16 +372,6 @@ class Bench(BenchPlotServer):
                 run_cfg = BenchRunCfg()
 
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
-
-    def plot(self, run_cfg: BenchRunCfg = None) -> None:
-        """DEPRECATED! use show() instead.  Launches a webserver with plots of the benchmark results, blocking
-
-        Args:
-            run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
-
-        """
-        warnings.warn("show() is deprecated, use show() instead", DeprecationWarning)
-        return self.show(run_cfg)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
