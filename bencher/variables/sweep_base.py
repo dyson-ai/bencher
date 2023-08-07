@@ -11,19 +11,6 @@ from bencher.utils import hash_sha1
 shared_slots = ["units", "samples", "samples_debug"]
 
 
-def sweep_hash(parameter: Parameterized) -> int:
-    """Generate a hash for a sweep variable
-
-    Returns:
-        int: hash
-    """
-    curhash = 0
-    for v in parameter.values():
-        print(f"value:{v}, hash:{hash_sha1(v)}")
-        curhash = hash_sha1((curhash, hash_sha1(v)))
-    return curhash
-
-
 def hash_extra_vars(parameter: Parameterized) -> int:
     """hash extra meta vars in the parameter
 
@@ -111,23 +98,24 @@ class SweepBase(param.Parameter):
         Returns:
             hv.Dimension:
         """
+        name_tuple = (self.name, self.name)
         if hasattr(self, "bounds"):
             if compute_values:
                 return hv.Dimension(
-                    (self.name, self.name),
+                    name_tuple,
                     range=tuple(self.bounds),
                     unit=self.units,
                     values=self.values(debug),
                 )
 
             return hv.Dimension(
-                (self.name, self.name),
+                name_tuple,
                 range=tuple(self.bounds),
                 unit=self.units,
                 default=self.default,
             )
         return hv.Dimension(
-            (self.name, self.name),
+            name_tuple,
             unit=self.units,  # pylint: disable=no-member
             values=self.values(debug),
             default=self.default,
