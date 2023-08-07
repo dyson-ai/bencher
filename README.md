@@ -6,6 +6,7 @@
 [![Codecov](https://codecov.io/gh/blooop/bencher/branch/main/graph/badge.svg?token=AVFC5D5Z43)](https://codecov.io/gh/blooop/bencher)
 ![PyPI](https://img.shields.io/pypi/v/holobench)
 ![License](https://img.shields.io/pypi/l/bencher)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue)](https://www.python.org/downloads/release/python-310/)
 
 
 ## Intro
