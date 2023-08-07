@@ -39,7 +39,7 @@ test = [
   "pytest>=7.4",
   "hypothesis>6",
   "ruff>=0.0.28",
-  "mypy>=1.4,<1.4.1",
+  "mypy>=1.4,<1.4.2",
   "coverage<=7.2.7,>=7.2.7",
 ]
 
