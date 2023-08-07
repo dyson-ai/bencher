@@ -100,4 +100,4 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    example_floats2D(bch.BenchRunCfg(repeats=2)).plot()
+    example_floats2D(bch.BenchRunCfg(repeats=2)).show()
