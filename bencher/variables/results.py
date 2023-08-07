@@ -75,45 +75,6 @@ class ResultVec(param.List):
         return [self.index_name(i) for i in range(self.size)]
 
 
-class ResultSeries:
-    """A class to represent a vector of results, it also includes an index similar to pandas.series"""
-
-    def __init__(self, values=None, index=None) -> None:
-        self.values = []
-        self.index = []
-        self.set_index_and_values(values, index)
-
-    def append(self, value: float | int, index: float | int | str = None) -> None:
-        """Add a value and index to the result series
-
-        Args:
-            value (float | int): result value of the series
-            index (float | int | str, optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
-        """
-
-        if index is None:
-            self.index.append(len(self.values))
-        else:
-            self.index.append(index)
-        self.values.append(value)
-
-    def set_index_and_values(
-        self, values: List[float | int], index: List[float | int | str] = None
-    ) -> None:
-        """Add values and indices to the result series
-
-        Args:
-            value (List[float | int]): result value of the series
-            index (List[float | int | str], optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
-        """
-        if values is not None:
-            if index is None:
-                self.index = list(range(len(values)))
-            else:
-                self.index = index
-            self.values = values
-
-
 class ResultHmap(param.Parameter):
     """A class to represent a holomap return type"""
 
@@ -146,3 +107,41 @@ class ResultHmap(param.Parameter):
 #     def hash_persistent(self) -> str:
 #         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
 #         return hash_sha1((self.units, self.dim_name, self.dim_units))
+
+# class ResultSeries:
+#     """A class to represent a vector of results, it also includes an index similar to pandas.series"""
+
+#     def __init__(self, values=None, index=None) -> None:
+#         self.values = []
+#         self.index = []
+#         self.set_index_and_values(values, index)
+
+#     def append(self, value: float | int, index: float | int | str = None) -> None:
+#         """Add a value and index to the result series
+
+#         Args:
+#             value (float | int): result value of the series
+#             index (float | int | str, optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+#         """
+
+#         if index is None:
+#             self.index.append(len(self.values))
+#         else:
+#             self.index.append(index)
+#         self.values.append(value)
+
+#     def set_index_and_values(
+#         self, values: List[float | int], index: List[float | int | str] = None
+#     ) -> None:
+#         """Add values and indices to the result series
+
+#         Args:
+#             value (List[float | int]): result value of the series
+#             index (List[float | int | str], optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
+#         """
+#         if values is not None:
+#             if index is None:
+#                 self.index = list(range(len(values)))
+#             else:
+#                 self.index = index
+#             self.values = values
