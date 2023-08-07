@@ -52,4 +52,4 @@ def run_example_time_event(ex_run_cfg):
 
 
 if __name__ == "__main__":
-    run_example_time_event.plot()
+    run_example_time_event.show()

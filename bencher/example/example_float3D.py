@@ -101,4 +101,4 @@ def example_floats3D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    example_floats3D(ex_run_cfg).plot()
+    example_floats3D(ex_run_cfg).show()
