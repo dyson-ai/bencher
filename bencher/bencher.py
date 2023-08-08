@@ -694,19 +694,3 @@ class Bench(BenchPlotServer):
 
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
-
-    def get_best_params(self, bench_cfg: BenchCfg) -> dict:
-        """Get a dictionary of the best found parameters found during the sweep
-
-        Args:
-            bench_cfg (BenchCfg): Results
-
-        Returns:
-            dict: dictionary of best params
-        """
-        return bench_cfg.studies[0].best_trials[0].params
-
-
-def to_bench(param_class: ParametrizedSweep) -> Bench:
-    instance = param_class()
-    return Bench(param_class.name, instance.call)
