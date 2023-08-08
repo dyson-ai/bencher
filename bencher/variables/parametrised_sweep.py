@@ -75,6 +75,12 @@ class ParametrizedSweep(Parameterized):
             inputs.pop("name")
         return make_namedtuple("inputresult", inputs=inputs, results=results)
 
+    def get_inputs_as_dict(self) -> dict:
+        """Get the key:value pairs for all the input variables"""
+        inp = self.get_input_and_results().inputs
+        vals = self.param.values()
+        return {i: vals[i] for i, v in inp.items()}
+
     def get_results_values_as_dict(self, holomap=None) -> dict:
         """Get a dictionary of result variables with the name and the current value"""
         values = self.param.values()

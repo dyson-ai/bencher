@@ -8,8 +8,6 @@ readme = "README.md"
 
 requires-python = ">=3.10"
 
-#todo
-#check that panel exe is still installed without "holoviews[reccomended]>1.16",
 
 dependencies = [
   "holoviews>=1.15,<=1.17",
@@ -39,7 +37,6 @@ test = [
   "pytest>=7.4,<=7.4",
   "hypothesis>=6.82,<=6.82.2",
   "ruff>=0.0.28,<=0.0.28",
-  "mypy>=1.4,<=1.4.2",
   "coverage<=7.2.7,>=7.2.7",
 ]
 
