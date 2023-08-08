@@ -2,7 +2,6 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import panel as pn
 import seaborn as sns
-import plotly.express as px
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes

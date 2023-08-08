@@ -1,6 +1,3 @@
-import errno
-import logging
-import os
 from textwrap import wrap
 
 import holoviews as hv
@@ -93,7 +90,6 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
     fg.fig.suptitle(sns_cfg.title)
     plt.tight_layout()
 
-  
     return pn.panel(plt.gcf())
 
 
