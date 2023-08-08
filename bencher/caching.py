@@ -31,17 +31,19 @@ class CachedParams(ParametrizedSweep):
             value = self.cache[key]
         return key, value
 
-    def return_cache(self, key: tuple) -> dict:
-        value = self.get_results_values_as_dict()
-
-        # print(value)
-        self.cache[key] = value
-        return value
-
     def cache_wrap(self, func, **kwargs):
         key, value = self.in_cache(**kwargs)
-
         if value is None:
             value = func(**kwargs)
             self.cache[key] = value
         return value
+
+    # def cache_mem(self, function):
+    #     def cache_wrap1(self, func, **kwargs):
+    #         key, value = self.in_cache(**kwargs)
+    #         if value is None:
+    #             value = function(**kwargs)
+    #             self.cache[key] = value
+    #         return value
+
+    #     return cache_wrap1
