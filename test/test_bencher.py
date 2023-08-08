@@ -208,7 +208,6 @@ class TestBencher(unittest.TestCase):
                 repeats=repeats,
                 print_pandas=False,
                 serve_panel=False,
-                save_fig=False,
                 use_optuna=True,
                 debug=True,
             ),
