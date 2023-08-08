@@ -229,7 +229,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         False, doc="Do not attempt to calculate benchmarks if no results are found in the cache"
     )
 
-    save_fig: bool = param.Boolean(False, doc="Optionally save a png of each figure")
     use_holoview: bool = param.Boolean(False, doc="Use holoview for plotting")
 
     nightly: bool = param.Boolean(
