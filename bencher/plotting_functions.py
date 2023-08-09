@@ -1,6 +1,5 @@
 from textwrap import wrap
 
-import holoviews as hv
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
