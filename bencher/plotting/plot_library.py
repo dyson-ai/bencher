@@ -45,19 +45,19 @@ class PlotLibrary:
         plt_col = PlotLibrary.setup_sources()
         # plt_col.add(PlotTypes.scatter_hv)
 
-        plt_col.add(PlotTypes.SWARMPLOT)
-        plt_col.add(PlotTypes.HEATMAP_2D)  # 2d image of a surface
-        plt_col.add(PlotTypes.LINEPLOT)
-        plt_col.add(PlotTypes.LINEPLOT_HV)
-        plt_col.add(PlotTypes.LINEPLOT_HV_OVERLAY)
-        plt_col.add(PlotTypes.LINEPLOT_HV_LAYOUT)
-        plt_col.add(PlotTypes.SCATTER_HV)
-        plt_col.add(PlotTypes.BAR_HV)
-        plt_col.add(PlotTypes.VOLUME_PLOTLY)
-        plt_col.add(PlotTypes.CONE_PLOTLY)
-        plt_col.add(PlotTypes.SCATTER2D_SNS)
-        plt_col.add(PlotTypes.SURFACE_HV)
-        plt_col.add(PlotTypes.surface_hv)
+    plt_col.add(PlotTypes.SWARMPLOT)
+    plt_col.add(PlotTypes.HEATMAP_2D)  # 2d image of a surface
+    plt_col.add(PlotTypes.LINEPLOT)
+    plt_col.add(PlotTypes.LINEPLOT_HV)
+    plt_col.add(PlotTypes.LINEPLOT_HV_OVERLAY)
+    plt_col.add(PlotTypes.LINEPLOT_HV_LAYOUT)
+    plt_col.add(PlotTypes.SCATTER_HV)
+    plt_col.add(PlotTypes.BAR_HV)
+    plt_col.add(PlotTypes.VOLUME_PLOTLY)
+    plt_col.add(PlotTypes.CONE_PLOTLY)
+    plt_col.add(PlotTypes.SCATTER2D_SNS)
+    plt_col.add(PlotTypes.SURFACE_HV)
+    plt_col.add(PlotTypes.SURFACE_HV)
         # plt_col.add(PlotTypes.hv_interactive)
 
         return plt_col
@@ -70,8 +70,8 @@ class PlotLibrary:
             PlotCollection: Only table plots
         """
         plt_col = PlotLibrary.setup_sources()
-        plt_col.add(PlotTypes.DATAFRAME_MULTI_INDEX)
-        plt_col.add(PlotTypes.DATAFRAME_MEAN)
+    plt_col.add(PlotTypes.DATAFRAME_MULTI_INDEX)
+    plt_col.add(PlotTypes.DATAFRAME_MEAN)
         return plt_col
 
     @staticmethod
@@ -93,4 +93,4 @@ class PlotLibrary:
         Returns:
             PlotCollection: No plots
         """
-        return PlotLibrary.setup_sources()
+    return PlotLibrary.setup_sources()
