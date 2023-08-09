@@ -25,9 +25,11 @@ class TestBenchExamples(unittest.TestCase):
     # def __init__(self):
     # super().__init__()
     # def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(TestBenchExamples, self).__init__(*args, **kwargs)
+        self.generate_all = False
 
     def create_run_cfg(self) -> bch.BenchRunCfg:
-        self.generate_all = False
         cfg = bch.BenchRunCfg()
         if not self.generate_all:
             cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
