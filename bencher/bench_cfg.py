@@ -186,12 +186,17 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     serve_pandas: bool = param.Boolean(
-        True,
+        False,
         doc="Serve a pandas summary on the results webpage.  If you have a large dataset consider setting this to false if the page loading is slow",
     )
 
-    serve_xarray: bool = param.Boolean(
+    serve_pandas_flat: bool = param.Boolean(
         True,
+        doc="Serve a flattend pandas summary on the results webpage.  If you have a large dataset consider setting this to false if the page loading is slow",
+    )
+
+    serve_xarray: bool = param.Boolean(
+        False,
         doc="Serve an xarray summary on the results webpage. If you have a large dataset consider setting this to false if the page loading is slow",
     )
 

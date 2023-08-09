@@ -1,6 +1,5 @@
 from textwrap import wrap
 
-import holoviews as hv
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -14,7 +13,6 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import ResultVar, ResultVec
 
 
-hv.extension("bokeh", "plotly")
 # hv.extension("plotly", "bokeh")
 # hv.extension("plotly")
 
