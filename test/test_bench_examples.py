@@ -22,63 +22,73 @@ from bencher.example.example_sample_cache import example_sample_cache
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.generate_all = False
+
     def create_run_cfg(self) -> bch.BenchRunCfg:
         cfg = bch.BenchRunCfg()
-        cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
-        cfg.debug = True  # reduce size of param sweep so tests are faster
+        if not self.generate_all:
+            cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
+            cfg.debug = True  # reduce size of param sweep so tests are faster
         cfg.clear_cache = True
         return cfg
 
+    def examples_asserts(self, example_result, save=False) -> None:
+        self.assertIsNotNone(example_result)
+        if save or self.generate_all:
+            example_result.save("bencher/example/html")
+
     def test_example_categorical(self) -> None:
-        self.assertIsNotNone(example_categorical(self.create_run_cfg()))
+        self.examples_asserts(example_categorical(self.create_run_cfg()))
 
     def test_example_floats(self) -> None:
-        self.assertIsNotNone(example_floats(self.create_run_cfg()))
+        self.examples_asserts(example_floats(self.create_run_cfg()))
 
     def test_example_floats2D(self) -> None:
-        self.assertIsNotNone(example_floats2D(self.create_run_cfg()))
+        self.examples_asserts(example_floats2D(self.create_run_cfg()))
 
     def test_example_pareto(self) -> None:
-        self.assertIsNotNone(example_pareto(self.create_run_cfg()))
+        self.examples_asserts(example_pareto(self.create_run_cfg()))
 
     def test_example_simple_cat(self) -> None:
-        self.assertIsNotNone(example_1D_cat(self.create_run_cfg()))
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
 
     def test_example_simple_float(self) -> None:
-        self.assertIsNotNone(example_1D_float(self.create_run_cfg()))
+        self.examples_asserts(example_1D_float(self.create_run_cfg()))
 
     def test_example_float_cat(self) -> None:
-        self.assertIsNotNone(run_example_float_cat(self.create_run_cfg()))
+        self.examples_asserts(run_example_float_cat(self.create_run_cfg()))
 
     def test_example_time_event(self) -> None:
-        self.assertIsNotNone(run_example_time_event(self.create_run_cfg()))
+        self.examples_asserts(run_example_time_event(self.create_run_cfg()))
 
     def test_example_float3D(self) -> None:
-        self.assertIsNotNone(example_floats3D(self.create_run_cfg()))
+        self.examples_asserts(example_floats3D(self.create_run_cfg()))
 
     def test_example_cone(self) -> None:
-        self.assertIsNotNone(example_cone(self.create_run_cfg()))
+        self.examples_asserts(example_cone(self.create_run_cfg()))
 
     def test_example_custom_sweep(self) -> None:
-        self.assertIsNotNone(example_custom_sweep(self.create_run_cfg()))
+        self.examples_asserts(example_custom_sweep(self.create_run_cfg()))
 
     def test_example_floats2D_workflow(self) -> None:
-        self.assertIsNotNone(example_floats2D_workflow(self.create_run_cfg()))
+        self.examples_asserts(example_floats2D_workflow(self.create_run_cfg()))
 
     def test_example_floats3D_workflow(self) -> None:
-        self.assertIsNotNone(example_floats3D_workflow(self.create_run_cfg()))
+        self.examples_asserts(example_floats3D_workflow(self.create_run_cfg()))
 
     def test_plot_library(self) -> None:
-        self.assertIsNotNone(example_plot_library(self.create_run_cfg()))
+        self.examples_asserts(example_plot_library(self.create_run_cfg()))
 
     def test_holosweep_tap(self) -> None:
-        self.assertIsNotNone(example_holosweep_tap(self.create_run_cfg()))
+        self.examples_asserts(example_holosweep_tap(self.create_run_cfg()))
 
     def test_float2D_scatter(self) -> None:
-        self.assertIsNotNone(example_floats2D_scatter(self.create_run_cfg()))
+        self.examples_asserts(example_floats2D_scatter(self.create_run_cfg()))
 
     def test_optuna_rastrigin(self) -> None:
-        self.assertIsNotNone(optuna_rastrigin(self.create_run_cfg()))
+        self.examples_asserts(optuna_rastrigin(self.create_run_cfg()))
 
     def test_example_sample_cache(self) -> None:
-        self.assertIsNotNone(example_sample_cache(self.create_run_cfg(), False))
+        self.examples_asserts(example_sample_cache(self.create_run_cfg(), False))

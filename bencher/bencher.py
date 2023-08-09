@@ -9,6 +9,7 @@ import param
 import xarray as xr
 from diskcache import Cache
 from sortedcontainers import SortedDict
+from contextlib import suppress
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
@@ -28,6 +29,8 @@ from bencher.utils import hmap_canonical_input
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
+from pathlib import Path
+
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -104,6 +107,7 @@ class Bench(BenchPlotServer):
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
         plot_lib: PlotCollection = PlotLibrary.default(),
+        remove_plots: list = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -130,6 +134,9 @@ class Bench(BenchPlotServer):
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
         self.cache_size = int(100e9)  # default to 100gb
+        if remove_plots is not None:
+            for i in remove_plots:
+                self.plot_lib.remove(i)
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -206,6 +213,13 @@ class Bench(BenchPlotServer):
             result_vars = []
         if const_vars is None:
             const_vars = []
+
+        # if any of the inputs have been include as constants, remove those variables from the list of constants
+        with suppress(ValueError, AttributeError):
+            for i in input_vars:
+                for c in const_vars:
+                    if i == c[0]:
+                        const_vars.remove(c)
 
         for i in input_vars:
             self.check_var_is_a_param(i, "input")
@@ -694,3 +708,20 @@ class Bench(BenchPlotServer):
 
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
+
+    def save(self, directory: str | Path = "cachedir", filename: str = None, **kwargs) -> Path:
+        """Save the result to a static html file.  Note that dynamic content will not work."""
+
+        if filename is None:
+            filename = f"{self.bench_name}.html"
+
+        base_path = Path(directory)
+        if base_path.is_dir():
+            path = base_path
+        else:
+            path = base_path.parent
+        path = path / filename
+        logging.info(f"saving html output to: {path}")
+
+        self.pane.save(filename=path, **kwargs)
+        return path
