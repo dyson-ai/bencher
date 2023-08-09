@@ -16,6 +16,7 @@ from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.example_float2D_scatter import example_floats2D_scatter
 from bencher.example.optuna.example_optuna import optuna_rastrigin
+from bencher.example.example_sample_cache import example_sample_cache
 
 
 class TestBenchExamples(unittest.TestCase):

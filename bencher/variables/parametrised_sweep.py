@@ -111,7 +111,7 @@ class ParametrizedSweep(Parameterized):
         inputs = self.get_inputs_only()
 
         if remove_dims is not None:
-            if type(remove_dims) == str:
+            if isinstance(remove_dims, str):
                 remove_dims = [remove_dims]
             filtered_inputs = [i for i in inputs if i.name not in remove_dims]
             inputs = filtered_inputs
