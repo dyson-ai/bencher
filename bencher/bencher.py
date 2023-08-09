@@ -9,6 +9,7 @@ import param
 import xarray as xr
 from diskcache import Cache
 from sortedcontainers import SortedDict
+from contextlib import suppress
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
@@ -29,6 +30,7 @@ from bencher.utils import hmap_canonical_input
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
+
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -211,6 +213,13 @@ class Bench(BenchPlotServer):
             result_vars = []
         if const_vars is None:
             const_vars = []
+
+        # if any of the inputs have been include as constants, remove those variables from the list of constants
+        with suppress(ValueError, AttributeError):
+            for i in input_vars:
+                for c in const_vars:
+                    if i == c[0]:
+                        const_vars.remove(c)
 
         for i in input_vars:
             self.check_var_is_a_param(i, "input")
