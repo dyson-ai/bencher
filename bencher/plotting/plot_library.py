@@ -93,4 +93,4 @@ class PlotLibrary:
         Returns:
             PlotCollection: No plots
         """
-    return PlotLibrary.setup_sources()
+        return PlotLibrary.setup_sources()
