@@ -1,7 +1,22 @@
-from typing import Tuple, List
-from bencher.bench_vars import ResultVar, ResultVec, ResultList, ResultSeries
 from collections import namedtuple
-import param
+import xarray as xr
+from sortedcontainers import SortedDict
+import hashlib
+import re
+
+
+def hmap_canonical_input(dic: dict) -> tuple:
+    """From a dictionary of kwargs, return a hashable representation (tuple) that is always the same for the same inputs and retains the order of the input arguments.  e.g, {x=1,y=2} -> (1,2) and {y=2,x=1} -> (1,2).  This is used so that keywords arguments can be hashed and converted the the tuple keys that are used for holomaps
+
+    Args:
+        dic (dict): dictionary with keyword arguments and values in any order
+
+    Returns:
+        tuple: values of the dictionary always in the same order and hashable
+    """
+
+    function_input = SortedDict(dic)
+    return tuple(function_input.values())
 
 
 def make_namedtuple(class_name: str, **fields) -> namedtuple:
@@ -16,59 +31,50 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def update_params_from_kwargs(self, **kwargs) -> None:
-    """Given a dictionary of kwargs, set the parameters of the passed class 'self' to the values in the dictionary."""
-    used_params = {}
-    for key in self.param.params().keys():
-        if key in kwargs:
-            if key != "name":
-                used_params[key] = kwargs[key]
-
-    self.param.update(**used_params)
-
-
-def get_input_and_results(self, include_name: bool = False) -> Tuple[dict, dict]:
-    """Get dictionaries of input parameters and result parameters
+def get_nearest_coords(ds: xr.Dataset, **kwargs) -> dict:
+    """Given an xarray dataset and kwargs of key value pairs of coordinate values, return a dictionary of the nearest coordinate name value pair that was found in the dataset
 
     Args:
-        self: A parametrised class
-        include_name (bool): Include the name parameter that all parametrised classes have. Default False
+        ds (xr.Dataset): dataset
 
     Returns:
-        Tuple[dict, dict]: a tuple containing the inputs and result parameters as dictionaries
+        dict: nearest coordinate name value pair that matches the input coordinate name value pairs.
     """
-    inputs = {}
-    results = {}
-    for k, v in self.param.params().items():
-        if isinstance(v, (ResultList, ResultSeries, ResultVar, ResultVec)):
-            results[k] = v
-        else:
-            inputs[k] = v
 
-    if not include_name:
-        inputs.pop("name")
-    return make_namedtuple("inputresult", inputs=inputs, results=results)
+    selection = ds.sel(method="nearest", **kwargs)
+    cd = selection.coords.to_dataset().to_dict()["coords"]
+    cd2 = {}
+    for k, v in cd.items():
+        cd2[k] = v["data"]
+    return cd2
 
 
-def get_inputs_only(self) -> List[param.Parameter]:
-    """Return a list of input parameters
+def hash_sha1(var: any) -> str:
+    """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+    return hashlib.sha1(str(var).encode("ASCII")).hexdigest()
+
+
+def capitalise_words(message: str):
+    """Given a string of lowercase words, capitalise them
+
+    Args:
+        message (str): lower case string
 
     Returns:
-        List[param.Parameter]: A list of input parameters
+        _type_: capitalised string
     """
-    return list(get_input_and_results(self).inputs.values())
+    capitalized_message = " ".join([word.capitalize() for word in message.split(" ")])
+    return capitalized_message
 
 
-def get_results_only(self) -> List[param.Parameter]:
-    """Return a list of input parameters
+def un_camel(camel: str) -> str:
+    """Given a snake_case string return a CamelCase string
+
+    Args:
+        camel (str): camelcase string
 
     Returns:
-        List[param.Parameter]: A list of result parameters
+        str: uncamelcased string
     """
-    return list(get_input_and_results(self).results.values())
 
-
-def get_results_values_as_dict(self) -> dict:
-    """Get a dictionary of result variables with the name and the current value"""
-    values = self.param.values()
-    return {key: values[key] for key in get_input_and_results(self).results}
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))

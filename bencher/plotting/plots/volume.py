@@ -7,7 +7,8 @@ import xarray as xr
 import holoviews as hv
 
 from bencher.bench_cfg import BenchCfg
-from bencher.bench_vars import ParametrizedSweep
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
@@ -89,7 +90,6 @@ def plot_volume_plotly(
 
     layout = go.Layout(
         title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
-        autosize=True,
         width=700,
         height=700,
         margin=dict(t=50, b=50, r=50, l=50),
