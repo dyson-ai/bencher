@@ -39,4 +39,7 @@ if __name__ == "__main__":
     ex_run_cfg.over_time = True
 
     ex_res = example_1D_cat(ex_run_cfg)
+    ex_res.save(__file__)
+    ex_res.save()
+
     ex_res.show()

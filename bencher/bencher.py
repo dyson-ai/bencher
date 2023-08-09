@@ -715,7 +715,12 @@ class Bench(BenchPlotServer):
         if filename is None:
             filename = f"{self.bench_name}.html"
 
-        path = Path(directory) / filename
+        base_path = Path(directory)
+        if base_path.is_dir():
+            path = base_path
+        else:
+            path = base_path.parent
+        path = path / filename
         logging.info(f"saving html output to: {path}")
 
         self.pane.save(filename=path, **kwargs)
