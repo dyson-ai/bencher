@@ -3,6 +3,8 @@ import xarray as xr
 from sortedcontainers import SortedDict
 import hashlib
 import re
+import os
+import errno
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -78,3 +80,13 @@ def un_camel(camel: str) -> str:
     """
 
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
+
+
+def create_dir_if_not_exists(path: str) -> None:
+    dirname = os.path.dirname(path)
+    if not os.path.exists(dirname) and dirname != "" and dirname != "":
+        try:
+            os.makedirs(dirname)
+        except OSError as exc:  # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise

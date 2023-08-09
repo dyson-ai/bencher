@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
-
+import os
 import numpy as np
 import panel as pn
 import param
@@ -709,7 +709,13 @@ class Bench(BenchPlotServer):
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
 
-    def save(self, directory: str | Path = "cachedir", filename: str = None, **kwargs) -> Path:
+    def save(
+        self,
+        directory: str | Path = "cachedir",
+        filename: str = None,
+        in_html_folder=True,
+        **kwargs,
+    ) -> Path:
         """Save the result to a static html file.  Note that dynamic content will not work."""
 
         if filename is None:
@@ -720,7 +726,18 @@ class Bench(BenchPlotServer):
             path = base_path
         else:
             path = base_path.parent
+
+        if in_html_folder:
+            path /= "html"
+
+
+        try:
+            os.makedirs(path)
+        except Exception as e:
+            logging.warning(e)
+
         path = path / filename
+        
         logging.info(f"saving html output to: {path}")
 
         self.pane.save(filename=path, **kwargs)
