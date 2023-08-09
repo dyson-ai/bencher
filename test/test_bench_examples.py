@@ -22,11 +22,8 @@ from bencher.example.example_sample_cache import example_sample_cache
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
 
-    # def __init__(self):
-    # super().__init__()
-    # def __init__(self):
     def __init__(self, *args, **kwargs):
-        super(TestBenchExamples, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.generate_all = False
 
     def create_run_cfg(self) -> bch.BenchRunCfg:
