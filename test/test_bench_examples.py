@@ -23,11 +23,11 @@ class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
 
     # def __init__(self):
-        # super().__init__()
-        # def __init__(self):
+    # super().__init__()
+    # def __init__(self):
 
     def create_run_cfg(self) -> bch.BenchRunCfg:
-        self.generate_all = True
+        self.generate_all = False
         cfg = bch.BenchRunCfg()
         if not self.generate_all:
             cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
