@@ -231,7 +231,7 @@ class Bench(BenchPlotServer):
 
         if post_description is None:
             post_description = (
-                "## Description\nPlease set post_description to explain these results"
+                "## Results Description\nPlease set post_description to explain these results"
             )
         if run_cfg is None:
             run_cfg = BenchRunCfg()
@@ -702,6 +702,11 @@ class Bench(BenchPlotServer):
                 return self.pane[-1][0]
             return self.pane
         return self.pane[-1]
+
+    def append_markdown(self, markdown: str) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown)
+        self.append(md)
+        return md
 
     def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)

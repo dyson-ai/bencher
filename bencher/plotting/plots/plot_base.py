@@ -14,6 +14,7 @@ opts.defaults(
     opts.Points(**width_heigh),
     opts.Bars(**width_heigh),
     opts.Scatter(**width_heigh),
+    opts.HeatMap(cmap="viridis", **width_heigh)
     # opts.Surface(**width_heigh),
 )
 
