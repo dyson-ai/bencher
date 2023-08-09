@@ -23,14 +23,14 @@ class Lineplot(PlotBase):
     )
 
     def lineplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        return self.catplot_common(pl_in, "line", PlotTypes.LINEPLOT)
-
+        """
         Args:
             pl_in (PlotInput): data to plot
 
         Returns:
             Optional[pn.panel]: a line plot of the data
         """
+        return self.catplot_common(pl_in, "line", PlotTypes.LINEPLOT)
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
             df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
             sns_cfg = PltCfgBase()
