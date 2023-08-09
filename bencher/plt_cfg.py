@@ -97,7 +97,7 @@ class BenchPlotter:
                             name="Pandas Dataframe MultiIndex View",
                         )
                     )
-
+                if bench_cfg.serve_pandas_flat:
                     tabs.append(
                         pn.Column(
                             pn.pane.Markdown(

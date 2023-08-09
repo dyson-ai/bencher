@@ -46,7 +46,6 @@ class HvInteractive:
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            # pt = pl_in.bench_cfg.to_bar()
             pt = pl_in.bench_cfg.to_scatter()
             # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
 
@@ -66,7 +65,7 @@ class HvInteractive:
                     color="black",
                 )
 
-            return pn.Column(pt.opts(height=600, title=title), name="scatter_hv")
+            return pn.Column(pt.opts(height=600, title=title), name=PlotTypes.scatter_hv)
 
         return None
 

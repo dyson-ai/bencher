@@ -17,6 +17,7 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
+    explorer = ExampleBenchCfgIn()
     bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
@@ -24,6 +25,7 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+        const_vars=explorer.get_input_defaults(),
         description=example_1D_cat.__doc__,
         run_cfg=run_cfg,
     )
@@ -36,4 +38,8 @@ if __name__ == "__main__":
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = True
 
-    example_1D_cat(ex_run_cfg).show()
+    ex_res = example_1D_cat(ex_run_cfg)
+    ex_res.save(__file__)
+    ex_res.save()
+
+    ex_res.show()

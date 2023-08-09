@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 import param
 from param import Parameterized
@@ -96,6 +96,11 @@ class ParametrizedSweep(Parameterized):
             List[param.Parameter]: A list of input parameters
         """
         return list(self.get_input_and_results().inputs.values())
+
+    def get_input_defaults(self) -> List[Tuple[param.Parameter, Any]]:
+        inp = self.get_inputs_only()
+        defaults = self.param.defaults()
+        return [(i, defaults[i.name]) for i in inp]
 
     def get_results_only(self) -> List[param.Parameter]:
         """Return a list of input parameters

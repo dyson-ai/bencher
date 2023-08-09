@@ -126,8 +126,6 @@ class SurfacePlot:
 
             da = bench_cfg.ds[rv.name]
 
-            # hv.extension("plotly")
-            # hv.extension("bokeh", "plotly")
             print(da.to_dataframe())
             mean = da.mean("repeat")
             print(mean.to_dataframe())
