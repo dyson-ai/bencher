@@ -32,7 +32,7 @@ class BenchPlotServer:
         """
         if plots_instance is None:
             plots_instance = self.load_data_from_cache(bench_name)
-        if plot_cfg.port is not None:
+        if plot_cfg.port is not None and plot_cfg.allow_ws_origin:
             os.environ["BOKEH_ALLOW_WS_ORIGIN"] = f"localhost:{plot_cfg.port}"
 
         self.serve(bench_name, plots_instance, port=plot_cfg.port)

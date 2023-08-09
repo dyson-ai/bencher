@@ -23,11 +23,18 @@ class PlotTypes(StrEnum):
     heatmap_1D = auto()
 
     lineplot = auto()
-    # lineplot_hv = auto()
+    lineplot_hv = auto()
+    lineplot_hv_overlay = auto()
+    lineplot_hv_layout = auto()
+    bar_hv = auto()
     # lineplot_hv_subplot = auto()
     # lineplot_hv_repeats = auto()
 
     scatter2D_sns = auto()
     # scatter_hv = auto()
+
+    volume_plotly = auto()
+    cone_plotly = auto()
+    surface_hv = auto()
 
     # hv_interactive = auto()

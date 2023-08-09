@@ -4,20 +4,20 @@ import numpy as np
 import optuna
 import panel as pn
 import param
-from optuna.visualization import plot_param_importances, plot_pareto_front
+from optuna.visualization import (
+    plot_param_importances,
+    plot_pareto_front,
+    plot_optimization_history,
+)
 
 from bencher.bench_cfg import BenchCfg
-from bencher.bench_vars import (
-    BoolSweep,
-    EnumSweep,
-    FloatSweep,
-    IntSweep,
-    OptDir,
-    ParametrizedSweep,
-    StringSweep,
-    TimeEvent,
-    TimeSnapshot,
-)
+
+
+from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
+from bencher.variables.time import TimeSnapshot, TimeEvent
+from bencher.variables.results import OptDir
+
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
 def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
@@ -42,6 +42,35 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
         directions=directions,
         study_name=bench_cfg.title,
     )
+    return study
+
+
+# def bench_results_to_optuna(bench_cfg: BenchCfg):
+
+
+def to_optuna(worker, bench_cfg: BenchCfg, n_trials=100, sampler=optuna.samplers.TPESampler()):
+    directions = []
+    for rv in bench_cfg.result_vars:
+        if rv.direction != OptDir.none:
+            directions.append(rv.direction)
+
+    study = optuna.create_study(sampler=sampler, directions=directions, study_name=bench_cfg.title)
+
+    # add already calculated results
+    if len(bench_cfg.ds.sizes) > 0:
+        study.add_trials(bench_results_to_optuna_trials(bench_cfg, True))
+
+    def wrapped(trial):
+        kwargs = {}
+        for iv in bench_cfg.input_vars:
+            kwargs[iv.name] = sweep_var_to_suggest(iv, trial)
+        result = worker(**kwargs)
+        output = []
+        for rv in bench_cfg.result_vars:
+            output.append(result[rv.name])
+        return tuple(output)
+
+    study.optimize(wrapped, n_trials=n_trials)
     return study
 
 
@@ -227,9 +256,7 @@ def sweep_var_to_suggest(iv: ParametrizedSweep, trial: optuna.trial) -> object:
         return trial.suggest_float(iv.name, iv.bounds[0], iv.bounds[1])
     if iv_type in (EnumSweep, StringSweep):
         return trial.suggest_categorical(iv.name, iv.objects)
-    if iv_type == TimeSnapshot:
-        pass  # optuna does not like time
-    if iv_type == TimeEvent:
+    if iv_type in (TimeSnapshot, TimeEvent):
         pass  # optuna does not like time
     if iv_type == BoolSweep:
         return trial.suggest_categorical(iv.name, [True, False])
@@ -247,7 +274,7 @@ def cfg_from_optuna_trial(
     return cfg
 
 
-def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
+def bench_results_to_optuna_trials(bench_cfg: BenchCfg, include_meta: bool = True) -> optuna.Study:
     """Convert an xarray dataset to an optuna study so optuna can further optimise or plot the statespace
 
     Args:
@@ -297,7 +324,11 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
                 values=values,
             )
         )
+    return trials
 
+
+def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
+    trials = bench_results_to_optuna_trials(bench_cfg, include_meta)
     study = optuna_grid_search(bench_cfg)
     optuna.logging.set_verbosity(optuna.logging.CRITICAL)
     import warnings
@@ -309,3 +340,19 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
     # remove optuna gridsearch warning as we are not using their gridsearch because it has the most inexplicably terrible performance I have ever seen in my life. How can a for loop of 400 iterations start out with 100ms per loop and increase to greater than a 1000ms after 250ish iterations!?!?!??!!??!
     study.add_trials(trials)
     return study
+
+
+def summarise_study(study: optuna.study.Study) -> None:
+    row = pn.Column(name="Optimisation Results")
+    row.append(plot_optimization_history(study))
+    row.append(plot_param_importances(study))
+    try:
+        row.append(plot_pareto_front(study))
+    except Exception:
+        pass
+
+    row.append(
+        pn.pane.Markdown(f"```\nBest value: {study.best_value}\nParams: {study.best_params}```")
+    )
+
+    return row

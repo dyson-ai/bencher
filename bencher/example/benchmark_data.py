@@ -9,16 +9,11 @@ from enum import auto
 
 from strenum import StrEnum
 
-from bencher.bench_vars import (
-    BoolSweep,
-    EnumSweep,
-    FloatSweep,
-    IntSweep,
-    OptDir,
-    ParametrizedSweep,
-    ResultVar,
-    StringSweep,
-)
+
+from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
+from bencher.variables.results import ResultVar, OptDir
+
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
 class PostprocessFn(StrEnum):
@@ -124,3 +119,14 @@ class AllSweepVars(ParametrizedSweep):
     var_bool = BoolSweep()
     var_string = StringSweep(["string1", "string2"])
     var_enum = EnumSweep(PostprocessFn)
+
+
+class SimpleBenchClass(ParametrizedSweep):
+    var1 = IntSweep(default=0, bounds=[0, 2])
+
+    result = ResultVar()
+
+    def call(self, **kwargs) -> dict:
+        self.update_params_from_kwargs(**kwargs)
+        self.result = self.var1
+        return self.get_results_values_as_dict()

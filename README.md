@@ -3,7 +3,14 @@
 ## Continuous Integration Status
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
-[![Code Coverage](https://codecov.io/gh/dyson-ai/bencher/branch/main/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/dyson-ai/bencher)
+[![Codecov](https://codecov.io/gh/blooop/bencher/branch/main/graph/badge.svg?token=AVFC5D5Z43)](https://codecov.io/gh/blooop/bencher)
+[![GitHub issues](https://img.shields.io/github/issues/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/issues/)
+[![GitHub pull-requests merged](https://badgen.net/github/merged-prs/dyson-ai/bencher)](https://github.com/dyson-ai/bencher/pulls?q=is%3Amerged)
+[![PyPI](https://img.shields.io/pypi/v/holobench)](https://pypi.org/project/holobench/)
+[![GitHub release](https://img.shields.io/github/release/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/releases/)
+[![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue)](https://www.python.org/downloads/release/python-310/)
+
 
 ## Intro
 
@@ -35,4 +42,3 @@ Bencher is designed to work with stochastic pure functions with no side effects.
         store the results using the input hash as a key
     deduce the type of plot based on the input types
     return data and plot
- 
