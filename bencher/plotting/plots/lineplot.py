@@ -23,7 +23,7 @@ class Lineplot(PlotBase):
     )
 
     def lineplot(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        """generate a line plot
+        return self.catplot_common(pl_in, "line", PlotTypes.LINEPLOT)
 
         Args:
             pl_in (PlotInput): data to plot
