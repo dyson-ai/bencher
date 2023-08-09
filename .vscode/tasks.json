@@ -14,7 +14,12 @@
 		{
 			"label": "code coverage",
 			"type": "shell",
-			"command": "coverage run -m pytest ; coverage report"
+			"command": "coverage run -m pytest ; coverage report -m"
+		},
+		{
+			"label": "code coverage report",
+			"type": "shell",
+			"command": "coverage report -m"
 		},
 		{
 			"label": "pytest duration",

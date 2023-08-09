@@ -119,3 +119,14 @@ class AllSweepVars(ParametrizedSweep):
     var_bool = BoolSweep()
     var_string = StringSweep(["string1", "string2"])
     var_enum = EnumSweep(PostprocessFn)
+
+
+class SimpleBenchClass(ParametrizedSweep):
+    var1 = IntSweep(default=0, bounds=[0, 2])
+
+    result = ResultVar()
+
+    def call(self, **kwargs) -> dict:
+        self.update_params_from_kwargs(**kwargs)
+        self.result = self.var1
+        return self.get_results_values_as_dict()

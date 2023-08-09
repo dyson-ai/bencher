@@ -480,7 +480,7 @@ class Bench(BenchPlotServer):
         extra_vars = [bench_cfg.iv_repeat]
 
         if bench_cfg.over_time:
-            if type(time_src) == str:
+            if isinstance(time_src, str):
                 iv_over_time = TimeEvent(time_src)
             else:
                 iv_over_time = TimeSnapshot(time_src)
