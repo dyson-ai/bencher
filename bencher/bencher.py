@@ -730,14 +730,10 @@ class Bench(BenchPlotServer):
         if in_html_folder:
             path /= "html"
 
-
-        try:
-            os.makedirs(path)
-        except Exception as e:
-            logging.warning(e)
+        os.makedirs(path, exist_ok=True)
 
         path = path / filename
-        
+
         logging.info(f"saving html output to: {path}")
 
         self.pane.save(filename=path, **kwargs)
