@@ -32,7 +32,7 @@ class TestBenchExamples(unittest.TestCase):
     def examples_asserts(self, example_result, save=False) -> None:
         self.assertIsNotNone(example_result)
         if save:
-            example_result.save("bencher/example")
+            example_result.save("bencher/example/html")
 
     def test_example_categorical(self) -> None:
         self.examples_asserts(example_categorical(self.create_run_cfg()))
