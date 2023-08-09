@@ -17,6 +17,7 @@ class TestBenchPlotServer(unittest.TestCase):
             result_vars=[sbc.param.result],
             run_cfg=bch.BenchRunCfg(auto_plot=False),
         )
+        bench.save()
 
         bps = bch.BenchPlotServer()
 

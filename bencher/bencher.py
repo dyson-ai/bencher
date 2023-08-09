@@ -28,6 +28,7 @@ from bencher.utils import hmap_canonical_input
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
+from pathlib import Path
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -699,10 +700,14 @@ class Bench(BenchPlotServer):
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
 
-    def save(self, filename: str = None, **kwargs) -> None:
+    def save(self, directory: str | Path = "cachedir", filename: str = None, **kwargs) -> Path:
         """Save the result to a static html file.  Note that dynamic content will not work."""
 
         if filename is None:
             filename = f"{self.bench_name}.html"
 
-        self.pane.save(filename=filename, **kwargs)
+        path = Path(directory) / filename
+        logging.info(f"saving html output to: {path}")
+
+        self.pane.save(filename=path, **kwargs)
+        return path

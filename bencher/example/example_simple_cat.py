@@ -36,4 +36,6 @@ if __name__ == "__main__":
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = True
 
-    example_1D_cat(ex_run_cfg).show()
+    ex_res = example_1D_cat(ex_run_cfg)
+    ex_res.save("bencher/example")
+    ex_res.show()
