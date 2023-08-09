@@ -104,6 +104,7 @@ class Bench(BenchPlotServer):
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
         plot_lib: PlotCollection = PlotLibrary.default(),
+        remove_plots: list = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -130,6 +131,9 @@ class Bench(BenchPlotServer):
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
         self.plot_lib = plot_lib
         self.cache_size = int(100e9)  # default to 100gb
+        if remove_plots is not None:
+            for i in remove_plots:
+                self.plot_lib.remove(i)
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -694,3 +698,11 @@ class Bench(BenchPlotServer):
 
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
+
+    def save(self, filename: str = None, **kwargs) -> None:
+        """Save the result to a static html file.  Note that dynamic content will not work."""
+
+        if filename is None:
+            filename = f"{self.bench_name}.html"
+
+        self.pane.save(filename=filename, **kwargs)
