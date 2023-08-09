@@ -47,10 +47,10 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(example_pareto(self.create_run_cfg()))
 
     def test_example_simple_cat(self) -> None:
-        self.examples_asserts(example_1D_cat(self.create_run_cfg()), save=True)
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
 
     def test_example_simple_float(self) -> None:
-        self.examples_asserts(example_1D_float(self.create_run_cfg()), save=True)
+        self.examples_asserts(example_1D_float(self.create_run_cfg()))
 
     def test_example_float_cat(self) -> None:
         self.examples_asserts(run_example_float_cat(self.create_run_cfg()))
