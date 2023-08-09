@@ -86,7 +86,7 @@ class Heatmap:
                     label=pl_in.rv.name,
                     colorbar=True,
                     clabel=color_label,
-                    cmap="viridis"
+                    cmap="viridis",
                 ),
                 name=PlotTypes.heatmap_2D,
             )
