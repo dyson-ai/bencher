@@ -22,16 +22,22 @@ from bencher.example.example_sample_cache import example_sample_cache
 class TestBenchExamples(unittest.TestCase):
     """The purpose of this test class is to run the example problems to make sure they don't crash.  The bencher logic is tested in the other test files test_bencher.py and test_vars.py"""
 
+    # def __init__(self):
+        # super().__init__()
+        # def __init__(self):
+
     def create_run_cfg(self) -> bch.BenchRunCfg:
+        self.generate_all = True
         cfg = bch.BenchRunCfg()
-        cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
-        cfg.debug = True  # reduce size of param sweep so tests are faster
+        if not self.generate_all:
+            cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
+            cfg.debug = True  # reduce size of param sweep so tests are faster
         cfg.clear_cache = True
         return cfg
 
     def examples_asserts(self, example_result, save=False) -> None:
         self.assertIsNotNone(example_result)
-        if save:
+        if save or self.generate_all:
             example_result.save("bencher/example/html")
 
     def test_example_categorical(self) -> None:

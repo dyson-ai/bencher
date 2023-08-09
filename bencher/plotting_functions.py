@@ -14,7 +14,6 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import ResultVar, ResultVec
 
 
-hv.extension("bokeh", "plotly")
 # hv.extension("plotly", "bokeh")
 # hv.extension("plotly")
 
