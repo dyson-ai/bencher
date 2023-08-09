@@ -16,6 +16,7 @@ from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.example_float2D_scatter import example_floats2D_scatter
 from bencher.example.optuna.example_optuna import optuna_rastrigin
+from bencher.example.example_sample_cache import example_sample_cache
 
 
 class TestBenchExamples(unittest.TestCase):
@@ -78,3 +79,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_optuna_rastrigin(self) -> None:
         self.assertIsNotNone(optuna_rastrigin(self.create_run_cfg()))
+
+    def test_example_sample_cache(self) -> None:
+        self.assertIsNotNone(example_sample_cache(self.create_run_cfg(), False))
