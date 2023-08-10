@@ -774,9 +774,14 @@ class Bench(BenchPlotServer):
         report_path = self.save(directory, in_html_folder=False)
         logging.info(f"created report at: {report_path}")
         # commit_msg = f""
+        logging.info("adding report to git")
         get_output(f"git add {report_path}")
+        logging.info("committing report")
         get_output(f'git commit -m "generate report: {self.bench_name}"')
+        logging.info("pushing report to origin")
         get_output(f"git push origin")
+        logging.info("checking out original branch")
         get_output(f"git checkout -b {current_branch}")
+        logging.info("restoring work with git stash pop")
         get_output("git stash pop")
         return None
