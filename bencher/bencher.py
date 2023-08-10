@@ -759,7 +759,11 @@ class Bench(BenchPlotServer):
         import subprocess
 
         def get_output(cmd: str) -> str:
-            return subprocess.run(cmd.split(" "), stdout=subprocess.PIPE).stdout.decode("utf=8")
+            return (
+                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE)
+                .stdout.decode("utf=8")
+                .strip()
+            )
 
         current_branch = get_output("git symbolic-ref --short HEAD")
         logging.info(f"on branch: {current_branch}")
@@ -778,7 +782,7 @@ class Bench(BenchPlotServer):
         logging.info("committing report")
         get_output(f'git commit -m "generate report: {self.bench_name}"')
         logging.info("pushing report to origin")
-        get_output(f"git push origin")
+        get_output(f"git push --set-upstream origin bench_results")
         logging.info("checking out original branch")
         get_output(f"git checkout {current_branch}")
         logging.info("restoring work with git stash pop")
