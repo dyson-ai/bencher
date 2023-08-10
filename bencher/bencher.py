@@ -785,6 +785,7 @@ class Bench(BenchPlotServer):
         get_output(f"git push --set-upstream origin {branch_name}")
         logging.info("checking out original branch")
         get_output(f"git checkout {current_branch}")
-        logging.info("restoring work with git stash pop")
-        get_output("git stash pop")
+        if "No local changes" not in stash_msg:
+            logging.info("restoring work with git stash pop")
+            get_output("git stash pop")
         return None
