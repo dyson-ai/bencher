@@ -782,7 +782,7 @@ class Bench(BenchPlotServer):
         logging.info("committing report")
         get_output(f'git commit -m "generate report: {self.bench_name}"')
         logging.info("pushing report to origin")
-        get_output(f"git push --set-upstream origin bench_results")
+        get_output(f"git push --set-upstream origin {branch_name}")
         logging.info("checking out original branch")
         get_output(f"git checkout {current_branch}")
         logging.info("restoring work with git stash pop")
