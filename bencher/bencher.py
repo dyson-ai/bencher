@@ -721,7 +721,16 @@ class Bench(BenchPlotServer):
         in_html_folder=True,
         **kwargs,
     ) -> Path:
-        """Save the result to a static html file.  Note that dynamic content will not work."""
+        """Save the result to a html file.  Note that dynamic content will not work.  by passing save(__file__) the html output will be saved in the same folder as the source code in a html subfolder.
+
+        Args:
+            directory (str | Path, optional): base folder to save to. Defaults to "cachedir" which should be ignored by git.
+            filename (str, optional): The name of the html file. Defaults to the name of the benchmark
+            in_html_folder (bool, optional): Put the saved files in a html subfolder to help keep the results separate from source code. Defaults to True.
+
+        Returns:
+            Path: the save path
+        """
 
         if filename is None:
             filename = f"{self.bench_name}.html"
@@ -743,3 +752,13 @@ class Bench(BenchPlotServer):
 
         self.pane.save(filename=path, **kwargs)
         return path
+
+    def publish(self):
+        import subprocess
+
+        def get_output(cmd: str):
+            return subprocess.run(cmd.split(" "), stdout=subprocess.PIPE).stdout.decode("utf=8")
+
+        current_branch = get_output("git symbolic-ref --short HEAD")
+        logging.INFO(f"on branch: {current_branch}")
+        get_output()
