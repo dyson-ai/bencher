@@ -123,6 +123,7 @@ class Bench(BenchPlotServer):
         self.set_worker(worker, worker_input_cfg)
 
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
+        self.pane.append(pn.Column())
         # The number of times the wrapped worker was called
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
@@ -699,7 +700,7 @@ class Bench(BenchPlotServer):
         """
         if main_plot:
             if len(self.pane) > 0:
-                return self.pane[-1][0]
+                return self.pane[-1]
             return self.pane
         return self.pane[-1]
 
@@ -752,7 +753,7 @@ class Bench(BenchPlotServer):
 
         logging.info(f"saving html output to: {path.absolute()}")
 
-        self.pane.save(filename=path, **kwargs)
+        self.pane.save(filename=path, progress=True, **kwargs)
         return path.absolute()
 
     def publish(self, directory="bench_results", branch_name="bench_results"):
