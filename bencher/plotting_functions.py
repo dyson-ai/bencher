@@ -140,32 +140,3 @@ def plot_scatter2D_hv(bench_cfg: BenchCfg, rv: ParametrizedSweep) -> pn.pane.Plo
     names = rv.index_names()
 
     return px.scatter(df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram")
-
-
-# def save_fig(
-#     bench_cfg: BenchCfg,
-#     sns_cfg: PltCfgBase,
-# ):
-#     """Save a seaborn figure to disk based on bench config data
-
-#     Args:
-#         bench_cfg (BenchCfg): benchmark config
-#         sns_cfg (PltCfgBase): plotting config
-#     """
-#     sns_cfg.data = None  # remove data before getting __repr__ for filename
-#     figname = f"{bench_cfg.as_filename()},{sns_cfg.as_filename()}"
-#     figpath = os.path.join("autofig", bench_cfg.bench_name, f"{figname}.png")
-#     logging.info(f"saving:{figpath}")
-#     dir_name = os.path.dirname(figpath)
-#     if not os.path.exists(dir_name) and dir_name != "":
-#         try:
-#             os.makedirs(dir_name)
-#         except OSError as exc:  # Guard against race condition
-#             if exc.errno != errno.EEXIST:
-#                 raise
-
-#     if os.path.exists(figpath) and bench_cfg.raise_duplicate_exception:
-#         raise FileExistsError(
-#             f"This figname {figname} already exists, please define a unique benchmark name or don't run the same benchmark twice"
-#         )
-#     plt.savefig(figpath)

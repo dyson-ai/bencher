@@ -379,15 +379,6 @@ class BenchCfg(BenchRunCfg):
 
         return hash_val
 
-    def as_filename(self) -> str:
-        """Generate a unique filename for this BenchCfg"""
-        strs = []
-        strs.append("rv:")
-        for r in self.result_vars:
-            strs.append(f"{r.name},")
-        strs.append(f"repeats={self.repeats},over_time={self.over_time}")
-        return "".join(strs)
-
     def get_optimal_value_indices(self, result_var: bch.ParametrizedSweep) -> xr.DataArray:
         """Get an xarray mask of the values with the best values found during a parameter sweep
 
