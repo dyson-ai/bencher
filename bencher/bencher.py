@@ -758,7 +758,9 @@ class Bench(BenchPlotServer):
     def publish(self, directory="bench_results", branch_name="bench_results"):
         import subprocess
 
-        def get_output(cmd: str) -> str:
+        def get_output(cmd: str, split=True) -> str:
+            if split:
+                cmd = cmd.split(" ")
             return (
                 subprocess.run(cmd.split(" "), stdout=subprocess.PIPE)
                 .stdout.decode("utf=8")
@@ -781,9 +783,9 @@ class Bench(BenchPlotServer):
         get_output(f"git add {report_path}")
         get_output("git status")
         logging.info("committing report")
-        cmd = f'git commit -m "generate_report:{self.bench_name}"'
+        cmd = f'git commit -m "generate report: {self.bench_name}"'
         logging.info(cmd)
-        get_output(cmd)
+        get_output(cmd, split=False)
         logging.info("pushing report to origin")
         get_output(f"git push --set-upstream origin {branch_name}")
         logging.info("checking out original branch")
