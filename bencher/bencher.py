@@ -768,12 +768,15 @@ class Bench(BenchPlotServer):
         checkout_msg = get_output(f"git checkout -b {branch_name}")
 
         checkout_msg = get_output(f"git checkout -b {branch_name}")
+        get_output("git pull")
+
         logging.info(f"checking out branch: {checkout_msg}")
         report_path = self.save(directory, in_html_folder=False)
         logging.info(f"created report at: {report_path}")
         # commit_msg = f""
         get_output(f"git add {report_path}")
-        get_output(f"git commit -m 'generate report: {self.bench_name}'")
+        get_output(f'git commit -m "generate report: {self.bench_name}"')
+        get_output(f"git push origin")
         get_output(f"git checkout -b {current_branch}")
         get_output("git stash pop")
         return None
