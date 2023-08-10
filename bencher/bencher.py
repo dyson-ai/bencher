@@ -736,10 +736,12 @@ class Bench(BenchPlotServer):
             filename = f"{self.bench_name}.html"
 
         base_path = Path(directory)
-        if base_path.is_dir():
-            path = base_path
-        else:
-            path = base_path.parent
+        print(f"base path:{base_path}")
+        path = base_path
+        # if base_path.is_dir():
+        #     path = base_path
+        # else:
+        #     path = base_path.parent
 
         if in_html_folder:
             path /= "html"
@@ -748,7 +750,7 @@ class Bench(BenchPlotServer):
 
         path = path / filename
 
-        logging.info(f"saving html output to: {path}")
+        logging.info(f"saving html output to: {path.absolute()}")
 
         self.pane.save(filename=path, **kwargs)
         return path.absolute()
@@ -774,3 +776,4 @@ class Bench(BenchPlotServer):
         get_output(f"git commit -m 'generate report: {self.bench_name}'")
         get_output(f"git checkout -b {current_branch}")
         get_output("git stash pop")
+        return None
