@@ -123,7 +123,6 @@ class Bench(BenchPlotServer):
         self.set_worker(worker, worker_input_cfg)
 
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
-        self.pane.append(pn.Column())
         # The number of times the wrapped worker was called
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0  # The number of times the raw worker was called
@@ -754,7 +753,7 @@ class Bench(BenchPlotServer):
         logging.info(f"saving html output to: {path.absolute()}")
 
         self.pane.save(filename=path, progress=True, **kwargs)
-        return path.absolute()
+        return path
 
     def publish(self, directory="bench_results", branch_name="bench_results"):
         import subprocess
@@ -776,10 +775,10 @@ class Bench(BenchPlotServer):
 
         logging.info(f"checking out branch: {checkout_msg}")
         report_path = self.save(directory, in_html_folder=False)
-        logging.info(f"created report at: {report_path}")
+        logging.info(f"created report at: {report_path.absolute()}")
         # commit_msg = f""
         logging.info("adding report to git")
-        get_output(f"git add {report_path}")
+        get_output(f"git add {report_path.absolute()}")
         get_output("git status")
         logging.info("committing report")
         cmd = f'git commit -m "generate_report:{self.bench_name}"'
@@ -792,4 +791,9 @@ class Bench(BenchPlotServer):
         if "No local changes" not in stash_msg:
             logging.info("restoring work with git stash pop")
             get_output("git stash pop")
-        return None
+
+        publish_url = get_output("git remote get-url --push origin")
+        publish_url = publish_url.replace(".git", f"/blob{report_path}")
+        logging.info("Published report @")
+        logging.info(publish_url)
+        return
