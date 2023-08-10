@@ -28,40 +28,6 @@ class ReduceType(Enum):
     NONE = auto()
 
 
-def to_filename(
-    param_cfg: param.Parameterized, param_list: list[str] = None, exclude_params: list[str] = None
-) -> str:
-    """given a parametrized class, generate a filename based on some of the parameter properties
-
-    Args:
-        param_cfg (param.Parameterized): any parametrized class
-        param_list (list[str], optional): params to include in the filename. Defaults to None.
-        exclude_params (list[str], optional): params to exclude from the filename. Defaults to None.
-
-    Returns:
-        str: a filename string
-    """
-
-    if exclude_params is None:
-        exclude_params = []
-    # param_cfg.get_param_values()
-    if param_list is None:
-        changed_params = param_cfg.param.values(onlychanged=True)
-    else:
-        params_dict = param_cfg.param.values()
-        changed_params = {}
-        for p in param_list:
-            changed_params[p] = params_dict[p]
-
-    # by default we don't want the name as part of the filename (because it is unquie per instance), but during debugging the hashing its useful to be able to turn on name as part of the timename to isolate what parts of the filename are not unique
-    output = [f"{param_cfg.name},"]
-    output = []
-    for k, v in changed_params.items():
-        if k not in exclude_params:
-            output.append(f"{k}={v.__repr__()},")
-    return "".join(output)[:-1].replace("'", "")  # remove trailing comma
-
-
 class PltCfgBase(param.Parameterized):
     """A base class that contains plotting parameters shared by seaborn and xarray"""
 
@@ -122,14 +88,6 @@ class PltCfgBase(param.Parameterized):
 
     def as_xra_args(self) -> dict:
         return self.as_dict(include_params=["x", "y", "hue", "row", "col", "cmap"])
-
-    def as_filename(self) -> str:
-        """generate a unique filename based on the plotting configuration
-
-        Returns:
-            str: filename
-        """
-        return to_filename(self, exclude_params=["marker", "xlabel", "ylabel", "title"])
 
 
 class PltCntCfg(param.Parameterized):
