@@ -766,8 +766,7 @@ class Bench(BenchPlotServer):
         stash_msg = get_output("git stash")
         logging.info(f"stashing current work :{stash_msg}")
         checkout_msg = get_output(f"git checkout -b {branch_name}")
-
-        checkout_msg = get_output(f"git checkout -b {branch_name}")
+        checkout_msg = get_output(f"git checkout {branch_name}")
         get_output("git pull")
 
         logging.info(f"checking out branch: {checkout_msg}")
@@ -781,7 +780,7 @@ class Bench(BenchPlotServer):
         logging.info("pushing report to origin")
         get_output(f"git push origin")
         logging.info("checking out original branch")
-        get_output(f"git checkout -b {current_branch}")
+        get_output(f"git checkout {current_branch}")
         logging.info("restoring work with git stash pop")
         get_output("git stash pop")
         return None
