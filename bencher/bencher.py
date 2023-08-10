@@ -756,7 +756,7 @@ class Bench(BenchPlotServer):
     def publish(self, directory="bench_results", branch_name="bench_results"):
         import subprocess
 
-        def get_output(cmd: str):
+        def get_output(cmd: str) -> str:
             return subprocess.run(cmd.split(" "), stdout=subprocess.PIPE).stdout.decode("utf=8")
 
         current_branch = get_output("git symbolic-ref --short HEAD")
@@ -764,10 +764,10 @@ class Bench(BenchPlotServer):
         stash_msg = get_output("git stash")
         logging.info(f"stashing current work :{stash_msg}")
         checkout_msg = get_output("git checkout -b {branch_name}")
-        logging.info(f"checking out branch: {checkout_msgs}")
+        logging.info(f"checking out branch: {checkout_msg}")
         report_path = self.save(directory, in_html_folder=False)
         # commit_msg = f""
         get_output(f"git add {report_path}")
-        get_output(f"git commit -m 'generate report: {self.name}'")
+        get_output(f"git commit -m 'generate report: {self.bench_name}'")
         get_output(f"git checkout {current_branch}")
         get_output("git pop")
