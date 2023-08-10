@@ -30,6 +30,7 @@ from bencher.utils import hmap_canonical_input
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
+import subprocess
 
 
 # Customize the formatter
@@ -755,8 +756,23 @@ class Bench(BenchPlotServer):
         self.pane.save(filename=path, progress=True, **kwargs)
         return path
 
-    def publish(self, directory="bench_results", branch_name="bench_results"):
-        import subprocess
+    def publish(
+        self,
+        directory: str = "bench_results",
+        branch_name: str = "bench_results",
+        url_postprocess: Callable = None,
+        **kwargs,
+    ) -> str:
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
+
+        Args:
+            directory (str, optional): Directory to save the results. Defaults to "bench_results".
+            branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
+            url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
+
+        Returns:
+            str: _description_
+        """
 
         def get_output(cmd: str) -> str:
             return (
@@ -765,6 +781,11 @@ class Bench(BenchPlotServer):
                 .strip()
             )
 
+        def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
+            return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+
+        if url_postprocess is None:
+            url_postprocess = postprocess_url
         current_branch = get_output("git symbolic-ref --short HEAD")
         logging.info(f"on branch: {current_branch}")
         stash_msg = get_output("git stash")
@@ -793,7 +814,10 @@ class Bench(BenchPlotServer):
             get_output("git stash pop")
 
         publish_url = get_output("git remote get-url --push origin")
-        publish_url = publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+        logging.info(f"raw url:{publish_url}")
+        publish_url = url_postprocess(
+            publish_url, branch_name=branch_name, report_path=report_path, **kwargs
+        )
         logging.info("Published report @")
         logging.info(publish_url)
-        return
+        return publish_url
