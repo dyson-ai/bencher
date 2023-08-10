@@ -780,7 +780,7 @@ class Bench(BenchPlotServer):
         logging.info("adding report to git")
         get_output(f"git add {report_path}")
         logging.info("committing report")
-        get_output(f'git commit -m "generate report: {self.bench_name}"')
+        get_output('git commit -m "add results"')
         logging.info("pushing report to origin")
         get_output(f"git push --set-upstream origin {branch_name}")
         logging.info("checking out original branch")
