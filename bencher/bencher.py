@@ -761,7 +761,7 @@ class Bench(BenchPlotServer):
 
         def get_output(cmd: str) -> str:
             return (
-                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE)
+                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
                 .stdout.decode("utf=8")
                 .strip()
             )
