@@ -793,7 +793,7 @@ class Bench(BenchPlotServer):
             get_output("git stash pop")
 
         publish_url = get_output("git remote get-url --push origin")
-        publish_url = publish_url.replace(".git", f"/blob{report_path}")
+        publish_url = publish_url.replace(".git", f"/blob/{report_path}")
         logging.info("Published report @")
         logging.info(publish_url)
         return
