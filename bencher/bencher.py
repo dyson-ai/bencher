@@ -751,7 +751,7 @@ class Bench(BenchPlotServer):
         logging.info(f"saving html output to: {path}")
 
         self.pane.save(filename=path, **kwargs)
-        return path
+        return path.absolute()
 
     def publish(self, directory="bench_results", branch_name="bench_results"):
         import subprocess
@@ -772,5 +772,5 @@ class Bench(BenchPlotServer):
         # commit_msg = f""
         get_output(f"git add {report_path}")
         get_output(f"git commit -m 'generate report: {self.bench_name}'")
-        get_output(f"git checkout {current_branch}")
+        get_output(f"git checkout -b {current_branch}")
         get_output("git stash pop")
