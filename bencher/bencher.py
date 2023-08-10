@@ -761,11 +761,7 @@ class Bench(BenchPlotServer):
         def get_output(cmd: str, split=True) -> str:
             if split:
                 cmd = cmd.split(" ")
-            return (
-                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE)
-                .stdout.decode("utf=8")
-                .strip()
-            )
+            return subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode("utf=8").strip()
 
         current_branch = get_output("git symbolic-ref --short HEAD")
         logging.info(f"on branch: {current_branch}")
