@@ -782,6 +782,35 @@ class Bench(BenchPlotServer):
             )
 
         def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
+            # import re
+
+            # return re.sub(
+            #     """((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?""",
+            #     """https://$7/""",
+            #     publish_url,
+            # )
+            # git@github.com:user/project.git
+            # https://github.com/user/project.git
+            # http://github.com/user/project.git
+            # git@192.168.101.127:user/project.git
+            # https://192.168.101.127/user/project.git
+            # http://192.168.101.127/user/project.git
+            # ssh://user@host.xz:port/path/to/repo.git/
+            # ssh://user@host.xz/path/to/repo.git/
+            # ssh://host.xz:port/path/to/repo.git/
+            # ssh://host.xz/path/to/repo.git/
+            # ssh://user@host.xz/path/to/repo.git/
+            # ssh://host.xz/path/to/repo.git/
+            # ssh://user@host.xz/~user/path/to/repo.git/
+            # ssh://host.xz/~user/path/to/repo.git/
+            # ssh://user@host.xz/~/path/to/repo.git
+            # ssh://host.xz/~/path/to/repo.git
+            # git://host.xz/path/to/repo.git/
+            # git://host.xz/~user/path/to/repo.git/
+            # http://host.xz/path/to/repo.git/
+            # https://host.xz/path/to/repo.git/
+            # https://regex101.com/r/qT7NP0/3
+
             return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
 
         if url_postprocess is None:
