@@ -764,9 +764,11 @@ class Bench(BenchPlotServer):
         stash_msg = get_output("git stash")
         logging.info(f"stashing current work :{stash_msg}")
         checkout_msg = get_output(f"git checkout -b {branch_name}")
+
+        checkout_msg = get_output(f"git checkout -b {branch_name}")
         logging.info(f"checking out branch: {checkout_msg}")
         report_path = self.save(directory, in_html_folder=False)
-        logging.info("created report at: {report_path}")
+        logging.info(f"created report at: {report_path}")
         # commit_msg = f""
         get_output(f"git add {report_path}")
         get_output(f"git commit -m 'generate report: {self.bench_name}'")
