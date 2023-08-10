@@ -166,3 +166,4 @@ cython_debug/
 
 hashed_vars_comparison_tmp
 .vscode/active_file.cfg
+test/test_bench_server.html
