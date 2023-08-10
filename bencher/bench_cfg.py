@@ -605,25 +605,6 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     return benchmark_sampling_str
 
 
-def convert_dataarray_bool_dims_to_str(dataarray: xr.DataArray) -> xr.DataArray:
-    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
-
-    Args:
-        dataarray (xr.DataArray): dataarray with boolean coordinates
-
-    Returns:
-        xr.DataArray: dataarray with boolean coordinates converted to strings
-    """
-    bool_coords = {}
-    for c in dataarray.coords:
-        if dataarray.coords[c].dtype == bool:
-            bool_coords[c] = [str(vals) for vals in dataarray.coords[c].values]
-
-    if len(bool_coords) > 0:
-        return dataarray.assign_coords(bool_coords)
-    return dataarray
-
-
 def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
     """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
 
