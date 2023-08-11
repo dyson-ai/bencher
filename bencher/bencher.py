@@ -32,6 +32,7 @@ from optuna import Study
 from pathlib import Path
 import subprocess
 import shutil
+import shutil
 
 
 # Customize the formatter
@@ -767,11 +768,16 @@ class Bench(BenchPlotServer):
     def publish(
         self,
         remote_callback: Callable,
+        remote_callback: Callable,
     ) -> str:
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         def publish_args(branch_name) -> Tuple[str, str]:
+        def publish_args(branch_name) -> Tuple[str, str]:
             return (
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
                 "https://github.com/dyson-ai/bencher.git",
                 f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
             )
@@ -780,6 +786,9 @@ class Bench(BenchPlotServer):
             remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
 
 
+        Returns:
+            str: the url of the published report
+        """
         Returns:
             str: the url of the published report
         """
