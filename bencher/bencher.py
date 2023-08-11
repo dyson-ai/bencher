@@ -108,7 +108,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
-        plot_lib: PlotCollection = PlotLibrary.default(),
+        plot_lib: PlotCollection = None,
         remove_plots: list = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
@@ -134,7 +134,7 @@ class Bench(BenchPlotServer):
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
-        self.plot_lib = plot_lib
+        self.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
         self.cache_size = int(100e9)  # default to 100gb
         if remove_plots is not None:
             for i in remove_plots:
@@ -566,14 +566,19 @@ class Bench(BenchPlotServer):
             )
             # logging.info(f"inputs: {fn_inputs_sorted}")
             # logging.info(f"pure: {function_input_signature_pure}")
-            if function_input_signature_benchmark_context in self.sample_cache:
+            if (
+                not bench_cfg.overwrite_sample_cache
+                and function_input_signature_benchmark_context in self.sample_cache
+            ):
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and (
-                function_input_signature_pure in self.sample_cache
+            elif (
+                not bench_cfg.overwrite_sample_cache
+                and bench_run_cfg.only_hash_tag
+                and (function_input_signature_pure in self.sample_cache)
             ):
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} not found in context cache"
