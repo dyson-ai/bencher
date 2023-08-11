@@ -120,3 +120,7 @@ class SweepBase(param.Parameter):
             values=self.values(debug),
             default=self.default,
         )
+
+    def with_samples(self, samples):
+        self.samples = samples
+        return self
