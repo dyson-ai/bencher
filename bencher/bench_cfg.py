@@ -551,8 +551,9 @@ class BenchCfg(BenchRunCfg):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
-    def to_grid(self):
-        inputs = self.inputs_as_str()
+    def to_grid(self, inputs=None):
+        if inputs is None:
+            inputs = self.inputs_as_str()
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
