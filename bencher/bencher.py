@@ -31,6 +31,7 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import subprocess
+import shutil
 
 
 # Customize the formatter
@@ -704,13 +705,20 @@ class Bench(BenchPlotServer):
             return self.pane
         return self.pane[-1]
 
-    def append_markdown(self, markdown: str) -> pn.pane.Markdown:
-        md = pn.pane.Markdown(markdown)
-        self.append(md)
+    def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown, name=name)
+        self.append_col(md, name=name)
         return md
 
     def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)
+
+    def append_col(self, pane: pn.panel, name=None) -> None:
+        if name is not None:
+            col = pn.Column(pane, name)
+        else:
+            col = pn.Column(pane)
+        self.get_panel().append(col)
 
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
@@ -758,95 +766,136 @@ class Bench(BenchPlotServer):
 
     def publish(
         self,
-        directory: str = "bench_results",
-        branch_name: str = "bench_results",
-        url_postprocess: Callable = None,
-        **kwargs,
+        remote_callback: Callable,
     ) -> str:
-        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
-        Args:
-            directory (str, optional): Directory to save the results. Defaults to "bench_results".
-            branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
-            url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
-
-        Returns:
-            str: _description_
-        """
-
-        def get_output(cmd: str) -> str:
+        def publish_args(branch_name) -> Tuple[str, str]:
             return (
-                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
-                .stdout.decode("utf=8")
-                .strip()
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
             )
 
-        def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
-            # import re
+        Args:
+            remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
 
-            # return re.sub(
-            #     """((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?""",
-            #     """https://$7/""",
-            #     publish_url,
-            # )
-            # git@github.com:user/project.git
-            # https://github.com/user/project.git
-            # http://github.com/user/project.git
-            # git@192.168.101.127:user/project.git
-            # https://192.168.101.127/user/project.git
-            # http://192.168.101.127/user/project.git
-            # ssh://user@host.xz:port/path/to/repo.git/
-            # ssh://user@host.xz/path/to/repo.git/
-            # ssh://host.xz:port/path/to/repo.git/
-            # ssh://host.xz/path/to/repo.git/
-            # ssh://user@host.xz/path/to/repo.git/
-            # ssh://host.xz/path/to/repo.git/
-            # ssh://user@host.xz/~user/path/to/repo.git/
-            # ssh://host.xz/~user/path/to/repo.git/
-            # ssh://user@host.xz/~/path/to/repo.git
-            # ssh://host.xz/~/path/to/repo.git
-            # git://host.xz/path/to/repo.git/
-            # git://host.xz/~user/path/to/repo.git/
-            # http://host.xz/path/to/repo.git/
-            # https://host.xz/path/to/repo.git/
-            # https://regex101.com/r/qT7NP0/3
 
-            return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+        Returns:
+            str: the url of the published report
+        """
 
-        if url_postprocess is None:
-            url_postprocess = postprocess_url
-        current_branch = get_output("git symbolic-ref --short HEAD")
-        logging.info(f"on branch: {current_branch}")
-        stash_msg = get_output("git stash")
-        logging.info(f"stashing current work :{stash_msg}")
-        checkout_msg = get_output(f"git checkout -b {branch_name}")
-        checkout_msg = get_output(f"git checkout {branch_name}")
-        get_output("git pull")
-
-        logging.info(f"checking out branch: {checkout_msg}")
-        report_path = self.save(directory, in_html_folder=False)
+        remote, publish_url = remote_callback(self.bench_name)
+        directory = "tmpgit"
+        report_path = self.save(directory, filename="index.html", in_html_folder=False)
         logging.info(f"created report at: {report_path.absolute()}")
-        # commit_msg = f""
-        logging.info("adding report to git")
-        get_output(f"git add {report_path.absolute()}")
-        get_output("git status")
-        logging.info("committing report")
-        cmd = f'git commit -m "generate_report:{self.bench_name}"'
-        logging.info(cmd)
-        get_output(cmd)
-        logging.info("pushing report to origin")
-        get_output(f"git push --set-upstream origin {branch_name}")
-        logging.info("checking out original branch")
-        get_output(f"git checkout {current_branch}")
-        if "No local changes" not in stash_msg:
-            logging.info("restoring work with git stash pop")
-            get_output("git stash pop")
 
-        publish_url = get_output("git remote get-url --push origin")
-        logging.info(f"raw url:{publish_url}")
-        publish_url = url_postprocess(
-            publish_url, branch_name=branch_name, report_path=report_path, **kwargs
-        )
+        cd_dir = f"cd {directory} &&"
+
+        os.system(f"{cd_dir} git init")
+        os.system(f"{cd_dir} git checkout -b {self.bench_name}")
+        os.system(f"{cd_dir} git add index.html")
+        os.system(f'{cd_dir} git commit -m "publish {self.bench_name}"')
+        os.system(f"{cd_dir} git remote add origin {remote}")
+        os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
+
         logging.info("Published report @")
         logging.info(publish_url)
+
+        shutil.rmtree(directory)
+
         return publish_url
+
+    # def publish_old(
+    #     self,
+    #     directory: str = "bench_results",
+    #     branch_name: str = "bench_results",
+    #     url_postprocess: Callable = None,
+    #     **kwargs,
+    # ) -> str:
+    #     """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
+
+    #     Args:
+    #         directory (str, optional): Directory to save the results. Defaults to "bench_results".
+    #         branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
+    #         url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
+
+    #     Returns:
+    #         str: _description_
+    #     """
+
+    #     def get_output(cmd: str) -> str:
+    #         return (
+    #             subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
+    #             .stdout.decode("utf=8")
+    #             .strip()
+    #         )
+
+    #     def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
+    #         # import re
+
+    #         # return re.sub(
+    #         #     """((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?""",
+    #         #     """https://$7/""",
+    #         #     publish_url,
+    #         # )
+    #         # git@github.com:user/project.git
+    #         # https://github.com/user/project.git
+    #         # http://github.com/user/project.git
+    #         # git@192.168.101.127:user/project.git
+    #         # https://192.168.101.127/user/project.git
+    #         # http://192.168.101.127/user/project.git
+    #         # ssh://user@host.xz:port/path/to/repo.git/
+    #         # ssh://user@host.xz/path/to/repo.git/
+    #         # ssh://host.xz:port/path/to/repo.git/
+    #         # ssh://host.xz/path/to/repo.git/
+    #         # ssh://user@host.xz/path/to/repo.git/
+    #         # ssh://host.xz/path/to/repo.git/
+    #         # ssh://user@host.xz/~user/path/to/repo.git/
+    #         # ssh://host.xz/~user/path/to/repo.git/
+    #         # ssh://user@host.xz/~/path/to/repo.git
+    #         # ssh://host.xz/~/path/to/repo.git
+    #         # git://host.xz/path/to/repo.git/
+    #         # git://host.xz/~user/path/to/repo.git/
+    #         # http://host.xz/path/to/repo.git/
+    #         # https://host.xz/path/to/repo.git/
+    #         # https://regex101.com/r/qT7NP0/3
+
+    #         return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+
+    #     if url_postprocess is None:
+    #         url_postprocess = postprocess_url
+    #     current_branch = get_output("git symbolic-ref --short HEAD")
+    #     logging.info(f"on branch: {current_branch}")
+    #     stash_msg = get_output("git stash")
+    #     logging.info(f"stashing current work :{stash_msg}")
+    #     checkout_msg = get_output(f"git checkout -b {branch_name}")
+    #     checkout_msg = get_output(f"git checkout {branch_name}")
+    #     get_output("git pull")
+
+    #     logging.info(f"checking out branch: {checkout_msg}")
+    #     report_path = self.save(directory, in_html_folder=False)
+    #     logging.info(f"created report at: {report_path.absolute()}")
+    #     # commit_msg = f""
+    #     logging.info("adding report to git")
+    #     get_output(f"git add {report_path.absolute()}")
+    #     get_output("git status")
+    #     logging.info("committing report")
+    #     cmd = f'git commit -m "generate_report:{self.bench_name}"'
+    #     logging.info(cmd)
+    #     get_output(cmd)
+    #     logging.info("pushing report to origin")
+    #     get_output(f"git push --set-upstream origin {branch_name}")
+    #     logging.info("checking out original branch")
+    #     get_output(f"git checkout {current_branch}")
+    #     if "No local changes" not in stash_msg:
+    #         logging.info("restoring work with git stash pop")
+    #         get_output("git stash pop")
+
+    #     publish_url = get_output("git remote get-url --push origin")
+    #     logging.info(f"raw url:{publish_url}")
+    #     publish_url = url_postprocess(
+    #         publish_url, branch_name=branch_name, report_path=report_path, **kwargs
+    #     )
+    #     logging.info("Published report @")
+    #     logging.info(publish_url)
+    #     return publish_url
