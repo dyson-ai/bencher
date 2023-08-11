@@ -188,6 +188,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="Clears the per-sample cache.  Use this if you get unexpected behavior.  The per_sample cache is tagged by the specific benchmark it was sampled from. So clearing the cache of one benchmark will not clear the cache of other benchmarks.",
     )
 
+    overwrite_sample_cache: bool = param.Boolean(
+        False,
+        doc="If True, recalculate the value and overwrite the value stored in the sample cache",
+    )
+
     only_plot: bool = param.Boolean(
         False, doc="Do not attempt to calculate benchmarks if no results are found in the cache"
     )
@@ -559,6 +564,11 @@ class BenchCfg(BenchRunCfg):
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
+
+    def describe_sweep(self):
+        import panel as pn
+
+        return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
