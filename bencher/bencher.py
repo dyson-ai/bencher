@@ -766,36 +766,26 @@ class Bench(BenchPlotServer):
 
     def publish(
         self,
-        remote,
-        url_postprocess: Callable = None,
-        **kwargs,
+        remote_callback: Callable,
     ) -> str:
-        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
-        Args:
-            directory (str, optional): Directory to save the results. Defaults to "bench_results".
-            branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
-            url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
-
-        Returns:
-            str: _description_
-        """
-
-        def get_output(cmd: str) -> str:
+        def publish_args(branch_name) -> Tuple[str, str]:
             return (
-                subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
-                .stdout.decode("utf=8")
-                .strip()
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
             )
 
-        def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
-            return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+        Args:
+            remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.            
 
-        if url_postprocess is None:
-            url_postprocess = postprocess_url
 
+        Returns:
+            str: the url of the published report
+        """
+
+        remote, publish_url = remote_callback(self.bench_name)        
         directory = "tmpgit"
-
         report_path = self.save(directory, filename="index.html", in_html_folder=False)
         logging.info(f"created report at: {report_path.absolute()}")
 
@@ -808,9 +798,6 @@ class Bench(BenchPlotServer):
         os.system(f"{cd_dir} git remote add origin {remote}")
         os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
 
-        publish_url = url_postprocess(
-            remote, branch_name=self.bench_name, report_path=report_path, **kwargs
-        )
         logging.info("Published report @")
         logging.info(publish_url)
 

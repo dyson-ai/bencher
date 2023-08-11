@@ -1,5 +1,5 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
-
+from typing import Tuple
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
@@ -36,6 +36,13 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     return bencher
 
 
+def publish_args(branch_name) -> Tuple[str, str]:
+    return (
+        "ssh://git@stash.dyson.global.corp:7999/las/bench_reports.git",
+        f"https://stash.dyson.global.corp/pages/LAS/bench_reports/{branch_name}/browse/",
+    )
+
+
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 3
@@ -45,5 +52,5 @@ if __name__ == "__main__":
 
     b = example_1D_bool(ex_run_cfg)
 
-    b.publish("ssh://git@stash.dyson.global.corp:7999/las/bench_reports.git")
+    b.publish(publish_args)
     b.save()
