@@ -547,9 +547,8 @@ class Bench(BenchPlotServer):
         function_input = SortedDict(zip(dims_name, function_input_vars))
 
         canonical_input = hmap_canonical_input(function_input)
-
         if constant_inputs is not None:
-            function_input |= constant_inputs
+            function_input = function_input | constant_inputs
 
         if bench_cfg.print_bench_inputs:
             logging.info("Bench Inputs:")
