@@ -41,9 +41,9 @@ if __name__ == "__main__":
     ex_run_cfg.repeats = 3
     ex_run_cfg.print_pandas = True
     ex_run_cfg.over_time = False
-    ex_run_cfg.auto_plot = False
+    # ex_run_cfg.auto_plot = False
 
     b = example_1D_bool(ex_run_cfg)
 
     b.publish("ssh://git@stash.dyson.global.corp:7999/las/bench_reports.git")
-    # b.save()
+    b.save()

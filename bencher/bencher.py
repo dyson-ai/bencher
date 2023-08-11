@@ -805,12 +805,22 @@ class Bench(BenchPlotServer):
         # print(get_output(f"pwd"))
         # print(get_output(f"cd {directory}"))
 
-        print(
-            get_output(
-                f"./publish_orphan.sh test ssh://git@stash.dyson.global.corp:7999/las/bench_reports.git"
-            )
-        )
-        get_output("rm -rf {directory}")
+        # print(get_output(f"./publish_orphan.sh {self.bench_name} {remote}"))
+
+        cd_dir = f"cd {directory} &&"
+
+        os.system(f"{cd_dir} git init")
+        os.system(f"{cd_dir} git checkout -b {self.bench_name}")
+        os.system(f"{cd_dir} git add index.html")
+        os.system(f'{cd_dir} git commit -m "publish {self.bench_name}"')
+        os.system(f"{cd_dir} git remote add origin {remote}")
+        os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
+
+        # os.system(f"cd tmpgit;git init; git checkout -b $1;git add index.html;git commit -m "publish $1";git remote add origin $2;git push --set-upstream origin $1 -f"
+        import shutil
+
+        shutil.rmtree(directory)
+        # get_output("rm -rf {directory}")
 
         # get_output(
         # f"cd {directory}; git init; git checkout -b {self.bench_name};git remote add origin {remote}; git push origin {self.bench_name}"
