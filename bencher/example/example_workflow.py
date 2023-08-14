@@ -96,7 +96,7 @@ def example_floats2D_workflow(run_cfg: bch.BenchRunCfg, bench: bch.Bench = None)
             VolumeResult.param.p1_dis,
             VolumeResult.param.p2_dis,
         ],
-        const_vars=[(VolumeSample.param.z, 0)],
+        const_vars=[VolumeSample.param.z.with_const(0)],
         title="Float 2D Example",
         run_cfg=run_cfg,
     )
