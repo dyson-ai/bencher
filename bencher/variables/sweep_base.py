@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Any,Tuple
+from typing import List, Any, Tuple
 
 
 import param
@@ -126,6 +126,6 @@ class SweepBase(param.Parameter):
     def with_samples(self, samples):
         self.samples = samples
         return self
-    
-    def with_const(self,const_value) -> Tuple[SweepBase,Any]:
-        return (self,const_value)
+
+    def with_const(self, const_value) -> Tuple[SweepBase, Any]:
+        return (self, const_value)
