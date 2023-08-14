@@ -9,13 +9,13 @@ class VolumeSample(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
     x = bch.FloatSweep(
-        default=0, bounds=[-1.0, 1.0], doc="x coordinate of the sample volume", samples=8
+        default=0, bounds=[-1.0, 1.0], doc="x coordinate of the sample volume", samples=4
     )
     y = bch.FloatSweep(
-        default=0, bounds=[-1.0, 1.0], doc="y coordinate of the sample volume", samples=9
+        default=0, bounds=[-1.0, 1.0], doc="y coordinate of the sample volume", samples=5
     )
     z = bch.FloatSweep(
-        default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=10
+        default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=6
     )
 
 

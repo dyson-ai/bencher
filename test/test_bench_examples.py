@@ -9,7 +9,8 @@ from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_float_cat import run_example_float_cat
 from bencher.example.example_time_event import run_example_time_event
 from bencher.example.example_float3D import example_floats3D
-from bencher.example.example_float3D_cone import example_cone
+
+# from bencher.example.shelved.example_float3D_cone import example_cone
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_plot_library import example_plot_library
@@ -66,8 +67,8 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_float3D(self) -> None:
         self.examples_asserts(example_floats3D(self.create_run_cfg()))
 
-    def test_example_cone(self) -> None:
-        self.examples_asserts(example_cone(self.create_run_cfg()))
+    # def test_example_cone(self) -> None:
+    #     self.examples_asserts(example_cone(self.create_run_cfg()))
 
     def test_example_custom_sweep(self) -> None:
         self.examples_asserts(example_custom_sweep(self.create_run_cfg()))
