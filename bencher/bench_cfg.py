@@ -568,7 +568,6 @@ class BenchCfg(BenchRunCfg):
         return [i.name for i in self.input_vars]
 
     def describe_sweep(self) -> pn.pane.Markdown:
-
         return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
 
     def summarise_sweep(self) -> pn.pane.Markdown:
