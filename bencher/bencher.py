@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
+from copy import deepcopy
 import os
 from copy import deepcopy
 
@@ -123,7 +124,7 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
-        self.worker_class =None
+        self.worker_class = None
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
