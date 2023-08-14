@@ -45,7 +45,7 @@ def example_cache_context() -> bch.Bench:
     # run a benchmark with a constant value and save results with example_tag1
     bencher.plot_sweep(
         title="Benchmark enum=value_1",
-        const_vars=[(Cfg.param.enum1, ExampleEnum.value_1)],
+        const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_1)],
         result_vars=[Cfg.param.result],
         run_cfg=run_cfg,
         tag="example_tag1",
@@ -58,7 +58,7 @@ def example_cache_context() -> bch.Bench:
     bencher.clear_call_counts()
     bencher.plot_sweep(
         title="Benchmark enum=value_2",
-        const_vars=[(Cfg.param.enum1, ExampleEnum.value_2)],
+        const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_2)],
         result_vars=[Cfg.param.result],
         run_cfg=run_cfg,
         tag="example_tag1",

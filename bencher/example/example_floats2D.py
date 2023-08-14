@@ -37,9 +37,9 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         input_vars=[cfg.param.theta, cfg.param.offset],
         result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         const_vars=[
-            (cfg.param.sigma, 0.1),
-            (cfg.param.noise_distribution, NoiseDistribution.gaussian),
-            (cfg.param.noisy, True),
+            cfg.param.sigma.with_const(0.1),
+            cfg.param.noise_distribution.with_const(NoiseDistribution.gaussian),
+            cfg.param.noisy.with_const(True),
         ],
         title="Float 2D Example",
         description="""Bencher is a tool to make it easy to explore how input parameter affect a range of output metrics.  In these examples we are going to benchmark an example function which has been selected to show the features of bencher.
