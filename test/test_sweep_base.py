@@ -35,13 +35,11 @@ class TestSweepBase(unittest.TestCase):
 
         res = bench.plot_sweep(
             "tst",
-            input_vars=[AllSweepVars.param.var_float],
+            input_vars=[explorer.param.var_float],
             const_vars=consts,
         )
 
         consts_after = [i[0] for i in res.const_vars]
-
-        # print(consts_after)
 
         self.assertEqual(consts_len, len(consts))
         self.assertEqual(consts_len - 1, len(consts_after))
@@ -50,5 +48,3 @@ class TestSweepBase(unittest.TestCase):
         self.assertTrue(explorer.param.var_float not in consts)
 
         # self.assertTrue(False)
-
-        # self.assertEqual(res[1], 5)
