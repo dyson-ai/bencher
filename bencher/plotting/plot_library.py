@@ -5,10 +5,12 @@ from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
-from bencher.plotting.plots.scatterplot import Scatter
 from bencher.plotting.plots.tables import Tables
 from bencher.plotting.plots.volume import VolumePlot
 from bencher.plotting.plots.surface import SurfacePlot
+
+# from bencher.plotting.plots.scatterplot import Scatter
+
 
 from bencher.plotting.plots.hv_interactive import HvInteractive
 
@@ -28,7 +30,7 @@ class PlotLibrary:
         plt_col.add_plotter_source(Tables())
         plt_col.add_plotter_source(Heatmap())
         plt_col.add_plotter_source(Lineplot())
-        plt_col.add_plotter_source(Scatter())
+        # plt_col.add_plotter_source(Scatter())
         plt_col.add_plotter_source(HvInteractive())
         plt_col.add_plotter_source(VolumePlot())
         plt_col.add_plotter_source(SurfacePlot())
@@ -56,7 +58,7 @@ class PlotLibrary:
         plt_col.add(PlotTypes.volume_plotly)
         plt_col.add(PlotTypes.cone_plotly)
         # plt_col.add(PlotTypes.lineplot_hv_subplot)
-        plt_col.add(PlotTypes.scatter2D_sns)
+        # plt_col.add(PlotTypes.scatter2D_sns)
         plt_col.add(PlotTypes.surface_hv)
         # plt_col.add(PlotTypes.hv_interactive)
 
