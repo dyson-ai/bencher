@@ -1,5 +1,4 @@
 import unittest
-import os
 
 from bencher.example.benchmark_data import AllSweepVars
 

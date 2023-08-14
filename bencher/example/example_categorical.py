@@ -1,6 +1,5 @@
 # pylint: disable=duplicate-code
 
-import pathlib
 
 import bencher as bch
 
