@@ -11,6 +11,8 @@ from pandas import DataFrame
 from str2bool import str2bool
 import holoviews as hv
 import numpy as np
+import panel as pn
+
 
 import bencher as bch
 from bencher.variables.sweep_base import hash_sha1, describe_variable
@@ -565,10 +567,16 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self):
-        import panel as pn
+    def describe_sweep(self) -> pn.pane.Markdown:
 
         return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
+
+    def summarise_sweep(self) -> pn.pane.Markdown:
+        col = pn.Column()
+        col.append(pn.pane.Markdown(f"# {self.title}"))
+        col.append(pn.pane.Markdown(self.description))
+        col.append(self.describe_sweep())
+        return col
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
