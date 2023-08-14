@@ -581,13 +581,6 @@ class BenchCfg(BenchRunCfg):
         col.append(self.describe_sweep())
         return col
 
-    def summarise_sweep(self) -> pn.pane.Markdown:
-        col = pn.Column()
-        col.append(pn.pane.Markdown(f"# {self.title}"))
-        col.append(pn.pane.Markdown(self.description))
-        col.append(self.describe_sweep())
-        return col
-
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
