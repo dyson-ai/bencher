@@ -123,6 +123,7 @@ class Bench(BenchPlotServer):
         self.worker = None
         self.worker_class = None
         self.worker_input_cfg = None
+        self.worker_class = None
         self.set_worker(worker, worker_input_cfg)
 
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
@@ -222,6 +223,12 @@ class Bench(BenchPlotServer):
             const_vars = []
         else:
             const_vars = deepcopy(const_vars)
+
+        if self.worker_class is not None:
+            if description is None:
+                description = self.worker_class.__doc__
+            if result_vars is None:
+                result_vars = self.worker_class.get_results_vars()
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
