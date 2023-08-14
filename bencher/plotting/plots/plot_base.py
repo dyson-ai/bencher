@@ -7,7 +7,7 @@ import holoviews as hv
 
 hv.extension("bokeh", "plotly")
 
-width_heigh = {"width": 600, "height": 600}
+width_heigh = {"width": 600, "height": 600, "tools": ["hover"]}
 
 opts.defaults(
     opts.Curve(**width_heigh),
