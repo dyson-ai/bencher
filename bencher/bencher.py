@@ -761,24 +761,18 @@ class Bench(BenchPlotServer):
             filename = f"{self.bench_name}.html"
 
         base_path = Path(directory)
-        print(f"base path:{base_path}")
-        path = base_path
-        # if base_path.is_dir():
-        #     path = base_path
-        # else:
-        #     path = base_path.parent
 
         if in_html_folder:
-            path /= "html"
+            base_path /= "html"
 
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(base_path, exist_ok=True)
 
-        path = path / filename
+        base_path = base_path / filename
 
-        logging.info(f"saving html output to: {path.absolute()}")
+        logging.info(f"saving html output to: {base_path.absolute()}")
 
-        self.pane.save(filename=path, progress=True, **kwargs)
-        return path
+        self.pane.save(filename=base_path, progress=True, **kwargs)
+        return base_path
 
     def publish(
         self,

@@ -36,13 +36,6 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     return bencher
 
 
-def publish_args(branch_name) -> Tuple[str, str]:
-    return (
-        "ssh://git@stash.dyson.global.corp:7999/las/bench_reports.git",
-        f"https://stash.dyson.global.corp/pages/LAS/bench_reports/{branch_name}/browse/",
-    )
-
-
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 3
@@ -51,6 +44,4 @@ if __name__ == "__main__":
     # ex_run_cfg.auto_plot = False
 
     b = example_1D_bool(ex_run_cfg)
-
-    b.publish(publish_args)
     b.save()
