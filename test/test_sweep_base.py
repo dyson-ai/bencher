@@ -16,8 +16,8 @@ class TestSweepBase(unittest.TestCase):
         self.assertNotEqual(str(sweep_samples_before), str(custom_samples))
 
     def test_with_const(self) -> None:
-        """Check that using with_const does not have side effects"""
+        """Check that setting a const returns the right const"""
 
-        var, val = AllSweepVars.param.var_float.with_const(5)
+        res = AllSweepVars.param.var_float.with_const(5)
 
-        self.assertEqual(val, 5)
+        self.assertEqual(res[1], 5)
