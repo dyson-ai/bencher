@@ -46,8 +46,9 @@ class BenchPlotter:
                             )
                         )
 
-                plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
                 if bench_cfg.over_time:
+                    plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
+
                     bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
                     bench_deep.over_time = False
                     bench_deep.iv_time = []
@@ -61,6 +62,8 @@ class BenchPlotter:
                         logging.warning(warning)
 
                 else:
+                    plot_cols.append(pn.pane.Markdown("## Results"))
+
                     plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
                 if bench_cfg.use_optuna:
