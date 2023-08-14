@@ -4,8 +4,6 @@ from itertools import product
 from typing import Callable, List
 from copy import deepcopy
 import os
-from copy import deepcopy
-
 import numpy as np
 import panel as pn
 import param
@@ -33,7 +31,6 @@ from bencher.utils import hmap_canonical_input
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
-import subprocess
 import shutil
 
 

@@ -3,8 +3,6 @@ import xarray as xr
 from sortedcontainers import SortedDict
 import hashlib
 import re
-import os
-import errno
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
