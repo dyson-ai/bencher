@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List, Any, Tuple
-
+from copy import deepcopy
 
 import param
 from param import Parameterized
@@ -123,9 +123,11 @@ class SweepBase(param.Parameter):
             default=self.default,
         )
 
-    def with_samples(self, samples):
-        self.samples = samples
-        return self
+    def with_samples(self, samples) -> SweepBase:
+        output = deepcopy(self)
+        # TODO set up class properly. Slightly complicated due to slots
+        output.samples = samples  # pylint: disable = attribute-defined-outside-init
+        return output
 
     def with_const(self, const_value) -> Tuple[SweepBase, Any]:
         return (self, const_value)
