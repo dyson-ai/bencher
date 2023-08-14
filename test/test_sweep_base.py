@@ -6,7 +6,7 @@ from bencher.example.benchmark_data import AllSweepVars
 class TestSweepBase(unittest.TestCase):
     def test_with_samples(self) -> None:
         """Check that using with_samples does not have side effects"""
-        ex = AllSweepVars()
+        AllSweepVars()
 
         sweep_samples_before = AllSweepVars.param.var_float.values()
         custom_samples = AllSweepVars.param.var_float.with_samples(5).values()
