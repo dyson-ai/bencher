@@ -35,7 +35,7 @@ class TestSweepBase(unittest.TestCase):
 
         res = bench.plot_sweep(
             "tst",
-            input_vars=[explorer.param.var_float],
+            input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
         )
 
