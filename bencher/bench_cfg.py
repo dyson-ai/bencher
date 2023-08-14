@@ -578,7 +578,7 @@ class BenchCfg(BenchRunCfg):
     def summarise_sweep(self, name=None) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
         if name is None:
-            name = self.bench_name
+            name = self.title
         col = pn.Column(name=name)
         col.append(pn.pane.Markdown(f"# {self.title}"))
         if self.description is not None:
