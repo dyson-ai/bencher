@@ -1,6 +1,6 @@
 import unittest
 
-from bencher.example.benchmark_data import AllSweepVars, SimpleBenchClass
+from bencher.example.benchmark_data import AllSweepVars
 import bencher as bch
 
 
