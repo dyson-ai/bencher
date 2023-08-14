@@ -123,6 +123,7 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
+        self.worker_class =None
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
@@ -149,7 +150,11 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        self.worker = worker
+        if isinstance(worker, ParametrizedSweep):
+            self.worker = worker.call
+            self.worker_class = worker
+        else:
+            self.worker = worker
         self.worker_input_cfg = worker_input_cfg
 
     def to_optuna(
