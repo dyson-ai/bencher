@@ -222,7 +222,7 @@ class Bench(BenchPlotServer):
             for i in input_vars:
                 for c in const_vars:
                     # print(i.hash_persistent())
-                    if i == c[0] or i.hash_persistent() == c[0].hash_persistent():
+                    if i.name == c[0].name:
                         const_vars.remove(c)
                         logging.info(f"removing {i.name} from constants")
 
