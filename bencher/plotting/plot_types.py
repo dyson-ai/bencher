@@ -34,7 +34,7 @@ class PlotTypes(StrEnum):
     scatter_hv = auto()
 
     volume_plotly = auto()
-    cone_plotly = auto()
+    # cone_plotly = auto()
     surface_hv = auto()
 
     # hv_interactive = auto()
