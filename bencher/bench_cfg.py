@@ -568,12 +568,21 @@ class BenchCfg(BenchRunCfg):
         return [i.name for i in self.input_vars]
 
     def describe_sweep(self) -> pn.pane.Markdown:
+        """Produce a markdown summary of the sweep settings
+
+        Returns:
+            pn.pane.Markdown: _description_
+        """
         return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
 
-    def summarise_sweep(self) -> pn.pane.Markdown:
-        col = pn.Column()
+    def summarise_sweep(self, name=None) -> pn.pane.Markdown:
+        """Produce panel output summarising the title, description and sweep setting"""
+        if name is None:
+            name = self.title
+        col = pn.Column(name=name)
         col.append(pn.pane.Markdown(f"# {self.title}"))
-        col.append(pn.pane.Markdown(self.description))
+        if self.description is not None:
+            col.append(pn.pane.Markdown(self.description))
         col.append(self.describe_sweep())
         return col
 
