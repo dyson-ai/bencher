@@ -1,6 +1,6 @@
 import unittest
 
-from bencher.example.benchmark_data import AllSweepVars, SimpleBenchClass
+from bencher.example.benchmark_data import AllSweepVars
 import bencher as bch
 
 
@@ -35,13 +35,11 @@ class TestSweepBase(unittest.TestCase):
 
         res = bench.plot_sweep(
             "tst",
-            input_vars=[AllSweepVars.param.var_float],
+            input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
         )
 
         consts_after = [i[0] for i in res.const_vars]
-
-        # print(consts_after)
 
         self.assertEqual(consts_len, len(consts))
         self.assertEqual(consts_len - 1, len(consts_after))
@@ -50,5 +48,3 @@ class TestSweepBase(unittest.TestCase):
         self.assertTrue(explorer.param.var_float not in consts)
 
         # self.assertTrue(False)
-
-        # self.assertEqual(res[1], 5)

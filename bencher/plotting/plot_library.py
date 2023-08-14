@@ -70,7 +70,11 @@ class PlotLibrary:
             PlotCollection: Only table plots
         """
         defaults = PlotLibrary.default()
+<<<<<<< HEAD
         return defaults.remove(PlotTypes.surface_hv).remove( PlotTypes.volume_plotly)
+=======
+        return defaults.remove(PlotTypes.surface_hv).remove(PlotTypes.volume_plotly)
+>>>>>>> feature/fix_setting_const
 
     @staticmethod
     def tables() -> PlotCollection:

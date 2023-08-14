@@ -13,6 +13,8 @@ import holoviews as hv
 import numpy as np
 import panel as pn
 
+import panel as pn
+
 
 import bencher as bch
 from bencher.variables.sweep_base import hash_sha1, describe_variable
@@ -571,6 +573,13 @@ class BenchCfg(BenchRunCfg):
     def describe_sweep(self) -> pn.pane.Markdown:
 
         return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
+
+    def summarise_sweep(self) -> pn.pane.Markdown:
+        col = pn.Column()
+        col.append(pn.pane.Markdown(f"# {self.title}"))
+        col.append(pn.pane.Markdown(self.description))
+        col.append(self.describe_sweep())
+        return col
 
     def summarise_sweep(self) -> pn.pane.Markdown:
         col = pn.Column()
