@@ -50,15 +50,16 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         plot_lib=plot_lib,
     )
 
-    bencher.plot_sweep(
-        title="Example Float Cat Repeats",
-        input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
-        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
-        result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
-        description=example_plot_library.__doc__,
-        run_cfg=run_cfg,
-        plot_lib=plot_lib,
-    )
+    # WIP
+    # bencher.plot_sweep(
+    #     title="Example Float Cat Repeats",
+    #     input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
+    #     const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
+    #     result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
+    #     description=example_plot_library.__doc__,
+    #     run_cfg=run_cfg,
+    #     plot_lib=plot_lib,
+    # )
 
     return bencher
 
