@@ -41,8 +41,5 @@ if __name__ == "__main__":
 
     ex_res = example_1D_cat(ex_run_cfg)
 
-    ex_res.publish()
-    # ex_res.save(__file__)
-    # ex_res.save("bench_results", in_html_folder=False)
-
+    # ex_res.publish()
     ex_res.show()
