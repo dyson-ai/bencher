@@ -123,11 +123,19 @@ class SweepBase(param.Parameter):
             default=self.default,
         )
 
-    def with_samples(self, samples) -> SweepBase:
+    def with_samples(self, samples: int) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         output.samples = samples  # pylint: disable = attribute-defined-outside-init
         return output
 
-    def with_const(self, const_value) -> Tuple[SweepBase, Any]:
-        return (self, const_value)
+    def with_const(self, const_value: Any) -> Tuple[SweepBase, Any]:
+        """Create a new instance of SweepBase with a constant value.
+
+        Args:
+            const_value (Any): The constant value to be associated with the new instance.
+
+        Returns:
+            Tuple[SweepBase, Any]: A tuple containing the new instance of SweepBase and the constant value.
+        """
+        return (deepcopy(self), const_value)
