@@ -97,10 +97,17 @@ class ParametrizedSweep(Parameterized):
         """
         return list(self.get_input_and_results().inputs.values())
 
-    def get_input_defaults(self) -> List[Tuple[param.Parameter, Any]]:
+    def get_input_defaults(self, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
         inp = self.get_inputs_only()
+        if override_defaults is None:
+            override_defaults = []
+        for p in override_defaults:
+            param_name = p[0]
+            if param_name in inp:
+                inp.remove(param_name)
+
         defaults = self.param.defaults()
-        return [(i, defaults[i.name]) for i in inp]
+        return override_defaults + [(i, defaults[i.name]) for i in inp]
 
     def get_results_only(self) -> List[param.Parameter]:
         """Return a list of input parameters

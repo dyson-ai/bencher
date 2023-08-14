@@ -35,7 +35,8 @@ class BenchPlotter:
 
             else:
                 plot_cols = pn.Column(name="Plots View")
-                plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
+                bench_des = "" if bench_cfg.description is None else bench_cfg.description
+                plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_des}"))
                 benmark_str = describe_benchmark(bench_cfg)
                 plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
                 if bench_cfg.over_time:
