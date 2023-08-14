@@ -383,5 +383,5 @@ class TestBencher(unittest.TestCase):
                 title="test_param_usage",
                 input_vars=[ExampleBenchCfgIn.param.theta],
                 result_vars=[ExampleBenchCfgOut.param.out_sin],
-                const_vars=[(ExampleBenchCfgIn.offset, 0.1)],  # forgot to use param here
+                const_vars=[ExampleBenchCfgIn.offset.with_const(0.1)],  # forgot to use param here
             )

@@ -23,7 +23,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher.plot_sweep(
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=run_cfg,
@@ -33,7 +33,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher.plot_sweep(
         title="Example 1D Float",
         input_vars=[ExampleBenchCfgIn.param.theta],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=run_cfg,
@@ -43,7 +43,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher.plot_sweep(
         title="Example Float Cat Single",
         input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=bch.BenchRunCfg(repeats=1),
@@ -53,7 +53,7 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bencher.plot_sweep(
         title="Example Float Cat Repeats",
         input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=run_cfg,
