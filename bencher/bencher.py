@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
+from copy import deepcopy
 
 import numpy as np
 import panel as pn
@@ -213,13 +214,17 @@ class Bench(BenchPlotServer):
             result_vars = []
         if const_vars is None:
             const_vars = []
+        else:
+            const_vars = deepcopy(const_vars)
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
             for i in input_vars:
                 for c in const_vars:
-                    if i == c[0]:
+                    # print(i.hash_persistent())
+                    if i.name == c[0].name:
                         const_vars.remove(c)
+                        logging.info(f"removing {i.name} from constants")
 
         for i in input_vars:
             self.check_var_is_a_param(i, "input")
