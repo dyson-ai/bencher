@@ -104,8 +104,8 @@ if __name__ == "__main__":
     # This sweep is a combination of the previous two sweeps
     bench.plot_sweep(
         input_vars=[
-            InputCfg.param.algo_setting_enum,
             InputCfg.param.algo_setting_float,
+            InputCfg.param.algo_setting_enum,
         ],
         result_vars=[OutputCfg.param.accuracy],
         title="Simple example 2D sweep",

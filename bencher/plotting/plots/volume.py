@@ -102,65 +102,65 @@ def plot_volume_plotly(
     return pn.pane.Plotly(fig, name=PlotTypes.volume_plotly)
 
 
-def plot_cone_plotly(
-    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
-) -> pn.pane.Plotly:
-    """Given a benchCfg generate a 3D surface plot
+# def plot_cone_plotly(
+#     bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
+# ) -> pn.pane.Plotly:
+#     """Given a benchCfg generate a 3D surface plot
 
-    Args:
-        bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedSweep): result variable to plot
-        xr_cfg (PltCfgBase): config of x,y variables
+#     Args:
+#         bench_cfg (BenchCfg): description of benchmark
+#         rv (ParametrizedSweep): result variable to plot
+#         xr_cfg (PltCfgBase): config of x,y variables
 
-    Returns:
-        pn.pane.Plotly: A 3d volume plot as a holoview in a pane
-    """
+#     Returns:
+#         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
+#     """
 
-    bench_cfg = wrap_long_time_labels(bench_cfg)
+#     bench_cfg = wrap_long_time_labels(bench_cfg)
 
-    names = rv.index_names()
+#     names = rv.index_names()
 
-    # da = bench_cfg.ds[names[0]]
+#     # da = bench_cfg.ds[names[0]]
 
-    opacity = 1.0
+#     opacity = 1.0
 
-    df = bench_cfg.get_dataframe()
+#     df = bench_cfg.get_dataframe()
 
-    print("size before removing zero size vectors", df.shape)
-    df = df.loc[(df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)]
-    print("size after removing zero size vectors", df.shape)
+#     print("size before removing zero size vectors", df.shape)
+#     df = df.loc[(df[names[0]] != 0.0) | (df[names[1]] != 0.0) | (df[names[2]] != 0.0)]
+#     print("size after removing zero size vectors", df.shape)
 
-    data = [
-        go.Cone(
-            x=df[xr_cfg.x],
-            y=df[xr_cfg.y],
-            z=df[xr_cfg.z],
-            u=df[names[0]],
-            v=df[names[1]],
-            w=df[names[2]],
-            # sizemode="absolute",
-            # sizeref=2,
-            anchor="tail",
-            opacity=opacity,
-        )
-    ]
+#     data = [
+#         go.Cone(
+#             x=df[xr_cfg.x],
+#             y=df[xr_cfg.y],
+#             z=df[xr_cfg.z],
+#             u=df[names[0]],
+#             v=df[names[1]],
+#             w=df[names[2]],
+#             # sizemode="absolute",
+#             # sizeref=2,
+#             anchor="tail",
+#             opacity=opacity,
+#         )
+#     ]
 
-    layout = go.Layout(
-        title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
-        autosize=True,
-        width=700,
-        height=700,
-        margin=dict(t=50, b=50, r=50, l=50),
-        scene=dict(
-            xaxis_title=xr_cfg.xlabel,
-            yaxis_title=xr_cfg.ylabel,
-            zaxis_title=rv.name,
-        ),
-    )
+#     layout = go.Layout(
+#         title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
+#         autosize=True,
+#         width=700,
+#         height=700,
+#         margin=dict(t=50, b=50, r=50, l=50),
+#         scene=dict(
+#             xaxis_title=xr_cfg.xlabel,
+#             yaxis_title=xr_cfg.ylabel,
+#             zaxis_title=rv.name,
+#         ),
+#     )
 
-    fig = dict(data=data, layout=layout)
+#     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig, name=PlotTypes.cone_plotly)
+#     return pn.pane.Plotly(fig, name=PlotTypes.cone_plotly)
 
 
 class VolumePlot:
@@ -177,15 +177,15 @@ class VolumePlot:
             return plot_volume_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
         return None
 
-    def cone_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        if PlotFilter(
-            float_range=VarRange(3, 3),
-            cat_range=VarRange(-1, 0),
-            vector_len=VarRange(3, 3),
-            result_vars=VarRange(1, 1),
-        ).matches(pl_in.plt_cnt_cfg):
-            sns_cfg = PltCfgBase()
-            sns_cfg.y = pl_in.rv.name
-            xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.debug)
-            return plot_cone_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
-        return None
+    # def cone_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    #     if PlotFilter(
+    #         float_range=VarRange(3, 3),
+    #         cat_range=VarRange(-1, 0),
+    #         vector_len=VarRange(3, 3),
+    #         result_vars=VarRange(1, 1),
+    #     ).matches(pl_in.plt_cnt_cfg):
+    #         sns_cfg = PltCfgBase()
+    #         sns_cfg.y = pl_in.rv.name
+    #         xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.debug)
+    #         return plot_cone_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
+    #     return None
