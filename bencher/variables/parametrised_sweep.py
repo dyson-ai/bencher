@@ -54,11 +54,12 @@ class ParametrizedSweep(Parameterized):
 
         self.param.update(**used_params)
 
-    def get_input_and_results(self, include_name: bool = False) -> Tuple[dict, dict]:
+    @classmethod
+    def get_input_and_results(cls, include_name: bool = False) -> Tuple[dict, dict]:
         """Get dictionaries of input parameters and result parameters
 
         Args:
-            self: A parametrised class
+            cls: A parametrised class
             include_name (bool): Include the name parameter that all parametrised classes have. Default False
 
         Returns:
@@ -66,7 +67,7 @@ class ParametrizedSweep(Parameterized):
         """
         inputs = {}
         results = {}
-        for k, v in self.param.params().items():
+        for k, v in cls.param.params().items():
             if isinstance(v, (ResultVar, ResultVec)):
                 results[k] = v
             else:
@@ -90,34 +91,41 @@ class ParametrizedSweep(Parameterized):
             output |= {"hmap": holomap}
         return output
 
-    def get_inputs_only(self) -> List[param.Parameter]:
+    @classmethod
+    def get_inputs_only(cls) -> List[param.Parameter]:
         """Return a list of input parameters
 
         Returns:
             List[param.Parameter]: A list of input parameters
         """
-        return list(self.get_input_and_results().inputs.values())
+        return list(cls.get_input_and_results().inputs.values())
 
     @staticmethod
     def filter_fn(item, p_name):
         return item.name != p_name
 
-    def get_input_defaults(self, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
-        inp = self.get_inputs_only()
+    @classmethod
+    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
+        # print("class",cls)
+        inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
-        defaults = self.param.defaults()
-        return override_defaults + [(i, defaults[i.name]) for i in inp]
+        # print(cls.param.values())
+        # print(inp)
+        # print(inp[0].default)
+        # defaults = cls.param.defaults()
+        return override_defaults + [(i, i.default) for i in inp]
 
-    def get_results_only(self) -> List[param.Parameter]:
+    @classmethod
+    def get_results_only(cls) -> List[param.Parameter]:
         """Return a list of input parameters
 
         Returns:
             List[param.Parameter]: A list of result parameters
         """
-        return list(self.get_input_and_results(self).results.values())
+        return list(cls.get_input_and_results().results.values())
 
     def get_inputs_as_dims(
         self, compute_values=False, remove_dims: str | List[str] = None
