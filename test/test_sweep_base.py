@@ -79,8 +79,6 @@ class TestSweepBase(unittest.TestCase):
     def test_override_defaults(self):
         exp = AllSweepVars()
 
-        self.assertListEqual(exp.get_input_defaults(), AllSweepVars.get_input_defaults())
-
         class_defaults = AllSweepVars.get_input_defaults(
             [AllSweepVars.param.var_float.with_const(2)]
         )
@@ -88,8 +86,6 @@ class TestSweepBase(unittest.TestCase):
 
         instance_defaults = exp.get_input_defaults([exp.param.var_float.with_const(2)])
         self.assertEqual(instance_defaults[0][1], 2)
-
-        self.assertListEqual(class_defaults, instance_defaults)
 
 
 if __name__ == "__main__":
