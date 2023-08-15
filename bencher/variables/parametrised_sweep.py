@@ -103,8 +103,16 @@ class ParametrizedSweep(Parameterized):
             override_defaults = []
         for p in override_defaults:
             param_name = p[0]
-            if param_name in inp:
-                inp.remove(param_name)
+            # print(inp)
+
+            # inp = filter(lambda  inp: param_name != inp.name, inp)
+            names = [i.name for i in inp]
+            # if 
+
+            # exit()
+
+            # if param_name in inp:
+            # inp.remove(param_name)
 
         defaults = self.param.defaults()
         return override_defaults + [(i, defaults[i.name]) for i in inp]
