@@ -5,7 +5,7 @@ import panel as pn
 import seaborn as sns
 
 import bencher.plotting_functions as plt_func
-from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg, describe_benchmark
+from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg
 from bencher.optuna_conversions import collect_optuna_plots
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -34,10 +34,7 @@ class BenchPlotter:
                 tabs.append(pn.pane.Markdown(f"{bench_cfg.description}"))
 
             else:
-                plot_cols = pn.Column(name="Plots View")
-                plot_cols.append(pn.pane.Markdown(f"# {bench_cfg.title}\n{bench_cfg.description}"))
-                benmark_str = describe_benchmark(bench_cfg)
-                plot_cols.append(pn.pane.Markdown(f"{benmark_str}"))
+                plot_cols = bench_cfg.summarise_sweep(name="Plots View")
                 if bench_cfg.over_time:
                     if len(bench_cfg.ds.coords["over_time"]) > 1:
                         plot_cols.append(pn.pane.Markdown("## Results Over Time"))
@@ -49,8 +46,9 @@ class BenchPlotter:
                             )
                         )
 
-                plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
                 if bench_cfg.over_time:
+                    plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
+
                     bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
                     bench_deep.over_time = False
                     bench_deep.iv_time = []
@@ -64,6 +62,8 @@ class BenchPlotter:
                         logging.warning(warning)
 
                 else:
+                    plot_cols.append(pn.pane.Markdown("## Results"))
+
                     plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
                 if bench_cfg.use_optuna:

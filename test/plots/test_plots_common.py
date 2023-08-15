@@ -20,7 +20,7 @@ class TestPlotsCommon(unittest.TestCase):
         return bencher.plot_sweep(
             title="Test Cat Plots",
             input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
-            const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+            const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
             result_vars=[ExampleBenchCfgOut.param.out_cos],
             plot_lib=bch.PlotLibrary.none().add(plot_name),
             run_cfg=bch.BenchRunCfg(auto_plot=False),

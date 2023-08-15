@@ -26,7 +26,7 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
             ExampleBenchCfgIn.param.postprocess_fn,
         ],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         title="Float 2D Cat 1D Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
@@ -36,7 +36,7 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.theta],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
-        const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+        const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         title="Float 1D Cat 1D  Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
@@ -47,7 +47,7 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     # bench.plot_sweep(
     #     input_vars=[ExampleBenchCfgIn.param.theta, ExampleBenchCfgIn.param.postprocess_fn],
     #     result_vars=[ExampleBenchCfgOut.param.out_sin],
-    #     const_vars=[(ExampleBenchCfgIn.param.noisy, True)],
+    #     const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
     #     title="Float 1D Cat 1D  Example",
     #     description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
     #     post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",

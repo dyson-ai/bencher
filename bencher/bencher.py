@@ -2,7 +2,8 @@ import logging
 from datetime import datetime
 from itertools import product
 from typing import Callable, List
-
+from copy import deepcopy
+import os
 import numpy as np
 import panel as pn
 import param
@@ -30,6 +31,7 @@ from bencher.utils import hmap_canonical_input
 from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
+import shutil
 
 
 # Customize the formatter
@@ -106,7 +108,7 @@ class Bench(BenchPlotServer):
         bench_name: str = None,
         worker: Callable = None,
         worker_input_cfg: ParametrizedSweep = None,
-        plot_lib: PlotCollection = PlotLibrary.default(),
+        plot_lib: PlotCollection = None,
         remove_plots: list = None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
@@ -119,6 +121,7 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
+        self.worker_class = None
         self.worker_input_cfg = None
         self.set_worker(worker, worker_input_cfg)
 
@@ -132,7 +135,7 @@ class Bench(BenchPlotServer):
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
-        self.plot_lib = plot_lib
+        self.plot_lib = PlotLibrary.default() if plot_lib is None else plot_lib
         self.cache_size = int(100e9)  # default to 100gb
         if remove_plots is not None:
             for i in remove_plots:
@@ -145,7 +148,11 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        self.worker = worker
+        if isinstance(worker, ParametrizedSweep):
+            self.worker = worker.call
+            self.worker_class = worker
+        else:
+            self.worker = worker
         self.worker_input_cfg = worker_input_cfg
 
     def to_optuna(
@@ -213,13 +220,17 @@ class Bench(BenchPlotServer):
             result_vars = []
         if const_vars is None:
             const_vars = []
+        else:
+            const_vars = deepcopy(const_vars)
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
             for i in input_vars:
                 for c in const_vars:
-                    if i == c[0]:
+                    # print(i.hash_persistent())
+                    if i.name == c[0].name:
                         const_vars.remove(c)
+                        logging.info(f"removing {i.name} from constants")
 
         for i in input_vars:
             self.check_var_is_a_param(i, "input")
@@ -231,7 +242,7 @@ class Bench(BenchPlotServer):
 
         if post_description is None:
             post_description = (
-                "## Description\nPlease set post_description to explain these results"
+                "## Results Description\nPlease set post_description to explain these results"
             )
         if run_cfg is None:
             run_cfg = BenchRunCfg()
@@ -545,9 +556,8 @@ class Bench(BenchPlotServer):
         function_input = SortedDict(zip(dims_name, function_input_vars))
 
         canonical_input = hmap_canonical_input(function_input)
-
         if constant_inputs is not None:
-            function_input |= constant_inputs
+            function_input = function_input | constant_inputs
 
         if bench_cfg.print_bench_inputs:
             logging.info("Bench Inputs:")
@@ -565,14 +575,19 @@ class Bench(BenchPlotServer):
             )
             # logging.info(f"inputs: {fn_inputs_sorted}")
             # logging.info(f"pure: {function_input_signature_pure}")
-            if function_input_signature_benchmark_context in self.sample_cache:
+            if (
+                not bench_cfg.overwrite_sample_cache
+                and function_input_signature_benchmark_context in self.sample_cache
+            ):
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
                 result = self.sample_cache[function_input_signature_benchmark_context]
                 self.worker_cache_call_count += 1
-            elif bench_run_cfg.only_hash_tag and (
-                function_input_signature_pure in self.sample_cache
+            elif (
+                not bench_cfg.overwrite_sample_cache
+                and bench_run_cfg.only_hash_tag
+                and (function_input_signature_pure in self.sample_cache)
             ):
                 logging.info(
                     f"Hash: {function_input_signature_benchmark_context} not found in context cache"
@@ -699,29 +714,195 @@ class Bench(BenchPlotServer):
         """
         if main_plot:
             if len(self.pane) > 0:
-                return self.pane[-1][0]
+                return self.pane[-1]
             return self.pane
         return self.pane[-1]
+
+    def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown, name=name)
+        self.append_col(md, name=name)
+        return md
 
     def append(self, pane: pn.panel) -> None:
         self.get_panel().append(pane)
 
+    def append_col(self, pane: pn.panel, name=None) -> None:
+        if name is not None:
+            col = pn.Column(pane, name)
+        else:
+            col = pn.Column(pane)
+        self.get_panel().append(col)
+
     def append_tab(self, pane: pn.panel):
         self.pane.append(pane)
 
-    def save(self, directory: str | Path = "cachedir", filename: str = None, **kwargs) -> Path:
-        """Save the result to a static html file.  Note that dynamic content will not work."""
+    def save(
+        self,
+        directory: str | Path = "cachedir",
+        filename: str = None,
+        in_html_folder=True,
+        **kwargs,
+    ) -> Path:
+        """Save the result to a html file.  Note that dynamic content will not work.  by passing save(__file__) the html output will be saved in the same folder as the source code in a html subfolder.
+
+        Args:
+            directory (str | Path, optional): base folder to save to. Defaults to "cachedir" which should be ignored by git.
+            filename (str, optional): The name of the html file. Defaults to the name of the benchmark
+            in_html_folder (bool, optional): Put the saved files in a html subfolder to help keep the results separate from source code. Defaults to True.
+
+        Returns:
+            Path: the save path
+        """
 
         if filename is None:
             filename = f"{self.bench_name}.html"
 
         base_path = Path(directory)
-        if base_path.is_dir():
-            path = base_path
-        else:
-            path = base_path.parent
-        path = path / filename
-        logging.info(f"saving html output to: {path}")
 
-        self.pane.save(filename=path, **kwargs)
-        return path
+        if in_html_folder:
+            base_path /= "html"
+
+        os.makedirs(base_path, exist_ok=True)
+
+        base_path = base_path / filename
+
+        logging.info(f"saving html output to: {base_path.absolute()}")
+
+        self.pane.save(filename=base_path, progress=True, **kwargs)
+        return base_path
+
+    def publish(
+        self,
+        remote_callback: Callable,
+    ) -> str:
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
+
+        def publish_args(branch_name) -> Tuple[str, str]:
+            return (
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
+            )
+
+        Args:
+            remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
+
+
+        Returns:
+            str: the url of the published report
+        """
+
+        remote, publish_url = remote_callback(self.bench_name)
+        directory = "tmpgit"
+        report_path = self.save(directory, filename="index.html", in_html_folder=False)
+        logging.info(f"created report at: {report_path.absolute()}")
+
+        cd_dir = f"cd {directory} &&"
+
+        os.system(f"{cd_dir} git init")
+        os.system(f"{cd_dir} git checkout -b {self.bench_name}")
+        os.system(f"{cd_dir} git add index.html")
+        os.system(f'{cd_dir} git commit -m "publish {self.bench_name}"')
+        os.system(f"{cd_dir} git remote add origin {remote}")
+        os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
+
+        logging.info("Published report @")
+        logging.info(publish_url)
+
+        shutil.rmtree(directory)
+
+        return publish_url
+
+    # def publish_old(
+    #     self,
+    #     directory: str = "bench_results",
+    #     branch_name: str = "bench_results",
+    #     url_postprocess: Callable = None,
+    #     **kwargs,
+    # ) -> str:
+    #     """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
+
+    #     Args:
+    #         directory (str, optional): Directory to save the results. Defaults to "bench_results".
+    #         branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
+    #         url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
+
+    #     Returns:
+    #         str: _description_
+    #     """
+
+    #     def get_output(cmd: str) -> str:
+    #         return (
+    #             subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
+    #             .stdout.decode("utf=8")
+    #             .strip()
+    #         )
+
+    #     def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
+    #         # import re
+
+    #         # return re.sub(
+    #         #     """((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?""",
+    #         #     """https://$7/""",
+    #         #     publish_url,
+    #         # )
+    #         # git@github.com:user/project.git
+    #         # https://github.com/user/project.git
+    #         # http://github.com/user/project.git
+    #         # git@192.168.101.127:user/project.git
+    #         # https://192.168.101.127/user/project.git
+    #         # http://192.168.101.127/user/project.git
+    #         # ssh://user@host.xz:port/path/to/repo.git/
+    #         # ssh://user@host.xz/path/to/repo.git/
+    #         # ssh://host.xz:port/path/to/repo.git/
+    #         # ssh://host.xz/path/to/repo.git/
+    #         # ssh://user@host.xz/path/to/repo.git/
+    #         # ssh://host.xz/path/to/repo.git/
+    #         # ssh://user@host.xz/~user/path/to/repo.git/
+    #         # ssh://host.xz/~user/path/to/repo.git/
+    #         # ssh://user@host.xz/~/path/to/repo.git
+    #         # ssh://host.xz/~/path/to/repo.git
+    #         # git://host.xz/path/to/repo.git/
+    #         # git://host.xz/~user/path/to/repo.git/
+    #         # http://host.xz/path/to/repo.git/
+    #         # https://host.xz/path/to/repo.git/
+    #         # https://regex101.com/r/qT7NP0/3
+
+    #         return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
+
+    #     if url_postprocess is None:
+    #         url_postprocess = postprocess_url
+    #     current_branch = get_output("git symbolic-ref --short HEAD")
+    #     logging.info(f"on branch: {current_branch}")
+    #     stash_msg = get_output("git stash")
+    #     logging.info(f"stashing current work :{stash_msg}")
+    #     checkout_msg = get_output(f"git checkout -b {branch_name}")
+    #     checkout_msg = get_output(f"git checkout {branch_name}")
+    #     get_output("git pull")
+
+    #     logging.info(f"checking out branch: {checkout_msg}")
+    #     report_path = self.save(directory, in_html_folder=False)
+    #     logging.info(f"created report at: {report_path.absolute()}")
+    #     # commit_msg = f""
+    #     logging.info("adding report to git")
+    #     get_output(f"git add {report_path.absolute()}")
+    #     get_output("git status")
+    #     logging.info("committing report")
+    #     cmd = f'git commit -m "generate_report:{self.bench_name}"'
+    #     logging.info(cmd)
+    #     get_output(cmd)
+    #     logging.info("pushing report to origin")
+    #     get_output(f"git push --set-upstream origin {branch_name}")
+    #     logging.info("checking out original branch")
+    #     get_output(f"git checkout {current_branch}")
+    #     if "No local changes" not in stash_msg:
+    #         logging.info("restoring work with git stash pop")
+    #         get_output("git stash pop")
+
+    #     publish_url = get_output("git remote get-url --push origin")
+    #     logging.info(f"raw url:{publish_url}")
+    #     publish_url = url_postprocess(
+    #         publish_url, branch_name=branch_name, report_path=report_path, **kwargs
+    #     )
+    #     logging.info("Published report @")
+    #     logging.info(publish_url)
+    #     return publish_url
