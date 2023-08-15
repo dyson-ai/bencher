@@ -75,3 +75,16 @@ class TestSweepBase(unittest.TestCase):
 
         self.assertNotEqual(consts, const_override)
         self.assertEqual(len(consts), len(const_override))
+
+    def test_class_inputs(self):
+        print(AllSweepVars().param.params())
+
+        exp = AllSweepVars()
+        # exp.param.var_float
+        print(exp.get_input_defaults())
+        print(exp.get_input_defaults_cls())
+        # print(AllSweepVars.get_inputs_only_cls())
+
+
+if __name__ == "__main__":
+    TestSweepBase().test_class_inputs()
