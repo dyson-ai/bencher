@@ -5,6 +5,7 @@ from param import Parameterized
 import holoviews as hv
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec
+from functools import partial
 
 
 class ParametrizedSweep(Parameterized):
@@ -97,23 +98,16 @@ class ParametrizedSweep(Parameterized):
         """
         return list(self.get_input_and_results().inputs.values())
 
+    @staticmethod
+    def filter_fn(item, p_name):
+        return item.name != p_name
+
     def get_input_defaults(self, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
         inp = self.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
         for p in override_defaults:
-            param_name = p[0]
-            # print(inp)
-
-            # inp = filter(lambda  inp: param_name != inp.name, inp)
-            names = [i.name for i in inp]
-            # if 
-
-            # exit()
-
-            # if param_name in inp:
-            # inp.remove(param_name)
-
+            inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
         defaults = self.param.defaults()
         return override_defaults + [(i, defaults[i.name]) for i in inp]
 

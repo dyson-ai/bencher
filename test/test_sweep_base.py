@@ -47,4 +47,31 @@ class TestSweepBase(unittest.TestCase):
         self.assertTrue(AllSweepVars.param.var_float not in consts)
         self.assertTrue(explorer.param.var_float not in consts)
 
-        # self.assertTrue(False)
+    def test_override_const(self) -> None:
+        """Check that setting a const returns the right const"""
+
+        explorer = AllSweepVars()
+        bench = bch.Bench("tst_cnst", explorer.call)
+
+        consts = explorer.get_input_defaults()
+        const_override = explorer.get_input_defaults([AllSweepVars.param.var_float.with_const(2)])
+
+        # const_override_class = AllSweepVars.get_input_defaults(
+        #     [AllSweepVars.param.var_float.with_const(2)]
+        # )
+
+        # const_override_instance = explorer.get_input_defaults(
+        #     [explorer.param.var_float.with_const(2)]
+        # )
+
+        print(consts)
+        print("overridden")
+        print(const_override)
+
+        self.assertEqual(consts[0][1], 5)
+        self.assertEqual(const_override[0][1], 2)
+        # self.assertEqual(const_override_class[0][1], 2)
+        # self.assertEqual(const_override_instance[0][1], 2)
+
+        self.assertNotEqual(consts, const_override)
+        self.assertEqual(len(consts), len(const_override))
