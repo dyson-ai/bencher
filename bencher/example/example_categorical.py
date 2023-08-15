@@ -1,5 +1,5 @@
 # pylint: disable=duplicate-code
-
+import pathlib
 
 import bencher as bch
 
@@ -19,11 +19,11 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    # rdmepath = pathlib.Path(__file__).parent.parent.parent / "README.md"
-    # with open(rdmepath, "r", encoding="utf-8") as file:
-    #     readme = file.read()
+    rdmepath = pathlib.Path(__file__).parent.parent.parent / "README.md"
+    with open(rdmepath, "r", encoding="utf-8") as file:
+        readme = file.read()
 
-    # bench.plot_sweep(title="Intro", description=readme)
+    bench.plot_sweep(title="Intro", description=readme)
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.noisy],
