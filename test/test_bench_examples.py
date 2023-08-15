@@ -9,14 +9,18 @@ from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_float_cat import run_example_float_cat
 from bencher.example.example_time_event import run_example_time_event
 from bencher.example.example_float3D import example_floats3D
-from bencher.example.example_float3D_cone import example_cone
+
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep_tap import example_holosweep_tap
-from bencher.example.example_float2D_scatter import example_floats2D_scatter
+
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
+
+# shelved
+# from bencher.example.shelved.example_float2D_scatter import example_floats2D_scatter
+# from bencher.example.shelved.example_float3D_cone import example_cone
 
 
 class TestBenchExamples(unittest.TestCase):
@@ -66,9 +70,6 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_float3D(self) -> None:
         self.examples_asserts(example_floats3D(self.create_run_cfg()))
 
-    def test_example_cone(self) -> None:
-        self.examples_asserts(example_cone(self.create_run_cfg()))
-
     def test_example_custom_sweep(self) -> None:
         self.examples_asserts(example_custom_sweep(self.create_run_cfg()))
 
@@ -84,11 +85,14 @@ class TestBenchExamples(unittest.TestCase):
     def test_holosweep_tap(self) -> None:
         self.examples_asserts(example_holosweep_tap(self.create_run_cfg()))
 
-    def test_float2D_scatter(self) -> None:
-        self.examples_asserts(example_floats2D_scatter(self.create_run_cfg()))
-
     def test_optuna_rastrigin(self) -> None:
         self.examples_asserts(optuna_rastrigin(self.create_run_cfg()))
 
     def test_example_sample_cache(self) -> None:
         self.examples_asserts(example_sample_cache(self.create_run_cfg(), False))
+
+    # shelved
+    # def test_example_cone(self) -> None:
+    #     self.examples_asserts(example_cone(self.create_run_cfg()))
+    # def test_float2D_scatter(self) -> None:
+    #     self.examples_asserts(example_floats2D_scatter(self.create_run_cfg()))

@@ -32,9 +32,11 @@ class PlotTypes(StrEnum):
 
     scatter2D_sns = auto()
     # scatter_hv = auto()
+    # scatter2D_sns = auto()
+    scatter_hv = auto()
 
     volume_plotly = auto()
-    cone_plotly = auto()
+    # cone_plotly = auto()
     surface_hv = auto()
 
     # hv_interactive = auto()

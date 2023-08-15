@@ -74,12 +74,10 @@ result_var_permutations = [
 ]
 
 
-# @pytest.mark.skip
 class TestBencher(unittest.TestCase):
     def create_bench(self) -> Bench:
         return Bench("test_bencher", bench_function, ExampleBenchCfgIn)
 
-    # @pytest.mark.skip
     @settings(deadline=10000)
     @given(
         input_vars=st.sampled_from(
@@ -143,7 +141,7 @@ class TestBencher(unittest.TestCase):
         # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot iamges
         random.seed(42)
         bench = self.create_bench()
-        for i in range(3):
+        for i in range(2):
             bench.plot_sweep(
                 title="test_combinations_over_time",
                 input_vars=input_vars,

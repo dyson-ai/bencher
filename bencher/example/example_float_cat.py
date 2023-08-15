@@ -17,11 +17,9 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """
     bench = bch.Bench("Bencher_Example_Float_Cat", bench_function, ExampleBenchCfgIn)
 
-    ExampleBenchCfgIn.param.theta.samples = 3
-
     bench.plot_sweep(
         input_vars=[
-            ExampleBenchCfgIn.param.theta,
+            ExampleBenchCfgIn.param.theta.with_samples(3),
             ExampleBenchCfgIn.param.offset,
             ExampleBenchCfgIn.param.postprocess_fn,
         ],

@@ -49,7 +49,8 @@ class PlotCollection:
             if plot_name in self.plotter_providers:
                 self.plotters[plot_name] = self.plotter_providers[plot_name]
             else:
-                raise ValueError("This plot was not found in the list of available plots")
+                logging.warning(f"{plot_name} plot was not found in the list of available plots")
+                raise ValueError(f"{plot_name} plot was not found in the list of available plots")
         else:
             self.plotters[plot_name] = plot_fn
         return self
