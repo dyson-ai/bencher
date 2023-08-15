@@ -51,7 +51,7 @@ class TestSweepBase(unittest.TestCase):
         """Check that setting a const returns the right const"""
 
         explorer = AllSweepVars()
-        bench = bch.Bench("tst_cnst", explorer.call)
+        bch.Bench("tst_cnst", explorer.call)
 
         consts = explorer.get_input_defaults()
         const_override = explorer.get_input_defaults([AllSweepVars.param.var_float.with_const(2)])
@@ -76,15 +76,21 @@ class TestSweepBase(unittest.TestCase):
         self.assertNotEqual(consts, const_override)
         self.assertEqual(len(consts), len(const_override))
 
-    def test_class_inputs(self):
-        print(AllSweepVars().param.params())
-
+    def test_override_defaults(self):
         exp = AllSweepVars()
-        # exp.param.var_float
-        print(exp.get_input_defaults())
-        print(exp.get_input_defaults_cls())
-        # print(AllSweepVars.get_inputs_only_cls())
+
+        self.assertListEqual(exp.get_input_defaults(), AllSweepVars.get_input_defaults())
+
+        class_defaults = AllSweepVars.get_input_defaults(
+            [AllSweepVars.param.var_float.with_const(2)]
+        )
+        self.assertEqual(class_defaults[0][1], 2)
+
+        instance_defaults = exp.get_input_defaults([exp.param.var_float.with_const(2)])
+        self.assertEqual(instance_defaults[0][1], 2)
+
+        self.assertListEqual(class_defaults, instance_defaults)
 
 
 if __name__ == "__main__":
-    TestSweepBase().test_class_inputs()
+    TestSweepBase().test_override_defaults()

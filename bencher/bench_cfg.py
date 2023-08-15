@@ -581,7 +581,8 @@ class BenchCfg(BenchRunCfg):
         col.append(pn.pane.Markdown(f"# {self.title}"))
         if self.description is not None:
             col.append(pn.pane.Markdown(self.description))
-        col.append(self.describe_sweep())
+        if describe:
+            col.append(self.describe_sweep())
         return col
 
 
