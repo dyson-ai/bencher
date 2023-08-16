@@ -16,7 +16,9 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
+    bencher = bch.Bench(
+        "benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn, run_cfg=run_cfg
+    )
 
     plot_lib = bch.PlotLibrary.all()
 

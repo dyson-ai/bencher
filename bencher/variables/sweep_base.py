@@ -25,7 +25,9 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     return hash_sha1((parameter.units, parameter.samples, parameter.samples_debug))
 
 
-def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> List[str]:
+def describe_variable(
+    v: Parameterized, debug: bool, include_samples: bool, value=None
+) -> List[str]:
     """Generate a string description of a variable
 
     Args:
@@ -40,8 +42,14 @@ def describe_variable(v: Parameterized, debug: bool, include_samples: bool) -> L
     sampling_str = []
     sampling_str.append(f"{v.name}:")
     if include_samples:
-        sampling_str.append(f"{indent}{v.sampling_str(debug)}")
-    sampling_str.append(f"{indent}units: [{v.units}]")
+        # sampling_str.append(f"{indent}{v.sampling_str(debug)}")
+        sampling_str.append(f"{indent}number of samples: {len(v.values(debug))}")
+        sampling_str.append(f"{indent}sample values: {v.values(debug)}")
+
+    if value is not None:
+        sampling_str.append(f"{indent}value: {value}")
+    if v.units != "ul":
+        sampling_str.append(f"{indent}units: [{v.units}]")
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")
     for i in range(len(sampling_str)):
@@ -80,8 +88,7 @@ class SweepBase(param.Parameter):
 
         samples = self.values(debug)
         object_str = ",".join([str(i) for i in samples])
-        # return f"sampling {self.name} from: [{object_str}]"
-        return f"sampling {self.name} from {object_str} in {len(samples)} samples"
+        return f"Taking {len(samples)} samples from {self.name} with values: [{object_str}]"
 
     def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider

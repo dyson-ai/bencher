@@ -69,6 +69,7 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         run_cfg=run_cfg,
     )
 
+    run_cfg.over_time = True
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfgIn.param.noisy,
@@ -79,7 +80,7 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description="""Lastly, what if you want to track these distributions over time? Set over_time=True and bencher will cache and display historical resuts alongside the latest result.  Use clear_history=True to clear that cache.""",
         post_description="The output shows faceted line plot with confidence intervals for the mean value over time.",
-        run_cfg=bch.BenchRunCfg(repeats=5, over_time=True),
+        run_cfg=run_cfg,
     )
 
     return bench

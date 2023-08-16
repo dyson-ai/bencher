@@ -1,7 +1,7 @@
 import bencher as bch
 
 
-class InputCfg(bch.ParametrizedSweep):
+class Square(bch.ParametrizedSweep):
     """An example of a datatype with an integer and float parameter"""
 
     x = bch.FloatSweep(
@@ -12,15 +12,12 @@ class InputCfg(bch.ParametrizedSweep):
         sample_values=[1, 2, 6], doc="An example of a user defines set of sweep values"
     )
 
-
-class Result(bch.ParametrizedSweep):
     result = bch.ResultVar("ul", doc="Square of x")
 
-
-def benchmark_fn(cfg: InputCfg) -> Result:
-    output = Result()
-    output.result = cfg.x * cfg.x - cfg.y * 3
-    return output
+    def call(self, **kwargs) -> dict:
+        self.update_params_from_kwargs(**kwargs)
+        self.result = self.x * self.x * self.y * 3
+        return self.get_results_values_as_dict()
 
 
 def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
@@ -33,31 +30,23 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench("benchmarking_example_custom_sweep", benchmark_fn, InputCfg)
+    bencher = bch.Bench("benchmarking_example_custom_sweep", Square(), run_cfg=run_cfg)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
 
     bencher.plot_sweep(
         title="Example User Defined Sweep 1D",
-        # input_vars=[InputCfg.param.x],
-        input_vars=[InputCfg.param.x],
-        result_vars=[Result.param.result],
-        description=example_custom_sweep.__doc__,
-        run_cfg=run_cfg,
+        input_vars=[Square.param.x],
+        description="Sample the x parameter",
     )
 
     bencher.plot_sweep(
         title="Example User Defined Sweep 2D",
-        # input_vars=[InputCfg.param.x],
-        input_vars=[InputCfg.param.x, InputCfg.param.y],
-        result_vars=[Result.param.result],
-        description=example_custom_sweep.__doc__,
-        run_cfg=run_cfg,
+        description="By default bencher sweep all the variables in a class",
     )
     return bencher
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    # ex_run_cfg.debug = True
     example_custom_sweep(ex_run_cfg).show()
