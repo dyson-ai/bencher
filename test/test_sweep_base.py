@@ -92,13 +92,12 @@ class TestSweepBase(unittest.TestCase):
         self.assertEqual(instance_defaults[0][1], 2)
 
     def test_with_sample_values(self):
-
         vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values(False)
         self.assertEqual(vals[0], 0)
         self.assertEqual(vals[1], 1)
 
         defaults = AllSweepVars.param.var_float.values(False)
-        self.assertEqual(vals[9], 10)
+        self.assertEqual(defaults[9], 10)
 
 
 if __name__ == "__main__":
