@@ -604,10 +604,7 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     if bench_cfg.const_vars:
         benchmark_sampling_str.append("\nConstants:")
         for cv in bench_cfg.const_vars:
-            c = cv[0]
-            benchmark_sampling_str.extend(
-                [f"\t{c.name}: \n\t\tvalue: {cv[1]}\n\t\tunits: {c.units}\n\t\tdocs: {c.doc}"]
-            )
+            benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
 
     print_meta = True
     if len(bench_cfg.meta_vars) == 1:

@@ -237,6 +237,9 @@ class Bench(BenchPlotServer):
             else:
                 const_vars = deepcopy(const_vars)
 
+        if run_cfg is None:
+            run_cfg = deepcopy(self.run_cfg)
+
         if self.worker_class is not None:
             if description is None:
                 description = self.worker_class.__doc__
