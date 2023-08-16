@@ -30,31 +30,23 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench("benchmarking_example_custom_sweep", Square)
+    bencher = bch.Bench("benchmarking_example_custom_sweep", Square(), run_cfg=run_cfg)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
 
     bencher.plot_sweep(
         title="Example User Defined Sweep 1D",
-        # input_vars=[InputCfg.param.x],
         input_vars=[Square.param.x],
-        result_vars=[Square.param.result],
-        description=example_custom_sweep.__doc__,
-        run_cfg=run_cfg,
+        description="Sample the x parameter",
     )
 
     bencher.plot_sweep(
         title="Example User Defined Sweep 2D",
-        # input_vars=[InputCfg.param.x],
-        input_vars=[Square.param.x, Square.param.y],
-        result_vars=[Square.param.result],
-        description=example_custom_sweep.__doc__,
-        run_cfg=run_cfg,
+        description="By default bencher sweep all the variables in a class",
     )
     return bencher
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    # ex_run_cfg.debug = True
     example_custom_sweep(ex_run_cfg).show()

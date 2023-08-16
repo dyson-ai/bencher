@@ -106,16 +106,17 @@ class Bench(BenchPlotServer):
     def __init__(
         self,
         bench_name: str = None,
-        worker: Callable = None,
+        worker: Callable | ParametrizedSweep = None,
         worker_input_cfg: ParametrizedSweep = None,
         plot_lib: PlotCollection = None,
         remove_plots: list = None,
+        run_cfg=None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
         Args:
             bench_name (str): The name of the benchmark and output folder for the figures
-            worker (Callable): A function that accepts a class of type (worker_input_config)
+            worker (Callable | ParametrizedSweep): A function that accepts a class of type (worker_input_config)
             worker_input_config (ParametrizedSweep): A class defining the parameters of the function.
             plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
         """
@@ -125,6 +126,7 @@ class Bench(BenchPlotServer):
         self.worker_input_cfg = None
         self.worker_class = None
         self.set_worker(worker, worker_input_cfg)
+        self.run_cfg = run_cfg
 
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
         # The number of times the wrapped worker was called
@@ -149,6 +151,7 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
+        print(worker)
         if isinstance(worker, ParametrizedSweep):
             self.worker = worker.call
             self.worker_class = worker
@@ -215,14 +218,24 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-        if input_vars is None:
-            input_vars = []
-        if result_vars is None:
-            result_vars = []
-        if const_vars is None:
-            const_vars = []
+        if self.worker_class is not None:
+            if input_vars is None:
+                input_vars = self.worker_class.get_inputs_only()
+            if result_vars is None:
+                result_vars = self.worker_class.get_results_only()
+            if const_vars is None:
+                const_vars = self.worker_class.get_input_defaults()
+            if description is None:
+                description = self.worker_class.__doc__
         else:
-            const_vars = deepcopy(const_vars)
+            if input_vars is None:
+                input_vars = []
+            if result_vars is None:
+                result_vars = []
+            if const_vars is None:
+                const_vars = []
+            else:
+                const_vars = deepcopy(const_vars)
 
         if self.worker_class is not None:
             if description is None:
