@@ -80,12 +80,24 @@ class TestSweepBase(unittest.TestCase):
         exp = AllSweepVars()
 
         class_defaults = AllSweepVars.get_input_defaults(
-            [AllSweepVars.param.var_float.with_const(2)]
+            [AllSweepVars.param.var_float.with_const(3)]
         )
-        self.assertEqual(class_defaults[0][1], 2)
+        self.assertEqual(class_defaults[0][1], 3)
+
+        # check that the defaults have not been modified
+        default_defaults = AllSweepVars.get_input_defaults()
+        self.assertEqual(default_defaults[0][1], 5)
 
         instance_defaults = exp.get_input_defaults([exp.param.var_float.with_const(2)])
         self.assertEqual(instance_defaults[0][1], 2)
+
+    def test_with_sample_values(self):
+        vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values(False)
+        self.assertEqual(vals[0], 0)
+        self.assertEqual(vals[1], 1)
+
+        defaults = AllSweepVars.param.var_float.values(False)
+        self.assertEqual(defaults[9], 10)
 
 
 if __name__ == "__main__":
