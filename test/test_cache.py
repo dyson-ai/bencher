@@ -3,7 +3,7 @@ import bencher as bch
 import random
 
 
-class CachedParamExample(bch.CachedParams):
+class CachedParamExample(bch.CachedSweep):
     var1 = bch.FloatSweep(default=0, bounds=[0, 10])
     var2 = bch.IntSweep(default=10, bounds=[0, 10])
 
