@@ -141,7 +141,7 @@ class SweepBase(param.Parameter):
         # TODO set up class properly. Slightly complicated due to slots
         try:
             output.sample_values = sample_values  # pylint: disable = attribute-defined-outside-init
-        except Exception:
+        except AttributeError:
             output.objects = sample_values
         return output
 

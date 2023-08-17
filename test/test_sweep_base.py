@@ -99,9 +99,9 @@ class TestSweepBase(unittest.TestCase):
         defaults = AllSweepVars.param.var_float.values(False)
         self.assertEqual(defaults[9], 10)
 
-        vals = AllSweepVars.param.var_enum.with_sample_values(PostprocessFn.negage).values(False)
+        vals = AllSweepVars.param.var_enum.with_sample_values([PostprocessFn.negate]).values(False)
         self.assertEqual(len(vals), 1)
-        self.assertEqual(vals[0], PostprocessFn.negage)
+        self.assertEqual(vals[0], PostprocessFn.negate)
 
 
 if __name__ == "__main__":
