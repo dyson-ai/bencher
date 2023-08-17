@@ -7,10 +7,10 @@ from sortedcontainers import SortedDict
 
 
 class CachedSweep(ParametrizedSweep):
-    def __init__(self, clear_cache=True, cache_name="fcache", **params):
+    def __init__(self, clear_cache=True, cache_name="sample_cache", **params):
         super().__init__(**params)
 
-        self.cache = Cache(f"cachedir/{cache_name}/sample_cache/{self.name}")
+        self.cache = Cache(f"cachedir/{cache_name}/{type(self).name}")
         logging.info(f"cache dir{self.cache.directory}")
 
         if clear_cache:
@@ -37,15 +37,5 @@ class CachedSweep(ParametrizedSweep):
             self.cache[key] = value
         return value
 
-    def call_cached(**kwargs) -> dict:
-        pass
-
-    # def cache_mem(self, function):
-    #     def cache_wrap1(self, func, **kwargs):
-    #         key, value = self.in_cache(**kwargs)
-    #         if value is None:
-    #             value = function(**kwargs)
-    #             self.cache[key] = value
-    #         return value
-
-    #     return cache_wrap1
+    def call_cached(self, **kwargs) -> dict:
+        return self.cache_wrap(self.__call__, **kwargs)
