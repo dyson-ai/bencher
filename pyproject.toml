@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 
 
 dependencies = [
-  "holoviews>=1.15,<=1.17",
+  "holoviews>=1.15,<=1.17.1",
   "hvplot>=0.8,<=0.8.4",
   "diskcache>=5.6,>=5.6.1",
   "optuna>=3.2,<=3.3.0",
