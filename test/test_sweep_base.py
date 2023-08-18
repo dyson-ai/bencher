@@ -109,7 +109,7 @@ class TestSweepBase(unittest.TestCase):
         self.assertSequenceEqual(res.values, [True, False])
 
         res = AllSweepVars.param.var_bool.as_dim(False)
-        self.assertSequenceEqual(res.range, [True, False])
+        self.assertSequenceEqual(res.values, [True, False])
 
 
 if __name__ == "__main__":
