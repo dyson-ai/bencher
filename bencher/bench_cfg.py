@@ -585,6 +585,10 @@ class BenchCfg(BenchRunCfg):
             col.append(self.describe_sweep())
         return col
 
+    def to_optuna(self):
+        from bencher.optuna_conversions import collect_optuna_plots
+        return collect_optuna_plots(self)[0]
+
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
