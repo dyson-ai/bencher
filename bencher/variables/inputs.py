@@ -9,16 +9,15 @@ import holoviews as hv
 # pylint: disable=super-init-not-called
 
 
-class BoolSweep(SweepBase, Parameter):
+class BoolSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of bools"""
 
-    __slots__ = shared_slots + ["bounds"]
+    __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Parameter.__init__(self, **params)
-        # Boolean.__init__(self, **params)
+        Selector.__init__(self, **params)
         self.units = units
-        self.bounds = [
+        self.objects = [
             True,
             False,
         ]
@@ -28,37 +27,7 @@ class BoolSweep(SweepBase, Parameter):
 
     def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return [True, False]
-
-    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
-        """Takes a sweep variable and turns it into a holoview dimension
-
-        Returns:
-            hv.Dimension:
-        """
-        name_tuple = (self.name, self.name)
-
-        # if compute_values:
-        #     return hv.Dimension(
-        #         name_tuple,
-        #         range=tuple(self.bounds),
-        #         unit=self.units,
-        #         values=self.values(debug),
-        #     )
-
-        return hv.Dimension(
-            name_tuple,
-            unit=self.units,  # pylint: disable=no-member
-            values=self.values(debug),
-            range=tuple(self.values(debug)),
-            default=self.default,
-        )
-        # return hv.Dimension(
-        #     name_tuple,
-        #     range=tuple(self.bounds),
-        #     unit=self.units,
-        #     default=self.default,
-        # )
+        return self.objects
 
 
 class StringSweep(SweepBase, Selector):
