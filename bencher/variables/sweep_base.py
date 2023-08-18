@@ -108,27 +108,21 @@ class SweepBase(param.Parameter):
             hv.Dimension:
         """
         name_tuple = (self.name, self.name)
+
+        params = {}
         if hasattr(self, "bounds"):
             if compute_values:
-                return hv.Dimension(
-                    name_tuple,
-                    range=tuple(self.bounds),
-                    unit=self.units,
-                    values=self.values(debug),
-                )
+                params["values"] = self.values(debug)
+                params["range"] = tuple(self.bounds)
+            else:
+                params["range"] = tuple(self.bounds)
 
-            return hv.Dimension(
-                name_tuple,
-                range=tuple(self.bounds),
-                unit=self.units,
-                default=self.default,
-            )
+        else:
+            params["values"] = self.values(debug)
+
         return hv.Dimension(
-            name_tuple,
-            unit=self.units,  # pylint: disable=no-member
-            values=self.values(debug),
-            default=self.default,
-        )
+            name_tuple, unit=self.units, default=self.default, **params
+        )  # pylint: disable=no-member
 
     def with_samples(self, samples: int) -> SweepBase:
         output = deepcopy(self)
