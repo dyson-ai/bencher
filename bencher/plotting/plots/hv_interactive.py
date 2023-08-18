@@ -81,7 +81,7 @@ class HvInteractive:
             # print(pl_in.bench_cfg.get_hv_dataset())
             # print(pl_in.bench_cfg.get_dataframe(False))
             # return pn.Column(pl_in.bench_cfg.get_hv_dataset().to(hv.Table))
-            print(pl_in.bench_cfg.get_hv_dataset())
+            print(pl_in.bench_cfg.to_hv_dataset())
             return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
         return None
 
