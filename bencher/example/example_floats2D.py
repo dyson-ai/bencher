@@ -23,7 +23,6 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         "Bencher_Example_Floats",
         bench_function,
         ExampleBenchCfgIn,
-        plot_lib=bch.PlotLibrary.default(),
     )
 
     cfg = ExampleBenchCfgIn()

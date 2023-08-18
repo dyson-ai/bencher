@@ -635,7 +635,7 @@ class Bench(BenchPlotServer):
             result = self.worker_wrapper(bench_cfg, function_input)
 
         # construct a dict for a holomap
-        if type(result) == dict:  # todo holomaps with named types
+        if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
                 bench_cfg.hmap[canonical_input] = result["hmap"]
@@ -644,7 +644,7 @@ class Bench(BenchPlotServer):
         logging.debug(f"input {function_input_vars}")
         logging.debug(f"result {result}")
         for rv in bench_cfg.result_vars:
-            if type(result) == dict:
+            if isinstance(result, dict):
                 result_value = result[rv.name]
             else:
                 result_value = result.param.values()[rv.name]
@@ -652,9 +652,9 @@ class Bench(BenchPlotServer):
             if bench_run_cfg.print_bench_results:
                 logging.info(f"{rv.name}: {result_value}")
 
-            if type(rv) == ResultVar:
+            if isinstance(rv, ResultVar):
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
-            elif type(rv) == ResultVec:
+            elif isinstance(rv, ResultVec):
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
