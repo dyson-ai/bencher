@@ -587,6 +587,7 @@ class BenchCfg(BenchRunCfg):
 
     def to_optuna(self):
         from bencher.optuna_conversions import collect_optuna_plots
+
         return collect_optuna_plots(self)[0]
 
 
