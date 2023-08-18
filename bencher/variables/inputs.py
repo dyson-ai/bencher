@@ -2,27 +2,31 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from param import Boolean, Integer, Number, Selector
+from param import Integer, Number, Selector
 from bencher.variables.sweep_base import SweepBase, shared_slots
 
 # pylint: disable=super-init-not-called
 
 
-class BoolSweep(SweepBase, Boolean):
+class BoolSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Boolean.__init__(self, **params)
+        Selector.__init__(self, **params)
         self.units = units
+        self.objects = [
+            True,
+            False,
+        ]
         if samples is None:
             self.samples = 2
         self.samples_debug = samples_debug
 
     def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return [True, False]
+        return self.objects
 
 
 class StringSweep(SweepBase, Selector):
