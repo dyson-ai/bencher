@@ -97,7 +97,7 @@ class PlotCollection:
         for plt_fn in self.plotters.values():
             plots = plt_fn(PlotInput(bench_cfg, rv, plt_cnt_cfg))
             if plots is not None:
-                if type(plots) != list:
+                if not isinstance(plots, list):
                     plots = [plots]
                 for plt_instance in plots:
                     if not isinstance(plt_instance, pn.viewable.Viewable):
