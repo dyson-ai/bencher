@@ -743,21 +743,29 @@ class Bench(BenchPlotServer):
 
     def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
         md = pn.pane.Markdown(markdown, name=name)
-        self.append_col(md, name=name)
+        self.append(md, name)
         return md
 
-    def append(self, pane: pn.panel) -> None:
-        self.get_panel().append(pane)
+    def append(self, pane: pn.panel, name: str = None) -> None:
+        if name is None:
+            name = pane.name
+        if len(self.pane) == 0:
+            self.pane.append(pn.Column(pane, name=name))
+        else:
+            self.pane[-1].append(pane)
 
     def append_col(self, pane: pn.panel, name=None) -> None:
         if name is not None:
             col = pn.Column(pane, name)
         else:
             col = pn.Column(pane)
-        self.get_panel().append(col)
+        # self.get_panel().append(col)
+        self.pane.append(col)
 
-    def append_tab(self, pane: pn.panel):
-        self.pane.append(pane)
+    def append_tab(self, pane: pn.panel, name: str = None) -> None:
+        if name is None:
+            name = pane.name
+        self.pane.append(pn.Column(pane, name=name))
 
     def save(
         self,
