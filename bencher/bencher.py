@@ -750,7 +750,7 @@ class Bench(BenchPlotServer):
         if name is None:
             name = pane.name
         if len(self.pane) == 0:
-            self.pane.append(pn.Column(pane, name=name))
+            self.append_tab(pane, name)
         else:
             self.pane[-1].append(pane)
 
