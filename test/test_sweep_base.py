@@ -111,6 +111,14 @@ class TestSweepBase(unittest.TestCase):
         res = AllSweepVars.param.var_bool.as_dim(False)
         self.assertSequenceEqual(res.values, [True, False])
 
+    def test_float_as_dim(self):
+        res = AllSweepVars.param.var_float.as_dim(True)
+
+        # self.assertSequenceEqual(res.range, (0, 10))
+
+        res = AllSweepVars.param.var_float.as_dim(False)
+        # self.assertSequenceEqual(res.range, (0, 10))
+
 
 if __name__ == "__main__":
     # TestSweepBase().test_override_defaults()
