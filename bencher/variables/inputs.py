@@ -2,9 +2,8 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from param import Boolean, Integer, Number, Selector, Parameter
+from param import Integer, Number, Selector
 from bencher.variables.sweep_base import SweepBase, shared_slots
-import holoviews as hv
 
 # pylint: disable=super-init-not-called
 
