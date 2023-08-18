@@ -114,10 +114,10 @@ class TestSweepBase(unittest.TestCase):
     def test_float_as_dim(self):
         res = AllSweepVars.param.var_float.as_dim(True)
 
-        # self.assertSequenceEqual(res.range, (0, 10))
+        self.assertListEqual(res.values, list(AllSweepVars.param.var_float.values()))
 
         res = AllSweepVars.param.var_float.as_dim(False)
-        # self.assertSequenceEqual(res.range, (0, 10))
+        self.assertSequenceEqual(res.range, (0, 10))
 
 
 if __name__ == "__main__":
