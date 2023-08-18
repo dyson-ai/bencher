@@ -45,10 +45,23 @@ class HvInteractive:
         return None
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        return None
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
             pt = pl_in.bench_cfg.to_scatter()
             # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
             return pn.Column(pt, name=PlotTypes.scatter_hv)
+
+        return None
+
+    def scatter_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        if PlotFilter(
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(2, None),
+            vector_len=VarRange(1, 1),
+            result_vars=VarRange(1, 1),
+        ).matches(pl_in.plt_cnt_cfg):
+            pt = pl_in.bench_cfg.to_scatter().grid()
+            return pn.Column(hv.render(pt), name=PlotTypes.scatter_hv_overlay)
 
         return None
 

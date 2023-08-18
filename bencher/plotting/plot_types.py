@@ -32,6 +32,8 @@ class PlotTypes(StrEnum):
 
     # scatter2D_sns = auto()
     scatter_hv = auto()
+    scatter_hv_overlay = auto()
+    scatter_hv_grid = auto()
 
     volume_plotly = auto()
     # cone_plotly = auto()
