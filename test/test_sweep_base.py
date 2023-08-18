@@ -103,6 +103,16 @@ class TestSweepBase(unittest.TestCase):
         self.assertEqual(len(vals), 1)
         self.assertEqual(vals[0], PostprocessFn.negate)
 
+    def test_bool_as_dim(self):
+        res = AllSweepVars.param.var_bool.as_dim(True)
+
+        self.assertSequenceEqual(res.values, [True, False])
+
+        res = AllSweepVars.param.var_bool.as_dim(False)
+        self.assertSequenceEqual(res.range, [True, False])
+
 
 if __name__ == "__main__":
-    TestSweepBase().test_override_defaults()
+    # TestSweepBase().test_override_defaults()
+
+    TestSweepBase().test_bool_as_dim()

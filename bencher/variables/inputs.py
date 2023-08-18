@@ -2,20 +2,26 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from param import Boolean, Integer, Number, Selector
+from param import Boolean, Integer, Number, Selector, Parameter
 from bencher.variables.sweep_base import SweepBase, shared_slots
+import holoviews as hv
 
 # pylint: disable=super-init-not-called
 
 
-class BoolSweep(SweepBase, Boolean):
+class BoolSweep(SweepBase, Parameter):
     """A class to reprsent a parameter sweep of bools"""
 
-    __slots__ = shared_slots
+    __slots__ = shared_slots + ["bounds"]
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Boolean.__init__(self, **params)
+        Parameter.__init__(self, **params)
+        # Boolean.__init__(self, **params)
         self.units = units
+        self.bounds = [
+            True,
+            False,
+        ]
         if samples is None:
             self.samples = 2
         self.samples_debug = samples_debug
@@ -23,6 +29,36 @@ class BoolSweep(SweepBase, Boolean):
     def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         return [True, False]
+
+    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+        """Takes a sweep variable and turns it into a holoview dimension
+
+        Returns:
+            hv.Dimension:
+        """
+        name_tuple = (self.name, self.name)
+
+        # if compute_values:
+        #     return hv.Dimension(
+        #         name_tuple,
+        #         range=tuple(self.bounds),
+        #         unit=self.units,
+        #         values=self.values(debug),
+        #     )
+
+        return hv.Dimension(
+            name_tuple,
+            unit=self.units,  # pylint: disable=no-member
+            values=self.values(debug),
+            range=tuple(self.values(debug)),
+            default=self.default,
+        )
+        # return hv.Dimension(
+        #     name_tuple,
+        #     range=tuple(self.bounds),
+        #     unit=self.units,
+        #     default=self.default,
+        # )
 
 
 class StringSweep(SweepBase, Selector):
