@@ -117,20 +117,24 @@ class IntSweep(SweepBase, Integer):
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
-        if self.sample_values is None:
-            return [
-                int(i)
-                for i in np.linspace(
-                    self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
-                )
-            ]
-        if debug:
-            indices = [
-                int(i)
-                for i in np.linspace(0, len(self.sample_values) - 1, self.samples_debug, dtype=int)
-            ]
-            return [self.sample_values[i] for i in indices]
-        return self.sample_values
+        # if self.sample_values is None:
+        sample_values = (
+            self.sample_values
+            if self.sample_values is not None
+            else range(self.bounds[0], self.bounds[1] + 1)
+        )
+
+        # self.sample_values =
+        # return [
+        #     int(i)
+        #     for i in np.linspace(
+        #         self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
+        #     )
+        # ]
+
+        indices = [int(i) for i in np.linspace(0, len(sample_values) - 1, samps, dtype=int)]
+        return [sample_values[i] for i in indices]
+        # return self.sample_values
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
