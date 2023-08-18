@@ -60,7 +60,7 @@ class EnumSweep(SweepBase, Selector):
         self, enum_type: Enum | List[Enum], units="ul", samples=None, samples_debug=2, **params
     ):
         # The enum can either be an Enum type or a list of enums
-        list_of_enums = type(enum_type) is list
+        list_of_enums = isinstance(enum_type, list)
         if list_of_enums:
             selector_list = enum_type  # already a list of enums
         else:
