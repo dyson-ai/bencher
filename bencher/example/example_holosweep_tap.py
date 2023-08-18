@@ -97,11 +97,11 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
-    bench.append(heatmap + tap_dmap)
+    bench.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
 
     bench.append(sld1)
 
-    bench.append_tab(res.to_curve)
+    bench.append_tab(res.to_curve(), "Slider view")
     return bench
 
 
