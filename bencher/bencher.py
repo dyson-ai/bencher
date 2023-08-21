@@ -151,12 +151,13 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        print(worker)
-        if isinstance(worker, ParametrizedSweep):
-            self.worker = worker.call
-            self.worker_class = worker
+        if issubclass(worker, ParametrizedSweep):
+            self.worker_class = worker()
+            self.worker = self.worker_class.__call__
+            logging.info("setting worker from bench class.__call__")
         else:
             self.worker = worker
+            logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
     def to_optuna(
@@ -222,11 +223,14 @@ class Bench(BenchPlotServer):
             if input_vars is None:
                 input_vars = self.worker_class.get_inputs_only()
             if result_vars is None:
+                logging.info(
+                    "No results variables passed, using all result variables in bench class"
+                )
                 result_vars = self.worker_class.get_results_only()
             if const_vars is None:
                 const_vars = self.worker_class.get_input_defaults()
-            if description is None:
-                description = self.worker_class.__doc__
+            # if description is None:
+            # description = self.worker_class.__doc__
         else:
             if input_vars is None:
                 input_vars = []
@@ -239,12 +243,6 @@ class Bench(BenchPlotServer):
 
         if run_cfg is None:
             run_cfg = deepcopy(self.run_cfg)
-
-        if self.worker_class is not None:
-            if description is None:
-                description = self.worker_class.__doc__
-            if result_vars is None:
-                result_vars = self.worker_class.get_results_vars()
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
