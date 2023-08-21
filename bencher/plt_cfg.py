@@ -67,7 +67,7 @@ class BenchPlotter:
                     plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
                 if bench_cfg.use_optuna:
-                    plot_cols.extend(collect_optuna_plots(bench_cfg))
+                    plot_cols.extend(bench_cfg.to_optuna())
 
                 if append_cols is not None:
                     plot_cols.extend(append_cols)
