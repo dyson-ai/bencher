@@ -124,7 +124,6 @@ class IntSweep(SweepBase, Integer):
             else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         )
 
-
         # self.sample_values =
         # return [
         #     int(i)
@@ -134,10 +133,10 @@ class IntSweep(SweepBase, Integer):
         # ]
 
         indices = [int(i) for i in np.linspace(0, len(sample_values) - 1, samps, dtype=int)]
-        print("sampe",samps)
-        print("sv",sample_values)
-        print("ind",indices)
-        print("vals: ",[sample_values[i] for i in indices])
+        print("sampe", samps)
+        print("sv", sample_values)
+        print("ind", indices)
+        print("vals: ", [sample_values[i] for i in indices])
 
         return [sample_values[i] for i in indices]
         # return self.sample_values
