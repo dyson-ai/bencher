@@ -138,17 +138,43 @@ class TestSweepBase(unittest.TestCase):
     # @given(st.sampled_from([1, 2, 3]))
     def test_levels_int(self):
         level = 5
-        res_old = AllSweepVars.param.var_int.with_level(0)
+
+        class SWP(bch.ParametrizedSweep):
+            var_int = bch.IntSweep(bounds=(0, 12))
+
+        res_old = SWP.param.var_int.with_level(0)
 
         for i in range(1, level):
             res = AllSweepVars.param.var_float.with_level(i)
             new_vals = res.values()
             print(res_old.values(), new_vals)
             for i in res_old.values():
+                self.assertTrue(isinstance(i, int))
                 self.assertTrue(i in new_vals)
                 for n in new_vals:
                     print("\t", i == n)
             res_old = res
+
+    # def test_levels_enum(self):
+    #     level = 5
+
+    #     # class E
+    #     class SWP(bch.ParametrizedSweep):
+    #         var_enum = EnumSweep(PostprocessFn)
+
+    #         result = ResultVar()
+
+    #     res_old = AllSweepVars.param.var_enum.with_level(0)
+
+    #     for i in range(1, level):
+    #         res = AllSweepVars.param.var_float.with_level(i)
+    #         new_vals = res.values()
+    #         print(res_old.values(), new_vals)
+    #         for i in res_old.values():
+    #             self.assertTrue(i in new_vals)
+    #             for n in new_vals:
+    #                 print("\t", i == n)
+    #         res_old = res
 
 
 if __name__ == "__main__":
