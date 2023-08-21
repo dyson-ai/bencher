@@ -477,7 +477,7 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+    def to_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
@@ -500,32 +500,32 @@ class BenchCfg(BenchRunCfg):
         return hvds
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
-        return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
+        return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
+        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
 
     def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
     def to_scatter(self) -> hv.Scatter:
-        ds = self.get_hv_dataset(ReduceType.NONE)
+        ds = self.to_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
 
     def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
@@ -584,6 +584,11 @@ class BenchCfg(BenchRunCfg):
         if describe:
             col.append(self.describe_sweep())
         return col
+
+    def to_optuna(self):
+        from bencher.optuna_conversions import collect_optuna_plots
+
+        return collect_optuna_plots(self)[0]
 
 
 def describe_benchmark(bench_cfg: BenchCfg) -> str:
