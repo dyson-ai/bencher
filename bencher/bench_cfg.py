@@ -216,6 +216,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     level = param.Integer(default=0)
 
+    tag = param.String(default="")
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments

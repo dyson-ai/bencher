@@ -149,7 +149,7 @@ class SweepBase(param.Parameter):
         """
         return (deepcopy(self), const_value)
 
-    def with_level(self, level=0, max_level=5):
+    def with_level(self, level=0, max_level=11):
         # TODO work out if the order can be returned in level order always
         # samples = pow(2, level)
 
@@ -159,5 +159,5 @@ class SweepBase(param.Parameter):
 
         # return self.with_samples()
 
-        samples = [2, 3, 5, 9, 17, 33]
+        samples = [2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
         return self.with_samples(samples[min(max_level, level)])
