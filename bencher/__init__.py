@@ -14,3 +14,4 @@ from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 
 from .optuna_conversions import to_optuna, summarise_study
+from .bench_cfg import ReduceType

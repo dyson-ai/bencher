@@ -7,6 +7,11 @@ from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec
 from functools import partial
 
+# from bencher.bencher import Bench
+# from bencher.bench_cfg import BenchRunCfg
+
+# from bencher.bench_runner import BenchRunner
+
 
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
@@ -175,3 +180,6 @@ class ParametrizedSweep(Parameterized):
 
     def plot_hmap(self, **kwargs):
         return self.call(**kwargs)["hmap"]
+
+    # def bench(self, run_cfg: BenchRunCfg):
+    #     return Bench(f"benchmark_{self.name}", self)

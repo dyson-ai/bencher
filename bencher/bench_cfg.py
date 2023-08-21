@@ -530,7 +530,10 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self) -> hv.Scatter:
+    def to_scatter(self):
+        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+
+    def to_scatter_jitter(self) -> hv.Scatter:
         ds = self.to_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
@@ -572,6 +575,9 @@ class BenchCfg(BenchRunCfg):
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
+
+    def to_table(self):
+        return self.to(hv.Table,ReduceType.SQUEEZE)
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]

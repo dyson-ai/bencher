@@ -151,8 +151,8 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        if issubclass(worker, ParametrizedSweep):
-            self.worker_class = worker()
+        if isinstance(worker, ParametrizedSweep):
+            self.worker_class = worker
             self.worker = self.worker_class.__call__
             logging.info("setting worker from bench class.__call__")
         else:
@@ -221,7 +221,12 @@ class Bench(BenchPlotServer):
 
         if self.worker_class is not None:
             if input_vars is None:
+                logging.info(
+                    "No input variables passed, using all param variables in bench class as inputs"
+                )
                 input_vars = self.worker_class.get_inputs_only()
+                for i in input_vars:
+                    logging.info(i.name)
             if result_vars is None:
                 logging.info(
                     "No results variables passed, using all result variables in bench class"
