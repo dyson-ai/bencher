@@ -8,20 +8,32 @@ class TestVarSweeps(unittest.TestCase):
     def test_int_sweep_01(self):
         int_sweep = IntSweep(bounds=[0, 1])
         self.assertEqual(int_sweep.default, 0)
-        self.assertEqual(int_sweep.values(False), [0, 1])
-        self.assertEqual(int_sweep.values(True), [0, 1])
+        self.assertListEqual(int_sweep.values(False), [0, 1])
+        self.assertListEqual(int_sweep.values(True), [0, 1])
 
     def test_int_sweep_06(self):
         int_sweep = IntSweep(bounds=[0, 6])
         self.assertEqual(int_sweep.default, 0)
-        self.assertEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
-        self.assertEqual(int_sweep.values(True), [0, 6])
+        self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
+        self.assertListEqual(int_sweep.values(True), [0, 6])
 
     def test_int_sweep_06_debug_sampes(self):
         int_sweep = IntSweep(bounds=[0, 6], samples_debug=4)
         self.assertEqual(int_sweep.default, 0)
-        self.assertEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
-        self.assertEqual(int_sweep.values(True), [0, 2, 4, 6])
+        self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
+        self.assertListEqual(int_sweep.values(True), [0, 2, 4, 6])
+
+    def test_int_sweep_10_debug_sampes(self):
+        int_sweep = IntSweep(bounds=[0, 10])
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self.assertListEqual(int_sweep.values(True), [0, 10])
+
+    def test_int_sweep_10_with_values_(self):
+        int_sweep = IntSweep(bounds=[0, 10])
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        self.assertListEqual(int_sweep.with_samples(3).values(True), [0, 5, 10])
 
     @given(st.integers(min_value=1, max_value=10))
     def test_int_sweep_samples(self, samples):
