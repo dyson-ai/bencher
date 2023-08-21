@@ -148,13 +148,25 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
                         include_dominated_trials=False,
                     )
                 )
-            if bench_cfg.repeats > 1:
-                rows.append("repeats>1")
-                for tgt in target_names:
-                    rows.append(
-                        plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
+            # if bench_cfg.repeats > 1:
+            # rows.append("repeats>1")
+            # for tgt in target_names:
+            #     rows.append(
+            #         plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
+            #     )
+            # else:
+            col_importance = pn.Row()
+            for tgt in target_names:
+                col_importance.append(
+                    pn.Column(
+                        pn.pane.Markdown(f"# Parameter importance for: {tgt}"),
+                        plot_param_importances(
+                            study, target=lambda t: t.values[0], target_name=tgt
+                        ),
                     )
-
+                )
+            rows.append(col_importance)
+            # rows.append(plot_param_importances(study, target_name=target_names[0]))
             param_str.append(f"    Number of trials on the Pareto front: {len(study.best_trials)}")
             for t in study.best_trials:
                 param_str.extend(summarise_trial(t, bench_cfg))
