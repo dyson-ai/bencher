@@ -33,7 +33,8 @@ class TestVarSweeps(unittest.TestCase):
         int_sweep = IntSweep(bounds=[0, 10])
         self.assertEqual(int_sweep.default, 0)
         self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        self.assertListEqual(int_sweep.with_samples(3).values(True), [0, 5, 10])
+        self.assertListEqual(int_sweep.with_samples(3).values(True), [0, 10])
+        self.assertListEqual(int_sweep.with_samples(3).values(False), [0, 5, 10])
 
     @given(st.integers(min_value=1, max_value=10))
     def test_int_sweep_samples(self, samples):
