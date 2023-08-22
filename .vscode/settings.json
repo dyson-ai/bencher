@@ -9,5 +9,8 @@
 	},
 	"files.exclude": {
 		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true
+	},
+	"files.watcherExclude": {
+		"**/cachedir/**": true,
 	}
 }

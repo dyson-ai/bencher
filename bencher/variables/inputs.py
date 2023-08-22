@@ -121,7 +121,7 @@ class IntSweep(SweepBase, Integer):
         sample_values = (
             self.sample_values
             if self.sample_values is not None
-            else range(self.bounds[0], self.bounds[1] + 1)
+            else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         )
 
         # self.sample_values =
@@ -133,6 +133,11 @@ class IntSweep(SweepBase, Integer):
         # ]
 
         indices = [int(i) for i in np.linspace(0, len(sample_values) - 1, samps, dtype=int)]
+        print("sampe", samps)
+        print("sv", sample_values)
+        print("ind", indices)
+        print("vals: ", [sample_values[i] for i in indices])
+
         return [sample_values[i] for i in indices]
         # return self.sample_values
 

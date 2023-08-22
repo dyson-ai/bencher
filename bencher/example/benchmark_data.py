@@ -115,7 +115,7 @@ class AllSweepVars(ParametrizedSweep):
     """A class containing all the sweep types, This class is used for unit testing how the configuration classes are serialised and hashed"""
 
     var_float = FloatSweep(default=5, bounds=(0, 10), units="m/s")
-    var_int = IntSweep(default=3, bounds=[0, 10])
+    var_int = IntSweep(default=3, bounds=[0, 4])
     var_bool = BoolSweep()
     var_string = StringSweep(["string1", "string2"])
     var_enum = EnumSweep(PostprocessFn)

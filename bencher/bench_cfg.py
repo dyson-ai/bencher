@@ -218,9 +218,16 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probalby stop working.",
     )
 
-    level = param.Integer(default=0)
+    level = param.Integer(
+        default=0,
+        bounds=[0, 11],
+        doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
+    )
 
-    tag = param.String(default="")
+    run_tag = param.String(
+        default="",
+        doc="Define a tag for a run to isolate the results stored in the cache from other runs",
+    )
 
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
