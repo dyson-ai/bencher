@@ -238,7 +238,15 @@ class Bench(BenchPlotServer):
                 const_vars = deepcopy(const_vars)
 
         if run_cfg is None:
-            run_cfg = deepcopy(self.run_cfg)
+            if self.run_cfg is None:
+                run_cfg = BenchRunCfg()
+                logging.info("Generate default run cfg")
+            else:
+                run_cfg = deepcopy(self.run_cfg)
+                logging.info("Copy run cfg from bench class")
+        if run_cfg.only_plot:
+            run_cfg.use_cache = True
+        self.last_run_cfg = run_cfg
 
         if self.worker_class is not None:
             if description is None:
@@ -267,11 +275,6 @@ class Bench(BenchPlotServer):
             post_description = (
                 "## Results Description\nPlease set post_description to explain these results"
             )
-        if run_cfg is None:
-            run_cfg = BenchRunCfg()
-        elif run_cfg.only_plot:
-            run_cfg.use_cache = True
-        self.last_run_cfg = run_cfg
 
         bench_cfg = BenchCfg(
             input_vars=input_vars,
@@ -284,6 +287,7 @@ class Bench(BenchPlotServer):
             pass_repeat=pass_repeat,
             tag=run_cfg.run_tag + tag,
         )
+        print("tag", bench_cfg.tag)
 
         bench_cfg.param.update(run_cfg.param.values())
         bench_cfg.plot_lib = plot_lib if plot_lib is not None else self.plot_lib
@@ -801,10 +805,7 @@ class Bench(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, **kwargs)
         return base_path
 
-    def publish(
-        self,
-        remote_callback: Callable,
-    ) -> str:
+    def publish(self, remote_callback: Callable, debug: bool = True) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         def publish_args(branch_name) -> Tuple[str, str]:
@@ -822,6 +823,10 @@ class Bench(BenchPlotServer):
         """
 
         remote, publish_url = remote_callback(self.bench_name)
+        
+        # if debug:
+            # publish_url
+
         directory = "tmpgit"
         report_path = self.save(directory, filename="index.html", in_html_folder=False)
         logging.info(f"created report at: {report_path.absolute()}")
