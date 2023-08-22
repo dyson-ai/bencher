@@ -140,7 +140,6 @@ class TestSweepBase(unittest.TestCase):
 
         self.sweep_up_to(var_float, float)
 
-    # @pytest.mark.skip
     # @given(st.integers(min_value=0), st.integers(min_value=1))
     # def test_levels_int(self, start, var_range):
     #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))

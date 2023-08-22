@@ -4,7 +4,7 @@ from .plt_cfg import BenchPlotter, PltCfgBase
 from .example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from .bench_plot_server import BenchPlotServer
 from .variables.sweep_base import hash_sha1
-from .variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
+from .variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep, SweepBase
 from .variables.time import TimeSnapshot
 from .variables.results import ResultVar, ResultVec, ResultHmap, OptDir
 from .plotting.plot_library import PlotLibrary, PlotTypes
