@@ -47,7 +47,7 @@ class Level2D(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
 
         self.level_out = self.level
-        size = 100 - self.level * 20
+        size = 60 - self.level * 20
         pt = (
             hv.Points((self.xval, self.yval)).opts(
                 marker="o", size=size, color=int_to_col(self.level), clabel="1"
@@ -111,27 +111,46 @@ def to_bench(class_instance):
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("lvl", Level2D(), run_cfg=bch.BenchRunCfg(auto_plot=False))
+    bench = bch.Bench("lvl", Level2D())
 
-    results = []
-    for level in range(4):
-        res = bench.plot_sweep(
-            f"lvl:{level}",
-            input_vars=[
-                Level2D.param.xval.with_level(level),
-                Level2D.param.yval.with_level(level),
-                # Level2D.param.level,
-            ],
-            const_vars=Level2D.get_input_defaults([Level2D.param.level.with_const(level)]),
-        )
+    def run_with_dim(dims):
+        results = []
+        for level in range(3):
+            print(level)
+            res = bench.plot_sweep(
+                f"lvl:{level}",
+                input_vars=dims,
+                const_vars=Level2D.get_input_defaults([Level2D.param.level.with_const(level)]),
+                run_cfg=bch.BenchRunCfg(level=level, auto_plot=False),
+            )
 
-        results.append(res)
-
+            results.append(res)
+        return results
         # bench_level.append_tab(res.to_holomap().overlay().opts(show_legend=False))
 
+    results = run_with_dim([Level2D.param.xval])
     bench.append_markdown("# Using Levels to define sample density", "Levels")
-    row = pn.Row()
+    row = pn.Column()
     for lvl, r in enumerate(results):
+        # row.append()
+        row.append(r.to_holomap().overlay().opts(width=400, height=200, show_legend=False))
+    bench.append(row)
+
+    bench.append_markdown(
+        "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"
+    )
+    overlay = hv.Overlay()
+    for lvl, r in enumerate(results):
+        overlay *= r.to_holomap().overlay().opts(width=1200, height=200, show_legend=False)
+
+    bench.append(overlay)
+    # bench.show()
+
+    results = run_with_dim([Level2D.param.xval, Level2D.param.yval])
+    bench.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
+    row = pn.Column()
+    for lvl, r in enumerate(results):
+        # row.append()
         row.append(r.to_holomap().overlay().opts(width=400, height=400, show_legend=False))
     bench.append(row)
 

@@ -259,6 +259,12 @@ class Bench(BenchPlotServer):
             run_cfg.use_cache = True
         self.last_run_cfg = run_cfg
 
+        if run_cfg.level > -1:
+            inputs = []
+            for i in input_vars:
+                inputs.append(i.with_level(run_cfg.level))
+            input_vars = inputs
+
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
             for i in input_vars:
