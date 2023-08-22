@@ -115,6 +115,7 @@ class ParametrizedSweep(Parameterized):
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
+        assert isinstance(override_defaults, list)
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
         # print(cls.param.values())

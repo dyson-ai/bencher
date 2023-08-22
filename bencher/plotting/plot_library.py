@@ -55,24 +55,32 @@ class PlotLibrary:
         plt_col.add(PlotTypes.lineplot_hv_layout)
         plt_col.add(PlotTypes.scatter_hv)
         # plt_col.add(PlotTypes.bar_hv)
-        plt_col.add(PlotTypes.volume_plotly)
         # plt_col.add(PlotTypes.cone_plotly)
         # plt_col.add(PlotTypes.lineplot_hv_subplot)
         # plt_col.add(PlotTypes.scatter2D_sns)
-        plt_col.add(PlotTypes.surface_hv)
         # plt_col.add(PlotTypes.hv_interactive)
 
         return plt_col
 
+    # @staticmethod
+    # def no_plotly() -> PlotCollection:
+    #     """Display only table summaries of the data
+
+    #     Returns:
+    #         PlotCollection: Only table plots
+    #     """
+    #     defaults = PlotLibrary.default()
+    #     return defaults.remove(PlotTypes.surface_hv).remove(PlotTypes.volume_plotly)
+
     @staticmethod
-    def no_plotly() -> PlotCollection:
+    def with_plotly() -> PlotCollection:
         """Display only table summaries of the data
 
         Returns:
             PlotCollection: Only table plots
         """
         defaults = PlotLibrary.default()
-        return defaults.remove(PlotTypes.surface_hv).remove(PlotTypes.volume_plotly)
+        return defaults.add(PlotTypes.surface_hv).add(PlotTypes.volume_plotly)
 
     @staticmethod
     def tables() -> PlotCollection:
