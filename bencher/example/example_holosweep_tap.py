@@ -78,7 +78,7 @@ class PlotFunctions(bch.ParametrizedSweep):
 def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     wv = PlotFunctions()
 
-    run_cfg.use_optuna=True
+    run_cfg.use_optuna = True
     bench = bch.Bench("waves", wv.calc, plot_lib=None)
 
     res = bench.plot_sweep(
@@ -108,7 +108,6 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     bench.append_tab(res.to_curve(), "Slider view")
 
-   
     return bench
 
 
