@@ -148,3 +148,16 @@ class SweepBase(param.Parameter):
             Tuple[SweepBase, Any]: A tuple containing the new instance of SweepBase and the constant value.
         """
         return (deepcopy(self), const_value)
+
+    def with_level(self, level=0, max_level=11) -> SweepBase:
+        # TODO work out if the order can be returned in level order always
+        # samples = pow(2, level)
+
+        # samples=2
+        # for i in range(2,level):
+        #     samples+
+
+        # return self.with_samples()
+
+        samples = [2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
+        return self.with_samples(samples[min(max_level, level)])

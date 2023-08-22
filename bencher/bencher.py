@@ -282,7 +282,7 @@ class Bench(BenchPlotServer):
             post_description=post_description,
             title=title,
             pass_repeat=pass_repeat,
-            tag=tag,
+            tag=run_cfg.run_tag + tag,
         )
 
         bench_cfg.param.update(run_cfg.param.values())
@@ -297,7 +297,6 @@ class Bench(BenchPlotServer):
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
-            # default to 20Gb cache
             self.sample_cache = Cache(
                 "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
             )
