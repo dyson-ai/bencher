@@ -611,7 +611,14 @@ class BenchCfg(BenchRunCfg):
     def to_optuna(self):
         from bencher.optuna_conversions import collect_optuna_plots
 
-        return collect_optuna_plots(self)[0]
+        return collect_optuna_plots(self)
+
+    def optuna_targets(self) -> List[str]:
+        target_names = []
+        for rv in self.result_vars:
+            if rv.direction != OptDir.none:
+                target_names.append(rv.name)
+        return target_names
 
 
 def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
