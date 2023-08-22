@@ -3,7 +3,6 @@ from enum import auto
 from strenum import StrEnum
 
 import bencher as bch
-import logging
 
 
 class ExampleEnum(StrEnum):
