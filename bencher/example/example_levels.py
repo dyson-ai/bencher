@@ -3,6 +3,7 @@ import bencher as bch
 
 import math
 import holoviews as hv
+from typing import Any
 
 
 class PlotFunctions(bch.ParametrizedSweep):
@@ -21,7 +22,6 @@ class PlotFunctions(bch.ParametrizedSweep):
     # level_in = bch.IntSweep(default=0, bounds=[0, 5])
     level_in = bch.FloatSweep(default=0, bounds=[0, 5])
 
-
     level_out = bch.ResultVar(units="v", doc="sin of theta with some noise")
 
     def __call__(self, plot=True, **kwargs) -> dict:
@@ -33,6 +33,19 @@ class PlotFunctions(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
         return self.get_results_values_as_dict(hv.Scatter([self.x_val, self.level_in]))
+
+
+class Level2D(bch.ParametrizedSweep):
+    xval = bch.FloatSweep(bounds=[0, 1])
+    yval = bch.FloatSweep(bounds=[0, 1])
+    level = bch.IntSweep(bounds=[0, 3])
+
+    def __call__(self, **kwargs: Any) -> Any:
+        self.update_params_from_kwargs(**kwargs)
+
+        pt = hv.Points((self.xval, self.yval)).opts(marker="o", size=self.level)
+        return self.get_results_values_as_dict(pt)
+        # return super().__call__(*args, **kwds)
 
 
 class RunWithLevel(bch.ParametrizedSweep):
@@ -72,7 +85,9 @@ def to_bench(class_instance):
 
 
 if __name__ == "__main__":
-    to_bench(PlotFunctions())
+    # to_bench(PlotFunctions())
+
+    to_bench(Level2D)
 
     # bench1 = bch.Bench("lol", PlotFunctions())
 
