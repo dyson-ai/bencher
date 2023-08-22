@@ -117,6 +117,21 @@ class IntSweep(SweepBase, Integer):
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         samps = self.samples_debug if debug else self.samples
 
+        if self.sample_values is None:
+            return [
+                int(i)
+                for i in np.linspace(
+                    self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
+                )
+            ]
+        if debug:
+            indices = [
+                int(i)
+                for i in np.linspace(0, len(self.sample_values) - 1, self.samples_debug, dtype=int)
+            ]
+            return [self.sample_values[i] for i in indices]
+        return self.sample_values
+
         # if self.sample_values is None:
         sample_values = (
             self.sample_values

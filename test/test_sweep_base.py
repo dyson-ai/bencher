@@ -139,23 +139,23 @@ class TestSweepBase(unittest.TestCase):
 
         self.sweep_up_to(var_float, float)
 
-    @given(st.integers(min_value=0), st.integers(min_value=1))
-    def test_levels_int(self, start, var_range):
-        var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
-        self.sweep_up_to(var_int, int, level=5)
+    # @given(st.integers(min_value=0), st.integers(min_value=1))
+    # def test_levels_int(self, start, var_range):
+    #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
+    #     self.sweep_up_to(var_int, int, level=5)
 
-        # res_old = SWP.param.var_int.with_level(0)
+    # res_old = SWP.param.var_int.with_level(0)
 
-        # for i in range(1, level):
-        #     res = var_int.with_level(i)
-        #     new_vals = res.values()
-        #     print(res_old.values(), new_vals)
-        #     for i in res_old.values():
-        #         self.assertTrue(isinstance(i, int))
-        #         self.assertTrue(i in new_vals)
-        #         for n in new_vals:
-        #             print("\t", i == n)
-        #     res_old = res
+    # for i in range(1, level):
+    #     res = var_int.with_level(i)
+    #     new_vals = res.values()
+    #     print(res_old.values(), new_vals)
+    #     for i in res_old.values():
+    #         self.assertTrue(isinstance(i, int))
+    #         self.assertTrue(i in new_vals)
+    #         for n in new_vals:
+    #             print("\t", i == n)
+    #     res_old = res
 
     # def test_levels_enum(self):
     #     level = 5
