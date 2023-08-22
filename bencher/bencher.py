@@ -282,7 +282,8 @@ class Bench(BenchPlotServer):
             post_description=post_description,
             title=title,
             pass_repeat=pass_repeat,
-            tag=run_cfg.tag + tag,
+            tag=run_cfg.run_tag + tag,
+            # tag=tag,
         )
 
         bench_cfg.param.update(run_cfg.param.values())

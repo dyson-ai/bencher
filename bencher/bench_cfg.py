@@ -220,7 +220,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 
-    tag = param.String(
+    run_tag = param.String(
         default="",
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
