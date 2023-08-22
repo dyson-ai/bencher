@@ -171,9 +171,9 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
         kwargs = {"height": 500, "scroll": True} if len(param_str) > 30 else {}
 
-        param_str = "\n    ".join(param_str)
+        param_str = "\n".join(param_str)
         rows.append(
-            pn.Row(pn.pane.Markdown(f"## Best Parameters\n    {param_str}"), **kwargs),
+            pn.Row(pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"), **kwargs),
         )
 
         cols.append(rows)

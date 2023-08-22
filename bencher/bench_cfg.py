@@ -124,6 +124,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
+    summarise_constant_inputs = param.Boolean(
+        True, doc="Print the inputs that are kept constant when describing the sweep parameters"
+    )
+
     print_bench_inputs: bool = param.Boolean(
         True, doc="Print the inputs to the benchmark function every time it is called"
     )
@@ -482,8 +486,14 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-    def get_best_trial_params(self):
-        return self.studies[0].best_trials[0].params
+    def get_best_trial_params(self, canonical=False):
+        out = self.studies[0].best_trials[0].params
+        if canonical:
+            return hmap_canonical_input(out)
+        return out
+
+    def get_best_holomap(self):
+        return self.hmap[self.get_best_trial_params(True)]
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
@@ -582,7 +592,9 @@ class BenchCfg(BenchRunCfg):
         Returns:
             pn.pane.Markdown: _description_
         """
-        return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
+        return pn.pane.Markdown(
+            describe_benchmark(self, self.summarise_constant_inputs), label=self.bench_name
+        )
 
     def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
@@ -602,7 +614,7 @@ class BenchCfg(BenchRunCfg):
         return collect_optuna_plots(self)[0]
 
 
-def describe_benchmark(bench_cfg: BenchCfg) -> str:
+def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
 
     Args:
@@ -611,13 +623,13 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     Returns:
         str: summary of BenchCfg
     """
-    benchmark_sampling_str = ["````text"]
+    benchmark_sampling_str = ["```text"]
     benchmark_sampling_str.append("")
     benchmark_sampling_str.append("Input Variables:")
     for iv in bench_cfg.input_vars:
         benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
 
-    if bench_cfg.const_vars:
+    if bench_cfg.const_vars and (bench_cfg.summarise_constant_inputs or summarise_constant_inputs):
         benchmark_sampling_str.append("\nConstants:")
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
@@ -637,7 +649,7 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
 
-    benchmark_sampling_str.append("````")
+    benchmark_sampling_str.append("```")
 
     benchmark_sampling_str = "\n".join(benchmark_sampling_str)
     return benchmark_sampling_str
