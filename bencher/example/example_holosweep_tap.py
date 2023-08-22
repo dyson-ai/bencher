@@ -77,6 +77,8 @@ class PlotFunctions(bch.ParametrizedSweep):
 
 def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     wv = PlotFunctions()
+
+    run_cfg.use_optuna = True
     bench = bch.Bench("waves", wv.calc, plot_lib=None)
 
     res = bench.plot_sweep(
@@ -85,6 +87,9 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[wv.param.fn_output],
         run_cfg=run_cfg,
     )
+
+    print(res.get_best_trial_params())
+    bench.append(res.get_best_holomap())
 
     heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
     posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
@@ -102,6 +107,7 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bench.append(sld1)
 
     bench.append_tab(res.to_curve(), "Slider view")
+
     return bench
 
 
