@@ -90,6 +90,18 @@ def extract_study_to_dataset(study: optuna.Study, bench_cfg: BenchCfg) -> BenchC
     return bench_cfg
 
 
+def param_importance(bench_cfg: BenchCfg, study: optuna.Study) -> pn.Row:
+    col_importance = pn.Column()
+    for tgt in bench_cfg.optuna_targets():
+        col_importance.append(
+            pn.Column(
+                pn.pane.Markdown(f"## Parameter importance for: {tgt}"),
+                plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt),
+            )
+        )
+    return col_importance
+
+
 def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     """Use optuna to plot various summaries of the optimisation
 
@@ -101,46 +113,31 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
         List[pn.pane.Pane]: A list of plots
     """
 
-    # plot_cols.extend(collect_optuna_plots(bench_cfg, False))
-
     studies = [bench_cfg_to_study(bench_cfg, True)]
     bench_cfg.studies = studies
     titles = ["# Analysis"]
     if bench_cfg.repeats > 1:
         studies.append(bench_cfg_to_study(bench_cfg, False))
-        titles = ["# Parameter Importance With Repeats", "## Parameter Importance Without Repeats"]
+        titles = ["# Parameter Importance With Repeats", "# Parameter Importance Without Repeats"]
 
-    cols = pn.Row()
+    study_repeats_pane = pn.Row()
     for study, title in zip(studies, titles):
-        rows = pn.Column()
-        target_names = []
-        for rv in bench_cfg.result_vars:
-            if rv.direction != OptDir.none:
-                target_names.append(rv.name)
+        study_pane = pn.Column()
+        target_names = bench_cfg.optuna_targets()
         param_str = []
 
-        print("tgtnam", target_names)
-
-        rows.append(pn.pane.Markdown(title))
+        study_pane.append(pn.pane.Markdown(title))
 
         if len(target_names) > 1:
             if len(target_names) <= 3:
-                # rows.append(plot_param_importances(study, target_name=target_names))
-                # rows.append(target_names)
-
-                # for tgt in target_names:
-                #     rows.append(
-                #         plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
-                #     )
-
-                rows.append(
+                study_pane.append(
                     plot_pareto_front(
                         study, target_names=target_names, include_dominated_trials=False
                     )
                 )
             else:
                 print("plotting pareto front of first 3 result variables")
-                rows.append(
+                study_pane.append(
                     plot_pareto_front(
                         study,
                         targets=lambda t: (t.values[0], t.values[1], t.values[2]),
@@ -148,13 +145,8 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
                         include_dominated_trials=False,
                     )
                 )
-            if bench_cfg.repeats > 1:
-                rows.append("repeats>1")
-                for tgt in target_names:
-                    rows.append(
-                        plot_param_importances(study, target=lambda t: t.values[0], target_name=tgt)
-                    )
 
+            study_pane.append(param_importance(bench_cfg, study))
             param_str.append(f"    Number of trials on the Pareto front: {len(study.best_trials)}")
             for t in study.best_trials:
                 param_str.extend(summarise_trial(t, bench_cfg))
@@ -165,20 +157,20 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
             # If there is only 1 parameter then there is no point is plotting relative importance.  Only worth plotting if there are multiple repeats of the same value so that you can compare the parameter vs to repeat to get a sense of the how much chance affects the results
             # if bench_cfg.repeats > 1 and len(bench_cfg.input_vars) > 1:  #old code, not sure if its right
             if len(bench_cfg.input_vars) > 1:
-                rows.append(plot_param_importances(study, target_name=target_names[0]))
+                study_pane.append(plot_param_importances(study, target_name=target_names[0]))
 
             param_str.extend(summarise_trial(study.best_trial, bench_cfg))
 
         kwargs = {"height": 500, "scroll": True} if len(param_str) > 30 else {}
 
         param_str = "\n".join(param_str)
-        rows.append(
+        study_pane.append(
             pn.Row(pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"), **kwargs),
         )
 
-        cols.append(rows)
+        study_repeats_pane.append(study_pane)
 
-    return [cols]
+    return study_repeats_pane
 
 
 def summarise_trial(trial: optuna.trial, bench_cfg: BenchCfg) -> List[str]:
