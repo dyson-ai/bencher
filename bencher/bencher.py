@@ -822,7 +822,9 @@ class Bench(BenchPlotServer):
             str: the url of the published report
         """
 
-        remote, publish_url = remote_callback(self.bench_name)
+        branch_name = self.bench_name + "_debug" if debug else ""
+
+        remote, publish_url = remote_callback(branch_name)
 
         # if debug:
         # publish_url
@@ -834,11 +836,11 @@ class Bench(BenchPlotServer):
         cd_dir = f"cd {directory} &&"
 
         os.system(f"{cd_dir} git init")
-        os.system(f"{cd_dir} git checkout -b {self.bench_name}")
+        os.system(f"{cd_dir} git checkout -b {branch_name}")
         os.system(f"{cd_dir} git add index.html")
-        os.system(f'{cd_dir} git commit -m "publish {self.bench_name}"')
+        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
         os.system(f"{cd_dir} git remote add origin {remote}")
-        os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
+        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
 
         logging.info("Published report @")
         logging.info(publish_url)
