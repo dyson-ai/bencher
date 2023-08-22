@@ -27,6 +27,9 @@ def example_pareto(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
             ExampleBenchCfgIn.param.offset.with_level(run_cfg.level),
         ],
         result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
+        const_vars=ExampleBenchCfgIn.get_input_defaults(
+            [ExampleBenchCfgIn.param.noisy.with_const(True)]
+        ),
         post_description="""# Post Description 
 This is a slightly unusual way of doing pareto optimisation as we are not using a typical multi-objective optimisation algorithm [TODO, add example].  Instead we are performing a grid search and looking at the resulting pareto plot.  The reason for doing a grid search instead of standard pareto optimisation is that we can produce more isolated plots of how an input affects an output which can help understanding of the parameter space.  Future examples will show how to use grid search to bootstrap further optimisation with a multi objective optimiser""",
         run_cfg=run_cfg,
@@ -36,6 +39,9 @@ This is a slightly unusual way of doing pareto optimisation as we are not using 
 
 if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()
-    run_cfg.repeats = 3
-    run_cfg.level = 3
+    run_cfg.repeats = 2
+    run_cfg.level = 2
     example_pareto(run_cfg).show()
+
+
+# Joint 0 violates configuration limits -1.5707963267948966 <= -1.6676049014345424 <= 0.0

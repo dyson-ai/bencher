@@ -90,6 +90,9 @@ def extract_study_to_dataset(study: optuna.Study, bench_cfg: BenchCfg) -> BenchC
     return bench_cfg
 
 
+# def
+
+
 def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
     """Use optuna to plot various summaries of the optimisation
 
@@ -112,7 +115,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
     cols = pn.Row()
     for study, title in zip(studies, titles):
-        rows = pn.Column()
+        rows = pn.Row()
         target_names = []
         for rv in bench_cfg.result_vars:
             if rv.direction != OptDir.none:
@@ -121,7 +124,7 @@ def collect_optuna_plots(bench_cfg: BenchCfg) -> List[pn.pane.panel]:
 
         print("tgtnam", target_names)
 
-        rows.append(pn.pane.Markdown(title))
+        cols.append(pn.pane.Markdown(title))
 
         if len(target_names) > 1:
             if len(target_names) <= 3:
