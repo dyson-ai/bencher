@@ -44,6 +44,3 @@ if __name__ == "__main__":
     run_cfg_ex.repeats = 2
     run_cfg_ex.level = 2
     example_pareto(run_cfg_ex).show()
-
-
-# Joint 0 violates configuration limits -1.5707963267948966 <= -1.6676049014345424 <= 0.0
