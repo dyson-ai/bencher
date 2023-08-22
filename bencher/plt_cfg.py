@@ -74,7 +74,8 @@ class BenchPlotter:
 
                 plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
 
-                tabs = pn.Tabs(plot_cols, name=bench_cfg.title)
+                tabs = pn.Tabs(name=bench_cfg.title)
+                tabs.append(plot_cols)
 
                 if bench_cfg.serve_xarray:
                     tabs.append(
@@ -108,6 +109,7 @@ class BenchPlotter:
                     )
 
             main_tab.append(tabs)
+
         main_tab.servable()
         return main_tab
 
