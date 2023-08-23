@@ -219,8 +219,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     level = param.Integer(
-        default=-1,
-        bounds=[-1, 11],
+        default=0,
+        bounds=[0, 11],
         doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 

@@ -7,59 +7,26 @@ from typing import Any
 import panel as pn
 
 
-class PlotFunctions(bch.ParametrizedSweep):
-    # phase = bch.FloatSweep(
-    #     default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5
-    # )
+class LevelsExample(bch.ParametrizedSweep):
+    xval = bch.FloatSweep(bounds=[0, 3.14])
+    yval = bch.FloatSweep(bounds=[0, 3.14])
+    level = bch.IntSweep(default=1, bounds=[1, 6])
 
-    # freq = bch.FloatSweep(default=1, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5)
-
-    # theta = bch.FloatSweep(
-    #     default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=10
-    # )
-    # level_in = bch.IntSweep(default=0, bounds=[0, 5])
-
-    # x_val = bch.FloatSweep(bounds=[0, 1])
-    # level_in = bch.IntSweep(default=0, bounds=[0, 5])
-    level_in = bch.FloatSweep(default=0, bounds=[0, 5])
-
-    level_out = bch.ResultVar(units="v", doc="sin of theta with some noise")
-
-    def __call__(self, plot=True, **kwargs) -> dict:
-        self.update_params_from_kwargs(**kwargs)
-        # self.level_out = self.level_in
-
-        self.level_out = math.sin(self.level_in)
-
-        return self.get_results_values_as_dict()
-
-        return self.get_results_values_as_dict(hv.Scatter([self.x_val, self.level_in]))
-
-
-class Level2D(bch.ParametrizedSweep):
-    xval = bch.FloatSweep(bounds=[0, 1])
-    yval = bch.FloatSweep(bounds=[0, 1])
-    level = bch.IntSweep(bounds=[0, 6])
-
-    level_out = bch.ResultVar(units="lvl")
+    output = bch.ResultVar(units="v")
 
     def __call__(self, **kwargs: Any) -> Any:
         self.update_params_from_kwargs(**kwargs)
-
-        self.level_out = self.level
-        size = 60 - self.level * 20
-        pt = (
-            hv.Points((self.xval, self.yval)).opts(
-                marker="o", size=size, color=int_to_col(self.level), clabel="1"
-            )
-            # .opts(show_legend=False,label=self.level)
+        self.output = math.sin(self.xval) + math.cos(self.yval)
+        pt = hv.Points((self.xval, self.yval)).opts(
+            marker="o", size=110 - self.level * 20, color=int_to_col(self.level - 1)
         )
+        # .opts(show_legend=False,label=self.level)
+
         return self.get_results_values_as_dict(pt)
-        # return super().__call__(*args, **kwds)
 
 
 class RunWithLevel(bch.ParametrizedSweep):
-    level = bch.IntSweep(default=0, bounds=[0, 2])
+    level = bch.IntSweep(default=1, bounds=[1, 3])
     dimensions = bch.IntSweep(default=1, bounds=[1, 2])
 
     level_samples = bch.ResultVar()
@@ -75,15 +42,17 @@ class RunWithLevel(bch.ParametrizedSweep):
         #     input_vars=[PlotFunctions.param.level_in.with_level(run_cfg.level)],
         # )
 
-        bench_level = bch.Bench("lvl", Level2D(), run_cfg=run_cfg)
+        bench_level = bch.Bench("lvl", LevelsExample(), run_cfg=run_cfg)
 
         res = bench_level.plot_sweep(
             f"lvl:{self.level}",
             input_vars=[
-                Level2D.param.xval.with_level(self.level),
-                Level2D.param.yval.with_level(self.level),
+                LevelsExample.param.xval.with_level(self.level),
+                LevelsExample.param.yval.with_level(self.level),
             ],
-            const_vars=Level2D.get_input_defaults([Level2D.param.level.with_const(self.level)]),
+            const_vars=LevelsExample.get_input_defaults(
+                [LevelsExample.param.level.with_const(self.level)]
+            ),
         )
 
         # bench_level.append_tab(res.to_holomap().overlay())
@@ -111,16 +80,28 @@ def to_bench(class_instance):
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("lvl", Level2D())
+    bench = bch.Bench("lvl", LevelsExample())
+
+    from holoviews import opts
+
+    hv.extension("bokeh")
+    opts.defaults(
+        # opts.Curve(width=600, height=600, show_legend=False),
+        opts.Curve(height=300, show_legend=False),
+        # opts.Points(width=400, height=200, show_legend=False),
+        opts.Points(height=300, show_legend=False),
+    )
 
     def run_with_dim(dims):
         results = []
-        for level in range(3):
+        for level in range(1, 6):
             print(level)
             res = bench.plot_sweep(
                 f"lvl:{level}",
                 input_vars=dims,
-                const_vars=Level2D.get_input_defaults([Level2D.param.level.with_const(level)]),
+                const_vars=LevelsExample.get_input_defaults(
+                    [LevelsExample.param.level.with_const(level)]
+                ),
                 run_cfg=bch.BenchRunCfg(level=level, auto_plot=False),
             )
 
@@ -128,31 +109,40 @@ if __name__ == "__main__":
         return results
         # bench_level.append_tab(res.to_holomap().overlay().opts(show_legend=False))
 
-    results = run_with_dim([Level2D.param.xval])
+    results = run_with_dim([LevelsExample.param.xval])
     bench.append_markdown("# Using Levels to define sample density", "Levels")
-    row = pn.Column()
+    # col = pn.Column()
+
+    combined_pts = hv.Overlay()
+    combined_curve = hv.Overlay()
     for lvl, r in enumerate(results):
-        # row.append()
-        row.append(r.to_holomap().overlay().opts(width=400, height=200, show_legend=False))
-    bench.append(row)
+        # row.append
+        row = pn.Row()
+
+        pts = r.to_holomap().overlay()
+        crv = r.to_curve() * r.to_hv_dataset().to(hv.Scatter).opts(size=5)
+
+        combined_pts *= pts
+        combined_curve *= crv
+        row.append(pts)
+        row.append(crv)
+        bench.append(row)
 
     bench.append_markdown(
         "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"
     )
-    overlay = hv.Overlay()
-    for lvl, r in enumerate(results):
-        overlay *= r.to_holomap().overlay().opts(width=1200, height=200, show_legend=False)
 
-    bench.append(overlay)
+    bench.append(pn.Row(combined_pts, combined_curve))
     # bench.show()
 
-    results = run_with_dim([Level2D.param.xval, Level2D.param.yval])
+    results = run_with_dim([LevelsExample.param.xval, LevelsExample.param.yval])
     bench.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
-    row = pn.Column()
+    col = pn.Column()
     for lvl, r in enumerate(results):
         # row.append()
-        row.append(r.to_holomap().overlay().opts(width=400, height=400, show_legend=False))
-    bench.append(row)
+        col.append(r.to_holomap().overlay().opts(width=400, height=400, show_legend=False))
+        col.append(r.to_heatmap())
+    bench.append(col)
 
     bench.append_markdown(
         "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"

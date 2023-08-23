@@ -122,9 +122,9 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.worker_input_cfg = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.set_worker(worker, worker_input_cfg)
         self.run_cfg = run_cfg
 
@@ -154,8 +154,8 @@ class Bench(BenchPlotServer):
         if isinstance(worker, ParametrizedSweep):
             # if issubclass(worker,ParametrizedSweep):
             # logging.warning("This should be a class instance, not a class")
-            self.worker_class = worker
-            self.worker = self.worker_class.__call__
+            self.worker_class_instance = worker
+            self.worker = self.worker_class_instance.__call__
             logging.info("setting worker from bench class.__call__")
         else:
             self.worker = worker
@@ -221,21 +221,23 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-        if self.worker_class is not None:
+        if self.worker_class_instance is not None:
             if input_vars is None:
                 logging.info(
                     "No input variables passed, using all param variables in bench class as inputs"
                 )
-                input_vars = self.worker_class.get_inputs_only()
+                input_vars = self.worker_class_instance.get_inputs_only()
                 for i in input_vars:
                     logging.info(i.name)
             if result_vars is None:
                 logging.info(
-                    "No results variables passed, using all result variables in bench class"
+                    "No results variables passed, using all result variables in bench class:"
                 )
-                result_vars = self.worker_class.get_results_only()
+                result_vars = self.worker_class_instance.get_results_only()
+                for r in result_vars:
+                    logging.info(f"result var: {r.name}")
             if const_vars is None:
-                const_vars = self.worker_class.get_input_defaults()
+                const_vars = self.worker_class_instance.get_input_defaults()
             # if description is None:
             # description = self.worker_class.__doc__
         else:
@@ -259,7 +261,7 @@ class Bench(BenchPlotServer):
             run_cfg.use_cache = True
         self.last_run_cfg = run_cfg
 
-        if run_cfg.level > -1:
+        if run_cfg.level > 0:
             inputs = []
             for i in input_vars:
                 inputs.append(i.with_level(run_cfg.level))

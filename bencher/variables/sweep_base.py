@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List, Any, Tuple
 from copy import deepcopy
 
+import numpy as np
 import param
 from param import Parameterized
 import holoviews as hv
@@ -123,6 +124,16 @@ class SweepBase(param.Parameter):
 
         return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
 
+    def indices_to_samples(self, desires_num_samples, sample_values):
+        indices = [
+            int(i) for i in np.linspace(0, len(sample_values) - 1, desires_num_samples, dtype=int)
+        ]
+
+        if len(indices) > len(sample_values):
+            return sample_values
+
+        return [sample_values[i] for i in indices]
+
     def with_samples(self, samples: int) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
@@ -149,15 +160,8 @@ class SweepBase(param.Parameter):
         """
         return (deepcopy(self), const_value)
 
-    def with_level(self, level=0, max_level=11) -> SweepBase:
+    def with_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
+        assert level >= 1
         # TODO work out if the order can be returned in level order always
-        # samples = pow(2, level)
-
-        # samples=2
-        # for i in range(2,level):
-        #     samples+
-
-        # return self.with_samples()
-
-        samples = [2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
+        samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
         return self.with_samples(samples[min(max_level, level)])

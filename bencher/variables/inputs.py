@@ -52,7 +52,7 @@ class StringSweep(SweepBase, Selector):
 
     def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.objects
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class EnumSweep(SweepBase, Selector):
@@ -82,11 +82,7 @@ class EnumSweep(SweepBase, Selector):
 
     def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        if debug:
-            outputs = [self.objects[0], self.objects[-1]]
-        else:
-            outputs = self.objects
-        return outputs
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class IntSweep(SweepBase, Integer):
@@ -115,31 +111,13 @@ class IntSweep(SweepBase, Integer):
 
     def values(self, debug=False) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
-        samps = self.samples_debug if debug else self.samples
-
-        # if self.sample_values is None:
         sample_values = (
             self.sample_values
             if self.sample_values is not None
             else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         )
 
-        # self.sample_values =
-        # return [
-        #     int(i)
-        #     for i in np.linspace(
-        #         self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
-        #     )
-        # ]
-
-        indices = [int(i) for i in np.linspace(0, len(sample_values) - 1, samps, dtype=int)]
-        print("sampe", samps)
-        print("sv", sample_values)
-        print("ind", indices)
-        print("vals: ", [sample_values[i] for i in indices])
-
-        return [sample_values[i] for i in indices]
-        # return self.sample_values
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, sample_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
