@@ -2,5 +2,5 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BasicClass():
+class BasicClass:
     int_var: int = 0
