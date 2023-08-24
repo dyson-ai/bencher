@@ -1,6 +1,16 @@
 # python_template
 A template repo for python projects
 
+This has basic setup for
+
+* pylint
+* ruff
+* black
+* pytest
+* codecov
+* git-lfs
+* basic github actions ci
+
 ## Continuous Integration Status
 
 [![Ci](https://github.com/blooop/python_template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/blooop/python_template/actions/workflows/ci.yml?query=branch%3Amain)
