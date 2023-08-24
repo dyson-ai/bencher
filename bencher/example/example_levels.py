@@ -80,16 +80,16 @@ def to_bench(class_instance):
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("lvl", LevelsExample())
+    bench = bch.Bench("Levels", LevelsExample())
 
     from holoviews import opts
 
     hv.extension("bokeh")
     opts.defaults(
         # opts.Curve(width=600, height=600, show_legend=False),
-        opts.Curve(height=300, show_legend=False),
+        opts.Curve(show_legend=False),
         # opts.Points(width=400, height=200, show_legend=False),
-        opts.Points(height=300, show_legend=False),
+        opts.Points(show_legend=False),
     )
 
     def run_with_dim(dims):
@@ -97,17 +97,17 @@ if __name__ == "__main__":
         for level in range(1, 6):
             print(level)
             res = bench.plot_sweep(
-                f"lvl:{level}",
+                f"Level:{level}",
                 input_vars=dims,
                 const_vars=LevelsExample.get_input_defaults(
                     [LevelsExample.param.level.with_const(level)]
                 ),
+                result_vars=[LevelsExample.param.output],
                 run_cfg=bch.BenchRunCfg(level=level, auto_plot=False),
             )
 
             results.append(res)
         return results
-        # bench_level.append_tab(res.to_holomap().overlay().opts(show_legend=False))
 
     results = run_with_dim([LevelsExample.param.xval])
     bench.append_markdown("# Using Levels to define sample density", "Levels")
@@ -119,13 +119,16 @@ if __name__ == "__main__":
         # row.append
         row = pn.Row()
 
-        pts = r.to_holomap().overlay()
-        crv = r.to_curve() * r.to_hv_dataset().to(hv.Scatter).opts(size=5)
+        pts = r.to_holomap().overlay().opts(height=300)
+        crv = r.to_curve().opts(shared_axes=False, height=300) * r.to_hv_dataset().to(
+            hv.Scatter
+        ).opts(size=5, height=300, shared_axes=False)
 
         combined_pts *= pts
         combined_curve *= crv
         row.append(pts)
         row.append(crv)
+        bench.append_markdown(f"## {r.title}")
         bench.append(row)
 
     bench.append_markdown(
@@ -137,12 +140,11 @@ if __name__ == "__main__":
 
     results = run_with_dim([LevelsExample.param.xval, LevelsExample.param.yval])
     bench.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
-    col = pn.Column()
     for lvl, r in enumerate(results):
-        # row.append()
-        col.append(r.to_holomap().overlay().opts(width=400, height=400, show_legend=False))
-        col.append(r.to_heatmap())
-    bench.append(col)
+        row = pn.Row()
+        row.append(r.to_holomap().overlay())
+        row.append(r.to_heatmap())
+        bench.append(row)
 
     bench.append_markdown(
         "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"
