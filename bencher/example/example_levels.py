@@ -170,42 +170,19 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
         )
 
     bench.append(overlay)
-    bench.show()
+    return bench
 
 
 if __name__ == "__main__":
     hv.extension("bokeh")
     opts.defaults(
-        # opts.Curve(width=600, height=600, show_legend=False),
         opts.Curve(show_legend=False),
-        # opts.Points(width=400, height=200, show_legend=False),
         opts.Points(show_legend=False),
     )
-
-    bench = bch.Bench(
-        "lol",
-        RunWithLevel(),
-        run_cfg=bch.BenchRunCfg(auto_plot=False),
-    )
-
-    res1 = bench.plot_sweep(
-        "Levels",
-        input_vars=[RunWithLevel.param.level],
-    )
-
-    res = bench.plot_sweep(
-        "Levels",
-        input_vars=[RunWithLevel.param.dimensions],
-    )
-
-    # bench.append(res.to_holomap().overlay())
-
-    # bench.show()
 
     bench = bch.Bench("Levels", LevelsExample())
 
     bench = run_levels_1D(bench)
-
     bench = run_levels_2D(bench)
 
     bench.show()
