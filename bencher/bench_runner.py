@@ -5,7 +5,7 @@ from copy import deepcopy
 
 
 class Benchable(Protocol):
-    def bench(run_cfg: BenchRunCfg) -> BenchCfg:
+    def bench(self, run_cfg: BenchRunCfg) -> BenchCfg:
         ...
 
 
@@ -44,8 +44,8 @@ class BenchRunner:
             for b in self.bench_fns:
                 run_lvl = deepcopy(run_run_cfg)
                 run_lvl.level = lvl
-                b.bench(run_lvl)
-            # if publish:
-            # res.publish
+                res = b.bench(run_lvl)
+                if publish:
+                    res.publish()
 
     # def show(self):

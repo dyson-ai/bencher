@@ -757,8 +757,8 @@ class Bench(BenchPlotServer):
             return self.pane
         return self.pane[-1]
 
-    def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
-        md = pn.pane.Markdown(markdown, name=name)
+    def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown, name=name, **kwargs)
         self.append(md, name)
         return md
 
