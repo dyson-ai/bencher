@@ -1,0 +1,45 @@
+// // For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// // README at: https://github.com/devcontainers/templates/tree/main/src/python
+// {
+// 	"name": "Python 3",
+// 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+// 	"image": "mcr.microsoft.com/devcontainers/python:0-3.10",
+// 	// Features to add to the dev container. More info: https://containers.dev/features.
+// 	// "features": {},
+// 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+// 	// "forwardPorts": [],
+// 	// Use 'postCreateCommand' to run commands after the container is created.
+// 	"postCreateCommand": "pip3 install --user -r requirements.txt && pip install -e .",
+// 	"customizations": {
+// 		"vscode": {
+// 		}
+// 	}
+// 	// Configure tool-specific properties.
+// 	// "customizations": {},
+// 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+// 	// "remoteUser": "root"
+// }
+{
+	"name": "Python Environment",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	"postCreateCommand": "flit install --symlink",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.pylint",
+				"njpwerner.autodocstring",
+				"charliermarsh.ruff",
+				"mhutchie.git-graph",
+				"eamodio.gitlens",
+				"tamasfe.even-better-toml",
+				"Codium.codium"
+			]
+		}
+	},
+	// "onCreateCommand": "pre-commit install-hooks"
+}
