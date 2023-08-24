@@ -56,7 +56,7 @@ class RunWithLevel(bch.ParametrizedSweep):
         )
         return self.get_results_values_as_dict()
 
-        return self.get_results_values_as_dict(res1.to_holomap().overlay())
+        # return self.get_results_values_as_dict(res1.to_holomap().overlay())
 
 
 # def to_bench(class_instance) -> bch.Bench:
