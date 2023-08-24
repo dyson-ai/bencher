@@ -37,7 +37,8 @@
 				"mhutchie.git-graph",
 				"eamodio.gitlens",
 				"tamasfe.even-better-toml",
-				"Codium.codium"
+				"Codium.codium",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	},
