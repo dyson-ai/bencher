@@ -587,7 +587,7 @@ class BenchCfg(BenchRunCfg):
         return self.to_holomap().grid(inputs)
 
     def to_table(self):
-        return self.to(hv.Table,ReduceType.SQUEEZE)
+        return self.to(hv.Table, ReduceType.SQUEEZE)
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]

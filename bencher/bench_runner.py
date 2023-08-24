@@ -44,7 +44,7 @@ class BenchRunner:
             for b in self.bench_fns:
                 run_lvl = deepcopy(run_run_cfg)
                 run_lvl.level = lvl
-                res = b.bench(run_lvl)
+                b.bench(run_lvl)
             # if publish:
             # res.publish
 

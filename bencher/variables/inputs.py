@@ -24,9 +24,9 @@ class BoolSweep(SweepBase, Selector):
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
+    def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.objects
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class StringSweep(SweepBase, Selector):
