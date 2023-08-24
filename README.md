@@ -9,6 +9,7 @@ This has basic setup for
 * pytest
 * codecov
 * git-lfs
+* basic github actions ci
 
 ## Continuous Integration Status
 
