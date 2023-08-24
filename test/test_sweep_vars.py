@@ -75,6 +75,13 @@ class TestVarSweeps(unittest.TestCase):
             enum_sweep.with_level(3).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
         )
 
+    def test_bool_sweep_level(self):
+        bool_sweep = BoolSweep()
+
+        self.assertListEqual(bool_sweep.with_level(1).values(), [True])
+        self.assertListEqual(bool_sweep.with_level(1).values(), [True, False])
+        self.assertListEqual(bool_sweep.with_level(2).values(), [True, False])
+
     def test_string_sweep_level(self):
         string_sweep = StringSweep(["VAL1", "VAL2", "VAL3", "VAL4"])
         self.assertListEqual(string_sweep.with_level(1).values(), ["VAL1"])
