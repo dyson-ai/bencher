@@ -15,6 +15,7 @@
 		},
 		{
 			"label": "code coverage",
+			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
 			"type": "shell",
 			"command": "coverage run -m pytest; coverage xml -o coverage.xml; coverage report -m"
 		},
