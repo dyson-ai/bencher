@@ -59,7 +59,7 @@
 			"label": "pull updates from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
-			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout -B feature/update_from_template; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
+			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "sa: Set Active File",
