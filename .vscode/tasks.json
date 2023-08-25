@@ -9,6 +9,7 @@
 		},
 		{
 			"label": "pylint",
+			"detail": "Run pylint on files tracked by git",
 			"type": "shell",
 			"command": "pylint $(git ls-files '*.py') "
 		},
