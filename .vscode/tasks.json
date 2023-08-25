@@ -12,9 +12,9 @@
 			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
 			"type": "shell",
 			"dependsOn": [
-				"autoformat",
+				"autoformat"
 			],
-			"command": "git commit -m 'autoformatted and ruff --fix all code"
+			"command": "git commit -m 'autoformatted and ruff --fix all code'"
 		},
 		{
 			"label": "pylint",
