@@ -66,6 +66,12 @@
 			"command": "flit publish"
 		},
 		{
+			"label": "git merge origin main and push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git merge origin main && git push"
+		},
+		{
 			"label": "pull updates from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
