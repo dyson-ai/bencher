@@ -67,7 +67,8 @@ line-length = 100
 
 [tool.ruff]
 # Never enforce `E501` (line length violations).
-ignore = ["E501", "E902"]
+#"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
+ignore = ["E501", "E902", "F841"]
 
 
 # Same as Black.
