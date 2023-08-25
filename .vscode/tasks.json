@@ -8,6 +8,15 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
+			"label": "autoformat and commit",
+			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
+			"type": "shell",
+			"dependsOn": [
+				"autoformat"
+			],
+			"command": "git commit -a -m 'autoformatted and ruff --fix all code'"
+		},
+		{
 			"label": "pylint",
 			"detail": "Run pylint on files tracked by git",
 			"type": "shell",
