@@ -14,7 +14,7 @@
 		{
 			"label": "code coverage",
 			"type": "shell",
-			"command": "coverage run -m pytest ; coverage report -m"
+			"command": "coverage run -m pytest; coverage xml -o coverage.xml; coverage report -m"
 		},
 		{
 			"label": "code coverage report",
