@@ -27,6 +27,7 @@
 		},
 		{
 			"label": "pytest duration",
+			"detail": "Run pytest and track the duration of each test",
 			"type": "shell",
 			"command": "pytest --durations=0"
 		},
