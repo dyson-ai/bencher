@@ -8,6 +8,15 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
+			"label": "autoformat and commit",
+			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
+			"type": "shell",
+			"dependsOn": [
+				"autoformat"
+			],
+			"command": "git commit -a -m 'autoformatted and ruff --fix all code'"
+		},
+		{
 			"label": "pylint",
 			"detail": "Run pylint on files tracked by git",
 			"type": "shell",
@@ -57,10 +66,16 @@
 			"command": "flit publish"
 		},
 		{
+			"label": "git merge origin main and push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git merge origin main && git push"
+		},
+		{
 			"label": "pull updates from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
-			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
+			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "sa: Set Active File",
