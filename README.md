@@ -10,6 +10,7 @@ This has basic setup for
 * codecov
 * git-lfs
 * basic github actions ci
+* pulling updates from this template
 
 ## Continuous Integration Status
 
