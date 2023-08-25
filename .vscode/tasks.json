@@ -21,6 +21,7 @@
 		},
 		{
 			"label": "code coverage report",
+			"detail": "Display the code coverage report. This assumes you have already have a coverage report generated. If not run the code ocverage task",
 			"type": "shell",
 			"command": "coverage report -m"
 		},
