@@ -3,6 +3,7 @@
 	"tasks": [
 		{
 			"label": "autoformat",
+			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
 			"command": "ruff . --fix && black ."
 		},
