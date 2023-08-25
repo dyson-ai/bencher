@@ -3,21 +3,25 @@
 	"tasks": [
 		{
 			"label": "autoformat",
+			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
 			"command": "ruff . --fix && black ."
 		},
 		{
 			"label": "pylint",
+			"detail": "Run pylint on files tracked by git",
 			"type": "shell",
 			"command": "pylint $(git ls-files '*.py') "
 		},
 		{
 			"label": "code coverage",
+			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
 			"type": "shell",
 			"command": "coverage run -m pytest; coverage xml -o coverage.xml; coverage report -m"
 		},
 		{
 			"label": "code coverage report",
+			"detail": "Display the code coverage report. This assumes you have already have a coverage report generated. If not run the code ocverage task",
 			"type": "shell",
 			"command": "coverage report -m"
 		},
@@ -55,7 +59,7 @@
 			"label": "pull updates from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
-			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout -b feature/update_from_template; git merge template/main --allow-unrelated-histories; git remote remove template"
+			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout -B feature/update_from_template; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "sa: Set Active File",
