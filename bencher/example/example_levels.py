@@ -3,7 +3,7 @@ from bencher.utils import int_to_col
 
 import math
 import holoviews as hv
-from typing import Any
+from typing import Any, List
 import panel as pn
 from holoviews import opts
 
@@ -65,7 +65,7 @@ class RunWithLevel(bch.ParametrizedSweep):
 #     return bench
 
 
-def run_with_dim(dims):
+def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
     results = []
     for level in range(1, 6):
         print(level)
@@ -84,7 +84,7 @@ def run_with_dim(dims):
 
 
 def run_levels_1D(bench: bch.Bench) -> bch.Bench:
-    results = run_with_dim([LevelsExample.param.xval])
+    results = run_with_dim(bench, [LevelsExample.param.xval])
     bench.append_markdown("# Using Levels to define sample density", "Levels")
 
     bench1 = bch.Bench("lol", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
@@ -130,7 +130,7 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
 
 
 def run_levels_2D(bench: bch.Bench) -> bch.Bench:
-    results = run_with_dim([LevelsExample.param.xval, LevelsExample.param.yval])
+    results = run_with_dim(bench, [LevelsExample.param.xval, LevelsExample.param.yval])
     bench.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
 
     bench1 = bch.Bench("lol", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
@@ -173,7 +173,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     return bench
 
 
-if __name__ == "__main__":
+def run_levels() -> bch.Bench:
     hv.extension("bokeh")
     opts.defaults(
         opts.Curve(show_legend=False),
@@ -181,8 +181,11 @@ if __name__ == "__main__":
     )
 
     bench = bch.Bench("Levels", LevelsExample())
-
     bench = run_levels_1D(bench)
     bench = run_levels_2D(bench)
 
-    bench.show()
+    return bench
+
+
+if __name__ == "__main__":
+    run_levels().show()
