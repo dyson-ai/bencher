@@ -9,7 +9,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 
-dependencies = ["numpy>=1.2,<=1.25.2"]
 dependencies = [
   "holoviews>=1.15,<=1.17.1",
   "hvplot>=0.8,<=0.8.4",
@@ -55,8 +54,8 @@ build-backend = "flit_core.buildapi"
 
 
 [tool.pylint]
-extension-pkg-whitelist = ["numpy"]
-jobs = 16                           #detect number of cores
+extension-pkg-whitelist = ["numpy", "scipy"]
+jobs = 16                                    #detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
