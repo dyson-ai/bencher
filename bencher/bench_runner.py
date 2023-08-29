@@ -1,4 +1,4 @@
-from typing import Protocol, Callable
+from typing import Protocol, Callable,List
 
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -13,10 +13,12 @@ class Benchable(Protocol):
 
 
 class BenchRunner:
-    def __init__(self, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None) -> None:
+    def __init__(self,bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
         self.publisher = publisher
+        if bench_class is not None:
+            self.add_bench(bench_class)
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -44,7 +46,7 @@ class BenchRunner:
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
         debug: bool = True,
-    ) -> None:
+    ) -> List[BenchCfg]:
         results = []
         if run_cfg is not None:
             run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
