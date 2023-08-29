@@ -1,4 +1,4 @@
-from typing import Protocol, Callable,List
+from typing import Protocol, Callable, List
 
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -13,7 +13,9 @@ class Benchable(Protocol):
 
 
 class BenchRunner:
-    def __init__(self,bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None) -> None:
+    def __init__(
+        self, bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None
+    ) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
         self.publisher = publisher
@@ -37,7 +39,6 @@ class BenchRunner:
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)
-
 
     def run(
         self,
