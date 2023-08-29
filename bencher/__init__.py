@@ -1,4 +1,5 @@
 from .bencher import Bench, BenchCfg, BenchRunCfg
+from .bench_runner import BenchRunner
 from .plt_cfg import BenchPlotter, PltCfgBase
 from .example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from .bench_plot_server import BenchPlotServer
@@ -13,3 +14,4 @@ from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 
 from .optuna_conversions import to_optuna, summarise_study
+from .bench_cfg import ReduceType

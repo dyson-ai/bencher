@@ -106,16 +106,12 @@ class ParametrizedSweep(Parameterized):
 
     @classmethod
     def get_input_defaults(cls, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
-        # print("class",cls)
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
+        assert isinstance(override_defaults, list)
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
-        # print(cls.param.values())
-        # print(inp)
-        # print(inp[0].default)
-        # defaults = cls.param.defaults()
         return override_defaults + [(i, i.default) for i in inp]
 
     @classmethod

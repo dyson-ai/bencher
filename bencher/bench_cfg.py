@@ -219,8 +219,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     level = param.Integer(
-        default=0,
-        bounds=[0, 11],
+        default=1,
+        bounds=[1, 12],
         doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 
@@ -540,7 +540,10 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self) -> hv.Scatter:
+    def to_scatter(self):
+        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+
+    def to_scatter_jitter(self) -> hv.Scatter:
         ds = self.to_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
@@ -582,6 +585,9 @@ class BenchCfg(BenchRunCfg):
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
+
+    def to_table(self):
+        return self.to(hv.Table, ReduceType.SQUEEZE)
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]

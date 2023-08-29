@@ -122,9 +122,9 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.worker_input_cfg = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.set_worker(worker, worker_input_cfg)
         self.run_cfg = run_cfg
 
@@ -151,12 +151,15 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        print(worker)
         if isinstance(worker, ParametrizedSweep):
-            self.worker = worker.call
-            self.worker_class = worker
+            # if issubclass(worker,ParametrizedSweep):
+            # logging.warning("This should be a class instance, not a class")
+            self.worker_class_instance = worker
+            self.worker = self.worker_class_instance.__call__
+            logging.info("setting worker from bench class.__call__")
         else:
             self.worker = worker
+            logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
     def to_optuna(
@@ -218,15 +221,23 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-        if self.worker_class is not None:
+        if self.worker_class_instance is not None:
             if input_vars is None:
-                input_vars = self.worker_class.get_inputs_only()
+                logging.info(
+                    "No input variables passed, using all param variables in bench class as inputs"
+                )
+                input_vars = self.worker_class_instance.get_inputs_only()
+                for i in input_vars:
+                    logging.info(i.name)
             if result_vars is None:
-                result_vars = self.worker_class.get_results_only()
+                logging.info(
+                    "No results variables passed, using all result variables in bench class:"
+                )
+                result_vars = self.worker_class_instance.get_results_only()
+                for r in result_vars:
+                    logging.info(f"result var: {r.name}")
             if const_vars is None:
-                const_vars = self.worker_class.get_input_defaults()
-            if description is None:
-                description = self.worker_class.__doc__
+                const_vars = self.worker_class_instance.get_input_defaults()
         else:
             if input_vars is None:
                 input_vars = []
@@ -246,13 +257,14 @@ class Bench(BenchPlotServer):
                 logging.info("Copy run cfg from bench class")
         if run_cfg.only_plot:
             run_cfg.use_cache = True
+
         self.last_run_cfg = run_cfg
 
-        if self.worker_class is not None:
-            if description is None:
-                description = self.worker_class.__doc__
-            if result_vars is None:
-                result_vars = self.worker_class.get_results_vars()
+        if run_cfg.level > 1:
+            inputs = []
+            for i in input_vars:
+                inputs.append(i.with_level(run_cfg.level))
+            input_vars = inputs
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
@@ -744,8 +756,8 @@ class Bench(BenchPlotServer):
             return self.pane
         return self.pane[-1]
 
-    def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
-        md = pn.pane.Markdown(markdown, name=name)
+    def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown, name=name, **kwargs)
         self.append(md, name)
         return md
 

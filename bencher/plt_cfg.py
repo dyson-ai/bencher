@@ -107,6 +107,7 @@ class BenchPlotter:
                             name="Pandas Dataframe Flattened View",
                         )
                     )
+                # tabs.append(plot_cols)
 
             main_tab.append(tabs)
 
