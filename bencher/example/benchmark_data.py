@@ -133,7 +133,7 @@ class SimpleBenchClass(ParametrizedSweep):
 
     result = ResultVar()
 
-    def call(self, **kwargs) -> dict:
+    def __call__(self, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         self.result = self.var1
         return self.get_results_values_as_dict()

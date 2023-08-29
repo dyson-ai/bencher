@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "0.2.0"
+version = "0.2.1"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -10,12 +10,12 @@ requires-python = ">=3.10"
 
 
 dependencies = [
-  "holoviews>=1.15,<=1.17",
+  "holoviews>=1.15,<=1.17.1",
   "hvplot>=0.8,<=0.8.4",
   "diskcache>=5.6,>=5.6.1",
   "optuna>=3.2,<=3.3.0",
-  "xarray>=2023.7,<=2023.7",
-  "plotly>=5.15,<=5.16.0",
+  "xarray>=2023.7,<=2023.8.0",
+  "plotly>=5.15,<=5.16.1",
   "sortedcontainers>=2.4,<=2.4",
   "pandas>=2.0,<=2.0.3",
   "strenum>=0.4.0,<=0.4.15",
@@ -34,16 +34,16 @@ test = [
   "pylint>=2.16,<=2.17.5",
   "pytest-cov>=4.1,<=4.1",
   "pytest-mock>=3.10,<=3.11.1",
-  "pytest-runner<=6.0,>=6.0",
+  "pytest-runner>=6.0,<=6.0",
   "pytest>=7.4,<=7.4",
-  "hypothesis>=6.82,<=6.82.4",
-  "ruff>=0.0.28,<=0.0.284",
+  "hypothesis>=6.82,<=6.82.7",
+  "ruff>=0.0.280,<=0.0.286",
   "coverage>=7.2.7,<=7.3.0",
 ]
 
 [project.urls]
-Source = "https://github.com/blooop/bencher"
-Home = "https://github.com/blooop/bencher"
+Source = "https://github.com/dyson-ai/bencher"
+Home = "https://github.com/dyson-ai/bencher"
 
 
 [tool.flit.module]
@@ -68,7 +68,8 @@ line-length = 100
 
 [tool.ruff]
 # Never enforce `E501` (line length violations).
-ignore = ["E501", "E902"]
+#"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
+ignore = ["E501", "E902", "F841"]
 
 
 # Same as Black.

@@ -122,9 +122,9 @@ class Bench(BenchPlotServer):
         """
         self.bench_name = bench_name
         self.worker = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.worker_input_cfg = None
-        self.worker_class = None
+        self.worker_class_instance = None
         self.set_worker(worker, worker_input_cfg)
         self.run_cfg = run_cfg
 
@@ -151,12 +151,15 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
-        print(worker)
         if isinstance(worker, ParametrizedSweep):
-            self.worker = worker.call
-            self.worker_class = worker
+            # if issubclass(worker,ParametrizedSweep):
+            # logging.warning("This should be a class instance, not a class")
+            self.worker_class_instance = worker
+            self.worker = self.worker_class_instance.__call__
+            logging.info("setting worker from bench class.__call__")
         else:
             self.worker = worker
+            logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
     def to_optuna(
@@ -218,15 +221,23 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-        if self.worker_class is not None:
+        if self.worker_class_instance is not None:
             if input_vars is None:
-                input_vars = self.worker_class.get_inputs_only()
+                logging.info(
+                    "No input variables passed, using all param variables in bench class as inputs"
+                )
+                input_vars = self.worker_class_instance.get_inputs_only()
+                for i in input_vars:
+                    logging.info(i.name)
             if result_vars is None:
-                result_vars = self.worker_class.get_results_only()
+                logging.info(
+                    "No results variables passed, using all result variables in bench class:"
+                )
+                result_vars = self.worker_class_instance.get_results_only()
+                for r in result_vars:
+                    logging.info(f"result var: {r.name}")
             if const_vars is None:
-                const_vars = self.worker_class.get_input_defaults()
-            if description is None:
-                description = self.worker_class.__doc__
+                const_vars = self.worker_class_instance.get_input_defaults()
         else:
             if input_vars is None:
                 input_vars = []
@@ -238,13 +249,22 @@ class Bench(BenchPlotServer):
                 const_vars = deepcopy(const_vars)
 
         if run_cfg is None:
-            run_cfg = deepcopy(self.run_cfg)
+            if self.run_cfg is None:
+                run_cfg = BenchRunCfg()
+                logging.info("Generate default run cfg")
+            else:
+                run_cfg = deepcopy(self.run_cfg)
+                logging.info("Copy run cfg from bench class")
+        if run_cfg.only_plot:
+            run_cfg.use_cache = True
 
-        if self.worker_class is not None:
-            if description is None:
-                description = self.worker_class.__doc__
-            if result_vars is None:
-                result_vars = self.worker_class.get_results_vars()
+        self.last_run_cfg = run_cfg
+
+        if run_cfg.level > 1:
+            inputs = []
+            for i in input_vars:
+                inputs.append(i.with_level(run_cfg.level))
+            input_vars = inputs
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
@@ -267,11 +287,6 @@ class Bench(BenchPlotServer):
             post_description = (
                 "## Results Description\nPlease set post_description to explain these results"
             )
-        if run_cfg is None:
-            run_cfg = BenchRunCfg()
-        elif run_cfg.only_plot:
-            run_cfg.use_cache = True
-        self.last_run_cfg = run_cfg
 
         bench_cfg = BenchCfg(
             input_vars=input_vars,
@@ -282,8 +297,9 @@ class Bench(BenchPlotServer):
             post_description=post_description,
             title=title,
             pass_repeat=pass_repeat,
-            tag=tag,
+            tag=run_cfg.run_tag + tag,
         )
+        print("tag", bench_cfg.tag)
 
         bench_cfg.param.update(run_cfg.param.values())
         bench_cfg.plot_lib = plot_lib if plot_lib is not None else self.plot_lib
@@ -297,7 +313,6 @@ class Bench(BenchPlotServer):
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
         if bench_cfg.use_sample_cache:
-            # default to 20Gb cache
             self.sample_cache = Cache(
                 "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
             )
@@ -635,7 +650,7 @@ class Bench(BenchPlotServer):
             result = self.worker_wrapper(bench_cfg, function_input)
 
         # construct a dict for a holomap
-        if type(result) == dict:  # todo holomaps with named types
+        if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
                 bench_cfg.hmap[canonical_input] = result["hmap"]
@@ -644,7 +659,7 @@ class Bench(BenchPlotServer):
         logging.debug(f"input {function_input_vars}")
         logging.debug(f"result {result}")
         for rv in bench_cfg.result_vars:
-            if type(result) == dict:
+            if isinstance(result, dict):
                 result_value = result[rv.name]
             else:
                 result_value = result.param.values()[rv.name]
@@ -652,9 +667,9 @@ class Bench(BenchPlotServer):
             if bench_run_cfg.print_bench_results:
                 logging.info(f"{rv.name}: {result_value}")
 
-            if type(rv) == ResultVar:
+            if isinstance(rv, ResultVar):
                 set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
-            elif type(rv) == ResultVec:
+            elif isinstance(rv, ResultVec):
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
@@ -741,23 +756,31 @@ class Bench(BenchPlotServer):
             return self.pane
         return self.pane[-1]
 
-    def append_markdown(self, markdown: str, name=None) -> pn.pane.Markdown:
-        md = pn.pane.Markdown(markdown, name=name)
-        self.append_col(md, name=name)
+    def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+        md = pn.pane.Markdown(markdown, name=name, **kwargs)
+        self.append(md, name)
         return md
 
-    def append(self, pane: pn.panel) -> None:
-        self.get_panel().append(pane)
+    def append(self, pane: pn.panel, name: str = None) -> None:
+        if name is None:
+            name = pane.name
+        if len(self.pane) == 0:
+            self.append_tab(pane, name)
+        else:
+            self.pane[-1].append(pane)
 
     def append_col(self, pane: pn.panel, name=None) -> None:
         if name is not None:
             col = pn.Column(pane, name)
         else:
             col = pn.Column(pane)
-        self.get_panel().append(col)
+        # self.get_panel().append(col)
+        self.pane.append(col)
 
-    def append_tab(self, pane: pn.panel):
-        self.pane.append(pane)
+    def append_tab(self, pane: pn.panel, name: str = None) -> None:
+        if name is None:
+            name = pane.name
+        self.pane.append(pn.Column(pane, name=name))
 
     def save(
         self,
@@ -785,7 +808,8 @@ class Bench(BenchPlotServer):
         if in_html_folder:
             base_path /= "html"
 
-        os.makedirs(base_path, exist_ok=True)
+        logging.info(f"creating dir {base_path.absolute()}")
+        os.makedirs(base_path.absolute(), exist_ok=True)
 
         base_path = base_path / filename
 
@@ -794,10 +818,7 @@ class Bench(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, **kwargs)
         return base_path
 
-    def publish(
-        self,
-        remote_callback: Callable,
-    ) -> str:
+    def publish(self, remote_callback: Callable, branch_name=None, debug: bool = True) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         def publish_args(branch_name) -> Tuple[str, str]:
@@ -814,7 +835,15 @@ class Bench(BenchPlotServer):
             str: the url of the published report
         """
 
-        remote, publish_url = remote_callback(self.bench_name)
+        if branch_name is None:
+            branch_name = self.bench_name
+        branch_name += "_debug" if debug else ""
+
+        remote, publish_url = remote_callback(branch_name)
+
+        # if debug:
+        # publish_url
+
         directory = "tmpgit"
         report_path = self.save(directory, filename="index.html", in_html_folder=False)
         logging.info(f"created report at: {report_path.absolute()}")
@@ -822,11 +851,11 @@ class Bench(BenchPlotServer):
         cd_dir = f"cd {directory} &&"
 
         os.system(f"{cd_dir} git init")
-        os.system(f"{cd_dir} git checkout -b {self.bench_name}")
+        os.system(f"{cd_dir} git checkout -b {branch_name}")
         os.system(f"{cd_dir} git add index.html")
-        os.system(f'{cd_dir} git commit -m "publish {self.bench_name}"')
+        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
         os.system(f"{cd_dir} git remote add origin {remote}")
-        os.system(f"{cd_dir} git push --set-upstream origin {self.bench_name} -f")
+        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
 
         logging.info("Published report @")
         logging.info(publish_url)

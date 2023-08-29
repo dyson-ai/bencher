@@ -1,0 +1,64 @@
+from typing import Protocol, Callable
+
+from bencher.bench_cfg import BenchRunCfg, BenchCfg
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.bencher import Bench
+
+from copy import deepcopy
+
+
+class Benchable(Protocol):
+    def bench(self, run_cfg: BenchRunCfg) -> BenchCfg:
+        ...
+
+
+class BenchRunner:
+    def __init__(self, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None) -> None:
+        self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
+
+        self.bench_fns = []
+        self.publisher = publisher
+
+    @staticmethod
+    def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
+        run_cfg_out = deepcopy(run_cfg)
+        run_cfg_out.use_sample_cache = True
+        run_cfg_out.only_hash_tag = True
+        run_cfg.level = level
+        return run_cfg_out
+
+    def add_run(self, bench_fn: Benchable) -> None:
+        self.bench_fns.append(bench_fn)
+
+    def add_bench(self, class_instance: ParametrizedSweep):
+        def cb(run_cfg: BenchRunCfg):
+            bench = Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
+            return bench.plot_sweep(f"bench_{class_instance.name}")
+
+        self.add_run(cb)
+
+    # def to_bench(class_instance) -> bch.Bench:
+
+    def run(
+        self,
+        min_level: int = 1,
+        max_level: int = 6,
+        run_cfg: BenchRunCfg = None,
+        publish: bool = False,
+        debug: bool = True,
+    ) -> None:
+        results = []
+        if run_cfg is not None:
+            run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
+        else:
+            run_run_cfg = deepcopy(self.run_cfg)
+
+        for lvl in range(min_level, max_level):
+            for bch_fn in self.bench_fns:
+                run_lvl = deepcopy(run_run_cfg)
+                run_lvl.level = lvl
+                res = bch_fn(run_lvl)
+                if publish and self.publisher is not None:
+                    res.publish(self.publisher, debug)
+                results.append(res)
+        return results

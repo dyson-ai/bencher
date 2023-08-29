@@ -26,10 +26,9 @@ class TestPlotLibrary(unittest.TestCase):
         self.assertEqual(len(none_plots.plotters), 0)
 
     def test_no_plotly_plot_collection(self) -> None:
-        plt_col = PlotLibrary.no_plotly()
-        with self.assertRaises(KeyError):
-            plt_col.remove(PlotTypes.surface_hv)
-            plt_col.remove(PlotTypes.volume_plotly)
+        plt_col = PlotLibrary.with_plotly()
+        self.assertIn(PlotTypes.surface_hv, plt_col.plotters)
+        self.assertIn(PlotTypes.volume_plotly, plt_col.plotters)
 
     # Test that adding a plot that is not in the list of available plots raises a ValueError
     def test_adding_plot_not_in_available_plots(self) -> None:

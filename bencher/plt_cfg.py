@@ -6,7 +6,6 @@ import seaborn as sns
 
 import bencher.plotting_functions as plt_func
 from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg
-from bencher.optuna_conversions import collect_optuna_plots
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.variables.results import ResultVar, ResultVec
@@ -67,7 +66,7 @@ class BenchPlotter:
                     plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
                 if bench_cfg.use_optuna:
-                    plot_cols.extend(collect_optuna_plots(bench_cfg))
+                    plot_cols.extend(bench_cfg.to_optuna())
 
                 if append_cols is not None:
                     plot_cols.extend(append_cols)
@@ -75,7 +74,8 @@ class BenchPlotter:
 
                 plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
 
-                tabs = pn.Tabs(plot_cols, name=bench_cfg.title)
+                tabs = pn.Tabs(name=bench_cfg.title)
+                tabs.append(plot_cols)
 
                 if bench_cfg.serve_xarray:
                     tabs.append(
@@ -107,8 +107,10 @@ class BenchPlotter:
                             name="Pandas Dataframe Flattened View",
                         )
                     )
+                # tabs.append(plot_cols)
 
             main_tab.append(tabs)
+
         main_tab.servable()
         return main_tab
 

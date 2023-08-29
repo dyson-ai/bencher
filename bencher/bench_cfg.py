@@ -124,6 +124,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
+    summarise_constant_inputs = param.Boolean(
+        True, doc="Print the inputs that are kept constant when describing the sweep parameters"
+    )
+
     print_bench_inputs: bool = param.Boolean(
         True, doc="Print the inputs to the benchmark function every time it is called"
     )
@@ -212,6 +216,17 @@ class BenchRunCfg(BenchPlotSrvCfg):
     render_plotly = param.Boolean(
         True,
         doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probalby stop working.",
+    )
+
+    level = param.Integer(
+        default=1,
+        bounds=[1, 12],
+        doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
+    )
+
+    run_tag = param.String(
+        default="",
+        doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
 
     @staticmethod
@@ -471,13 +486,19 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-    def get_best_trial_params(self):
-        return self.studies[0].best_trials[0].params
+    def get_best_trial_params(self, canonical=False):
+        out = self.studies[0].best_trials[0].params
+        if canonical:
+            return hmap_canonical_input(out)
+        return out
+
+    def get_best_holomap(self):
+        return self.hmap[self.get_best_trial_params(True)]
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def get_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+    def to_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
@@ -500,32 +521,35 @@ class BenchCfg(BenchRunCfg):
         return hvds
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
-        return self.get_hv_dataset(reduce).to(hv_type, **kwargs)
+        return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Curve)
         if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
     def to_error_bar(self) -> hv.Bars:
-        return self.get_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
+        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
 
     def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Points)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self) -> hv.Scatter:
-        ds = self.get_hv_dataset(ReduceType.NONE)
+    def to_scatter(self):
+        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+
+    def to_scatter_jitter(self) -> hv.Scatter:
+        ds = self.to_hv_dataset(ReduceType.NONE)
         pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
         return pt
 
     def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
-        ds = self.get_hv_dataset(reduce)
+        ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
@@ -562,6 +586,9 @@ class BenchCfg(BenchRunCfg):
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)
 
+    def to_table(self):
+        return self.to(hv.Table, ReduceType.SQUEEZE)
+
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
@@ -571,7 +598,9 @@ class BenchCfg(BenchRunCfg):
         Returns:
             pn.pane.Markdown: _description_
         """
-        return pn.pane.Markdown(describe_benchmark(self), label=self.bench_name)
+        return pn.pane.Markdown(
+            describe_benchmark(self, self.summarise_constant_inputs), label=self.bench_name
+        )
 
     def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
@@ -585,8 +614,20 @@ class BenchCfg(BenchRunCfg):
             col.append(self.describe_sweep())
         return col
 
+    def to_optuna(self):
+        from bencher.optuna_conversions import collect_optuna_plots
 
-def describe_benchmark(bench_cfg: BenchCfg) -> str:
+        return collect_optuna_plots(self)
+
+    def optuna_targets(self) -> List[str]:
+        target_names = []
+        for rv in self.result_vars:
+            if rv.direction != OptDir.none:
+                target_names.append(rv.name)
+        return target_names
+
+
+def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
     """Generate a string summary of the inputs and results from a BenchCfg
 
     Args:
@@ -595,13 +636,13 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     Returns:
         str: summary of BenchCfg
     """
-    benchmark_sampling_str = ["````text"]
+    benchmark_sampling_str = ["```text"]
     benchmark_sampling_str.append("")
     benchmark_sampling_str.append("Input Variables:")
     for iv in bench_cfg.input_vars:
         benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
 
-    if bench_cfg.const_vars:
+    if bench_cfg.const_vars and (bench_cfg.summarise_constant_inputs or summarise_constant_inputs):
         benchmark_sampling_str.append("\nConstants:")
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
@@ -621,7 +662,7 @@ def describe_benchmark(bench_cfg: BenchCfg) -> str:
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
 
-    benchmark_sampling_str.append("````")
+    benchmark_sampling_str.append("```")
 
     benchmark_sampling_str = "\n".join(benchmark_sampling_str)
     return benchmark_sampling_str

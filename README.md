@@ -1,5 +1,5 @@
 # Bencher
-
+ 
 ## Continuous Integration Status
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
@@ -42,3 +42,4 @@ Bencher is designed to work with stochastic pure functions with no side effects.
         store the results using the input hash as a key
     deduce the type of plot based on the input types
     return data and plot
+    

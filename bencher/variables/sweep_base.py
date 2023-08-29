@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List, Any, Tuple
 from copy import deepcopy
 
+import numpy as np
 import param
 from param import Parameterized
 import holoviews as hv
@@ -108,27 +109,30 @@ class SweepBase(param.Parameter):
             hv.Dimension:
         """
         name_tuple = (self.name, self.name)
+
+        params = {}
         if hasattr(self, "bounds"):
             if compute_values:
-                return hv.Dimension(
-                    name_tuple,
-                    range=tuple(self.bounds),
-                    unit=self.units,
-                    values=self.values(debug),
-                )
+                params["values"] = self.values(debug)
+                # params["range"] = tuple(self.bounds)
+            else:
+                params["range"] = tuple(self.bounds)
+                params["default"] = self.default
 
-            return hv.Dimension(
-                name_tuple,
-                range=tuple(self.bounds),
-                unit=self.units,
-                default=self.default,
-            )
-        return hv.Dimension(
-            name_tuple,
-            unit=self.units,  # pylint: disable=no-member
-            values=self.values(debug),
-            default=self.default,
-        )
+        else:
+            params["values"] = self.values(debug)
+
+        return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
+
+    def indices_to_samples(self, desires_num_samples, sample_values):
+        indices = [
+            int(i) for i in np.linspace(0, len(sample_values) - 1, desires_num_samples, dtype=int)
+        ]
+
+        if len(indices) > len(sample_values):
+            return sample_values
+
+        return [sample_values[i] for i in indices]
 
     def with_samples(self, samples: int) -> SweepBase:
         output = deepcopy(self)
@@ -139,7 +143,10 @@ class SweepBase(param.Parameter):
     def with_sample_values(self, sample_values: int) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
-        output.sample_values = sample_values  # pylint: disable = attribute-defined-outside-init
+        try:
+            output.sample_values = sample_values  # pylint: disable = attribute-defined-outside-init
+        except AttributeError:
+            output.objects = sample_values  # pylint: disable = attribute-defined-outside-init
         return output
 
     def with_const(self, const_value: Any) -> Tuple[SweepBase, Any]:
@@ -152,3 +159,9 @@ class SweepBase(param.Parameter):
             Tuple[SweepBase, Any]: A tuple containing the new instance of SweepBase and the constant value.
         """
         return (deepcopy(self), const_value)
+
+    def with_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
+        assert level >= 1
+        # TODO work out if the order can be returned in level order always
+        samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
+        return self.with_samples(samples[min(max_level, level)])

@@ -2,27 +2,31 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from param import Boolean, Integer, Number, Selector
+from param import Integer, Number, Selector
 from bencher.variables.sweep_base import SweepBase, shared_slots
 
 # pylint: disable=super-init-not-called
 
 
-class BoolSweep(SweepBase, Boolean):
+class BoolSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Boolean.__init__(self, **params)
+        Selector.__init__(self, **params)
         self.units = units
+        self.objects = [
+            True,
+            False,
+        ]
         if samples is None:
             self.samples = 2
         self.samples_debug = samples_debug
 
-    def values(self, debug=False) -> List[bool]:  # pylint disable=unused-argument
+    def values(self, debug=False) -> List[bool]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return [True, False]
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class StringSweep(SweepBase, Selector):
@@ -48,7 +52,7 @@ class StringSweep(SweepBase, Selector):
 
     def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.objects
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class EnumSweep(SweepBase, Selector):
@@ -60,7 +64,7 @@ class EnumSweep(SweepBase, Selector):
         self, enum_type: Enum | List[Enum], units="ul", samples=None, samples_debug=2, **params
     ):
         # The enum can either be an Enum type or a list of enums
-        list_of_enums = type(enum_type) is list
+        list_of_enums = isinstance(enum_type, list)
         if list_of_enums:
             selector_list = enum_type  # already a list of enums
         else:
@@ -78,11 +82,7 @@ class EnumSweep(SweepBase, Selector):
 
     def values(self, debug=False) -> List[Enum]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        if debug:
-            outputs = [self.objects[0], self.objects[-1]]
-        else:
-            outputs = self.objects
-        return outputs
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class IntSweep(SweepBase, Integer):
@@ -111,22 +111,13 @@ class IntSweep(SweepBase, Integer):
 
     def values(self, debug=False) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
-        samps = self.samples_debug if debug else self.samples
+        sample_values = (
+            self.sample_values
+            if self.sample_values is not None
+            else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
+        )
 
-        if self.sample_values is None:
-            return [
-                int(i)
-                for i in np.linspace(
-                    self.bounds[0], self.bounds[1], samps, endpoint=True, dtype=int
-                )
-            ]
-        if debug:
-            indices = [
-                int(i)
-                for i in np.linspace(0, len(self.sample_values) - 1, self.samples_debug, dtype=int)
-            ]
-            return [self.sample_values[i] for i in indices]
-        return self.sample_values
+        return self.indices_to_samples(self.samples_debug if debug else self.samples, sample_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):

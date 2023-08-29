@@ -3,6 +3,8 @@ import xarray as xr
 from sortedcontainers import SortedDict
 import hashlib
 import re
+import math
+from colorsys import hsv_to_rgb
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -78,3 +80,8 @@ def un_camel(camel: str) -> str:
     """
 
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
+
+
+def int_to_col(intVal, sat=0.5, val=0.95):
+    golden_ratio_conjugate = (1 + math.sqrt(5)) / 2
+    return hsv_to_rgb(intVal * golden_ratio_conjugate, sat, val)

@@ -1,7 +1,9 @@
 import unittest
 
-from bencher.example.benchmark_data import AllSweepVars
+
+from bencher.example.benchmark_data import AllSweepVars, PostprocessFn
 import bencher as bch
+from hypothesis import given, strategies as st
 
 
 class TestSweepBase(unittest.TestCase):
@@ -99,6 +101,52 @@ class TestSweepBase(unittest.TestCase):
         defaults = AllSweepVars.param.var_float.values(False)
         self.assertEqual(defaults[9], 10)
 
+        vals = AllSweepVars.param.var_enum.with_sample_values([PostprocessFn.negate]).values(False)
+        self.assertEqual(len(vals), 1)
+        self.assertEqual(vals[0], PostprocessFn.negate)
+
+    def test_bool_as_dim(self):
+        res = AllSweepVars.param.var_bool.as_dim(True)
+
+        self.assertSequenceEqual(res.values, [True, False])
+
+        res = AllSweepVars.param.var_bool.as_dim(False)
+        self.assertSequenceEqual(res.values, [True, False])
+
+    def test_float_as_dim(self):
+        res = AllSweepVars.param.var_float.as_dim(True)
+
+        self.assertListEqual(res.values, list(AllSweepVars.param.var_float.values()))
+
+        res = AllSweepVars.param.var_float.as_dim(False)
+        self.assertSequenceEqual(res.range, (0, 10))
+
+    def sweep_up_to(self, var, var_type, level=7):
+        res_old = var.with_level(1)
+        for i in range(2, level):
+            res = var.with_level(i)
+            new_vals = res.values()
+            print(res_old.values(), new_vals)
+            for i in res_old.values():
+                self.assertTrue(isinstance(i, var_type))
+                self.assertTrue(i in new_vals)
+                for n in new_vals:
+                    print("\t", i == n)
+            res_old = res
+
+    @given(st.floats(min_value=0.1, allow_nan=False, allow_infinity=False))
+    def test_levels_float(self, upper) -> None:
+        var_float = bch.FloatSweep(bounds=(0, upper))
+
+        self.sweep_up_to(var_float, float)
+
+    @given(st.integers(min_value=0, max_value=1000), st.integers(min_value=1, max_value=25))
+    def test_levels_int(self, start, var_range):
+        var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
+        self.sweep_up_to(var_int, int, level=7)
+
 
 if __name__ == "__main__":
-    TestSweepBase().test_override_defaults()
+    # TestSweepBase().test_override_defaults()
+
+    TestSweepBase().test_levels_int(0, 10)

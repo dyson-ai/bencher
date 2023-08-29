@@ -10,7 +10,7 @@ class TestBenchPlotServer(unittest.TestCase):
     # Tests that the plot server loads previously calculated benchmark data from the database
     def test_plot_server_load_data_from_database(self):
         sbc = SimpleBenchClass()
-        bench = bch.Bench("test_bench_server", sbc.call)
+        bench = bch.Bench("test_bench_server", sbc)
         bench.plot_sweep(
             title="test_bench_server",
             input_vars=[sbc.param.var1],

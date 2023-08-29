@@ -21,13 +21,23 @@ def bench_function(cfg: Cfg):
     return {"result": float(str(cfg.enum1)[-1])}
 
 
+def print_assert_equal(msg, first, second):
+    print(f"{msg} {first}=={second}")
+    assert first == second
+
+
 def assert_call_counts(bencher, run_cfg, wrapper_calls=-1, fn_calls=-1, cache_calls=-1):
-    print("worker wrapper call count", bencher.worker_wrapper_call_count)
-    print("worker fn call count", bencher.worker_fn_call_count)
-    print("worker cache call count", bencher.worker_cache_call_count)
-    assert bencher.worker_wrapper_call_count == wrapper_calls * run_cfg.repeats
-    assert bencher.worker_fn_call_count == fn_calls * run_cfg.repeats
-    assert bencher.worker_cache_call_count == cache_calls * run_cfg.repeats
+    print_assert_equal(
+        "worker wrapper call count",
+        bencher.worker_wrapper_call_count,
+        wrapper_calls * run_cfg.repeats,
+    )
+    print_assert_equal(
+        "worker fn call count", bencher.worker_fn_call_count, fn_calls * run_cfg.repeats
+    )
+    print_assert_equal(
+        "worker cache call count", bencher.worker_cache_call_count, cache_calls * run_cfg.repeats
+    )
 
 
 def example_cache_context() -> bch.Bench:

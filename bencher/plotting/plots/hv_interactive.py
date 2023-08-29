@@ -46,7 +46,7 @@ class HvInteractive:
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            pt = pl_in.bench_cfg.to_scatter()
+            pt = pl_in.bench_cfg.to_scatter_jitter()
             # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
             return pn.Column(pt, name=PlotTypes.scatter_hv)
 
@@ -81,7 +81,6 @@ class HvInteractive:
             # print(pl_in.bench_cfg.get_hv_dataset())
             # print(pl_in.bench_cfg.get_dataframe(False))
             # return pn.Column(pl_in.bench_cfg.get_hv_dataset().to(hv.Table))
-            print(pl_in.bench_cfg.get_hv_dataset())
             return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
         return None
 
