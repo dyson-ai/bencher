@@ -796,7 +796,8 @@ class Bench(BenchPlotServer):
         if in_html_folder:
             base_path /= "html"
 
-        os.makedirs(base_path, exist_ok=True)
+        logging.info(f"creating dir {base_path.absolute()}")
+        os.makedirs(base_path.absolute(), exist_ok=True)
 
         base_path = base_path / filename
 
@@ -805,7 +806,7 @@ class Bench(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, **kwargs)
         return base_path
 
-    def publish(self, remote_callback: Callable, debug: bool = True) -> str:
+    def publish(self, remote_callback: Callable, branch_name=None, debug: bool = True) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         def publish_args(branch_name) -> Tuple[str, str]:
@@ -822,7 +823,9 @@ class Bench(BenchPlotServer):
             str: the url of the published report
         """
 
-        branch_name = self.bench_name + "_debug" if debug else ""
+        if branch_name is None:
+            branch_name = self.bench_name
+        branch_name += "_debug" if debug else ""
 
         remote, publish_url = remote_callback(branch_name)
 
