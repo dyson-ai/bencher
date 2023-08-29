@@ -121,8 +121,8 @@ class TestSweepBase(unittest.TestCase):
         self.assertSequenceEqual(res.range, (0, 10))
 
     def sweep_up_to(self, var, var_type, level=7):
-        res_old = var.with_level(0)
-        for i in range(1, level):
+        res_old = var.with_level(1)
+        for i in range(2, level):
             res = var.with_level(i)
             new_vals = res.values()
             print(res_old.values(), new_vals)
