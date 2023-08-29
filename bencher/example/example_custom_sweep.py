@@ -14,7 +14,7 @@ class Square(bch.ParametrizedSweep):
 
     result = bch.ResultVar("ul", doc="Square of x")
 
-    def call(self, **kwargs) -> dict:
+    def __call__(self, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         self.result = self.x * self.x * self.y * 3
         return self.get_results_values_as_dict()
