@@ -30,6 +30,12 @@ class BenchRunner:
         run_cfg_out.level = level
         return run_cfg_out
 
+    @staticmethod
+    def from_parametrized_sweep(
+        class_instance: ParametrizedSweep, run_cfg: BenchRunCfg = BenchRunCfg()
+    ):
+        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
+
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
 
@@ -64,3 +70,6 @@ class BenchRunner:
                     res.publish(self.publisher, debug)
                 results.append(res)
         return results
+
+    # def show(self)
+    # self.bench_fns[]
