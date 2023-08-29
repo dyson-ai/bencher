@@ -79,5 +79,4 @@ exclude_also = [
   "raise AssertionError",
   "raise NotImplementedError",
   "if __name__ == .__main__.:",
-  "...",
 ]
