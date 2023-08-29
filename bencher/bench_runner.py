@@ -15,7 +15,6 @@ class Benchable(Protocol):
 class BenchRunner:
     def __init__(self, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
-
         self.bench_fns = []
         self.publisher = publisher
 
@@ -30,14 +29,13 @@ class BenchRunner:
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
 
-    def add_bench(self, class_instance: ParametrizedSweep):
-        def cb(run_cfg: BenchRunCfg):
+    def add_bench(self, class_instance: ParametrizedSweep) -> None:
+        def cb(run_cfg: BenchRunCfg) -> BenchCfg:
             bench = Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)
 
-    # def to_bench(class_instance) -> bch.Bench:
 
     def run(
         self,
