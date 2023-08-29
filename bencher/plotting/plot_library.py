@@ -62,15 +62,7 @@ class PlotLibrary:
 
         return plt_col
 
-    # @staticmethod
-    # def no_plotly() -> PlotCollection:
-    #     """Display only table summaries of the data
-
-    #     Returns:
-    #         PlotCollection: Only table plots
-    #     """
-    #     defaults = PlotLibrary.default()
-    #     return defaults.remove(PlotTypes.surface_hv).remove(PlotTypes.volume_plotly)
+   
 
     @staticmethod
     def with_plotly() -> PlotCollection:

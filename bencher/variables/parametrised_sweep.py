@@ -7,10 +7,6 @@ from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec
 from functools import partial
 
-# from bencher.bencher import Bench
-# from bencher.bench_cfg import BenchRunCfg
-
-# from bencher.bench_runner import BenchRunner
 
 
 class ParametrizedSweep(Parameterized):
@@ -111,17 +107,12 @@ class ParametrizedSweep(Parameterized):
 
     @classmethod
     def get_input_defaults(cls, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
-        # print("class",cls)
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
         assert isinstance(override_defaults, list)
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
-        # print(cls.param.values())
-        # print(inp)
-        # print(inp[0].default)
-        # defaults = cls.param.defaults()
         return override_defaults + [(i, i.default) for i in inp]
 
     @classmethod
@@ -181,6 +172,3 @@ class ParametrizedSweep(Parameterized):
 
     def plot_hmap(self, **kwargs):
         return self.call(**kwargs)["hmap"]
-
-    # def bench(self, run_cfg: BenchRunCfg):
-    #     return Bench(f"benchmark_{self.name}", self)

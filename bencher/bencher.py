@@ -238,8 +238,6 @@ class Bench(BenchPlotServer):
                     logging.info(f"result var: {r.name}")
             if const_vars is None:
                 const_vars = self.worker_class_instance.get_input_defaults()
-            # if description is None:
-            # description = self.worker_class.__doc__
         else:
             if input_vars is None:
                 input_vars = []
