@@ -67,7 +67,7 @@ class BenchRunner:
                 logging.info(f"Running {bch_fn} at level: {lvl}")
                 res = bch_fn(run_lvl)
                 if publish and self.publisher is not None:
-                    res.publish(self.publisher, debug)
+                    res.publish(remote_callback=self.publisher, debug=debug)
                 results.append(res)
         return results
 
