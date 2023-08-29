@@ -1,5 +1,5 @@
 from typing import Protocol, Callable
-
+import logging
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
@@ -36,7 +36,6 @@ class BenchRunner:
 
         self.add_run(cb)
 
-
     def run(
         self,
         min_level: int = 1,
@@ -55,6 +54,7 @@ class BenchRunner:
             for bch_fn in self.bench_fns:
                 run_lvl = deepcopy(run_run_cfg)
                 run_lvl.level = lvl
+                logging.info(f"Running {bch_fn} at level: {lvl}")
                 res = bch_fn(run_lvl)
                 if publish and self.publisher is not None:
                     res.publish(self.publisher, debug)
