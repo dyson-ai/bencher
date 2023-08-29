@@ -8,7 +8,6 @@ from bencher.variables.results import ResultVar, ResultVec
 from functools import partial
 
 
-
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 

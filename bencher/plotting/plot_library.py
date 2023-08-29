@@ -62,8 +62,6 @@ class PlotLibrary:
 
         return plt_col
 
-   
-
     @staticmethod
     def with_plotly() -> PlotCollection:
         """Display only table summaries of the data
