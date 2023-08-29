@@ -257,9 +257,10 @@ class Bench(BenchPlotServer):
                 logging.info("Copy run cfg from bench class")
         if run_cfg.only_plot:
             run_cfg.use_cache = True
+
         self.last_run_cfg = run_cfg
 
-        if run_cfg.level > 0:
+        if run_cfg.level > 1:
             inputs = []
             for i in input_vars:
                 inputs.append(i.with_level(run_cfg.level))
