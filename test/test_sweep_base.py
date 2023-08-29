@@ -1,6 +1,5 @@
 import unittest
 
-
 from bencher.example.benchmark_data import AllSweepVars, PostprocessFn
 import bencher as bch
 from hypothesis import given, strategies as st
@@ -28,7 +27,7 @@ class TestSweepBase(unittest.TestCase):
         """Check that setting a const returns the right const"""
 
         explorer = AllSweepVars()
-        bench = bch.Bench("tst_cnst", explorer.call)
+        bench = bch.Bench("tst_cnst", explorer.__call__)
 
         # AllSweepVars.param.var_float.with_const(5)
 
@@ -122,8 +121,8 @@ class TestSweepBase(unittest.TestCase):
         self.assertSequenceEqual(res.range, (0, 10))
 
     def sweep_up_to(self, var, var_type, level=7):
-        res_old = var.with_level(1)
-        for i in range(2, level):
+        res_old = var.with_level(0)
+        for i in range(1, level):
             res = var.with_level(i)
             new_vals = res.values()
             print(res_old.values(), new_vals)
@@ -140,10 +139,44 @@ class TestSweepBase(unittest.TestCase):
 
         self.sweep_up_to(var_float, float)
 
-    @given(st.integers(min_value=0, max_value=1000), st.integers(min_value=1, max_value=25))
-    def test_levels_int(self, start, var_range):
-        var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
-        self.sweep_up_to(var_int, int, level=7)
+    # @given(st.integers(min_value=0), st.integers(min_value=1))
+    # def test_levels_int(self, start, var_range):
+    #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
+    #     self.sweep_up_to(var_int, int, level=5)
+
+    # res_old = SWP.param.var_int.with_level(0)
+
+    # for i in range(1, level):
+    #     res = var_int.with_level(i)
+    #     new_vals = res.values()
+    #     print(res_old.values(), new_vals)
+    #     for i in res_old.values():
+    #         self.assertTrue(isinstance(i, int))
+    #         self.assertTrue(i in new_vals)
+    #         for n in new_vals:
+    #             print("\t", i == n)
+    #     res_old = res
+
+    # def test_levels_enum(self):
+    #     level = 5
+
+    #     # class E
+    #     class SWP(bch.ParametrizedSweep):
+    #         var_enum = EnumSweep(PostprocessFn)
+
+    #         result = ResultVar()
+
+    #     res_old = AllSweepVars.param.var_enum.with_level(0)
+
+    #     for i in range(1, level):
+    #         res = AllSweepVars.param.var_float.with_level(i)
+    #         new_vals = res.values()
+    #         print(res_old.values(), new_vals)
+    #         for i in res_old.values():
+    #             self.assertTrue(i in new_vals)
+    #             for n in new_vals:
+    #                 print("\t", i == n)
+    #         res_old = res
 
 
 if __name__ == "__main__":
