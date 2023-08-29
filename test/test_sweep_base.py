@@ -143,7 +143,6 @@ class TestSweepBase(unittest.TestCase):
     #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
     #     self.sweep_up_to(var_int, int, level=5)
 
-  
 
 if __name__ == "__main__":
     # TestSweepBase().test_override_defaults()
