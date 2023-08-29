@@ -143,7 +143,7 @@ class TestSweepBase(unittest.TestCase):
     @given(st.integers(min_value=0, max_value=1000), st.integers(min_value=1, max_value=25))
     def test_levels_int(self, start, var_range):
         var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
-        self.sweep_up_to(var_int, int, level=7) 
+        self.sweep_up_to(var_int, int, level=7)
 
 
 if __name__ == "__main__":
