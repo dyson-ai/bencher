@@ -23,7 +23,7 @@ class BenchRunner:
             self.add_bench(bench_class)
 
     @staticmethod
-    def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(),level: int = 1 ) -> BenchRunCfg:
+    def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
         run_cfg_out = deepcopy(run_cfg)
         run_cfg_out.use_sample_cache = True
         run_cfg_out.only_hash_tag = True
@@ -42,7 +42,7 @@ class BenchRunner:
 
     def run(
         self,
-        min_level: int = 1,
+        min_level: int = 2,
         max_level: int = 6,
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
