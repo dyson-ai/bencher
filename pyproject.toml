@@ -9,9 +9,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 
-dependencies = [
-  "numpy>=1.2,<=1.25.2"
-]
+dependencies = ["numpy>=1.2,<=1.25.2"]
 
 [project.optional-dependencies]
 test = [
@@ -43,7 +41,7 @@ build-backend = "flit_core.buildapi"
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy"]
-jobs = 16                                    #detect number of cores
+jobs = 16                           #detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
@@ -81,5 +79,4 @@ exclude_also = [
   "raise AssertionError",
   "raise NotImplementedError",
   "if __name__ == .__main__.:",
-  "..."
 ]
