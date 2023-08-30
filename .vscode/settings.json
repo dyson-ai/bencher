@@ -6,4 +6,7 @@
 	"[python]": {
 		"editor.defaultFormatter": "ms-python.black-formatter"
 	},
+	"files.exclude": {
+		"**/__pycache__/**": true
+	},
 }
