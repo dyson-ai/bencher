@@ -44,8 +44,8 @@ class TestBenchRunner(unittest.TestCase):
         results = bench_runner.run()
         self.assertEqual(results[0].run_tag, "1")
 
-    def test_benchrunner_level_0(self):
-        results = bch.BenchRunner(AllSweepVars()).run()
+    def test_benchrunner_level_1(self):
+        results = bch.BenchRunner(AllSweepVars()).run(min_level=1)
         ds = results[0].ds.to_dataframe()
         self.assertEqual(ds.shape[0], 1)
 
