@@ -109,7 +109,7 @@
 			"type": "promptString",
 			"id": "new_project_name",
 			"description": "The new name of the project",
-			"default": "project_template"
+			"default": "python_template"
 		}
 	]
 }
