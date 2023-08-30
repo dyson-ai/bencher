@@ -260,7 +260,7 @@ class Bench(BenchPlotServer):
 
         self.last_run_cfg = run_cfg
 
-        if run_cfg.level > 1:
+        if run_cfg.level > 0:
             inputs = []
             for i in input_vars:
                 inputs.append(i.with_level(run_cfg.level))

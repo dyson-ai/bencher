@@ -122,7 +122,7 @@ class AllSweepVars(ParametrizedSweep):
 
     result = ResultVar()
 
-    def call(self, **kwargs) -> dict:
+    def __call__(self, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         self.result = self.var_float + self.var_int
         return self.get_results_values_as_dict()
