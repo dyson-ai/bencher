@@ -788,7 +788,7 @@ class Bench(BenchPlotServer):
         Returns:
             Path: save path
         """
-        return self.save("","index.html",False)        
+        return self.save("", "index.html", False)
 
     def save(
         self,

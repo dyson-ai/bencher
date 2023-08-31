@@ -88,6 +88,6 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    bench =example_floats(bch.BenchRunCfg(repeats=10))
+    bench = example_floats(bch.BenchRunCfg(repeats=10))
     bench.save_index()
     bench.show()
