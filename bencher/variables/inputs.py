@@ -145,8 +145,10 @@ class FloatSweep(SweepBase, Number):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=10, samples_debug=2, sample_values=None,step=None, **params):
-        Number.__init__(self,step=step, **params)
+    def __init__(
+        self, units="ul", samples=10, samples_debug=2, sample_values=None, step=None, **params
+    ):
+        Number.__init__(self, step=step, **params)
         self.units = units
         self.samples_debug = samples_debug
 
@@ -166,7 +168,7 @@ class FloatSweep(SweepBase, Number):
             if self.step is None:
                 return np.linspace(self.bounds[0], self.bounds[1], samps)
             else:
-                return np.arange(self.bounds[0],self.bounds[1],self.step)
+                return np.arange(self.bounds[0], self.bounds[1], self.step)
         if debug:
             indices = [
                 int(i)
