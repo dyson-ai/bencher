@@ -114,14 +114,12 @@ class TestVarSweeps(unittest.TestCase):
             enum_sweep.with_level(5).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
         )
 
-    def test_bool_default(self) ->None:
-    
+    def test_bool_default(self) -> None:
         bool_sweep_true = BoolSweep(default=True)
         self.assertTrue(bool_sweep_true.default)
 
         bool_sweep_false = BoolSweep(default=False)
         self.assertFalse(bool_sweep_false.default)
-
 
     def test_bool_sweep_level(self):
         bool_sweep = BoolSweep()

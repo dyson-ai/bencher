@@ -5,6 +5,7 @@ import param
 import holoviews as hv
 import unittest
 
+
 class TestParametrizedSweep(unittest.TestCase):
     # Tests that the method returns an empty list when given a single input
 
@@ -56,15 +57,15 @@ class TestParametrizedSweep(unittest.TestCase):
         dm = p.to_dynamic_map()
         assert isinstance(dm, hv.DynamicMap)
 
-
     def test_bool_default(self) -> None:
-
         class BoolDefaultFalse(ParametrizedSweep):
             bool_var = BoolSweep(default=False)
+
         instance = BoolDefaultFalse()
         self.assertFalse(instance.bool_var)
 
         class BoolDefaultTrue(ParametrizedSweep):
             bool_var = BoolSweep(default=True)
+
         instance = BoolDefaultTrue()
         self.assertTrue(instance.bool_var)
