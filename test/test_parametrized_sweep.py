@@ -62,10 +62,13 @@ class TestParametrizedSweep(unittest.TestCase):
             bool_var = BoolSweep(default=False)
 
         instance = BoolDefaultFalse()
-        self.assertFalse(instance.bool_var)
+        self.assertEqual(instance.bool_var , False)
+        dims = BoolDefaultFalse.get_inputs_as_dims()
+
+        self.assertListEqual(dims[0].values, [False, True])
 
         class BoolDefaultTrue(ParametrizedSweep):
             bool_var = BoolSweep(default=True)
 
         instance = BoolDefaultTrue()
-        self.assertTrue(instance.bool_var)
+        self.assertEqual(instance.bool_var,True)

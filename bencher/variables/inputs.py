@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Any
 
 import numpy as np
 from param import Integer, Number, Selector
@@ -8,25 +8,37 @@ from bencher.variables.sweep_base import SweepBase, shared_slots
 # pylint: disable=super-init-not-called
 
 
-class BoolSweep(SweepBase, Selector):
+class SweepSelector(SweepBase, Selector):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
-    def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
+    def __init__(
+        self, units: str = "ul", samples: int = None, samples_debug: int = 2 ,**params
+    ):
         Selector.__init__(self, **params)
         self.units = units
-        self.objects = [
-            True,
-            False,
-        ]
         if samples is None:
             self.samples = 2
-        self.samples_debug = samples_debug
+        self.samples_debug = min(self.samples, samples_debug)
 
-    def values(self, debug=False) -> List[bool]:
+
+    def values(self, debug=False) -> List[Any]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
+
+
+class BoolSweep(SweepSelector):
+    """A class to reprsent a parameter sweep of bools"""
+
+    def __init__(
+        self, units: str = "ul", samples: int = None, samples_debug: int = 2, default=True, **params
+    ):
+        SweepSelector.__init__(self,units=units,samples=samples,samples_debug=samples_debug,default=default, **params)
+        if default:
+            self.objects = [True, False]
+        else:
+            self.objects = [False, True]
 
 
 class StringSweep(SweepBase, Selector):
@@ -49,10 +61,6 @@ class StringSweep(SweepBase, Selector):
         else:
             self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
-
-    def values(self, debug=False) -> List[str]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
 
 
 class EnumSweep(SweepBase, Selector):
