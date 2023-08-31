@@ -59,7 +59,7 @@
 			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
 			"type": "shell",
 			"dependsOn": [
-				"git merge origin main",
+				"git pull origin main",
 				"check CI",
 				"autoformat and commit",
 				"git push"
@@ -67,10 +67,10 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "git merge origin main",
+			"label": "git pull origin main",
 			"detail": "merge changes from master into the current branch and push",
 			"type": "shell",
-			"command": "git merge origin main"
+			"command": "git pull origin main"
 		},
 		{
 			"label": "git push",
@@ -79,11 +79,11 @@
 			"command": "git push"
 		},
 		{
-			"label": "git merge origin main and push",
+			"label": "git pull origin main and push",
 			"detail": "merge changes from master into the current branch and push",
 			"type": "shell",
 			"dependsOn": [
-				"git merge origin main",
+				"git pull origin main",
 				"git push"
 			],
 			"dependsOrder": "sequence",
