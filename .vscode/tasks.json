@@ -14,7 +14,7 @@
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'autoformatted and ruff --fix all code'"
+			"command": "git commit -a -m 'autoformatted and ruff --fix all code' || true"
 		},
 		{
 			"label": "pylint",
