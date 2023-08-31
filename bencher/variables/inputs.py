@@ -167,8 +167,8 @@ class FloatSweep(SweepBase, Number):
         if self.sample_values is None:
             if self.step is None:
                 return np.linspace(self.bounds[0], self.bounds[1], samps)
-            else:
-                return np.arange(self.bounds[0], self.bounds[1], self.step)
+           
+            return np.arange(self.bounds[0], self.bounds[1], self.step)
         if debug:
             indices = [
                 int(i)
