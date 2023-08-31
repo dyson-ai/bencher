@@ -782,13 +782,13 @@ class Bench(BenchPlotServer):
             name = pane.name
         self.pane.append(pn.Column(pane, name=name))
 
-    def save_index(self) -> Path:
+    def save_index(self,directory="",filename="index.html") -> Path:
         """Saves the result to index.html in the root folder so that it can be displayed by github pages.
 
         Returns:
             Path: save path
         """
-        return self.save("", "index.html", False)
+        return self.save(directory, filename, False)
 
     def save(
         self,
