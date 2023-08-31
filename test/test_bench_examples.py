@@ -18,6 +18,8 @@ from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
 
+import os
+
 # shelved
 # from bencher.example.shelved.example_float2D_scatter import example_floats2D_scatter
 # from bencher.example.shelved.example_float3D_cone import example_cone
@@ -41,7 +43,9 @@ class TestBenchExamples(unittest.TestCase):
     def examples_asserts(self, example_result, save=False) -> None:
         self.assertIsNotNone(example_result)
         if save or self.generate_all:
-            example_result.save("bencher/example/html")
+            # example_result.save("bencher/example/html")
+            path = example_result.save_index("cachedir")
+            self.assertTrue(os.path.exists(path))
 
     def test_example_categorical(self) -> None:
         self.examples_asserts(example_categorical(self.create_run_cfg()))
@@ -56,7 +60,7 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(example_pareto(self.create_run_cfg()))
 
     def test_example_simple_cat(self) -> None:
-        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()), save=True)
 
     def test_example_simple_float(self) -> None:
         self.examples_asserts(example_1D_float(self.create_run_cfg()))
