@@ -41,7 +41,8 @@ class TestBenchExamples(unittest.TestCase):
     def examples_asserts(self, example_result, save=False) -> None:
         self.assertIsNotNone(example_result)
         if save or self.generate_all:
-            example_result.save("bencher/example/html")
+            # example_result.save("bencher/example/html")
+            example_result.save_index()
 
     def test_example_categorical(self) -> None:
         self.examples_asserts(example_categorical(self.create_run_cfg()))
@@ -56,7 +57,7 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(example_pareto(self.create_run_cfg()))
 
     def test_example_simple_cat(self) -> None:
-        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()),save=True)
 
     def test_example_simple_float(self) -> None:
         self.examples_asserts(example_1D_float(self.create_run_cfg()))
