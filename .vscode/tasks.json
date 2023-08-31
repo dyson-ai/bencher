@@ -26,12 +26,15 @@
 			"label": "code coverage",
 			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
 			"type": "shell",
-			"command": "coverage run -m pytest; coverage xml -o coverage.xml; coverage report -m"
+			"command": "coverage run -m pytest; coverage xml -o coverage.xml"
 		},
 		{
 			"label": "code coverage report",
 			"detail": "Display the code coverage report. This assumes you have already have a coverage report generated. If not run the code ocverage task",
 			"type": "shell",
+			"dependsOn": [
+				"code coverage"
+			],
 			"command": "coverage report -m"
 		},
 		{
@@ -47,13 +50,49 @@
 			"dependsOn": [
 				"autoformat",
 				"pylint",
-				"code coverage"
+				"code coverage report"
 			],
 			"dependsOrder": "sequence",
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated"
-			}
+		},
+		{
+			"label": "check CI and commit",
+			"detail": "Runs the basic formatting and linting checks performed by CI",
+			"type": "shell",
+			"dependsOn": [
+				"git merge origin main",
+				"check CI",
+				"autoformat and commit",
+				"git push"
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "git merge origin main",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git merge origin main"
+		},
+		{
+			"label": "git push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git push"
+		},
+		{
+			"label": "git merge origin main and push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"dependsOn": [
+				"git merge origin main",
+				"git push"
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "pull updates from template repo",
+			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
+			"type": "shell",
+			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "flit install",
@@ -64,18 +103,6 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
-		},
-		{
-			"label": "git merge origin main and push",
-			"detail": "merge changes from master into the current branch and push",
-			"type": "shell",
-			"command": "git merge origin main && git push"
-		},
-		{
-			"label": "pull updates from template repo",
-			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
-			"type": "shell",
-			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "sa: Set Active File",
