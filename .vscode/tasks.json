@@ -78,6 +78,12 @@
 			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
+			"label": "rename template project name",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
+		},
+		{
 			"label": "sa: Set Active File",
 			"type": "shell",
 			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
@@ -96,6 +102,14 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
+		}
+	],
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "new_project_name",
+			"description": "The new name of the project",
+			"default": "python_template"
 		}
 	]
 }
