@@ -19,6 +19,7 @@ from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
 
 import os
+
 # shelved
 # from bencher.example.shelved.example_float2D_scatter import example_floats2D_scatter
 # from bencher.example.shelved.example_float3D_cone import example_cone
@@ -43,7 +44,7 @@ class TestBenchExamples(unittest.TestCase):
         self.assertIsNotNone(example_result)
         if save or self.generate_all:
             # example_result.save("bencher/example/html")
-            path =example_result.save_index("cachedir")
+            path = example_result.save_index("cachedir")
             self.assertTrue(os.path.exists(path))
 
     def test_example_categorical(self) -> None:
