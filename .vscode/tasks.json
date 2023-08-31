@@ -56,7 +56,7 @@
 		},
 		{
 			"label": "check CI and commit",
-			"detail": "Runs the basic formatting and linting checks performed by CI",
+			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
 			"type": "shell",
 			"dependsOn": [
 				"git merge origin main",
@@ -95,6 +95,12 @@
 			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
+			"label": "rename template project name",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"
@@ -123,6 +129,14 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
+		}
+	],
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "new_project_name",
+			"description": "The new name of the project",
+			"default": "python_template"
 		}
 	]
 }
