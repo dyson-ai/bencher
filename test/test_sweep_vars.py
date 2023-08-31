@@ -75,7 +75,7 @@ class TestVarSweeps(unittest.TestCase):
         )
 
         float_sweep2 = FloatSweep(bounds=[0, 0.9], step=0.1)
-        #note that it does not return the upper bound of 0.9 even though it a multiple of 0.1
+        # note that it does not return the upper bound of 0.9 even though it a multiple of 0.1
         self.assertListEqual(
             list(float_sweep2.values()),
             [
@@ -87,7 +87,7 @@ class TestVarSweeps(unittest.TestCase):
                 0.5,
                 0.6000000000000001,
                 0.7000000000000001,
-                0.8,                
+                0.8,
             ],
         )
 
