@@ -55,6 +55,42 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
         self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
 
+    def test_float_step(self):
+        float_sweep = FloatSweep(bounds=[0, 1], step=0.1)
+
+        self.assertListEqual(
+            list(float_sweep.values()),
+            [
+                0.0,
+                0.1,
+                0.2,
+                0.30000000000000004,
+                0.4,
+                0.5,
+                0.6000000000000001,
+                0.7000000000000001,
+                0.8,
+                0.9,
+            ],
+        )
+
+        float_sweep2 = FloatSweep(bounds=[0, 0.9], step=0.1)
+        # note that it does not return the upper bound of 0.9 even though it a multiple of 0.1
+        self.assertListEqual(
+            list(float_sweep2.values()),
+            [
+                0.0,
+                0.1,
+                0.2,
+                0.30000000000000004,
+                0.4,
+                0.5,
+                0.6000000000000001,
+                0.7000000000000001,
+                0.8,
+            ],
+        )
+
     def test_enum_sweep_level(self):
         class Enum1(StrEnum):
             VAL1 = auto()

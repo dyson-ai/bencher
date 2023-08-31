@@ -145,15 +145,18 @@ class FloatSweep(SweepBase, Number):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=10, samples_debug=2, sample_values=None, **params):
-        Number.__init__(self, **params)
+    def __init__(
+        self, units="ul", samples=10, samples_debug=2, sample_values=None, step=None, **params
+    ):
+        Number.__init__(self, step=step, **params)
         self.units = units
         self.samples_debug = samples_debug
+
+        self.sample_values = sample_values
+
         if sample_values is None:
             self.samples = samples
-            self.sample_values = None
         else:
-            self.sample_values = sample_values
             self.samples = len(self.sample_values)
             if "default" not in params:
                 self.default = sample_values[0]
@@ -162,7 +165,10 @@ class FloatSweep(SweepBase, Number):
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         samps = self.samples_debug if debug else self.samples
         if self.sample_values is None:
-            return np.linspace(self.bounds[0], self.bounds[1], samps)
+            if self.step is None:
+                return np.linspace(self.bounds[0], self.bounds[1], samps)
+
+            return np.arange(self.bounds[0], self.bounds[1], self.step)
         if debug:
             indices = [
                 int(i)
