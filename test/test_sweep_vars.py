@@ -55,6 +55,13 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
         self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
 
+    def test_float_step(self):
+        float_sweep = FloatSweep(bounds=[0, 1],step=0.1)
+
+        self.assertListEqual(list(float_sweep.values()), [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.])
+
+
+
     def test_enum_sweep_level(self):
         class Enum1(StrEnum):
             VAL1 = auto()
@@ -112,3 +119,5 @@ class TestVarSweeps(unittest.TestCase):
         self.assertEqual(int_sweep.default, 0)
         self.assertEqual(len(int_sweep.values(False)), samples)
         self.assertEqual(len(int_sweep.values(True)), samples_debug)
+
+
