@@ -43,3 +43,6 @@ Bencher is designed to work with stochastic pure functions with no side effects.
     deduce the type of plot based on the input types
     return data and plot
     
+### Example Output
+
+https://dyson-ai.github.io/bencher/
