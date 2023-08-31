@@ -123,6 +123,7 @@ class ParametrizedSweep(Parameterized):
         """
         return list(cls.get_input_and_results().results.values())
 
+    @classmethod
     def get_inputs_as_dims(
         self, compute_values=False, remove_dims: str | List[str] = None
     ) -> List[hv.Dimension]:
