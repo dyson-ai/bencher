@@ -425,7 +425,7 @@ class Bench(BenchPlotServer):
             )
 
         for (idx_tuple, function_input_vars), res in zip(func_inputs, results_list):
-            if bench_run_cfg.parallel:
+            if bench_run_cfg.parallel and isinstance(res, concurrent.futures.Future):
                 res = res.result()
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
 
