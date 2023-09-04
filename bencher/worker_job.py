@@ -1,4 +1,4 @@
-from typing import List, NoReturn, Tuple
+from typing import List, Tuple
 from attr import dataclass
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
@@ -19,9 +19,7 @@ class WorkerJob:
     function_input_signature_benchmark_context: str = None
     found_in_cache: bool = False
 
-    def setup_hashes(self) -> NoReturn:
-        print("asldfjaslkfjaslkfjaslkfjasldkfjaslkfjasldkfjsldfj")
-        # exit()
+    def setup_hashes(self) -> None:
         self.function_input = SortedDict(zip(self.dims_name, self.function_input_vars))
 
         if self.constant_inputs is not None:

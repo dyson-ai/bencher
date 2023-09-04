@@ -412,19 +412,18 @@ class Bench(BenchPlotServer):
         jobs = []
 
         for idx_tuple, function_input_vars in func_inputs:
-            jobs.append(
-                WorkerJob(
-                    function_input_vars,
-                    idx_tuple,
-                    dims_name,
-                    constant_inputs,
-                    bench_cfg_sample_hash,
-                    bench_cfg.tag,
-                )
+            job = WorkerJob(
+                function_input_vars,
+                idx_tuple,
+                dims_name,
+                constant_inputs,
+                bench_cfg_sample_hash,
+                bench_cfg.tag,
             )
+            job.setup_hashes()
+            jobs.append(job)
 
         for job in jobs:
-            job.setup_hashes()
             results_list.append(
                 self.call_worker_and_store_results(
                     bench_cfg,
