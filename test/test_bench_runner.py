@@ -49,6 +49,11 @@ class TestBenchRunner(unittest.TestCase):
         ds = results[0].ds.to_dataframe()
         self.assertEqual(ds.shape[0], 1)
 
+    def test_benchrunner_level_1(self):
+        results = bch.BenchRunner(AllSweepVars()).run(level=1)
+        ds = results[0].ds.to_dataframe()
+        self.assertEqual(ds.shape[0], 1)
+
     # # Tests that bch.BenchRunner can run Benchable functions with default configuration (fixed)
     # def test_benchrunner_run_default_configuration_fixed(self):
 
