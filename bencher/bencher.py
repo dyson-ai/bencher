@@ -437,7 +437,6 @@ class Bench(BenchPlotServer):
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-
     def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
@@ -590,7 +589,6 @@ class Bench(BenchPlotServer):
         self.worker_wrapper_call_count += 1
         function_input = SortedDict(zip(dims_name, function_input_vars))
 
-        canonical_input = hmap_canonical_input(function_input)
         if constant_inputs is not None:
             function_input = function_input | constant_inputs
 
