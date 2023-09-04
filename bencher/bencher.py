@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from itertools import product
-from tkinter import N
 from typing import Callable, List
 from copy import deepcopy
 import os
@@ -33,7 +32,6 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import shutil
-from joblib import Parallel, delayed
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -144,7 +142,7 @@ class Bench(BenchPlotServer):
         if remove_plots is not None:
             for i in remove_plots:
                 self.plot_lib.remove(i)
-        self.executor=None
+        self.executor = None
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -419,17 +417,20 @@ class Bench(BenchPlotServer):
         results_list = []
 
         for idx_tuple, function_input_vars in func_inputs:
-
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
             # results_list.append(self.call_worker_and_store_results(*arg))
 
-            results_list.append(self.call_worker_and_store_results( bench_cfg,
+            results_list.append(
+                self.call_worker_and_store_results(
+                    bench_cfg,
                     idx_tuple,
                     function_input_vars,
                     dims_name,
                     constant_inputs,
                     bench_cfg_sample_hash,
-                    bench_run_cfg))
+                    bench_run_cfg,
+                )
+            )
 
             callcount += 1
 
@@ -445,34 +446,33 @@ class Bench(BenchPlotServer):
             #     )
             # )
 
-
-       
             # for arg in args:
-                # print(arg)
+            # print(arg)
             # results_list =Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
             # from itertools import izip
 
             # with concurrent.futures.ProcessPoolExecutor() as executor:
-                # results_list =executor.map(self.call_worker_and_store_results,args)
-                # executor.
-                # for number, prime in zip(PRIMES, executor.map(is_prime, PRIMES)):
+            # results_list =executor.map(self.call_worker_and_store_results,args)
+            # executor.
+            # for number, prime in zip(PRIMES, executor.map(is_prime, PRIMES)):
             # map(self.call_worker_and_store_results,args)
         # /else:
-            # from itertools import starmap
-            # results_list = list(starmap(self.call_worker_and_store_results,args))
+        # from itertools import starmap
+        # results_list = list(starmap(self.call_worker_and_store_results,args))
         # for arg in args:
         #     logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
         #     results_list.append(self.call_worker_and_store_results(*arg))
         #     callcount += 1
 
-
-        # print(results_list)    
-        for (idx_tuple, function_input_vars),res in zip(func_inputs,results_list):
+        # print(results_list)
+        for (idx_tuple, function_input_vars), res in zip(func_inputs, results_list):
             if bench_run_cfg.parallel:
                 r = res.result()
             else:
                 r = res
-            self.store_results(r,bench_cfg,idx_tuple,function_input_vars,dims_name,bench_run_cfg)
+            self.store_results(
+                r, bench_cfg, idx_tuple, function_input_vars, dims_name, bench_run_cfg
+            )
 
         # for res in results_list:
 
@@ -692,14 +692,16 @@ class Bench(BenchPlotServer):
             result = self.worker_wrapper(bench_cfg, function_input)
         return result
         # construct a dict for a holomap
-        
 
-    def store_results(self,result, bench_cfg: BenchCfg,
+    def store_results(
+        self,
+        result,
+        bench_cfg: BenchCfg,
         index_tuple: tuple,
         function_input_vars: List,
         dims_name: List[str],
-        bench_run_cfg: BenchRunCfg) -> None:
-
+        bench_run_cfg: BenchRunCfg,
+    ) -> None:
         function_input = SortedDict(zip(dims_name, function_input_vars))
 
         canonical_input = hmap_canonical_input(function_input)
@@ -744,7 +746,7 @@ class Bench(BenchPlotServer):
 
         if self.worker_input_cfg is None:  # worker takes kwargs
             if self.executor is not None:
-                return self.executor.submit(self.worker,**function_input)
+                return self.executor.submit(self.worker, **function_input)
             return self.worker(**function_input)
 
         # worker takes a parametrised input object
@@ -752,7 +754,7 @@ class Bench(BenchPlotServer):
         for k, v in function_input.items():
             input_cfg.param.set_param(k, v)
         if self.executor is not None:
-                return self.executor.submit(self.worker,input_cfg)
+            return self.executor.submit(self.worker, input_cfg)
         return self.worker(input_cfg)
 
     def clear_tag_from_cache(self, tag: str):
