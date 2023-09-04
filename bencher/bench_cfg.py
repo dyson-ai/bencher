@@ -229,6 +229,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
 
+    parallel = param.Boolean(default=False,doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option")
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments
