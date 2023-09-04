@@ -679,7 +679,6 @@ class Bench(BenchPlotServer):
 
         canonical_input = hmap_canonical_input(worker_job.function_input)
         # construct a dict for a holomap
-        print(type(result), isinstance(result, dict))
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
