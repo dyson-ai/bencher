@@ -89,6 +89,6 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg(repeats=5)
     ex_run_cfg.over_time = True
-    # ex_run_cfg.parallel = True
+    ex_run_cfg.parallel = True
 
     example_categorical(ex_run_cfg).show()
