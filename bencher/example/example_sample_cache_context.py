@@ -50,6 +50,7 @@ def example_cache_context() -> bch.Bench:
     run_cfg.use_sample_cache = True
     run_cfg.only_hash_tag = True
     run_cfg.repeats = 2
+    run_cfg.parallel=False
 
     bencher = bch.Bench("bench_context", bench_function, Cfg)
 
