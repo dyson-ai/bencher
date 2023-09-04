@@ -32,7 +32,7 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import shutil
-from joblib import parallel ,delayed
+from joblib import Parallel ,delayed
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -404,22 +404,31 @@ class Bench(BenchPlotServer):
         callcount = 1
         bench_cfg.hmap_kdims = sorted(dims_name)
 
+        args = []
+
         for idx_tuple, function_input_vars in func_inputs:
-            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-            self.call_worker_and_store_results(
-                bench_cfg,
+            args.append( (bench_cfg,
                 idx_tuple,
                 function_input_vars,
                 dims_name,
                 constant_inputs,
                 bench_cfg_sample_hash,
-                bench_run_cfg,
-            )
-            callcount += 1
+                bench_run_cfg))
+        
+        if bench_run_cfg.parallel:
+            Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
+            # map(self.call_worker_and_store_results,args)
+        else:
+            for arg in args:
+                logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
+                self.call_worker_and_store_results(            *arg            )
+                callcount += 1
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
+
+    # def worker_wrap(self,)
 
     def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
@@ -552,25 +561,7 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
-    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict):
-        self.worker_fn_call_count += 1
-        if not bench_cfg.pass_repeat:
-            function_input.pop("repeat")
-        if "over_time" in function_input:
-            function_input.pop("over_time")
-        if "time_event" in function_input:
-            function_input.pop("time_event")
-
-        if self.worker_input_cfg is None:  # worker takes kwargs
-            return self.worker(**function_input)
-
-        # worker takes a parametrised input object
-        input_cfg = self.worker_input_cfg()
-        for k, v in function_input.items():
-            input_cfg.param.set_param(k, v)
-
-        return self.worker(input_cfg)
-
+   
     def call_worker_and_store_results(
         self,
         bench_cfg: BenchCfg,
@@ -679,6 +670,26 @@ class Bench(BenchPlotServer):
 
             else:
                 raise RuntimeError("Unsupported result type")
+
+    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict):
+        self.worker_fn_call_count += 1
+        if not bench_cfg.pass_repeat:
+            function_input.pop("repeat")
+        if "over_time" in function_input:
+            function_input.pop("over_time")
+        if "time_event" in function_input:
+            function_input.pop("time_event")
+
+        if self.worker_input_cfg is None:  # worker takes kwargs
+            return self.worker(**function_input)
+
+        # worker takes a parametrised input object
+        input_cfg = self.worker_input_cfg()
+        for k, v in function_input.items():
+            input_cfg.param.set_param(k, v)
+
+        return self.worker(input_cfg)
+
 
     def clear_tag_from_cache(self, tag: str):
         """Clear all samples from the cache that match a tag
