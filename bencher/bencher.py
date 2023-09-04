@@ -32,7 +32,7 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import shutil
-
+from joblib import parallel ,delayed
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
