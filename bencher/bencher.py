@@ -404,6 +404,10 @@ class Bench(BenchPlotServer):
         callcount = 1
         bench_cfg.hmap_kdims = sorted(dims_name)
 
+        # function_input = SortedDict(zip(dims_name, function_input_vars))
+
+        # canonical_input = hmap_canonical_input(function_input)
+
         args = []
 
         for idx_tuple, function_input_vars in func_inputs:
@@ -422,13 +426,27 @@ class Bench(BenchPlotServer):
         if bench_run_cfg.parallel:
             for arg in args:
                 print(arg)
-            Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
+            # Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
+            import concurrent.futures
+            with concurrent.futures.ProcessPoolExecutor() as executor:
+                executor.map(self.call_worker_and_store_results,args)
+                # executor.
+                # for number, prime in zip(PRIMES, executor.map(is_prime, PRIMES)):
             # map(self.call_worker_and_store_results,args)
         else:
-            for arg in args:
-                logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-                self.call_worker_and_store_results(*arg)
-                callcount += 1
+            from itertools import starmap
+            results_list = list(starmap(self.call_worker_and_store_results,args))
+            # for arg in args:
+                # logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
+                # self.call_worker_and_store_results(*arg)
+                # callcount += 1
+
+
+        # print(results_list)    
+        for (idx_tuple, function_input_vars),res in zip(func_inputs,results_list):
+            self.store_results(res,bench_cfg,idx_tuple,function_input_vars,dims_name,bench_run_cfg)
+
+        # for res in results_list:
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
@@ -644,8 +662,19 @@ class Bench(BenchPlotServer):
                 self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
         else:
             result = self.worker_wrapper(bench_cfg, function_input)
-
+        return result
         # construct a dict for a holomap
+        
+
+    def store_results(self,result, bench_cfg: BenchCfg,
+        index_tuple: tuple,
+        function_input_vars: List,
+        dims_name: List[str],
+        bench_run_cfg: BenchRunCfg) -> None:
+
+        function_input = SortedDict(zip(dims_name, function_input_vars))
+
+        canonical_input = hmap_canonical_input(function_input)
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
