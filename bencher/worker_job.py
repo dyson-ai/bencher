@@ -28,10 +28,10 @@ class WorkerJob:
         # store a tuple of the inputs as keys for a holomap
         # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
         self.fn_inputs_sorted = list(SortedDict(self.function_input).items())
-        function_input_signature_pure = hash_sha1((self.fn_inputs_sorted, self.tag))
+        self.function_input_signature_pure = hash_sha1((self.fn_inputs_sorted, self.tag))
 
         self.function_input_signature_benchmark_context = hash_sha1(
-            (function_input_signature_pure, self.bench_cfg_sample_hash)
+            (self.function_input_signature_pure, self.bench_cfg_sample_hash)
         )
 
     # def call_worker(self,):
