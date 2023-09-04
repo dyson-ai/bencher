@@ -32,7 +32,7 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import shutil
-from joblib import Parallel ,delayed
+from joblib import Parallel, delayed
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -407,21 +407,25 @@ class Bench(BenchPlotServer):
         args = []
 
         for idx_tuple, function_input_vars in func_inputs:
-            args.append( (bench_cfg,
-                idx_tuple,
-                function_input_vars,
-                dims_name,
-                constant_inputs,
-                bench_cfg_sample_hash,
-                bench_run_cfg))
-        
+            args.append(
+                (
+                    bench_cfg,
+                    idx_tuple,
+                    function_input_vars,
+                    dims_name,
+                    constant_inputs,
+                    bench_cfg_sample_hash,
+                    bench_run_cfg,
+                )
+            )
+
         if bench_run_cfg.parallel:
             Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
             # map(self.call_worker_and_store_results,args)
         else:
             for arg in args:
                 logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-                self.call_worker_and_store_results(            *arg            )
+                self.call_worker_and_store_results(*arg)
                 callcount += 1
 
         for inp in bench_cfg.all_vars:
@@ -561,7 +565,6 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
-   
     def call_worker_and_store_results(
         self,
         bench_cfg: BenchCfg,
@@ -689,7 +692,6 @@ class Bench(BenchPlotServer):
             input_cfg.param.set_param(k, v)
 
         return self.worker(input_cfg)
-
 
     def clear_tag_from_cache(self, tag: str):
         """Clear all samples from the cache that match a tag
