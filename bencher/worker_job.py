@@ -1,7 +1,22 @@
 from typing import List, Tuple
-from attr import dataclass
+from dataclasses import dataclass, field
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
+
+
+# 
+# """
+# create list of jobs
+#     for each job
+#             compute
+#             cache result
+#         append future
+
+#     for future in futures:
+        
+
+    
+# """
 
 
 @dataclass
@@ -18,6 +33,7 @@ class WorkerJob:
     function_input_signature_pure: str = None
     function_input_signature_benchmark_context: str = None
     found_in_cache: bool = False
+    msgs:List[str] = field(default_factory=list)
 
     def setup_hashes(self) -> None:
         self.function_input = SortedDict(zip(self.dims_name, self.function_input_vars))
@@ -35,3 +51,6 @@ class WorkerJob:
         )
 
     # def call_worker(self,):
+
+
+    
