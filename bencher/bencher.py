@@ -420,6 +420,8 @@ class Bench(BenchPlotServer):
             )
 
         if bench_run_cfg.parallel:
+            for arg in args:
+                print(arg)
             Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
             # map(self.call_worker_and_store_results,args)
         else:
