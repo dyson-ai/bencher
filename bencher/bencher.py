@@ -404,26 +404,17 @@ class Bench(BenchPlotServer):
         callcount = 1
         bench_cfg.hmap_kdims = sorted(dims_name)
 
-        # function_input = SortedDict(zip(dims_name, function_input_vars))
-
-        # canonical_input = hmap_canonical_input(function_input)
-
         if bench_run_cfg.parallel:
             import concurrent.futures
 
             self.executor = concurrent.futures.ProcessPoolExecutor()
 
-        args = []
         results_list = []
 
         for idx_tuple, function_input_vars in func_inputs:
-            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-            # results_list.append(self.call_worker_and_store_results(*arg))
-
             results_list.append(
                 self.call_worker_and_store_results(
                     bench_cfg,
-                    idx_tuple,
                     function_input_vars,
                     dims_name,
                     constant_inputs,
@@ -432,55 +423,20 @@ class Bench(BenchPlotServer):
                 )
             )
 
-            callcount += 1
-
-            # args.append(
-            #     (
-            #         bench_cfg,
-            #         idx_tuple,
-            #         function_input_vars,
-            #         dims_name,
-            #         constant_inputs,
-            #         bench_cfg_sample_hash,
-            #         bench_run_cfg,
-            #     )
-            # )
-
-            # for arg in args:
-            # print(arg)
-            # results_list =Parallel(n_jobs=-1)(delayed(self.call_worker_and_store_results)(*arg) for arg in args)
-            # from itertools import izip
-
-            # with concurrent.futures.ProcessPoolExecutor() as executor:
-            # results_list =executor.map(self.call_worker_and_store_results,args)
-            # executor.
-            # for number, prime in zip(PRIMES, executor.map(is_prime, PRIMES)):
-            # map(self.call_worker_and_store_results,args)
-        # /else:
-        # from itertools import starmap
-        # results_list = list(starmap(self.call_worker_and_store_results,args))
-        # for arg in args:
-        #     logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-        #     results_list.append(self.call_worker_and_store_results(*arg))
-        #     callcount += 1
-
-        # print(results_list)
         for (idx_tuple, function_input_vars), res in zip(func_inputs, results_list):
             if bench_run_cfg.parallel:
-                r = res.result()
-            else:
-                r = res
-            self.store_results(
-                r, bench_cfg, idx_tuple, function_input_vars, dims_name, bench_run_cfg
-            )
+                res = res.result()
+            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
 
-        # for res in results_list:
+            self.store_results(
+                res, bench_cfg, idx_tuple, function_input_vars, dims_name, bench_run_cfg
+            )
+            callcount += 1
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-    # def worker_wrap(self,)
 
     def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
@@ -616,7 +572,6 @@ class Bench(BenchPlotServer):
     def call_worker_and_store_results(
         self,
         bench_cfg: BenchCfg,
-        index_tuple: tuple,
         function_input_vars: List,
         dims_name: List[str],
         constant_inputs: dict,
