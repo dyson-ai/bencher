@@ -9,14 +9,12 @@ import panel as pn
 import param
 import xarray as xr
 from diskcache import Cache
-from sortedcontainers import SortedDict
 from contextlib import suppress
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
 
 
-from bencher.variables.sweep_base import hash_sha1
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import ResultVar, ResultVec
@@ -32,6 +30,7 @@ from bencher.optuna_conversions import to_optuna, summarise_study
 from optuna import Study
 from pathlib import Path
 import shutil
+from bencher.worker_job import WorkerJob
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -410,28 +409,37 @@ class Bench(BenchPlotServer):
             executor = concurrent.futures.ProcessPoolExecutor()
 
         results_list = []
+        jobs = []
 
         for idx_tuple, function_input_vars in func_inputs:
-            results_list.append(
-                self.call_worker_and_store_results(
-                    bench_cfg,
+            jobs.append(
+                WorkerJob(
                     function_input_vars,
+                    idx_tuple,
                     dims_name,
                     constant_inputs,
                     bench_cfg_sample_hash,
+                    bench_cfg.tag,
+                )
+            )
+
+        for job in jobs:
+            job.setup_hashes()
+            results_list.append(
+                self.call_worker_and_store_results(
+                    bench_cfg,
+                    job,
                     bench_run_cfg,
                     executor,
                 )
             )
 
-        for (idx_tuple, function_input_vars), res in zip(func_inputs, results_list):
+        for job, res in zip(jobs, results_list):
             if bench_run_cfg.parallel and isinstance(res, concurrent.futures.Future):
                 res = res.result()
             logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
 
-            self.store_results(
-                res, bench_cfg, idx_tuple, function_input_vars, dims_name, bench_run_cfg
-            )
+            self.store_results(res, bench_cfg, job, bench_run_cfg)
             callcount += 1
         if executor is not None:
             executor.shutdown()
@@ -573,10 +581,11 @@ class Bench(BenchPlotServer):
     def call_worker_and_store_results(
         self,
         bench_cfg: BenchCfg,
-        function_input_vars: List,
-        dims_name: List[str],
-        constant_inputs: dict,
-        bench_cfg_sample_hash: str,
+        worker_job: WorkerJob,
+        # function_input_vars: List,
+        # dims_name: List[str],
+        # constant_inputs: dict,
+        # bench_cfg_sample_hash: str,
         bench_run_cfg: BenchRunCfg,
         executor=None,
     ) -> None:
@@ -590,84 +599,93 @@ class Bench(BenchPlotServer):
             constant_inputs (dict): input values to keep constant
         """
         self.worker_wrapper_call_count += 1
-        function_input = SortedDict(zip(dims_name, function_input_vars))
+        # function_input = SortedDict(zip(dims_name, function_input_vars))
 
-        if constant_inputs is not None:
-            function_input = function_input | constant_inputs
+        # if constant_inputs is not None:
+        # function_input = function_input | constant_inputs
 
-        if bench_cfg.print_bench_inputs:
-            logging.info("Bench Inputs:")
-            for k, v in function_input.items():
-                logging.info(f"\t {k}:{v}")
+        # if bench_cfg.print_bench_inputs:
+        # logging.info("Bench Inputs:")
+        # for k, v in function_input.items():
+        # logging.info(f"\t {k}:{v}")
 
         # store a tuple of the inputs as keys for a holomap
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
-            fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_sha1((fn_inputs_sorted, bench_cfg.tag))
+            # fn_inputs_sorted = list(SortedDict(function_input).items())
+            # function_input_signature_pure = hash_sha1((fn_inputs_sorted, bench_cfg.tag))
 
-            function_input_signature_benchmark_context = hash_sha1(
-                (function_input_signature_pure, bench_cfg_sample_hash)
-            )
+            # function_input_signature_benchmark_context = hash_sha1(
+            # (function_input_signature_pure, bench_cfg_sample_hash)
+            # )
             # logging.info(f"inputs: {fn_inputs_sorted}")
             # logging.info(f"pure: {function_input_signature_pure}")
             if (
                 not bench_cfg.overwrite_sample_cache
-                and function_input_signature_benchmark_context in self.sample_cache
+                and worker_job.function_input_signature_benchmark_context in self.sample_cache
             ):
                 logging.info(
-                    f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
+                    f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading..."
                 )
-                result = self.sample_cache[function_input_signature_benchmark_context]
+                result = self.sample_cache[worker_job.function_input_signature_benchmark_context]
+                worker_job.found_in_cache = True
                 self.worker_cache_call_count += 1
             elif (
                 not bench_cfg.overwrite_sample_cache
                 and bench_run_cfg.only_hash_tag
-                and (function_input_signature_pure in self.sample_cache)
+                and (worker_job.function_input_signature_pure in self.sample_cache)
             ):
                 logging.info(
-                    f"Hash: {function_input_signature_benchmark_context} not found in context cache"
+                    f"Hash: {worker_job.function_input_signature_benchmark_context} not found in context cache"
                 )
                 logging.info(
-                    f"Hash: {function_input_signature_pure} was found in the function cache, loading..."
+                    f"Hash: {worker_job.function_input_signature_pure} was found in the function cache, loading..."
                 )
 
-                result = self.sample_cache[function_input_signature_pure]
+                result = self.sample_cache[worker_job.function_input_signature_pure]
+                worker_job.found_in_cache = True
                 self.worker_cache_call_count += 1
             else:
-                logging.info(f"Context not in cache: {function_input_signature_benchmark_context}")
-                logging.info(f"Function inputs not cache: {function_input_signature_pure}")
-                logging.info("Calling benchmark function")
-
-                result = self.worker_wrapper(bench_cfg, function_input, executor)
-                self.sample_cache.set(
-                    function_input_signature_benchmark_context, result, tag=bench_cfg.tag
+                logging.info(
+                    f"Context not in cache: {worker_job.function_input_signature_benchmark_context}"
                 )
-                self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
+                logging.info(
+                    f"Function inputs not cache: {worker_job.function_input_signature_pure}"
+                )
+                logging.info("Calling benchmark function")
+                result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor)
         else:
-            result = self.worker_wrapper(bench_cfg, function_input, executor)
+            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor)
         return result
-        # construct a dict for a holomap
 
     def store_results(
         self,
         result,
         bench_cfg: BenchCfg,
-        index_tuple: tuple,
-        function_input_vars: List,
-        dims_name: List[str],
+        worker_job: WorkerJob,
+        # index_tuple: tuple,
+        # function_input_vars: List,
+        # dims_name: List[str],
         bench_run_cfg: BenchRunCfg,
     ) -> None:
-        function_input = SortedDict(zip(dims_name, function_input_vars))
+        # function_input = SortedDict(zip(dims_name, worker_job.function_input_vars))
 
-        canonical_input = hmap_canonical_input(function_input)
+        if bench_cfg.use_sample_cache and not worker_job.found_in_cache:
+            self.sample_cache.set(
+                worker_job.function_input_signature_benchmark_context, result, tag=bench_cfg.tag
+            )
+            self.sample_cache.set(
+                worker_job.function_input_signature_pure, result, tag=bench_cfg.tag
+            )
+
+        canonical_input = hmap_canonical_input(worker_job.function_input)
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
                 bench_cfg.hmap[canonical_input] = result["hmap"]
 
-        logging.debug(f"input_index {index_tuple}")
-        logging.debug(f"input {function_input_vars}")
+        logging.debug(f"input_index {worker_job.index_tuple}")
+        logging.debug(f"input {worker_job.function_input_vars}")
         logging.debug(f"result {result}")
         for rv in bench_cfg.result_vars:
             if isinstance(result, dict):
@@ -679,13 +697,15 @@ class Bench(BenchPlotServer):
                 logging.info(f"{rv.name}: {result_value}")
 
             if isinstance(rv, ResultVar):
-                set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
+                set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
             elif isinstance(rv, ResultVec):
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
+                                bench_cfg.ds[rv.index_name(i)],
+                                worker_job.index_tuple,
+                                result_value[i],
                             )
 
             else:
