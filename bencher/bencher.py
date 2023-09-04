@@ -10,6 +10,12 @@ import param
 import xarray as xr
 from diskcache import Cache
 from contextlib import suppress
+from optuna import Study
+from pathlib import Path
+import shutil
+import concurrent.futures
+
+from bencher.worker_job import WorkerJob
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
@@ -27,10 +33,6 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 from bencher.utils import hmap_canonical_input
 
 from bencher.optuna_conversions import to_optuna, summarise_study
-from optuna import Study
-from pathlib import Path
-import shutil
-from bencher.worker_job import WorkerJob
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -385,67 +387,6 @@ class Bench(BenchPlotServer):
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
-    def calculate_benchmark_results(
-        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
-    ):
-        """A function for generating an n-d xarray from a set of input variables in the BenchCfg
-
-        Args:
-            bench_cfg (BenchCfg): description of the benchmark parameters
-            time_src (datetime): a representation of the sample time
-
-        Returns:
-            bench_cfg (BenchCfg): description of the benchmark parameters
-        """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
-        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
-        callcount = 1
-        bench_cfg.hmap_kdims = sorted(dims_name)
-
-        executor = None
-        if bench_run_cfg.parallel:
-            import concurrent.futures
-
-            executor = concurrent.futures.ProcessPoolExecutor()
-
-        results_list = []
-        jobs = []
-
-        for idx_tuple, function_input_vars in func_inputs:
-            job = WorkerJob(
-                function_input_vars,
-                idx_tuple,
-                dims_name,
-                constant_inputs,
-                bench_cfg_sample_hash,
-                bench_cfg.tag,
-            )
-            job.setup_hashes()
-            jobs.append(job)
-
-        for job in jobs:
-            results_list.append(
-                self.call_worker_and_store_results(
-                    bench_cfg,
-                    job,
-                    bench_run_cfg,
-                    executor,
-                )
-            )
-
-        for job, res in zip(jobs, results_list):
-            if bench_run_cfg.parallel and isinstance(res, concurrent.futures.Future):
-                res = res.result()
-            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-
-            self.store_results(res, bench_cfg, job, bench_run_cfg)
-            callcount += 1
-        if executor is not None:
-            executor.shutdown()
-        for inp in bench_cfg.all_vars:
-            self.add_metadata_to_dataset(bench_cfg, inp)
-        return bench_cfg
-
     def show(self, run_cfg: BenchRunCfg = None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
@@ -577,6 +518,65 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
+    def calculate_benchmark_results(
+        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
+    ) -> BenchCfg:
+        """A function for generating an n-d xarray from a set of input variables in the BenchCfg
+
+        Args:
+            bench_cfg (BenchCfg): description of the benchmark parameters
+            time_src (datetime): a representation of the sample time
+
+        Returns:
+            bench_cfg (BenchCfg): description of the benchmark parameters
+        """
+        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
+        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
+        callcount = 1
+        bench_cfg.hmap_kdims = sorted(dims_name)
+
+        executor = None
+        if bench_run_cfg.parallel:
+            executor = concurrent.futures.ProcessPoolExecutor()
+
+        results_list = []
+        jobs = []
+
+        for idx_tuple, function_input_vars in func_inputs:
+            job = WorkerJob(
+                function_input_vars,
+                idx_tuple,
+                dims_name,
+                constant_inputs,
+                bench_cfg_sample_hash,
+                bench_cfg.tag,
+            )
+            job.setup_hashes()
+            jobs.append(job)
+
+        for job in jobs:
+            results_list.append(
+                self.call_worker_and_store_results(
+                    bench_cfg,
+                    job,
+                    bench_run_cfg,
+                    executor,
+                )
+            )
+
+        for job, res in zip(jobs, results_list):
+            if bench_run_cfg.parallel and isinstance(res, concurrent.futures.Future):
+                res = res.result()
+            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
+
+            self.store_results(res, bench_cfg, job, bench_run_cfg)
+            callcount += 1
+        if executor is not None:
+            executor.shutdown()
+        for inp in bench_cfg.all_vars:
+            self.add_metadata_to_dataset(bench_cfg, inp)
+        return bench_cfg
+
     def call_worker_and_store_results(
         self,
         bench_cfg: BenchCfg,
@@ -678,6 +678,8 @@ class Bench(BenchPlotServer):
             )
 
         canonical_input = hmap_canonical_input(worker_job.function_input)
+        # construct a dict for a holomap
+        print(type(result),isinstance(result,dict))
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
