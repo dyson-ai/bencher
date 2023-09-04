@@ -27,6 +27,7 @@ class TestSampleCache(unittest.TestCase):
     def sample_cache(self):
         run_cfg = bch.BenchRunCfg()
         run_cfg.repeats = 1
+        run_cfg.parallel = False  #THE ASSERTS WILL ONLY WORK IF RUN SERIALLY!!!
 
         run_cfg.use_sample_cache = True  # this will store the result of every call
         run_cfg.only_hash_tag = True
