@@ -714,21 +714,22 @@ class Bench(BenchPlotServer):
 
     def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None):
         self.worker_fn_call_count += 1
+        function_input_deep = deep(function_input)
         if not bench_cfg.pass_repeat:
-            function_input.pop("repeat")
-        if "over_time" in function_input:
-            function_input.pop("over_time")
-        if "time_event" in function_input:
-            function_input.pop("time_event")
+            function_input_deep.pop("repeat")
+        if "over_time" in function_input_deep:
+            function_input_deep.pop("over_time")
+        if "time_event" in function_input_deep:
+            function_input_deep.pop("time_event")
 
         if self.worker_input_cfg is None:  # worker takes kwargs
             if executor is not None:
-                return executor.submit(self.worker, **function_input)
-            return self.worker(**function_input)
+                return executor.submit(self.worker, **function_input_deep)
+            return self.worker(**function_input_deep)
 
         # worker takes a parametrised input object
         input_cfg = self.worker_input_cfg()
-        for k, v in function_input.items():
+        for k, v in function_input_deep.items():
             input_cfg.param.set_param(k, v)
         if executor is not None:
             return executor.submit(self.worker, input_cfg)
