@@ -679,7 +679,7 @@ class Bench(BenchPlotServer):
 
         canonical_input = hmap_canonical_input(worker_job.function_input)
         # construct a dict for a holomap
-        print(type(result),isinstance(result,dict))
+        print(type(result), isinstance(result, dict))
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 # print(isinstance(result["hmap"], hv.element.Element))
@@ -714,7 +714,7 @@ class Bench(BenchPlotServer):
 
     def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None):
         self.worker_fn_call_count += 1
-        function_input_deep = deep(function_input)
+        function_input_deep = deepcopy(function_input)
         if not bench_cfg.pass_repeat:
             function_input_deep.pop("repeat")
         if "over_time" in function_input_deep:
