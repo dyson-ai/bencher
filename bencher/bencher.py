@@ -142,7 +142,6 @@ class Bench(BenchPlotServer):
         if remove_plots is not None:
             for i in remove_plots:
                 self.plot_lib.remove(i)
-        self.executor = None
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -404,10 +403,11 @@ class Bench(BenchPlotServer):
         callcount = 1
         bench_cfg.hmap_kdims = sorted(dims_name)
 
+        executor = None
         if bench_run_cfg.parallel:
             import concurrent.futures
 
-            self.executor = concurrent.futures.ProcessPoolExecutor()
+            executor = concurrent.futures.ProcessPoolExecutor()
 
         results_list = []
 
@@ -420,6 +420,7 @@ class Bench(BenchPlotServer):
                     constant_inputs,
                     bench_cfg_sample_hash,
                     bench_run_cfg,
+                    executor,
                 )
             )
 
@@ -432,7 +433,8 @@ class Bench(BenchPlotServer):
                 res, bench_cfg, idx_tuple, function_input_vars, dims_name, bench_run_cfg
             )
             callcount += 1
-
+        if executor is not None:
+            executor.shutdown()
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
@@ -576,6 +578,7 @@ class Bench(BenchPlotServer):
         constant_inputs: dict,
         bench_cfg_sample_hash: str,
         bench_run_cfg: BenchRunCfg,
+        executor=None,
     ) -> None:
         """A wrapper around the benchmarking function to set up and store the results of the benchmark function
 
@@ -636,13 +639,13 @@ class Bench(BenchPlotServer):
                 logging.info(f"Function inputs not cache: {function_input_signature_pure}")
                 logging.info("Calling benchmark function")
 
-                result = self.worker_wrapper(bench_cfg, function_input)
+                result = self.worker_wrapper(bench_cfg, function_input, executor)
                 self.sample_cache.set(
                     function_input_signature_benchmark_context, result, tag=bench_cfg.tag
                 )
                 self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
         else:
-            result = self.worker_wrapper(bench_cfg, function_input)
+            result = self.worker_wrapper(bench_cfg, function_input, executor)
         return result
         # construct a dict for a holomap
 
@@ -688,7 +691,7 @@ class Bench(BenchPlotServer):
             else:
                 raise RuntimeError("Unsupported result type")
 
-    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict):
+    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None):
         self.worker_fn_call_count += 1
         if not bench_cfg.pass_repeat:
             function_input.pop("repeat")
@@ -698,16 +701,16 @@ class Bench(BenchPlotServer):
             function_input.pop("time_event")
 
         if self.worker_input_cfg is None:  # worker takes kwargs
-            if self.executor is not None:
-                return self.executor.submit(self.worker, **function_input)
+            if executor is not None:
+                return executor.submit(self.worker, **function_input)
             return self.worker(**function_input)
 
         # worker takes a parametrised input object
         input_cfg = self.worker_input_cfg()
         for k, v in function_input.items():
             input_cfg.param.set_param(k, v)
-        if self.executor is not None:
-            return self.executor.submit(self.worker, input_cfg)
+        if executor is not None:
+            return executor.submit(self.worker, input_cfg)
         return self.worker(input_cfg)
 
     def clear_tag_from_cache(self, tag: str):
