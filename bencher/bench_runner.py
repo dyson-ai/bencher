@@ -50,9 +50,11 @@ class BenchRunner:
         self,
         min_level: int = 2,
         max_level: int = 6,
+        level: int = None,
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
         debug: bool = True,
+        show=False,
     ) -> List[BenchCfg]:
         results = []
         if run_cfg is not None:
@@ -60,6 +62,9 @@ class BenchRunner:
         else:
             run_run_cfg = deepcopy(self.run_cfg)
 
+        if level is not None:
+            min_level = level
+            max_level = level + 1
         for lvl in range(min_level, max_level):
             for bch_fn in self.bench_fns:
                 run_lvl = deepcopy(run_run_cfg)
@@ -68,6 +73,8 @@ class BenchRunner:
                 res = bch_fn(run_lvl)
                 if publish and self.publisher is not None:
                     res.publish(remote_callback=self.publisher, debug=debug)
+                if show:
+                    res.show()
                 results.append(res)
         return results
 
