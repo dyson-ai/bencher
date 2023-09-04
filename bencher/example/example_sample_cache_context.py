@@ -16,6 +16,11 @@ class Cfg(bch.ParametrizedSweep):
     enum1 = bch.EnumSweep(ExampleEnum)
     result = bch.ResultVar()
 
+    # def __call__(self,**kwargs) -> Any:
+    #     self.update_params_from_kwargs(**kwargs)
+    #     self.result = float(str(self.enum1)[-1])
+    #     return self.get_results_values_as_dict()
+
 
 def bench_function(cfg: Cfg):
     return {"result": float(str(cfg.enum1)[-1])}
