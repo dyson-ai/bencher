@@ -14,7 +14,6 @@ from optuna import Study
 from pathlib import Path
 import shutil
 import concurrent.futures
-from bencher import worker_job
 
 from bencher.worker_job import WorkerJob
 
@@ -604,8 +603,6 @@ class Bench(BenchPlotServer):
         # if constant_inputs is not None:
         # function_input = function_input | constant_inputs
 
-        
-
         # store a tuple of the inputs as keys for a holomap
         if bench_cfg.use_sample_cache:
             # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
@@ -623,7 +620,9 @@ class Bench(BenchPlotServer):
             ):
                 result = self.sample_cache[worker_job.function_input_signature_benchmark_context]
                 worker_job.found_in_cache = True
-                worker_job.msgs.append( f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading...")
+                worker_job.msgs.append(
+                    f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading..."
+                )
                 self.worker_cache_call_count += 1
             elif (
                 not bench_cfg.overwrite_sample_cache
@@ -648,9 +647,11 @@ class Bench(BenchPlotServer):
                     f"Function inputs not cache: {worker_job.function_input_signature_pure}"
                 )
                 worker_job.msgs.append("Calling benchmark function")
-                result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor,worker_job)
+                result = self.worker_wrapper(
+                    bench_cfg, worker_job.function_input, executor, worker_job
+                )
         else:
-            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor,worker_job)
+            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor, worker_job)
         return result
 
     def store_results(
@@ -663,7 +664,6 @@ class Bench(BenchPlotServer):
         # dims_name: List[str],
         bench_run_cfg: BenchRunCfg,
     ) -> None:
-
         if bench_cfg.print_bench_inputs:
             logging.info("Bench Inputs:")
             for k, v in worker_job.function_input.items():
@@ -710,12 +710,10 @@ class Bench(BenchPlotServer):
                                 result_value[i],
                             )
 
-            else:    
-                    raise RuntimeError("Unsupported result type")
-            
-        
-    def worker_cached(self,bench_cfg: BenchCfg,worker_job):
+            else:
+                raise RuntimeError("Unsupported result type")
 
+    def worker_cached(self, bench_cfg: BenchCfg, worker_job):
         function_input_deep = deepcopy(worker_job.function_input)
         #  function_input_deep = deepcopy(function_input)
         if not bench_cfg.pass_repeat:
@@ -733,8 +731,8 @@ class Bench(BenchPlotServer):
             input_cfg = self.worker_input_cfg()
             for k, v in function_input_deep.items():
                 input_cfg.param.set_param(k, v)
-            
-            result = self.worker(input_cfg)    
+
+            result = self.worker(input_cfg)
 
         for msg in worker_job.msgs:
             logging.info(msg)
@@ -747,18 +745,17 @@ class Bench(BenchPlotServer):
             )
         return result
 
-
-    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None,worker_job=None):
+    def worker_wrapper(
+        self, bench_cfg: BenchCfg, function_input: dict, executor=None, worker_job=None
+    ):
         logging.info(f"Calling worker with: {function_input}")
         self.worker_fn_call_count += 1
-       
 
         if executor is not None:
-            return executor.submit(self.worker_cached,bench_cfg ,worker_job)
-        return self.worker_cached(bench_cfg ,worker_job)    
+            return executor.submit(self.worker_cached, bench_cfg, worker_job)
+        return self.worker_cached(bench_cfg, worker_job)
 
         # if self.worker_input_cfg is None:  # worker takes kwargs
-           
 
         # # worker takes a parametrised input object
         # input_cfg = self.worker_input_cfg()
