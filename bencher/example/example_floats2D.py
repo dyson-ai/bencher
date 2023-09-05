@@ -31,6 +31,7 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     # TODO Create a test to confirm behavior
 
     run_cfg.use_optuna = True
+    # run_cfg.parallel =False
 
     bench.plot_sweep(
         input_vars=[cfg.param.theta, cfg.param.offset],
