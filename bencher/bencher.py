@@ -14,6 +14,7 @@ from optuna import Study
 from pathlib import Path
 import shutil
 import concurrent.futures
+from bencher import worker_job
 
 from bencher.worker_job import WorkerJob
 
@@ -603,10 +604,7 @@ class Bench(BenchPlotServer):
         # if constant_inputs is not None:
         # function_input = function_input | constant_inputs
 
-        # if bench_cfg.print_bench_inputs:
-        # logging.info("Bench Inputs:")
-        # for k, v in function_input.items():
-        # logging.info(f"\t {k}:{v}")
+        
 
         # store a tuple of the inputs as keys for a holomap
         if bench_cfg.use_sample_cache:
@@ -623,21 +621,19 @@ class Bench(BenchPlotServer):
                 not bench_cfg.overwrite_sample_cache
                 and worker_job.function_input_signature_benchmark_context in self.sample_cache
             ):
-                logging.info(
-                    f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading..."
-                )
                 result = self.sample_cache[worker_job.function_input_signature_benchmark_context]
                 worker_job.found_in_cache = True
+                worker_job.msgs.append( f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading...")
                 self.worker_cache_call_count += 1
             elif (
                 not bench_cfg.overwrite_sample_cache
                 and bench_run_cfg.only_hash_tag
                 and (worker_job.function_input_signature_pure in self.sample_cache)
             ):
-                logging.info(
+                worker_job.msgs.append(
                     f"Hash: {worker_job.function_input_signature_benchmark_context} not found in context cache"
                 )
-                logging.info(
+                worker_job.msgs.append(
                     f"Hash: {worker_job.function_input_signature_pure} was found in the function cache, loading..."
                 )
 
@@ -645,16 +641,16 @@ class Bench(BenchPlotServer):
                 worker_job.found_in_cache = True
                 self.worker_cache_call_count += 1
             else:
-                logging.info(
+                worker_job.msgs.append(
                     f"Context not in cache: {worker_job.function_input_signature_benchmark_context}"
                 )
-                logging.info(
+                worker_job.msgs.append(
                     f"Function inputs not cache: {worker_job.function_input_signature_pure}"
                 )
-                logging.info("Calling benchmark function")
-                result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor)
+                worker_job.msgs.append("Calling benchmark function")
+                result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor,worker_job)
         else:
-            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor)
+            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor,worker_job)
         return result
 
     def store_results(
@@ -667,15 +663,21 @@ class Bench(BenchPlotServer):
         # dims_name: List[str],
         bench_run_cfg: BenchRunCfg,
     ) -> None:
-        # function_input = SortedDict(zip(dims_name, worker_job.function_input_vars))
 
-        if bench_cfg.use_sample_cache and not worker_job.found_in_cache:
-            self.sample_cache.set(
-                worker_job.function_input_signature_benchmark_context, result, tag=bench_cfg.tag
-            )
-            self.sample_cache.set(
-                worker_job.function_input_signature_pure, result, tag=bench_cfg.tag
-            )
+        if bench_cfg.print_bench_inputs:
+            logging.info("Bench Inputs:")
+            for k, v in worker_job.function_input.items():
+                logging.info(f"\t {k}:{v}")
+
+        # for msg in worker_job.msgs:
+        #     logging.info(msg)
+        # if bench_cfg.use_sample_cache and not worker_job.found_in_cache:
+        #     self.sample_cache.set(
+        #         worker_job.function_input_signature_benchmark_context, result, tag=bench_cfg.tag
+        #     )
+        #     self.sample_cache.set(
+        #         worker_job.function_input_signature_pure, result, tag=bench_cfg.tag
+        #     )
 
         canonical_input = hmap_canonical_input(worker_job.function_input)
         # construct a dict for a holomap
@@ -708,12 +710,14 @@ class Bench(BenchPlotServer):
                                 result_value[i],
                             )
 
-            else:
-                raise RuntimeError("Unsupported result type")
+            else:    
+                    raise RuntimeError("Unsupported result type")
+            
+        
+    def worker_cached(self,bench_cfg: BenchCfg,worker_job):
 
-    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None):
-        self.worker_fn_call_count += 1
-        function_input_deep = deepcopy(function_input)
+        function_input_deep = deepcopy(worker_job.function_input)
+        #  function_input_deep = deepcopy(function_input)
         if not bench_cfg.pass_repeat:
             function_input_deep.pop("repeat")
         if "over_time" in function_input_deep:
@@ -722,17 +726,47 @@ class Bench(BenchPlotServer):
             function_input_deep.pop("time_event")
 
         if self.worker_input_cfg is None:  # worker takes kwargs
-            if executor is not None:
-                return executor.submit(self.worker, **function_input_deep)
-            return self.worker(**function_input_deep)
+            # result = self.worker(worker_job)
+            result = self.worker(**function_input_deep)
+        else:
+            # worker takes a parametrised input object
+            input_cfg = self.worker_input_cfg()
+            for k, v in function_input_deep.items():
+                input_cfg.param.set_param(k, v)
+            
+            result = self.worker(input_cfg)    
 
-        # worker takes a parametrised input object
-        input_cfg = self.worker_input_cfg()
-        for k, v in function_input_deep.items():
-            input_cfg.param.set_param(k, v)
+        for msg in worker_job.msgs:
+            logging.info(msg)
+        if self.sample_cache is not None and not worker_job.found_in_cache:
+            self.sample_cache.set(
+                worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
+            )
+            self.sample_cache.set(
+                worker_job.function_input_signature_pure, result, tag=worker_job.tag
+            )
+        return result
+
+
+    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict, executor=None,worker_job=None):
+        logging.info(f"Calling worker with: {function_input}")
+        self.worker_fn_call_count += 1
+       
+
         if executor is not None:
-            return executor.submit(self.worker, input_cfg)
-        return self.worker(input_cfg)
+            return executor.submit(self.worker_cached,bench_cfg ,worker_job)
+        return self.worker_cached(bench_cfg ,worker_job)    
+
+        # if self.worker_input_cfg is None:  # worker takes kwargs
+           
+
+        # # worker takes a parametrised input object
+        # input_cfg = self.worker_input_cfg()
+        # for k, v in function_input_deep.items():
+        #     input_cfg.param.set_param(k, v)
+        # if executor is not None:
+        #     return executor.submit(self.worker_cached, input_cfg)
+        # return self.worker_cached(input_cfg)
 
     def clear_tag_from_cache(self, tag: str):
         """Clear all samples from the cache that match a tag
