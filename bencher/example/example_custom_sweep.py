@@ -48,5 +48,5 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg()
+    ex_run_cfg = bch.BenchRunCfg(run_tag="example_tag")
     example_custom_sweep(ex_run_cfg).show()

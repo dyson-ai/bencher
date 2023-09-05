@@ -643,6 +643,9 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
     """
     benchmark_sampling_str = ["```text"]
     benchmark_sampling_str.append("")
+    if bench_cfg.run_tag is not None:
+        benchmark_sampling_str.append(f"run tag: {bench_cfg.run_tag}")
+
     benchmark_sampling_str.append("Input Variables:")
     for iv in bench_cfg.input_vars:
         benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
