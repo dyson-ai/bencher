@@ -1,13 +1,13 @@
-from typing import List, Tuple,Any
+from typing import List, Tuple, Any
 from dataclasses import dataclass, field
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
 from bencher.utils import hmap_canonical_input
 
 
-
 from copy import deepcopy
 import logging
+
 #
 # """
 # create list of jobs
@@ -22,7 +22,7 @@ import logging
 # """
 
 
-def worker_cached(self, bench_cfg , worker_job):
+def worker_cached(self, bench_cfg, worker_job):
     function_input_deep = deepcopy(worker_job.function_input)
     #  function_input_deep = deepcopy(function_input)
     if not bench_cfg.pass_repeat:
@@ -49,11 +49,8 @@ def worker_cached(self, bench_cfg , worker_job):
         self.sample_cache.set(
             worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
         )
-        self.sample_cache.set(
-            worker_job.function_input_signature_pure, result, tag=worker_job.tag
-        )
+        self.sample_cache.set(worker_job.function_input_signature_pure, result, tag=worker_job.tag)
     return result
-
 
 
 @dataclass

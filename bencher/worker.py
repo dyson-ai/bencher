@@ -1,10 +1,11 @@
-from typing import Callable, List, Tuple
+from typing import List, Tuple
 from dataclasses import dataclass, field
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
 
 from copy import deepcopy
 import logging
+
 #
 # """
 # create list of jobs
@@ -20,11 +21,10 @@ import logging
 
 
 # def run_cached(function:Callable,**kwargs):
-    # results =function(**kwargs)
+# results =function(**kwargs)
 
 
-
-def worker_cached(self, bench_cfg , worker_job):
+def worker_cached(self, bench_cfg, worker_job):
     function_input_deep = deepcopy(worker_job.function_input)
     #  function_input_deep = deepcopy(function_input)
     if not bench_cfg.pass_repeat:
@@ -51,11 +51,8 @@ def worker_cached(self, bench_cfg , worker_job):
         self.sample_cache.set(
             worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
         )
-        self.sample_cache.set(
-            worker_job.function_input_signature_pure, result, tag=worker_job.tag
-        )
+        self.sample_cache.set(worker_job.function_input_signature_pure, result, tag=worker_job.tag)
     return result
-
 
 
 @dataclass

@@ -66,7 +66,7 @@ class PlotFunctions(bch.ParametrizedSweep):
     def calc_vec(self, **kwargs) -> dict:
         theta = self.param.theta.values()
         kwargs.pop("theta", 0)
-        dat = [self.calc(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
+        dat = [self.__call__(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
         # print(dat)
         self.out_sum = sum(dat)
         pt = hv.Curve((theta, dat), "theta", "voltage")

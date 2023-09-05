@@ -30,7 +30,6 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
-from bencher.utils import hmap_canonical_input
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
@@ -750,8 +749,8 @@ class Bench(BenchPlotServer):
         self.worker_fn_call_count += 1
 
         if executor is not None:
-            return executor.submit(worker_cached, self,bench_cfg, worker_job)
-        return worker_cached(self,bench_cfg, worker_job)
+            return executor.submit(worker_cached, self, bench_cfg, worker_job)
+        return worker_cached(self, bench_cfg, worker_job)
 
         # if self.worker_input_cfg is None:  # worker takes kwargs
 
