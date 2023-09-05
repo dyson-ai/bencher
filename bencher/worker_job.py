@@ -1,7 +1,10 @@
-from typing import List, Tuple
+from typing import List, Tuple,Any
 from dataclasses import dataclass, field
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
+from bencher.utils import hmap_canonical_input
+
+
 
 from copy import deepcopy
 import logging
@@ -63,6 +66,7 @@ class WorkerJob:
     tag: str
 
     function_input: SortedDict = None
+    canonical_input: Tuple[Any] = None
     fn_inputs_sorted: List[str] = None
     function_input_signature_pure: str = None
     function_input_signature_benchmark_context: str = None
@@ -71,6 +75,8 @@ class WorkerJob:
 
     def setup_hashes(self) -> None:
         self.function_input = SortedDict(zip(self.dims_name, self.function_input_vars))
+
+        self.canonical_input = hmap_canonical_input(self.function_input)
 
         if self.constant_inputs is not None:
             self.function_input = self.function_input | self.constant_inputs

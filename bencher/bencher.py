@@ -679,13 +679,10 @@ class Bench(BenchPlotServer):
         #         worker_job.function_input_signature_pure, result, tag=bench_cfg.tag
         #     )
 
-        canonical_input = hmap_canonical_input(worker_job.function_input)
         # construct a dict for a holomap
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
-                # print(isinstance(result["hmap"], hv.element.Element))
-                print("canon",canonical_input)
-                bench_cfg.hmap[canonical_input] = result["hmap"]
+                bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
 
         logging.debug(f"input_index {worker_job.index_tuple}")
         logging.debug(f"input {worker_job.function_input_vars}")
