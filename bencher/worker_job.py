@@ -3,7 +3,8 @@ from dataclasses import dataclass, field
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
 
-
+from copy import deepcopy
+import logging
 #
 # """
 # create list of jobs
@@ -16,6 +17,40 @@ from .utils import hash_sha1
 
 
 # """
+
+
+def worker_cached(self, bench_cfg , worker_job):
+    function_input_deep = deepcopy(worker_job.function_input)
+    #  function_input_deep = deepcopy(function_input)
+    if not bench_cfg.pass_repeat:
+        function_input_deep.pop("repeat")
+    if "over_time" in function_input_deep:
+        function_input_deep.pop("over_time")
+    if "time_event" in function_input_deep:
+        function_input_deep.pop("time_event")
+
+    if self.worker_input_cfg is None:  # worker takes kwargs
+        # result = self.worker(worker_job)
+        result = self.worker(**function_input_deep)
+    else:
+        # worker takes a parametrised input object
+        input_cfg = self.worker_input_cfg()
+        for k, v in function_input_deep.items():
+            input_cfg.param.set_param(k, v)
+
+        result = self.worker(input_cfg)
+
+    for msg in worker_job.msgs:
+        logging.info(msg)
+    if self.sample_cache is not None and not worker_job.found_in_cache:
+        self.sample_cache.set(
+            worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
+        )
+        self.sample_cache.set(
+            worker_job.function_input_signature_pure, result, tag=worker_job.tag
+        )
+    return result
+
 
 
 @dataclass

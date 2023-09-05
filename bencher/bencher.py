@@ -15,7 +15,7 @@ from pathlib import Path
 import shutil
 import concurrent.futures
 
-from bencher.worker_job import WorkerJob
+from bencher.worker_job import WorkerJob, worker_cached
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
@@ -713,37 +713,37 @@ class Bench(BenchPlotServer):
             else:
                 raise RuntimeError("Unsupported result type")
 
-    def worker_cached(self, bench_cfg: BenchCfg, worker_job):
-        function_input_deep = deepcopy(worker_job.function_input)
-        #  function_input_deep = deepcopy(function_input)
-        if not bench_cfg.pass_repeat:
-            function_input_deep.pop("repeat")
-        if "over_time" in function_input_deep:
-            function_input_deep.pop("over_time")
-        if "time_event" in function_input_deep:
-            function_input_deep.pop("time_event")
+    # def worker_cached(self, bench_cfg: BenchCfg, worker_job):
+    #     function_input_deep = deepcopy(worker_job.function_input)
+    #     #  function_input_deep = deepcopy(function_input)
+    #     if not bench_cfg.pass_repeat:
+    #         function_input_deep.pop("repeat")
+    #     if "over_time" in function_input_deep:
+    #         function_input_deep.pop("over_time")
+    #     if "time_event" in function_input_deep:
+    #         function_input_deep.pop("time_event")
 
-        if self.worker_input_cfg is None:  # worker takes kwargs
-            # result = self.worker(worker_job)
-            result = self.worker(**function_input_deep)
-        else:
-            # worker takes a parametrised input object
-            input_cfg = self.worker_input_cfg()
-            for k, v in function_input_deep.items():
-                input_cfg.param.set_param(k, v)
+    #     if self.worker_input_cfg is None:  # worker takes kwargs
+    #         # result = self.worker(worker_job)
+    #         result = self.worker(**function_input_deep)
+    #     else:
+    #         # worker takes a parametrised input object
+    #         input_cfg = self.worker_input_cfg()
+    #         for k, v in function_input_deep.items():
+    #             input_cfg.param.set_param(k, v)
 
-            result = self.worker(input_cfg)
+    #         result = self.worker(input_cfg)
 
-        for msg in worker_job.msgs:
-            logging.info(msg)
-        if self.sample_cache is not None and not worker_job.found_in_cache:
-            self.sample_cache.set(
-                worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
-            )
-            self.sample_cache.set(
-                worker_job.function_input_signature_pure, result, tag=worker_job.tag
-            )
-        return result
+    #     for msg in worker_job.msgs:
+    #         logging.info(msg)
+    #     if self.sample_cache is not None and not worker_job.found_in_cache:
+    #         self.sample_cache.set(
+    #             worker_job.function_input_signature_benchmark_context, result, tag=worker_job.tag
+    #         )
+    #         self.sample_cache.set(
+    #             worker_job.function_input_signature_pure, result, tag=worker_job.tag
+    #         )
+    #     return result
 
     def worker_wrapper(
         self, bench_cfg: BenchCfg, function_input: dict, executor=None, worker_job=None
@@ -752,8 +752,8 @@ class Bench(BenchPlotServer):
         self.worker_fn_call_count += 1
 
         if executor is not None:
-            return executor.submit(self.worker_cached, bench_cfg, worker_job)
-        return self.worker_cached(bench_cfg, worker_job)
+            return executor.submit(worker_cached, self,bench_cfg, worker_job)
+        return worker_cached(self,bench_cfg, worker_job)
 
         # if self.worker_input_cfg is None:  # worker takes kwargs
 
