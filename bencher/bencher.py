@@ -362,7 +362,7 @@ class Bench(BenchPlotServer):
                 f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
             )
 
-        BenchPlotter.plot(bench_cfg, self.pane)
+        self.pane = BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
@@ -955,6 +955,18 @@ class Bench(BenchPlotServer):
         shutil.rmtree(directory)
 
         return publish_url
+
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        # Don't pickle baz
+        del state["pane"]
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        # Add baz back since it doesn't exist in the pickle
+        self.pane = []
 
     # def publish_old(
     #     self,
