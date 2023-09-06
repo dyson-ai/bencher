@@ -67,7 +67,7 @@ class PlotFunctions(bch.ParametrizedSweep):
 def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     run_cfg.use_optuna = True
-    run_cfg.auto_plot=True
+    run_cfg.auto_plot=False
     bench = bch.Bench("waves", PlotFunctions(), run_cfg=run_cfg)
 
     res = bench.plot_sweep(
@@ -88,6 +88,6 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    bench_run = bch.BenchRunner(run_cfg=bch.BenchRunCfg(parallel=True,run_tag="v1"))
+    bench_run = bch.BenchRunner(run_cfg=bch.BenchRunCfg(parallel=True,run_tag="v2"))
     bench_run.add_run(example_holosweep_tap)
     bench_run.run(level=3, show=True)
