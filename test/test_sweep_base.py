@@ -121,23 +121,17 @@ class TestSweepBase(unittest.TestCase):
         self.assertSequenceEqual(res.range, (0, 10))
 
     def test_float_step(self):
-
         step = 0.0001
+
         class FloatDim(bch.ParametrizedSweep):
-            var_float = bch.FloatSweep(bounds=(0, 0.001),step=step)
+            var_float = bch.FloatSweep(bounds=(0, 0.001), step=step)
 
         dim = FloatDim.param.var_float.as_dim(False)
-        self.assertEqual(dim.step,step)
+        self.assertEqual(dim.step, step)
 
         vals = FloatDim.param.var_float.as_dim(True)
-        self.assertEqual(10,len(vals.values))
-        self.assertEqual(dim.step,step)        
-        
-
-        
-
-
-
+        self.assertEqual(10, len(vals.values))
+        self.assertEqual(dim.step, step)
 
     def sweep_up_to(self, var, var_type, level=7):
         res_old = var.with_level(1)

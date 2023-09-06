@@ -120,10 +120,10 @@ class SweepBase(param.Parameter):
                 params["default"] = self.default
 
         else:
-            params["values"] = self.values(debug)        
+            params["values"] = self.values(debug)
 
         if hasattr(self, "bounds"):
-            params["step"] = getattr(self,"step")
+            params["step"] = getattr(self, "step")
         return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
 
     def indices_to_samples(self, desires_num_samples, sample_values):
