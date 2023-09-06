@@ -494,9 +494,9 @@ class BenchCfg(BenchRunCfg):
 
     def get_best_trial_params(self, canonical=False):
 
-        if len(self.studies)==0:
-            from bencher.optuna_conversions import bench_cfg_to_study
-            self.studies = [bench_cfg_to_study(self, True)]
+        # if len(self.studies)==0:
+        #     from bencher.optuna_conversions import bench_cfg_to_study
+        #     self.studies = [bench_cfg_to_study(self, True)]
         out = self.studies[0].best_trials[0].params
         if canonical:
             return hmap_canonical_input(out)

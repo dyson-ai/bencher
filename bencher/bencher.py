@@ -401,7 +401,7 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = BenchRunCfg()
 
-        BenchPlotServer().plot_server(self.bench_name, run_cfg)
+        BenchPlotServer().plot_server(self.bench_name, run_cfg,self.pane)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
