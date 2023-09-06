@@ -154,6 +154,7 @@ class Bench(BenchPlotServer):
             # if issubclass(worker,ParametrizedSweep):
             # logging.warning("This should be a class instance, not a class")
             self.worker_class_instance = worker
+            # self.worker_class_type = type(worker)
             self.worker = self.worker_class_instance.__call__
             logging.info("setting worker from bench class.__call__")
         else:
@@ -745,7 +746,7 @@ class Bench(BenchPlotServer):
     def worker_wrapper(
         self, bench_cfg: BenchCfg, function_input: dict, executor=None, worker_job=None
     ):
-        logging.info(f"Calling worker with: {function_input}")
+        # logging.info(f"Calling worker with: {function_input}")
         self.worker_fn_call_count += 1
 
         if executor is not None:
