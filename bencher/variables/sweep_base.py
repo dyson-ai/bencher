@@ -122,8 +122,9 @@ class SweepBase(param.Parameter):
         else:
             params["values"] = self.values(debug)
 
-        if hasattr(self, "bounds"):
+        if hasattr(self, "step"):
             params["step"] = getattr(self, "step")
+
         return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
 
     def indices_to_samples(self, desires_num_samples, sample_values):
