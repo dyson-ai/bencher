@@ -28,7 +28,6 @@ from bencher.variables.results import ResultVar, ResultVec
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.plotting.plot_collection import PlotCollection
-from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
 
 from bencher.optuna_conversions import to_optuna, summarise_study
@@ -361,7 +360,7 @@ class Bench(BenchPlotServer):
                 f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
             )
 
-        self.pane = BenchPlotter.plot(bench_cfg, self.pane)
+        # self.pane = BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
@@ -400,7 +399,7 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = BenchRunCfg()
 
-        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+        BenchPlotServer().plot_server(self.bench_name, run_cfg)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool

@@ -6,7 +6,6 @@ You can define a subclass which contains an input configuration which can be pas
 import math
 import random
 from enum import auto
-from typing import Any
 
 from strenum import StrEnum
 
@@ -16,7 +15,6 @@ from bencher.variables.results import ResultVar, OptDir
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
-import bencher as bch
 
 class PostprocessFn(StrEnum):
     """Apply a postprocessing step to the data"""
@@ -114,7 +112,6 @@ def bench_function(cfg: ExampleBenchCfgIn) -> ExampleBenchCfgOut:
 
 
 class ExampleBenchCfg(ParametrizedSweep):
-
     theta = FloatSweep(default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=30)
     offset = FloatSweep(default=0, bounds=[0, 0.3], doc="dc offset", units="v", samples=30)
     postprocess_fn = EnumSweep(PostprocessFn)
@@ -130,12 +127,11 @@ class ExampleBenchCfg(ParametrizedSweep):
         units="v",
     )
 
-
     out_sin = ResultVar(units="v", direction=OptDir.minimize, doc="sin of theta with some noise")
     out_cos = ResultVar(units="v", direction=OptDir.minimize, doc="cos of theta with some noise")
     out_bool = ResultVar(units="%", doc="sin > 0.5")
 
-    def __call__(self,**kwwargs) -> dict:
+    def __call__(self, **kwwargs) -> dict:
         self.update_params_from_kwargs(**kwwargs)
 
         noise = self.calculate_noise()
@@ -160,11 +156,13 @@ class ExampleBenchCfg(ParametrizedSweep):
         return noise
 
 
-def call(**kwargs):
+def call(**kwargs) -> dict:
     return ExampleBenchCfg().__call__(**kwargs)
+
 
 def bench_function_kwargs(**kwargs):
     return bench_function(ExampleBenchCfgIn(**kwargs))
+
 
 class AllSweepVars(ParametrizedSweep):
     """A class containing all the sweep types, This class is used for unit testing how the configuration classes are serialised and hashed"""

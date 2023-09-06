@@ -3,13 +3,10 @@ import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import (
-    ExampleBenchCfgIn,
     ExampleBenchCfgOut,
     NoiseDistribution,
-    bench_function,
-    # bench_function_kwargs,
     ExampleBenchCfg,
-    call
+    call,
 )
 
 
@@ -68,7 +65,11 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     )
 
     bench.plot_sweep(
-        input_vars=[ExampleBenchCfg.param.theta, ExampleBenchCfg.param.offset, ExampleBenchCfg.param.postprocess_fn],
+        input_vars=[
+            ExampleBenchCfg.param.theta,
+            ExampleBenchCfg.param.offset,
+            ExampleBenchCfg.param.postprocess_fn,
+        ],
         result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
         const_vars=[
             (ExampleBenchCfg.param.sigma, 0.1),
@@ -104,4 +105,4 @@ def example_floats2D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    example_floats2D(bch.BenchRunCfg(repeats=1,run_tag="1")).show()
+    example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()
