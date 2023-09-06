@@ -32,6 +32,8 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
+from bencher.bench_plot_server import BenchPlotter
+
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -360,7 +362,7 @@ class Bench(BenchPlotServer):
                 f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
             )
 
-        # self.pane = BenchPlotter.plot(bench_cfg, self.pane)
+        BenchPlotter.plot(bench_cfg, self.pane)
         return bench_cfg
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
