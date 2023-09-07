@@ -76,11 +76,13 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[PlotFunctions.param.fn_output],
     )
 
-    # print("best", res.get_best_trial_params(True))
-    # print(res.hmap_kdims)
-    # print(res.hmap.keys())
+    print("best", res.get_best_trial_params(True))
+    print(res.hmap_kdims)
+    print(res.hmap.keys())
     # print(res.summarise_sweep())
-    bench.append_tab(res.get_best_holomap())
+    bench.append(res.summarise_sweep())
+    bench.append(res.to_optuna())
+    bench.append(res.get_best_holomap())
     bench.append(res.to_curve(), "Slider view")
     bench.append(res.to_holomap().layout())
 # 
