@@ -46,18 +46,14 @@ def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         description="Sample the x parameter",
     )
 
-    
-
     bencher.plot_sweep(
         title="Example User Defined Sweep 2D",
         description="By default bencher sweep all the variables in a class",
     )
 
-  
-
     return bencher
 
 
 if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg(run_tag="example_tag1",print_meta=True)
+    ex_run_cfg = bch.BenchRunCfg(run_tag="example_tag1", print_meta=True)
     example_custom_sweep(ex_run_cfg).show()

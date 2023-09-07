@@ -85,7 +85,7 @@ def example_holosweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     bench.append(res.get_best_holomap())
     bench.append(res.to_curve(), "Slider view")
     bench.append(res.to_holomap().layout())
-# 
+    #
     return bench
 
 

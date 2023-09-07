@@ -491,11 +491,10 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-
     def get_best_trial_params(self, canonical=False):
-
-        if len(self.studies)==0:
+        if len(self.studies) == 0:
             from bencher.optuna_conversions import bench_cfg_to_study
+
             self.studies = [bench_cfg_to_study(self, True)]
         out = self.studies[0].best_trials[0].params
         if canonical:

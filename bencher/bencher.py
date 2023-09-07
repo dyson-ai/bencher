@@ -401,7 +401,7 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = BenchRunCfg()
 
-        BenchPlotServer().plot_server(self.bench_name, run_cfg,self.pane)
+        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -649,10 +649,10 @@ class Bench(BenchPlotServer):
                 )
                 worker_job.msgs.append("Calling benchmark function")
                 result = self.worker_wrapper(
-                    bench_cfg, worker_job.function_input, executor, worker_job
+                    bench_cfg, worker_job,  executor
                 )
         else:
-            result = self.worker_wrapper(bench_cfg, worker_job.function_input, executor, worker_job)
+            result = self.worker_wrapper(bench_cfg, worker_job,  executor)
         return result
 
     def store_results(
@@ -745,7 +745,7 @@ class Bench(BenchPlotServer):
     #     return result
 
     def worker_wrapper(
-        self, bench_cfg: BenchCfg, function_input: dict, executor=None, worker_job=None
+        self, bench_cfg: BenchCfg, worker_job=None, executor=None, 
     ):
         # logging.info(f"Calling worker with: {function_input}")
         self.worker_fn_call_count += 1
@@ -955,7 +955,6 @@ class Bench(BenchPlotServer):
         shutil.rmtree(directory)
 
         return publish_url
-
 
     def __getstate__(self):
         state = self.__dict__.copy()
