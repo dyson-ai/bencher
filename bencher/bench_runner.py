@@ -21,6 +21,7 @@ class BenchRunner:
         self.publisher = publisher
         if bench_class is not None:
             self.add_bench(bench_class)
+        self.results =[]
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -57,7 +58,7 @@ class BenchRunner:
         debug: bool = True,
         show=False,
     ) -> List[BenchCfg]:
-        results = []
+        
         if run_cfg is not None:
             run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         else:
@@ -78,8 +79,8 @@ class BenchRunner:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:
                         res.show()
-                    results.append(res)
-        return results
+                    self.results.append(res)
 
-    # def show(self)
-    # self.bench_fns[]
+
+    def show(self):
+        self.results[-1].show()
