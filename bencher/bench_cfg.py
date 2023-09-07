@@ -648,8 +648,6 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
 
-   
-
     benchmark_sampling_str.append("\nResult Variables:")
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))

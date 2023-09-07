@@ -21,7 +21,7 @@ class BenchRunner:
         self.publisher = publisher
         if bench_class is not None:
             self.add_bench(bench_class)
-        self.results =[]
+        self.results = []
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -52,13 +52,12 @@ class BenchRunner:
         min_level: int = 2,
         max_level: int = 6,
         level: int = None,
-        repeats:int =1,
+        repeats: int = 1,
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
         debug: bool = True,
         show=False,
     ) -> List[BenchCfg]:
-        
         if run_cfg is not None:
             run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         else:
@@ -66,8 +65,8 @@ class BenchRunner:
 
         if level is not None:
             min_level = level
-            max_level = level 
-        for r in range(1,repeats+1):
+            max_level = level
+        for r in range(1, repeats + 1):
             for lvl in range(min_level, max_level + 1):
                 for bch_fn in self.bench_fns:
                     run_lvl = deepcopy(run_run_cfg)
@@ -80,7 +79,7 @@ class BenchRunner:
                     if show:
                         res.show()
                     self.results.append(res)
+        return self.results
 
-
-    def show(self):
+    def show(self) -> None:
         self.results[-1].show()
