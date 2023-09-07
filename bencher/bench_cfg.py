@@ -648,15 +648,15 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
 
-    print_meta = True
-    if len(bench_cfg.meta_vars) == 1:
-        mv = bench_cfg.meta_vars[0]
-        if mv.name == "repeat" and mv.samples == 1:
-            print_meta = False
-
     benchmark_sampling_str.append("\nResult Variables:")
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
+
+    print_meta = True
+    # if len(bench_cfg.meta_vars) == 1:
+    #     mv = bench_cfg.meta_vars[0]
+    #     if mv.name == "repeat" and mv.samples == 1:
+    #         print_meta = False
 
     if print_meta:
         benchmark_sampling_str.append("\nMeta Variables:")
