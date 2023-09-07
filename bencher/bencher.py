@@ -648,11 +648,9 @@ class Bench(BenchPlotServer):
                     f"Function inputs not cache: {worker_job.function_input_signature_pure}"
                 )
                 worker_job.msgs.append("Calling benchmark function")
-                result = self.worker_wrapper(
-                    bench_cfg, worker_job,  executor
-                )
+                result = self.worker_wrapper(bench_cfg, worker_job, executor)
         else:
-            result = self.worker_wrapper(bench_cfg, worker_job,  executor)
+            result = self.worker_wrapper(bench_cfg, worker_job, executor)
         return result
 
     def store_results(
@@ -745,7 +743,10 @@ class Bench(BenchPlotServer):
     #     return result
 
     def worker_wrapper(
-        self, bench_cfg: BenchCfg, worker_job=None, executor=None, 
+        self,
+        bench_cfg: BenchCfg,
+        worker_job=None,
+        executor=None,
     ):
         # logging.info(f"Calling worker with: {function_input}")
         self.worker_fn_call_count += 1
