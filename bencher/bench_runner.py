@@ -66,7 +66,7 @@ class BenchRunner:
         if level is not None:
             min_level = level
             max_level = level 
-        for r in range(repeats):
+        for r in range(1,repeats+1):
             for lvl in range(min_level, max_level + 1):
                 for bch_fn in self.bench_fns:
                     run_lvl = deepcopy(run_run_cfg)
