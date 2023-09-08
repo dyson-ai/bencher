@@ -1,40 +1,16 @@
 import logging
-from datetime import datetime
-from itertools import product
-from typing import Callable, List
-from copy import deepcopy
+from typing import Callable
 import os
-import numpy as np
 import panel as pn
-import param
-import xarray as xr
-from diskcache import Cache
-from contextlib import suppress
-from optuna import Study
 from pathlib import Path
 import shutil
-from functools import partial
 
 
-from bencher.worker_job import WorkerJob
-
-from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
+from bencher.bench_cfg import BenchRunCfg
 from bencher.bench_plot_server import BenchPlotServer
 
 
-from bencher.variables.inputs import IntSweep
-from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec
-
-from bencher.variables.parametrised_sweep import ParametrizedSweep
-
-from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
-
-from bencher.optuna_conversions import to_optuna, summarise_study
-
-from bencher.bench_plot_server import BenchPlotter
-from bencher.job import Job, JobCache
 
 
 class BenchReport(BenchPlotServer):
@@ -42,11 +18,10 @@ class BenchReport(BenchPlotServer):
         self,
         bench_name: str = None,
         # run_cfg=None,
-    ) -> None:       
+    ) -> None:
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
 
-    
     def get_panel(
         self,
         main_plot: bool = True,
@@ -142,7 +117,7 @@ class BenchReport(BenchPlotServer):
             run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
 
         """
-        if run_cfg is None:           
+        if run_cfg is None:
             run_cfg = BenchRunCfg()
 
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
@@ -191,5 +166,4 @@ class BenchReport(BenchPlotServer):
 
         shutil.rmtree(directory)
 
-        return publish_ur
-      
+        return publish_url

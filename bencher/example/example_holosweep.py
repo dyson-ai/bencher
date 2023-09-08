@@ -69,7 +69,6 @@ def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench
 
     run_cfg.use_optuna = True
 
-
     bench = bch.Bench("waves", wv, run_cfg=run_cfg)
 
     res = bench.plot_sweep(

@@ -3,16 +3,12 @@ from datetime import datetime
 from itertools import product
 from typing import Callable, List
 from copy import deepcopy
-import os
 import numpy as np
-import panel as pn
 import param
 import xarray as xr
 from diskcache import Cache
 from contextlib import suppress
 from optuna import Study
-from pathlib import Path
-import shutil
 from functools import partial
 
 
@@ -33,7 +29,6 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.bench_plot_server import BenchPlotter
 from bencher.job import Job, JobCache
 
 # Customize the formatter
@@ -138,7 +133,7 @@ class Bench(BenchPlotServer):
         plot_lib: PlotCollection = None,
         remove_plots: list = None,
         run_cfg=None,
-        report = None
+        report=None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -157,9 +152,8 @@ class Bench(BenchPlotServer):
         self.run_cfg = run_cfg
         if report is None:
             self.report = BenchReport()
-        else :
+        else:
             self.report = report
-
 
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
@@ -170,8 +164,6 @@ class Bench(BenchPlotServer):
         if remove_plots is not None:
             for i in remove_plots:
                 self.plot_lib.remove(i)
-
-
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -412,8 +404,6 @@ class Bench(BenchPlotServer):
             c[bench_cfg_hash] = bench_cfg
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
-
-  
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -692,7 +682,7 @@ class Bench(BenchPlotServer):
         self.sample_cache.clear_call_counts()
 
     # def append(self,pane):
-        # self.report.append(pane)
+    # self.report.append(pane)
 
     def __getstate__(self):
         state = self.__dict__.copy()
