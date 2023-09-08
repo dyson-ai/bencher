@@ -20,10 +20,6 @@ class Square(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def call(**kwargs):
-    return Square().__call__(**kwargs)
-
-
 def example_custom_sweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """This example shows how to define a custom set of value to sample from intead of a uniform sweep
 
