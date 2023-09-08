@@ -3,7 +3,7 @@ import logging
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
-
+from bencher.bench_report import BenchReport
 from copy import deepcopy
 
 
@@ -14,7 +14,7 @@ class Benchable(Protocol):
 
 class BenchRunner:
     def __init__(
-        self, bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None
+        self, bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None,report= BenchReport()
     ) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
@@ -22,6 +22,7 @@ class BenchRunner:
         if bench_class is not None:
             self.add_bench(bench_class)
         self.results = []
+        self.report = report
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
