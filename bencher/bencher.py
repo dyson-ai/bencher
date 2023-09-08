@@ -683,5 +683,3 @@ class Bench(BenchPlotServer):
     def clear_call_counts(self) -> None:
         """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
         self.sample_cache.clear_call_counts()
-
-    

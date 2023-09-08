@@ -63,7 +63,7 @@ class BenchPlotServer:
                         bench_cfg = cache[bench_cfg_hash]
                         logging.info(f"loaded: {bench_cfg.title}")
 
-                        plots_instance = BenchPlotter.plot(bench_cfg, plots_instance)
+                        plots_instance = BenchPlotter.plot(bench_cfg)
                     else:
                         raise FileNotFoundError(
                             "The benchmarks have been run and saved, but the specific results you are trying to load do not exist.  This should not happen and could be because the cache was cleared."
