@@ -38,10 +38,14 @@ def assert_call_counts(bencher, run_cfg, wrapper_calls=-1, fn_calls=-1, cache_ca
         wrapper_calls * run_cfg.repeats,
     )
     print_assert_equal(
-        "worker fn call count", bencher.sample_cache.worker_fn_call_count, fn_calls * run_cfg.repeats
+        "worker fn call count",
+        bencher.sample_cache.worker_fn_call_count,
+        fn_calls * run_cfg.repeats,
     )
     print_assert_equal(
-        "worker cache call count", bencher.sample_cache.worker_cache_call_count, cache_calls * run_cfg.repeats
+        "worker cache call count",
+        bencher.sample_cache.worker_cache_call_count,
+        cache_calls * run_cfg.repeats,
     )
 
 

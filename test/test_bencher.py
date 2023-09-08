@@ -288,10 +288,12 @@ class TestBencher(unittest.TestCase):
             result_vars=rv,
             run_cfg=BenchRunCfg(
                 over_time=over_time, clear_cache=True, clear_history=True, auto_plot=False
-            )
+            ),
         )
 
-        self.assertEqual(bench.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(
+            bench.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples
+        )
 
         bench2 = self.create_bench()
         # run again without caching, the function should be called again
@@ -301,7 +303,9 @@ class TestBencher(unittest.TestCase):
             result_vars=rv,
             run_cfg=BenchRunCfg(over_time=over_time, use_cache=False, auto_plot=False),
         )
-        self.assertEqual(bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(
+            bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples
+        )
 
         # bench3 = self.create_bench()
         # run again with the cache turned on. The worker_wrapper_call_count should not increase because it loads cached results
@@ -311,7 +315,9 @@ class TestBencher(unittest.TestCase):
             result_vars=rv,
             run_cfg=BenchRunCfg(over_time=over_time, use_cache=True, auto_plot=False),
         )
-        self.assertEqual(bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)
+        self.assertEqual(
+            bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples
+        )
 
     @settings(deadline=10000)
     @given(noisy=st.booleans())

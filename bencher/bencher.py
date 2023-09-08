@@ -13,11 +13,10 @@ from contextlib import suppress
 from optuna import Study
 from pathlib import Path
 import shutil
-import concurrent.futures
 from functools import partial
 
 
-from bencher.worker_job import WorkerJob, worker_cached
+from bencher.worker_job import WorkerJob
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
@@ -106,17 +105,20 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
 
     return data_array
 
-def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep,**kwargs)->ParametrizedSweep:
+
+def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep, **kwargs) -> ParametrizedSweep:
     input_cfg = worker_input_cfg()
     for k, v in kwargs.items():
         input_cfg.param.set_param(k, v)
     return input_cfg
 
-def worker_cfg_wrapper(worker,worker_input_cfg: ParametrizedSweep,**kwargs)->dict:
-    input_cfg = kwargs_to_input_cfg(worker_input_cfg,**kwargs)
+
+def worker_cfg_wrapper(worker, worker_input_cfg: ParametrizedSweep, **kwargs) -> dict:
+    input_cfg = kwargs_to_input_cfg(worker_input_cfg, **kwargs)
     return worker(input_cfg)
 
-def worker_kwargs_wrapper(worker,bench_cfg, **kwargs)->dict:
+
+def worker_kwargs_wrapper(worker, bench_cfg, **kwargs) -> dict:
     function_input_deep = deepcopy(kwargs)
     if not bench_cfg.pass_repeat:
         function_input_deep.pop("repeat")
@@ -125,7 +127,6 @@ def worker_kwargs_wrapper(worker,bench_cfg, **kwargs)->dict:
     if "time_event" in function_input_deep:
         function_input_deep.pop("time_event")
     return worker(**function_input_deep)
-
 
 
 class Bench(BenchPlotServer):
@@ -188,7 +189,7 @@ class Bench(BenchPlotServer):
             if worker_input_cfg is None:
                 self.worker = worker
             else:
-                self.worker = partial(worker_cfg_wrapper,worker,worker_input_cfg)
+                self.worker = partial(worker_cfg_wrapper, worker, worker_input_cfg)
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
@@ -558,13 +559,10 @@ class Bench(BenchPlotServer):
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         bench_cfg.hmap_kdims = sorted(dims_name)
 
-
         callcount = 1
-
 
         results_list = []
         jobs = []
-
 
         for idx_tuple, function_input_vars in func_inputs:
             job = WorkerJob(
@@ -578,10 +576,15 @@ class Bench(BenchPlotServer):
             job.setup_hashes()
             jobs.append(job)
 
-
-            jid =f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}"
-            worker = partial(worker_kwargs_wrapper,self.worker,bench_cfg)
-            cache_job = Job(job_id=jid,function= worker,job_args= job.function_input,job_key=job.function_input_signature_pure,tag=job.tag)
+            jid = f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}"
+            worker = partial(worker_kwargs_wrapper, self.worker, bench_cfg)
+            cache_job = Job(
+                job_id=jid,
+                function=worker,
+                job_args=job.function_input,
+                job_key=job.function_input_signature_pure,
+                tag=job.tag,
+            )
             result = self.sample_cache.add_job(cache_job)
             results_list.append(result)
             callcount += 1
@@ -589,40 +592,31 @@ class Bench(BenchPlotServer):
             if not bench_run_cfg.parallel:
                 self.store_results(result.result(), bench_cfg, job, bench_run_cfg)
 
-            
         if bench_run_cfg.parallel:
-            for job, res in zip(jobs, results_list):                  
+            for job, res in zip(jobs, results_list):
                 self.store_results(res.result(), bench_cfg, job, bench_run_cfg)
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
         return bench_cfg
 
-   
-
     def store_results(
         self,
         result,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
-        # index_tuple: tuple,
-        # function_input_vars: List,
-        # dims_name: List[str],
         bench_run_cfg: BenchRunCfg,
     ) -> None:
         if bench_cfg.print_bench_inputs:
             logging.info("Bench Inputs:")
             for k, v in worker_job.function_input.items():
-                logging.info(f"\t {k}:{v}")      
+                logging.info(f"\t {k}:{v}")
 
         # construct a dict for a holomap
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
                 bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
 
-        # logging.debug(f"input_index {worker_job.index_tuple}")
-        # logging.debug(f"input {worker_job.function_input_vars}")
-        # logging.debug(f"result {result}")
         for rv in bench_cfg.result_vars:
             if isinstance(result, dict):
                 result_value = result[rv.name]
@@ -646,8 +640,6 @@ class Bench(BenchPlotServer):
 
             else:
                 raise RuntimeError("Unsupported result type")
-
- 
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):
         return JobCache(

@@ -69,7 +69,7 @@ def worker_cached(self, bench_cfg, worker_job):
 #         for k, v in function_input_deep.items():
 #             input_cfg.param.set_param(k, v)
 
-#         result = self.worker(input_cfg)    
+#         result = self.worker(input_cfg)
 #     return result
 
 

@@ -15,7 +15,9 @@ class Job:
     # function:Callable
     # result:dict
 
-    def __init__(self, job_id: str, function: Callable, job_args: dict,job_key=None,tag="") -> None:
+    def __init__(
+        self, job_id: str, function: Callable, job_args: dict, job_key=None, tag=""
+    ) -> None:
         self.job_id = job_id
         self.function = function
         self.job_args = job_args
@@ -24,7 +26,7 @@ class Job:
         else:
             self.job_key = job_key
         # self.cache =None
-        self.tag=tag
+        self.tag = tag
 
     # def run_job(self) -> None:
     # self.result = self.function(self.kwargs)
@@ -43,7 +45,7 @@ def run_job(job: Job, cache: Cache):
     result = job.function(**job.job_args)
     # logging.info(f"finished job:{job.job_id}")
     if cache is not None:
-        cache.set(job.job_key, result,tag=job.tag)
+        cache.set(job.job_key, result, tag=job.tag)
     return result
 
 
@@ -58,9 +60,7 @@ class JobCache:
         use_cache=True,
     ):
         if use_cache:
-            self.cache = Cache(
-                f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
-            )
+            self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
 
         else:
@@ -107,7 +107,6 @@ class JobCache:
             logging.info(f"No key: {job.job_key} in cache{suffix}")
             logging.info(f"{job.job_id} NOT in cache{suffix}")
 
-
     def clear_call_counts(self) -> None:
         """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
         self.worker_wrapper_call_count = 0
@@ -129,9 +128,7 @@ class JobCache:
 
     def stats(self) -> str:
         if self.cache:
-            return (
-            f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
-        )
+            return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
         return ""
 
 
