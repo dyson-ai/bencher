@@ -77,14 +77,14 @@ if __name__ == "__main__":
     #     ],
     # )
 
-    # bench.append(res.to_curve())
+    # bench.report.append(res.to_curve())
 
-    # bench.append(res.to(hv.Table).opts(width=1000))
+    # bench.report.append(res.to(hv.Table).opts(width=1000))
 
-    # bench.append(res.to_holomap())
+    # bench.report.append(res.to_holomap())
 
-    # bench.append(res.to_grid())
+    # bench.report.append(res.to_grid())
 
-    bench.append_tab(pf.to_dynamic_map(name="Mortgage Calculator"))
+    bench.report.append_tab(pf.to_dynamic_map(name="Mortgage Calculator"))
 
     bench.show()

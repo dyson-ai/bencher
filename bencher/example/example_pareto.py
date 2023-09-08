@@ -35,7 +35,7 @@ This is a slightly unusual way of doing pareto optimisation as we are not using 
         run_cfg=run_cfg,
     )
 
-    bench.append(res.to_optuna())
+    bench.report.append(res.to_optuna())
     return bench
 
 

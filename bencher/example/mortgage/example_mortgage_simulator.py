@@ -175,14 +175,14 @@ res = bench.plot_sweep(
     # plot_lib=bch.PlotLibrary.default().add(bch.PlotTypes.lineplot_hv),
 )
 
-bench.append(res.to_grid())
+bench.report.append(res.to_grid())
 # grid(["inflation", "monthly_contribution"]))
-bench.append_tab(inv.to_dynamic_map(inv.call))
+bench.report.append_tab(inv.to_dynamic_map(inv.call))
 
-# bench.append_tab(inv.to_holomap(inv.call).layout(kdims=["inflation"]))
+# bench.report.append_tab(inv.to_holomap(inv.call).layout(kdims=["inflation"]))
 
 
-# bench.append_tab(pf.to_dynamic_map(pf.call_vec))
+# bench.report.append_tab(pf.to_dynamic_map(pf.call_vec))
 
 bench.show()
 
@@ -204,9 +204,9 @@ res = bench.plot_sweep(
     plot_lib=bch.PlotLibrary.none(),
 )
 
-# bench.append(res.to_grid().overlay("month"))
+# bench.report.append(res.to_grid().overlay("month"))
 
-bench.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
+bench.report.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
 
 
 # res = bench.plot_sweep(
@@ -237,36 +237,36 @@ bench.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
 #     hv.DynamicMap(Investment(), Investment().param.get_inputs_as_dims(True))
 # ).opts(width=1000, height=1000)
 
-# bench.append(res.to_curve().opts(width=1000, height=1000))
+# bench.report.append(res.to_curve().opts(width=1000, height=1000))
 
 
-# bench.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
+# bench.report.append(res.to_curve().grid(["inflation", "monthly_contribution"]).opts())
 
 
 # bench.
 
-# bench.append(res.to_curve().grid())
-# bench.append(res.to_grid())
+# bench.report.append(res.to_curve().grid())
+# bench.report.append(res.to_grid())
 
 
 # ds = hv.Dataset(res.ds)
 # # pt = ds.to(hv.Curve,vdims=vdims)
 
-# bench.append(
+# bench.report.append(
 #     ds.to(
 #         hv.Curve, vdims=["installment_balance", "installment_total_interest"]
 #     ).layout("interest")
 # )
 
-# bench.append(
+# bench.report.append(
 #     ds.to(hv.Curve, vdims=["installment_total_interest"]).layout("interest")
 # )
 
-# bench.append(
+# bench.report.append(
 #     ds.to(hv.Curve, vdims=["installment_total_interest"]).overlay("interest")
 # )
 
-# bench.append(res.to_curve(vdims=["installment_balance"]).overlay("interest"))
+# bench.report.append(res.to_curve(vdims=["installment_balance"]).overlay("interest"))
 
 # bench.plots_instance.append(res.to_nd_layout())
 
