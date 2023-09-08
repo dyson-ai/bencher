@@ -70,7 +70,9 @@ def example_floats3D(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Floats", bench_fn, VolumeSample)
+    bench = bch.Bench(
+        "Bencher_Example_Floats", bench_fn, VolumeSample, plot_lib=bch.PlotLibrary.with_plotly()
+    )
 
     bench.plot_sweep(
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
