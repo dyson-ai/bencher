@@ -5,7 +5,7 @@ import pathlib
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
-from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
+from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function, ExampleBenchCfg
 
 
 def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
@@ -17,7 +17,7 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Floats", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench("Bencher_Example_Floats", ExampleBenchCfg())
 
     with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
@@ -87,6 +87,6 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    bench_ex = example_floats(bch.BenchRunCfg(repeats=2, parallel=True))
+    bench_ex = example_floats(bch.BenchRunCfg(repeats=2, parallel=False))
     bench_ex.report.save_index()
     bench_ex.report.show()
