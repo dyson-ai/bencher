@@ -55,7 +55,7 @@ def optuna_rastrigin(run_cfg=bch.BenchRunCfg()):
         result_vars=[explorer.param.output],
     )
 
-    bench.get_panel(False).append(
+    bench.report.get_panel(False).append(
         f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
     )
 

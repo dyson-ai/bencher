@@ -206,7 +206,7 @@ class Bench(BenchPlotServer):
         n_trials: int = 100,
     ) -> Study:
         optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
-        self.append(summarise_study(optu))
+        self.report.append(summarise_study(optu))
         return optu
 
     def plot_sweep(
@@ -684,16 +684,16 @@ class Bench(BenchPlotServer):
     # def append(self,pane):
     # self.report.append(pane)
 
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        # Don't pickle baz
-        del state["pane"]
-        return state
+    # def __getstate__(self):
+    #     state = self.__dict__.copy()
+    #     # Don't pickle baz
+    #     del state["pane"]
+    #     return state
 
-    def __setstate__(self, state):
-        self.__dict__.update(state)
-        # Add baz back since it doesn't exist in the pickle
-        self.pane = []
+    # def __setstate__(self, state):
+    #     self.__dict__.update(state)
+    #     # Add baz back since it doesn't exist in the pickle
+    #     self.report = []
 
     # def publish_old(
     #     self,

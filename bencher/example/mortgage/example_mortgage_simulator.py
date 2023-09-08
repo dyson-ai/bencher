@@ -184,7 +184,7 @@ bench.report.append_tab(inv.to_dynamic_map(inv.call))
 
 # bench.report.append_tab(pf.to_dynamic_map(pf.call_vec))
 
-bench.show()
+bench.report.show()
 
 # bench.worker = inv.call
 bench.worker = pf.call
@@ -270,4 +270,4 @@ bench.report.append(res.to_curve().grid(["inflation", "monthly_contribution"]).o
 
 # bench.plots_instance.append(res.to_nd_layout())
 
-bench.show()
+bench.report.show()
