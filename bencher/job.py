@@ -32,7 +32,7 @@ class JobFuture:
         return self.res
 
 
-def run_job(job: Job, cache: Cache):
+def run_job(job: Job, cache: Cache)->JobFuture:
     # logging.info(f"starting job:{job.job_id}")
     result = job.function(**job.job_args)
     # logging.info(f"finished job:{job.job_id}")

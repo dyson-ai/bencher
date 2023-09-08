@@ -34,11 +34,13 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 from bencher.optuna_conversions import to_optuna, summarise_study
 
 from bencher.bench_plot_server import BenchPlotter
-from bencher.job import Job, JobCache
+from bencher.job import Job, JobCache, JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+from concurrent.futures import Future 
 
 
 for handler in logging.root.handlers:
@@ -115,7 +117,7 @@ def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep, **kwargs) -> Parame
 
 def worker_cfg_wrapper(worker, worker_input_cfg: ParametrizedSweep, **kwargs) -> dict:
     input_cfg = kwargs_to_input_cfg(worker_input_cfg, **kwargs)
-    return worker(input_cfg)
+    return worker(input_cfg).res
 
 
 def worker_kwargs_wrapper(worker, bench_cfg, **kwargs) -> dict:
@@ -597,11 +599,13 @@ class Bench(BenchPlotServer):
 
     def store_results(
         self,
-        job_result,
+        job_result: JobFuture,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
+        if isinstance(job_result,Future):
+            job_result = job_result.result()
         result = job_result.result()
         if bench_cfg.print_bench_inputs:
             logging.info(f"{job_result.job_id} inputs:")
