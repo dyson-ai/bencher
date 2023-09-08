@@ -45,7 +45,7 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
-    def calc(self, plot=True, **kwargs) -> dict:
+    def __call__(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         noise = 0.1
 
@@ -66,7 +66,7 @@ class PlotFunctions(bch.ParametrizedSweep):
     def calc_vec(self, **kwargs) -> dict:
         theta = self.param.theta.values()
         kwargs.pop("theta", 0)
-        dat = [self.calc(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
+        dat = [self.__call__(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
         # print(dat)
         self.out_sum = sum(dat)
         pt = hv.Curve((theta, dat), "theta", "voltage")
@@ -79,12 +79,12 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv.calc, plot_lib=None)
+    bench = bch.Bench("waves", wv, plot_lib=None)
 
     res = bench.plot_sweep(
         "phase",
-        input_vars=[wv.param.theta, wv.param.freq, wv.param.phase],
-        result_vars=[wv.param.fn_output],
+        input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq, PlotFunctions.param.phase],
+        result_vars=[PlotFunctions.param.fn_output],
         run_cfg=run_cfg,
     )
 

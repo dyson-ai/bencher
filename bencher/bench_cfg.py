@@ -229,6 +229,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
 
+    parallel = param.Boolean(
+        default=False,
+        doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
+    )
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments
@@ -487,6 +492,10 @@ class BenchCfg(BenchRunCfg):
         return ds
 
     def get_best_trial_params(self, canonical=False):
+        if len(self.studies) == 0:
+            from bencher.optuna_conversions import bench_cfg_to_study
+
+            self.studies = [bench_cfg_to_study(self, True)]
         out = self.studies[0].best_trials[0].params
         if canonical:
             return hmap_canonical_input(out)

@@ -64,7 +64,7 @@ class PlotFunctions(bch.ParametrizedSweep):
         return None
 
 
-def example_holosweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
@@ -79,14 +79,15 @@ def example_holosweep(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     print("best", res.get_best_trial_params(True))
     print(res.hmap_kdims)
     print(res.hmap.keys())
-    bench.append_tab(res.get_best_holomap())
+    bench.append(res.summarise_sweep())
+    bench.append(res.to_optuna())
+    bench.append(res.get_best_holomap())
     bench.append(res.to_curve(), "Slider view")
     bench.append(res.to_holomap().layout())
-
     return bench
 
 
 if __name__ == "__main__":
-    bench_run = bch.BenchRunner(run_cfg=bch.BenchRunCfg(parallel=True))
+    bench_run = bch.BenchRunner(run_cfg=bch.BenchRunCfg(parallel=False, run_tag="12342341"))
     bench_run.add_run(example_holosweep)
     bench_run.run(level=2, show=True)
