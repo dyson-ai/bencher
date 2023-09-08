@@ -115,7 +115,7 @@ def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep, **kwargs) -> Parame
 
 def worker_cfg_wrapper(worker, worker_input_cfg: ParametrizedSweep, **kwargs) -> dict:
     input_cfg = kwargs_to_input_cfg(worker_input_cfg, **kwargs)
-    return worker(input_cfg).res
+    return worker(input_cfg)
 
 
 def worker_kwargs_wrapper(worker, bench_cfg, **kwargs) -> dict:
