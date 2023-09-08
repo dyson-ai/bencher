@@ -288,7 +288,7 @@ class TestBencher(unittest.TestCase):
             result_vars=rv,
             run_cfg=BenchRunCfg(
                 over_time=over_time, clear_cache=True, clear_history=True, auto_plot=False
-            ),
+            )
         )
 
         self.assertEqual(bench.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples)

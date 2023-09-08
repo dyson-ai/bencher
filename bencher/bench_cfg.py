@@ -230,7 +230,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     parallel = param.Boolean(
-        default=True,
+        default=False,
         doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
     )
 

@@ -3,7 +3,7 @@ import bencher as bch
 import random
 from bencher.job import JobFunctionCache
 
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 
 class CachedParamExample(bch.CachedParams):
@@ -19,6 +19,7 @@ class CachedParamExample(bch.CachedParams):
 
 
 class TestJob(unittest.TestCase):
+    @settings(deadline=500)
     @given(st.booleans())
     def test_basic(self, parallel):
         cp = CachedParamExample()  # clears cache by default

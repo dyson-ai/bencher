@@ -15,7 +15,7 @@ class Job:
     # function:Callable
     # result:dict
 
-    def __init__(self, job_id: str, function: Callable, job_args: dict,job_key=None) -> None:
+    def __init__(self, job_id: str, function: Callable, job_args: dict,job_key=None,tag="") -> None:
         self.job_id = job_id
         self.function = function
         self.job_args = job_args
@@ -24,6 +24,7 @@ class Job:
         else:
             self.job_key = job_key
         # self.cache =None
+        self.tag=tag
 
     # def run_job(self) -> None:
     # self.result = self.function(self.kwargs)
@@ -42,7 +43,7 @@ def run_job(job: Job, cache: Cache):
     result = job.function(**job.job_args)
     # logging.info(f"finished job:{job.job_id}")
     if cache is not None:
-        cache.set(job.job_key, result)
+        cache.set(job.job_key, result,tag=job.tag)
     return result
 
 
@@ -58,9 +59,9 @@ class JobCache:
     ):
         if use_cache:
             self.cache = Cache(
-                f"cachedir/{cache_name}/sample_cache", tag_index=tag_index, size_limit=size_limit
+                f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
             )
-            logging.info(f"cache dir{self.cache.directory}")
+            logging.info(f"cache dir: {self.cache.directory}")
 
         else:
             self.cache = None
@@ -84,6 +85,8 @@ class JobCache:
         if self.cache is not None:
             if not overwrite and job.job_key in self.cache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
+                logging.info(f"Found key: {job.job_key} in cache")
+
                 self.worker_cache_call_count += 1
                 return JobFuture(self.cache[job.job_key])
 
@@ -97,11 +100,11 @@ class JobCache:
 
     def overwrite_msg(self, job, overwrite, suffix) -> None:
         if overwrite:
-            # logging.info(f"Overwriting key: {job.job_key}{suffix}")
+            logging.info(f"Overwriting key: {job.job_key}{suffix}")
             logging.info(f"{job.job_id} OVERWRITING cache{suffix}")
 
         else:
-            # logging.info(f"No key: {job.job} in cache{suffix}")
+            logging.info(f"No key: {job.job_key} in cache{suffix}")
             logging.info(f"{job.job_id} NOT in cache{suffix}")
 
 
