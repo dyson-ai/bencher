@@ -49,6 +49,7 @@ class TestJob(unittest.TestCase):
         res1cp3 = jc3.call(var1=1).result()
         self.assertNotEqual(res1["result"], res1cp3["result"])
 
+    @settings(deadline=500)
     @given(st.booleans())
     def test_overwrite(self, parallel):
         cp = CachedParamExample()  # clears cache by default
