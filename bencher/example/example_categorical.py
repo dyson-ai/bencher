@@ -91,4 +91,4 @@ if __name__ == "__main__":
     ex_run_cfg.over_time = True
     ex_run_cfg.parallel = True
 
-    example_categorical(ex_run_cfg).show()
+    example_categorical(ex_run_cfg).report.show()
