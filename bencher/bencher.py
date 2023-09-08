@@ -156,11 +156,6 @@ class Bench(BenchPlotServer):
         self.run_cfg = run_cfg
 
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
-        # The number of times the wrapped worker was called
-        # self.worker_wrapper_call_count = 0
-        # self.worker_fn_call_count = 0  # The number of times the raw worker was called
-        # The number of times the cache was used instead of the raw worker
-        # self.worker_cache_call_count = 0
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
