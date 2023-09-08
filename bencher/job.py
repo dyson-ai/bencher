@@ -8,13 +8,7 @@ from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
 
 
-# @dataclass
 class Job:
-    # id:str
-    # kwargs:dict
-    # function:Callable
-    # result:dict
-
     def __init__(
         self, job_id: str, function: Callable, job_args: dict, job_key=None, tag=""
     ) -> None:
@@ -27,9 +21,6 @@ class Job:
             self.job_key = job_key
         # self.cache =None
         self.tag = tag
-
-    # def run_job(self) -> None:
-    # self.result = self.function(self.kwargs)
 
 
 @dataclass
@@ -79,32 +70,31 @@ class JobCache:
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
 
-    def add_job(self, job: Job, overwrite=False) -> JobFuture | Future:
+    def add_job(self, job: Job) -> JobFuture | Future:
         self.worker_wrapper_call_count += 1
 
         if self.cache is not None:
-            if not overwrite and job.job_key in self.cache:
+            if not self.overwrite and job.job_key in self.cache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
-                logging.info(f"Found key: {job.job_key} in cache")
-
+                # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
                 return JobFuture(self.cache[job.job_key])
 
         self.worker_fn_call_count += 1
 
         if self.executor is not None:
-            self.overwrite_msg(job, overwrite, " starting parallel job...")
+            self.overwrite_msg(job, " starting parallel job...")
             return self.executor.submit(run_job, job, self.cache)
-        self.overwrite_msg(job, overwrite, " starting serial job...")
+        self.overwrite_msg(job, " starting serial job...")
         return JobFuture(run_job(job, self.cache))
 
-    def overwrite_msg(self, job, overwrite, suffix) -> None:
-        if overwrite:
-            logging.info(f"Overwriting key: {job.job_key}{suffix}")
+    def overwrite_msg(self, job, suffix) -> None:
+        if self.overwrite:
+            # logging.info(f"Overwriting key: {job.job_key}{suffix}")
             logging.info(f"{job.job_id} OVERWRITING cache{suffix}")
 
         else:
-            logging.info(f"No key: {job.job_key} in cache{suffix}")
+            # logging.info(f"No key: {job.job_key} in cache{suffix}")
             logging.info(f"{job.job_id} NOT in cache{suffix}")
 
     def clear_call_counts(self) -> None:
@@ -127,6 +117,9 @@ class JobCache:
             self.cache.close()
 
     def stats(self) -> str:
+        logging.info(f"job calls: {self.worker_wrapper_call_count}")
+        logging.info(f"cache calls: {self.worker_cache_call_count}")
+        logging.info(f"worker calls: {self.worker_fn_call_count}")
         if self.cache:
             return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
         return ""

@@ -160,10 +160,6 @@ def call(**kwargs) -> dict:
     return ExampleBenchCfg().__call__(**kwargs)
 
 
-def bench_function_kwargs(**kwargs):
-    return bench_function(ExampleBenchCfgIn(**kwargs))
-
-
 class AllSweepVars(ParametrizedSweep):
     """A class containing all the sweep types, This class is used for unit testing how the configuration classes are serialised and hashed"""
 
