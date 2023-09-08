@@ -14,19 +14,21 @@ class CachedParamExample(bch.CachedParams):
         self.result = self.var1 + self.var2 + random.uniform(0, 1)
         return self.get_results_values_as_dict()
 
-    def call_wrapped(self, **kwargs):
-        return self.cache_wrap(self.call, **kwargs)
+    def __call__(self, **kwargs):       
+        self.update_params_from_kwargs(**kwargs)
+
+        return self.cache_wrap(self.call, ** self.get_inputs_as_dict())
 
 
 class TestCache(unittest.TestCase):
     def test_basic(self):
         cp = CachedParamExample()  # clears cache by default
 
-        res1 = cp.call_wrapped(var1=1)
-        res2 = cp.call_wrapped(var1=1)
-        res3 = cp.call_wrapped(var1=2)
-        res4 = cp.call_wrapped(var1=1, var2=10)  # calling with default value is the same
-        res5 = cp.call_wrapped(var2=10, var1=1)  # calling with default value is the same
+        res1 = cp(var1=1)
+        res2 = cp(var1=1)
+        res3 = cp(var1=2)
+        res4 = cp(var1=1, var2=10)  # calling with default value is the same
+        res5 = cp(var2=10, var1=1)  # calling with default value is the same
 
         # will only be equal if cache is used because of the randomness
         self.assertEqual(res1["result"], res2["result"])
@@ -41,6 +43,6 @@ class TestCache(unittest.TestCase):
         # create new class, make sure it has the same results
         cp2 = CachedParamExample(clear_cache=False)
 
-        res1cp2 = cp2.call_wrapped(var1=1)
+        res1cp2 = cp2.call(var1=1)
 
         self.assertEqual(res1["result"], res1cp2["result"])
