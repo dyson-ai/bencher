@@ -571,11 +571,11 @@ class Bench(BenchPlotServer):
             callcount += 1
 
             if not bench_run_cfg.parallel:
-                self.store_results(result.result(), bench_cfg, job, bench_run_cfg)
+                self.store_results(result, bench_cfg, job, bench_run_cfg)
 
         if bench_run_cfg.parallel:
             for job, res in zip(jobs, results_list):
-                self.store_results(res.result(), bench_cfg, job, bench_run_cfg)
+                self.store_results(res, bench_cfg, job, bench_run_cfg)
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
@@ -583,13 +583,14 @@ class Bench(BenchPlotServer):
 
     def store_results(
         self,
-        result,
+        job_result,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
+        result = job_result.result()
         if bench_cfg.print_bench_inputs:
-            logging.info("Bench Inputs:")
+            logging.info(f"{job_result.job_id} inputs:")
             for k, v in worker_job.function_input.items():
                 logging.info(f"\t {k}:{v}")
 
