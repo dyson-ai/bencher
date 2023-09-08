@@ -68,6 +68,8 @@ def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
+
+
     bench = bch.Bench("waves", wv, run_cfg=run_cfg)
 
     res = bench.plot_sweep(
@@ -79,11 +81,11 @@ def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench
     print("best", res.get_best_trial_params(True))
     print(res.hmap_kdims)
     print(res.hmap.keys())
-    bench.append(res.summarise_sweep())
-    bench.append(res.to_optuna())
-    bench.append(res.get_best_holomap())
-    bench.append(res.to_curve(), "Slider view")
-    bench.append(res.to_holomap().layout())
+    bench.report.append(res.summarise_sweep())
+    bench.report.append(res.to_optuna())
+    bench.report.append(res.get_best_holomap())
+    bench.report.append(res.to_curve(), "Slider view")
+    bench.report.append(res.to_holomap().layout())
     return bench
 
 

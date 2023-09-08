@@ -77,7 +77,7 @@ class BenchRunner:
                     if publish and self.publisher is not None:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:
-                        res.show()
+                        res.report.show()
                     self.results.append(res)
         return self.results
 
