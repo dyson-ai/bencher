@@ -21,6 +21,7 @@ class WorkerJob:
     function_input_signature_benchmark_context: str = None
     found_in_cache: bool = False
     msgs: List[str] = field(default_factory=list)
+    
 
     def setup_hashes(self) -> None:
         self.function_input = SortedDict(zip(self.dims_name, self.function_input_vars))

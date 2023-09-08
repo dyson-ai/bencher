@@ -26,6 +26,7 @@ class Job:
 @dataclass
 class JobFuture:
     res: dict
+    job_id:str
 
     def result(self):
         return self.res
@@ -78,7 +79,7 @@ class JobCache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
-                return JobFuture(self.cache[job.job_key])
+                return JobFuture(self.cache[job.job_key],job.job_id)
 
         self.worker_fn_call_count += 1
 
@@ -86,7 +87,7 @@ class JobCache:
             self.overwrite_msg(job, " starting parallel job...")
             return self.executor.submit(run_job, job, self.cache)
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(run_job(job, self.cache))
+        return JobFuture(run_job(job, self.cache),job.job_id)
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:
