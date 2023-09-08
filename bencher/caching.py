@@ -4,7 +4,9 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.utils import hash_sha1
 import logging
 from sortedcontainers import SortedDict
+
 # from job import job,JobCache,JobFunctionCache
+
 
 class CachedParams(ParametrizedSweep):
     def __init__(self, clear_cache=True, cache_name="fcache", **params):

@@ -1,12 +1,12 @@
-from typing import List, Tuple,Callable
-from dataclasses import dataclass, field
+from typing import Callable
+from dataclasses import dataclass
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
 
-from copy import deepcopy
 import logging
 from diskcache import Cache
-from  concurrent.futures import Future, ProcessPoolExecutor
+from concurrent.futures import Future, ProcessPoolExecutor
+
 
 # @dataclass
 class Job:
@@ -15,74 +15,181 @@ class Job:
     # function:Callable
     # result:dict
 
-    def __init__(self,job_id:str,function:Callable,job_args:dict) -> None:
+    def __init__(self, job_id: str, function: Callable, job_args: dict,job_key=None) -> None:
         self.job_id = job_id
         self.function = function
         self.job_args = job_args
-        self.job_key = hash_sha1(tuple(SortedDict(self.job_args).items()))   
+        if job_key is None:
+            self.job_key = hash_sha1(tuple(SortedDict(self.job_args).items()))
+        else:
+            self.job_key = job_key
         # self.cache =None
 
     # def run_job(self) -> None:
-        # self.result = self.function(self.kwargs)
+    # self.result = self.function(self.kwargs)
 
-@dataclass 
+
+@dataclass
 class JobFuture:
-    res:dict 
+    res: dict
+
     def result(self):
         return self.res
 
 
-def run_job(job:Job,cache:Cache):
-    logging.info(f"starting job:{job.job_id}")
-    result= job.function(**job.job_args)
-    logging.info(f"finished job:{id}")
-    cache.set(job.job_key,result)
+def run_job(job: Job, cache: Cache):
+    # logging.info(f"starting job:{job.job_id}")
+    result = job.function(**job.job_args)
+    # logging.info(f"finished job:{job.job_id}")
+    if cache is not None:
+        cache.set(job.job_key, result)
     return result
 
-class JobCache:
 
-    def __init__(self, parallel:bool=False, cache_name:str="fcache"):       
-        self.cache = Cache(f"cachedir/{cache_name}/sample_cache")
-        logging.info(f"cache dir{self.cache.directory}")
+class JobCache:
+    def __init__(
+        self,
+        parallel: bool = False,
+        overwrite: bool = True,
+        cache_name: str = "fcache",
+        tag_index: bool = True,
+        size_limit: int = int(100e8),
+        use_cache=True,
+    ):
+        if use_cache:
+            self.cache = Cache(
+                f"cachedir/{cache_name}/sample_cache", tag_index=tag_index, size_limit=size_limit
+            )
+            logging.info(f"cache dir{self.cache.directory}")
+
+        else:
+            self.cache = None
         if parallel:
             self.executor = ProcessPoolExecutor()
         else:
             self.executor = None
-        self.call_count=0
 
+        self.overwrite = overwrite
 
-    # def in_cache(self, job:Job)->bool:        
-        # if job.job_hash in self.cache:
-            # value = self.cache[key]
-        # return key, value
+        self.call_count = 0
+        self.size_limit = size_limit
 
-    def add_job(self,job:Job,overwrite=False)->JobFuture | Future:       
-        if not overwrite and job.job_key in self.cache:
-            return JobFuture(self.cache[job.job_key])
+        self.worker_wrapper_call_count = 0
+        self.worker_fn_call_count = 0
+        self.worker_cache_call_count = 0
+
+    def add_job(self, job: Job, overwrite=False) -> JobFuture | Future:
+        self.worker_wrapper_call_count += 1
+
+        if self.cache is not None:
+            if not overwrite and job.job_key in self.cache:
+                logging.info(f"Found job: {job.job_id} in cache, loading...")
+                self.worker_cache_call_count += 1
+                return JobFuture(self.cache[job.job_key])
+
+        self.worker_fn_call_count += 1
+
         if self.executor is not None:
-            return self.executor.submit(run_job, job,self.cache )
-        return JobFuture(run_job(job,self.cache))
+            self.overwrite_msg(job, overwrite, " starting parallel job...")
+            return self.executor.submit(run_job, job, self.cache)
+        self.overwrite_msg(job, overwrite, " starting serial job...")
+        return JobFuture(run_job(job, self.cache))
 
-    def clear_cache(self):
-        self.cache.clear()    
-    # def clear
-    # def call(self,**kwargs)    :
-    #     self.add_job(Job(self.call_count))
-    #     self.call_count+=1
+    def overwrite_msg(self, job, overwrite, suffix) -> None:
+        if overwrite:
+            # logging.info(f"Overwriting key: {job.job_key}{suffix}")
+            logging.info(f"{job.job_id} OVERWRITING cache{suffix}")
+
+        else:
+            # logging.info(f"No key: {job.job} in cache{suffix}")
+            logging.info(f"{job.job_id} NOT in cache{suffix}")
+
+
+    def clear_call_counts(self) -> None:
+        """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
+        self.worker_wrapper_call_count = 0
+        self.worker_fn_call_count = 0
+        self.worker_cache_call_count = 0
+
+    def clear_cache(self) -> None:
+        if self.cache:
+            self.cache.clear()
+
+    def clear_tag(self, tag: str) -> None:
+        logging.info(f"clearing the sample cache for tag: {tag}")
+        removed_vals = self.cache.evict(tag)
+        logging.info(f"removed: {removed_vals} items from the cache")
+
+    def close(self) -> None:
+        if self.cache:
+            self.cache.close()
+
+    def stats(self) -> str:
+        if self.cache:
+            return (
+            f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
+        )
+        return ""
+
+
+# logging.info(f"pure: {function_input_signature_pure}")
+# if (
+#     not bench_cfg.overwrite_sample_cache
+#     and worker_job.function_input_signature_benchmark_context in self.sample_cache
+# ):
+#     result = self.sample_cache[worker_job.function_input_signature_benchmark_context]
+#     worker_job.found_in_cache = True
+#     worker_job.msgs.append(
+#         f"Hash: {worker_job.function_input_signature_benchmark_context} was found in context cache, loading..."
+#     )
+#     self.worker_cache_call_count += 1
+# elif (
+#     not bench_cfg.overwrite_sample_cache
+#     and bench_run_cfg.only_hash_tag
+#     and (worker_job.function_input_signature_pure in self.sample_cache)
+# ):
+#     worker_job.msgs.append(
+#         f"Hash: {worker_job.function_input_signature_benchmark_context} not found in context cache"
+#     )
+#     worker_job.msgs.append(
+#         f"Hash: {worker_job.function_input_signature_pure} was found in the function cache, loading..."
+#     )
+
+#     result = self.sample_cache[worker_job.function_input_signature_pure]
+#     worker_job.found_in_cache = True
+#     self.worker_cache_call_count += 1
+# else:
+#     worker_job.msgs.append(
+#         f"Context not in cache: {worker_job.function_input_signature_benchmark_context}"
+#     )
+#     worker_job.msgs.append(
+#         f"Function inputs not cache: {worker_job.function_input_signature_pure}"
+#     )
+#     worker_job.msgs.append("Calling benchmark function")
+#     result = self.worker_wrapper(bench_cfg, worker_job, executor)
 
 
 class JobFunctionCache(JobCache):
-
-    def __init__(self,function:Callable, parallel: bool = False, cache_name: str = "fcache",overwrite=False):
-        super().__init__(parallel, cache_name)
+    def __init__(
+        self,
+        function: Callable,
+        overwrite=False,
+        parallel: bool = False,
+        cache_name: str = "fcache",
+        tag_index: bool = True,
+        size_limit: int = int(100e8),
+    ):
+        super().__init__(
+            parallel=parallel,
+            cache_name=cache_name,
+            tag_index=tag_index,
+            size_limit=size_limit,
+            overwrite=overwrite,
+        )
         self.function = function
-        self.overwrite=overwrite
 
-
-
-    def call(self,**kwargs)->JobFuture | Future:
-        return self.add_job(Job(self.call_count,self.function,kwargs),overwrite=self.overwrite)
-
+    def call(self, **kwargs) -> JobFuture | Future:
+        return self.add_job(Job(self.call_count, self.function, kwargs))
 
 
 # # #

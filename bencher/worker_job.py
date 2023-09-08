@@ -53,6 +53,26 @@ def worker_cached(self, bench_cfg, worker_job):
     return result
 
 
+# def worker_job_wrapper(worker,**kwargs):
+#     function_input_deep = deepcopy(kwargs)
+#     if "over_time" in function_input_deep:
+#         function_input_deep.pop("over_time")
+#     if "time_event" in function_input_deep:
+#         function_input_deep.pop("time_event")
+
+#     if worker_input_cfg is None:  # worker takes kwargs
+#         # result = self.worker(worker_job)
+#         result = worker(**function_input_deep)
+#     else:
+#         # worker takes a parametrised input object
+#         input_cfg = self.worker_input_cfg()
+#         for k, v in function_input_deep.items():
+#             input_cfg.param.set_param(k, v)
+
+#         result = self.worker(input_cfg)    
+#     return result
+
+
 @dataclass
 class WorkerJob:
     function_input_vars: List

@@ -34,14 +34,14 @@ def print_assert_equal(msg, first, second):
 def assert_call_counts(bencher, run_cfg, wrapper_calls=-1, fn_calls=-1, cache_calls=-1):
     print_assert_equal(
         "worker wrapper call count",
-        bencher.worker_wrapper_call_count,
+        bencher.sample_cache.worker_wrapper_call_count,
         wrapper_calls * run_cfg.repeats,
     )
     print_assert_equal(
-        "worker fn call count", bencher.worker_fn_call_count, fn_calls * run_cfg.repeats
+        "worker fn call count", bencher.sample_cache.worker_fn_call_count, fn_calls * run_cfg.repeats
     )
     print_assert_equal(
-        "worker cache call count", bencher.worker_cache_call_count, cache_calls * run_cfg.repeats
+        "worker cache call count", bencher.sample_cache.worker_cache_call_count, cache_calls * run_cfg.repeats
     )
 
 
@@ -52,18 +52,17 @@ def example_cache_context() -> bch.Bench:
     run_cfg.repeats = 2
     run_cfg.parallel = False
 
-    bencher = bch.Bench("bench_context", bench_function, Cfg)
+    bencher = bch.Bench("bench_context", bench_function, Cfg, run_cfg=run_cfg)
 
     # clear all tags from the cache at the beginning so that the example works the same not matter how many times the example is run.  When using this for you own code you probably don't want to clear the cache at the beginning because you will lose all the data you collected.
-    bencher.clear_tag_from_cache("example_tag1")
-    bencher.clear_tag_from_cache("example_tag2")
+    bencher.clear_tag_from_sample_cache("example_tag1", run_cfg)
+    bencher.clear_tag_from_sample_cache("example_tag2", run_cfg)
 
     # run a benchmark with a constant value and save results with example_tag1
     bencher.plot_sweep(
         title="Benchmark enum=value_1",
         const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_1)],
         result_vars=[Cfg.param.result],
-        run_cfg=run_cfg,
         tag="example_tag1",
     )
 
@@ -76,7 +75,6 @@ def example_cache_context() -> bch.Bench:
         title="Benchmark enum=value_2",
         const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_2)],
         result_vars=[Cfg.param.result],
-        run_cfg=run_cfg,
         tag="example_tag1",
     )
 
@@ -89,7 +87,6 @@ def example_cache_context() -> bch.Bench:
         title="Benchmark enum=[value_1,value_2] combined",
         input_vars=[Cfg.param.enum1],
         result_vars=[Cfg.param.result],
-        run_cfg=run_cfg,
         tag="example_tag1",
     )
 
@@ -102,7 +99,6 @@ def example_cache_context() -> bch.Bench:
         title="Benchmark enum=[value_1,value_2] with different tag",
         input_vars=[Cfg.param.enum1],
         result_vars=[Cfg.param.result],
-        run_cfg=run_cfg,
         tag="example_tag2",
     )
 
