@@ -34,7 +34,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 from bencher.optuna_conversions import to_optuna, summarise_study
 
 from bencher.bench_plot_server import BenchPlotter
-from bencher.job import Job, JobCache
+from bencher.job import Job, JobCache, JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -597,7 +597,7 @@ class Bench(BenchPlotServer):
 
     def store_results(
         self,
-        job_result,
+        job_result: JobFuture,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
