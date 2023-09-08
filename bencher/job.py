@@ -113,7 +113,7 @@ class JobCache:
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
 
-    def clear_cache(self) -> None:
+    def clear(self) -> None:
         if self.cache:
             self.cache.clear()
 
