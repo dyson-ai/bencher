@@ -2,6 +2,7 @@
 from diskcache import Cache
 import unittest
 import bencher as bch
+import time
 
 from bencher.example.benchmark_data import SimpleBenchClass
 
@@ -24,9 +25,9 @@ class TestBenchPlotServer(unittest.TestCase):
 
         bps = bch.BenchPlotServer()
 
-        bps.load_data_from_cache(bench.bench_name)
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.submit(bps.plot_server, bench.bench_name)
+        server =bps.plot_server(bench.bench_name)
+        time.sleep(1)  #wait for server to start
+        server.stop()
 
     # Tests that the plot server raises FileNotFoundError when no data is found in the cache
     def test_plot_server_no_data_in_cache(self):

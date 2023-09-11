@@ -46,6 +46,14 @@ if __name__ == "__main__":
     # ex_run_cfg.over_time = True
     # ex_run_cfg.use_cache = True
 
-    example_1D_cat(ex_run_cfg).show()  
-    example_1D_cat(ex_run_cfg).show()
+    srv1 =example_1D_cat(ex_run_cfg).show()  
+
+    print("after")
+    # srv1.join()
+    import time
+    time.sleep(5)
+    srv1.stop()
+    print("join")
+    # srv2 =example_1D_cat(ex_run_cfg).show()
+
 
