@@ -2,11 +2,9 @@
 from diskcache import Cache
 import unittest
 import bencher as bch
-import time
+from time import time
 
 from bencher.example.benchmark_data import SimpleBenchClass
-
-# from concurrent.futures import Future
 
 
 class TestBenchPlotServer(unittest.TestCase):
@@ -25,7 +23,6 @@ class TestBenchPlotServer(unittest.TestCase):
         bps = bch.BenchPlotServer()
 
         server_cfg = bch.BenchRunCfg()
-        server_cfg.port = 34343
         server_cfg.show = False
 
         server = bps.plot_server(bench.bench_name, server_cfg)
