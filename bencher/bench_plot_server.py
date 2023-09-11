@@ -9,6 +9,8 @@ from diskcache import Cache
 from bencher.bench_cfg import BenchCfg, BenchPlotSrvCfg
 from bencher.plt_cfg import BenchPlotter
 
+from threading import Thread
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -20,7 +22,7 @@ class BenchPlotServer:
 
     def plot_server(
         self, bench_name: str, plot_cfg: BenchPlotSrvCfg = BenchPlotSrvCfg(), plots_instance=None
-    ) -> None:
+    ) -> Thread:
         """Load previously calculated benchmark data from the database and start a plot server to display it
 
         Args:
@@ -76,7 +78,7 @@ class BenchPlotServer:
 
     def serve(
         self, bench_name: str, plots_instance: List[pn.panel], port: int = None, show: bool = True
-    ) -> None:
+    ) -> Thread:
         """Launch a panel server to view results
 
 

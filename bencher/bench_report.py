@@ -4,9 +4,11 @@ import os
 import panel as pn
 from pathlib import Path
 import shutil
+from threading import Thread
 
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
+
 
 class BenchReport(BenchPlotServer):
     def __init__(
@@ -16,8 +18,6 @@ class BenchReport(BenchPlotServer):
     ) -> None:
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
-
-   
 
     def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
         md = pn.pane.Markdown(markdown, name=name, **kwargs)
@@ -32,11 +32,11 @@ class BenchReport(BenchPlotServer):
         else:
             self.pane[-1].append(pane)
 
-    def append_col(self, pane: pn.panel, name:str=None) -> None:
+    def append_col(self, pane: pn.panel, name: str = None) -> None:
         if name is not None:
-            col = pn.Column(pane, name)
+            col = pn.Column(pane, name=name)
         else:
-            col = pn.Column(pane)
+            col = pn.Column(pane, name=pane.name)
         self.pane.append(col)
 
     def append_result(self, res: BenchCfg) -> None:
@@ -59,7 +59,7 @@ class BenchReport(BenchPlotServer):
         self,
         directory: str | Path = "cachedir",
         filename: str = None,
-        in_html_folder:bool=True,
+        in_html_folder: bool = True,
         **kwargs,
     ) -> Path:
         """Save the result to a html file.  Note that dynamic content will not work.  by passing save(__file__) the html output will be saved in the same folder as the source code in a html subfolder.
@@ -91,7 +91,7 @@ class BenchReport(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, **kwargs)
         return base_path
 
-    def show(self, run_cfg: BenchRunCfg = None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None) -> Thread:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -101,9 +101,11 @@ class BenchReport(BenchPlotServer):
         if run_cfg is None:
             run_cfg = BenchRunCfg()
 
-        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+        return BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
-    def publish(self, remote_callback: Callable, branch_name:str=None, debug: bool = True) -> str:
+    def publish(
+        self, remote_callback: Callable, branch_name: str = None, debug: bool = True
+    ) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         def publish_args(branch_name) -> Tuple[str, str]:
@@ -125,7 +127,6 @@ class BenchReport(BenchPlotServer):
         branch_name += "_debug" if debug else ""
 
         remote, publish_url = remote_callback(branch_name)
-
 
         directory = "tmpgit"
         report_path = self.save(directory, filename="index.html", in_html_folder=False)
