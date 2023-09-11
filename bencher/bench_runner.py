@@ -27,6 +27,7 @@ class BenchRunner:
             self.add_bench(bench_class)
         self.results = []
         self.report = report
+        self.servers = []
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -86,7 +87,7 @@ class BenchRunner:
                     if publish and self.publisher is not None:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:
-                        res.report.show()
+                        self.servers.append(res.report.show())
                     self.results.append(res)
         return self.results
 

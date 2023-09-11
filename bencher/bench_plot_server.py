@@ -30,9 +30,7 @@ class BenchPlotServer:
         Raises:
             FileNotFoundError: No data found was found in the database to plot
         """
-        import matplotlib
-
-        matplotlib.use("agg")
+       
         if plots_instance is None:
             plots_instance = self.load_data_from_cache(bench_name)
         if plot_cfg.port is not None and plot_cfg.allow_ws_origin:
@@ -87,6 +85,7 @@ class BenchPlotServer:
             plots_instance (List[pn.panel]): list of panel objects to display
             port (int): use a fixed port to lauch the server
         """
+       
 
         if port is not None:
             return pn.serve(

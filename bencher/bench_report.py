@@ -122,6 +122,7 @@ class BenchReport(BenchPlotServer):
         """
         if run_cfg is None:
             run_cfg = BenchRunCfg()
+          
 
         BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
