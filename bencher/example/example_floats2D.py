@@ -24,19 +24,12 @@ def example_floats2D(
     bench = bch.Bench(
         "Bencher_Example_Floats",
         call,
-        # bench_function_kwargs,
-        # ExampleBenchCfgIn,
         run_cfg=run_cfg,
         report=report,
+        plot_lib=bch.PlotLibrary().with_plotly()
     )
 
-    # ExampleBenchCfg = ExampleBenchCfgIn()
-    # ExampleBenchCfg.param.theta.samples = 3
-    # ExampleBenchCfg.param.offset.samples = 2
-    # TODO Create a test to confirm behavior
-
     run_cfg.use_optuna = True
-    # run_cfg.parallel =False
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfg.param.theta, ExampleBenchCfg.param.offset],
@@ -109,4 +102,8 @@ def example_floats2D(
 
 
 if __name__ == "__main__":
-    example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()
+
+    bench_run = bch.BenchRunner()
+    bench_run.add_run(example_floats2D)
+    bench_run.run(level=4,show=True)
+    # example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()
