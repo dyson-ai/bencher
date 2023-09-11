@@ -29,6 +29,14 @@ class TestBenchReport(unittest.TestCase):
         self.assertEqual(bench_report.pane[-1].name, name)
         self.assertEqual(bench_report.pane[-1].objects[0], panel)
 
+    def test_append__col_panel_with_custom_name(self):
+        bench_report = BenchReport()
+        panel = pn.panel("Test Panel")
+        name = "Custom Panel"
+        bench_report.append_col(panel, name=name)
+        self.assertEqual(bench_report.pane[-1].name, name)
+        self.assertEqual(bench_report.pane[-1].objects[0], panel)
+
     def test_append_column(self):
         bench_report = BenchReport()
         panel = pn.panel("Test Panel")
