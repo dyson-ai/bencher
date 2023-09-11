@@ -50,7 +50,7 @@ def optuna_rastrigin(
 ):
     explorer = ToyOptimisationProblem()
 
-    bench = bch.Bench("Rastrigin", explorer.rastrigin)
+    bench = bch.Bench("Rastrigin", explorer.rastrigin, run_cfg=run_cfg, report=report)
 
     bench.to_optuna(
         input_vars=[explorer.param.input1, explorer.param.input2],
