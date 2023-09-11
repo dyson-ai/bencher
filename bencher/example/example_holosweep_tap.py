@@ -75,11 +75,13 @@ class PlotFunctions(bch.ParametrizedSweep):
         return self.get_results_values_as_dict(holomap=pt)
 
 
-def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_holosweep_tap(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, plot_lib=None)
+    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
@@ -89,7 +91,7 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     )
 
     print(res.get_best_trial_params())
-    bench.append(res.get_best_holomap())
+    bench.report.append(res.get_best_holomap())
 
     heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
     posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
@@ -102,11 +104,11 @@ def example_holosweep_tap(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
-    bench.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
+    bench.report.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
 
-    bench.append(sld1)
+    bench.report.append(sld1)
 
-    bench.append_tab(res.to_curve(), "Slider view")
+    bench.report.append_tab(res.to_curve(), "Slider view")
 
     return bench
 

@@ -15,14 +15,14 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    bencher = bch.Bench(
+    bench = bch.Bench(
         "benchmarking_example_categorical1D",
         bench_function,
         ExampleBenchCfgIn,
     )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
-    res = bencher.plot_sweep(
+    res = bench.plot_sweep(
         title="Example 1D Categorical",
         input_vars=[ExampleBenchCfgIn.param.noisy],
         # result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_bool],
@@ -30,9 +30,9 @@ def example_1D_bool(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         description=example_1D_bool.__doc__,
         run_cfg=run_cfg,
     )
-    bencher.append(res.to_bar())
+    bench.report.append(res.to_bar())
 
-    return bencher
+    return bench
 
 
 if __name__ == "__main__":

@@ -1,14 +1,15 @@
 # pylint: disable=duplicate-code
 
-import pathlib
 
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
-from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
+from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, ExampleBenchCfg
 
 
-def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_floats(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """Example of how to perform a parameter sweep for floating point variables
 
     Args:
@@ -17,13 +18,12 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Floats", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench("Bencher_Example_Floats", ExampleBenchCfg(), report=report, run_cfg=run_cfg)
 
-    rdmepath = pathlib.Path(__file__).parent.parent.parent / "README.md"
-    with open(rdmepath, "r", encoding="utf-8") as file:
+    with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
 
-    bench.plot_sweep(title="Intro", description=readme)
+    bench.report.append(readme, "Intro")
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.theta],
@@ -88,6 +88,6 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 
 
 if __name__ == "__main__":
-    bench_ex = example_floats(bch.BenchRunCfg(repeats=10, parallel=True))
-    bench_ex.save_index()
-    bench_ex.show()
+    bench_ex = example_floats(bch.BenchRunCfg(repeats=2, parallel=False))
+    bench_ex.report.save_index()
+    bench_ex.report.show()

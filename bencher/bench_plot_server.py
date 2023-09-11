@@ -9,6 +9,8 @@ from diskcache import Cache
 from bencher.bench_cfg import BenchCfg, BenchPlotSrvCfg
 from bencher.plt_cfg import BenchPlotter
 
+from threading import Thread
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -20,7 +22,7 @@ class BenchPlotServer:
 
     def plot_server(
         self, bench_name: str, plot_cfg: BenchPlotSrvCfg = BenchPlotSrvCfg(), plots_instance=None
-    ) -> None:
+    ) -> Thread:
         """Load previously calculated benchmark data from the database and start a plot server to display it
 
         Args:
@@ -30,9 +32,7 @@ class BenchPlotServer:
         Raises:
             FileNotFoundError: No data found was found in the database to plot
         """
-        import matplotlib
 
-        matplotlib.use("agg")
         if plots_instance is None:
             plots_instance = self.load_data_from_cache(bench_name)
         if plot_cfg.port is not None and plot_cfg.allow_ws_origin:
@@ -66,7 +66,7 @@ class BenchPlotServer:
                         bench_cfg = cache[bench_cfg_hash]
                         logging.info(f"loaded: {bench_cfg.title}")
 
-                        plots_instance = BenchPlotter.plot(bench_cfg, plots_instance)
+                        plots_instance = BenchPlotter.plot(bench_cfg)
                     else:
                         raise FileNotFoundError(
                             "The benchmarks have been run and saved, but the specific results you are trying to load do not exist.  This should not happen and could be because the cache was cleared."
@@ -78,7 +78,7 @@ class BenchPlotServer:
 
     def serve(
         self, bench_name: str, plots_instance: List[pn.panel], port: int = None, show: bool = True
-    ) -> None:
+    ) -> Thread:
         """Launch a panel server to view results
 
 
