@@ -32,9 +32,11 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     return bencher
 
 
-def plot_server(bench_name,run_cfg):
+def plot_server(bench_name, run_cfg):
     from bencher.bench_plot_server import BenchPlotServer
+
     BenchPlotServer().plot_server(bench_name, run_cfg)
+
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
@@ -47,9 +49,10 @@ if __name__ == "__main__":
 
     # ex_res.publish()
     import concurrent.futures
+
     with concurrent.futures.ProcessPoolExecutor() as executor:
-#             # executor.submit(bps.plot_server,bench.bench_name)
-        fut =executor.submit(plot_server,ex_res.bench_name,ex_run_cfg)
+        #             # executor.submit(bps.plot_server,bench.bench_name)
+        fut = executor.submit(plot_server, ex_res.bench_name, ex_run_cfg)
         # fut.cancel()
         # print("before restul")
         # fut.result()

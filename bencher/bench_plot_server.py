@@ -87,4 +87,4 @@ class BenchPlotServer:
             pn.serve(plots_instance, title=bench_name, websocket_origin=["*"], port=port)
         else:
             logging.getLogger().setLevel(logging.WARNING)
-            pn.serve(plots_instance, title=bench_name,threaded=False)
+            pn.serve(plots_instance, title=bench_name, threaded=False)
