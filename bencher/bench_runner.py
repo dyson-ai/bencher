@@ -5,7 +5,6 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
 from bencher.bench_report import BenchReport
 from copy import deepcopy
-import panel as pn
 
 
 class Benchable(Protocol):
@@ -40,16 +39,20 @@ class BenchRunner:
 
     @staticmethod
     def from_parametrized_sweep(
-        class_instance: ParametrizedSweep, run_cfg: BenchRunCfg = BenchRunCfg(), report: BenchReport = BenchReport()
+        class_instance: ParametrizedSweep,
+        run_cfg: BenchRunCfg = BenchRunCfg(),
+        report: BenchReport = BenchReport(),
     ):
-        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg,report=report)
+        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg, report=report)
 
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
 
     def add_bench(self, class_instance: ParametrizedSweep) -> None:
         def cb(run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
-            bench =BenchRunner.from_parametrized_sweep(class_instance,run_cfg=run_cfg,report=report)
+            bench = BenchRunner.from_parametrized_sweep(
+                class_instance, run_cfg=run_cfg, report=report
+            )
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)
@@ -64,7 +67,7 @@ class BenchRunner:
         publish: bool = False,
         debug: bool = True,
         show=False,
-        isolated=True,
+        grouped=True,
     ) -> List[BenchCfg]:
         if run_cfg is None:
             run_run_cfg = deepcopy(self.run_cfg)
@@ -81,10 +84,10 @@ class BenchRunner:
                     run_lvl.level = lvl
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
-                    if isolated:
-                        res = bch_fn(run_lvl, BenchReport())
+                    if grouped:
+                        res = bch_fn(run_lvl, self.report)                        
                     else:
-                        res = bch_fn(run_lvl, self.report)
+                        res = bch_fn(run_lvl, BenchReport())
                     if publish and self.publisher is not None:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:
