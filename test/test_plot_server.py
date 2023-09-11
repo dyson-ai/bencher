@@ -51,4 +51,5 @@ class TestBenchPlotServer(unittest.TestCase):
         server_cfg = bch.BenchRunCfg()
         server_cfg.port = 34343
         server_cfg.show = False
-        bps.plot_server("test_bench_server", server_cfg)
+        srv = bps.plot_server("test_bench_server", server_cfg)
+        srv.stop()
