@@ -17,23 +17,7 @@ class BenchReport(BenchPlotServer):
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
 
-    def get_panel(
-        self,
-        main_plot: bool = True,
-    ) -> pn.pane:
-        """Get the panel instance where bencher collates results
-
-        Args:
-            main_plot (bool, optional): return the last added page. Defaults to True.
-
-        Returns:
-            pn.pane: results panel
-        """
-        if main_plot:
-            if len(self.pane) > 0:
-                return self.pane[-1]
-            return self.pane
-        return self.pane[-1]
+   
 
     def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
         md = pn.pane.Markdown(markdown, name=name, **kwargs)
@@ -53,7 +37,6 @@ class BenchReport(BenchPlotServer):
             col = pn.Column(pane, name)
         else:
             col = pn.Column(pane)
-        # self.get_panel().append(col)
         self.pane.append(col)
 
     def append_result(self, res: BenchCfg) -> None:
