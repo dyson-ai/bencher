@@ -5,13 +5,8 @@ import panel as pn
 from pathlib import Path
 import shutil
 
-
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
-
-
-from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
-
 
 class BenchReport(BenchPlotServer):
     def __init__(
