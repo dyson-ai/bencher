@@ -28,7 +28,7 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg,report:bch.BenchReport = bch.BenchRe
         const_vars=explorer.get_input_defaults(),
         description=example_1D_cat.__doc__,
     )
-    return bencher
+    return bench
 
 
 if __name__ == "__main__":
