@@ -93,10 +93,3 @@ class BenchRunner:
                         self.servers.append(res.report.show())
                     self.results.append(res)
         return self.results
-
-    def show(self) -> None:
-        rd = {}
-        for r in self.results:
-            rd[r.bench_name] = r
-        pn.serve(rd)
-        # self.results[-1].show()
