@@ -82,7 +82,7 @@ class SurfacePlot:
             print(ds)
 
             # try:
-           
+
             # except Exception:
             #     return plot_surface_plotly(bench_cfg, rv, xr_cfg)
 
