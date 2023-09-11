@@ -6,7 +6,9 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_plot_library(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_plot_library(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """This example shows how use PlotLibrary.all() to display all possible plot types for a given benchmark
 
     Args:
@@ -17,9 +19,13 @@ def example_plot_library(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.
     """
 
     bencher = bch.Bench(
-        "benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn, run_cfg=run_cfg,report=report,plot_lib=bch.PlotLibrary.all()
+        "benchmarking_example_categorical1D",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+        plot_lib=bch.PlotLibrary.all(),
     )
-
 
     bencher.plot_sweep(
         title="Example 1D Categorical",

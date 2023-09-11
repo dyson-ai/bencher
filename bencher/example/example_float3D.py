@@ -61,7 +61,9 @@ def bench_fn(point: VolumeSample) -> VolumeResult:
     return output
 
 
-def example_floats3D(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_floats3D(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
@@ -71,7 +73,12 @@ def example_floats3D(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.Benc
         Bench: results of the parameter sweep
     """
     bench = bch.Bench(
-        "Bencher_Example_Floats", bench_fn, VolumeSample, plot_lib=bch.PlotLibrary.with_plotly(),run_cfg=run_cfg,report=report
+        "Bencher_Example_Floats",
+        bench_fn,
+        VolumeSample,
+        plot_lib=bch.PlotLibrary.with_plotly(),
+        run_cfg=run_cfg,
+        report=report,
     )
 
     bench.plot_sweep(

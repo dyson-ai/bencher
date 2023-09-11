@@ -7,10 +7,18 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_time_event(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_time_event(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """This example shows how to manually set time events as a string so that progress can be monitored over time"""
 
-    bencher = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn,run_cfg=run_cfg,report=report)
+    bencher = bch.Bench(
+        "benchmarking_example_categorical1D",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     ExampleBenchCfgIn.param.offset.bounds = [0, 100]
 

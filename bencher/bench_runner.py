@@ -7,8 +7,9 @@ from bencher.bench_report import BenchReport
 from copy import deepcopy
 import panel as pn
 
+
 class Benchable(Protocol):
-    def bench(self, run_cfg: BenchRunCfg,report:BenchReport) -> BenchCfg:
+    def bench(self, run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
         ...
 
 
@@ -81,9 +82,9 @@ class BenchRunner:
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
                     if isolated:
-                        res = bch_fn(run_lvl,BenchReport())
+                        res = bch_fn(run_lvl, BenchReport())
                     else:
-                        res = bch_fn(run_lvl,self.report)
+                        res = bch_fn(run_lvl, self.report)
                     if publish and self.publisher is not None:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:

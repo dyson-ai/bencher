@@ -7,7 +7,9 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_1D_cat(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_1D_cat(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function
 
     Args:
@@ -18,7 +20,13 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchR
     """
 
     explorer = ExampleBenchCfgIn()
-    bench = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn,run_cfg=run_cfg,report=report)
+    bench = bch.Bench(
+        "benchmarking_example_categorical1D",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
     bench.plot_sweep(
@@ -39,5 +47,3 @@ if __name__ == "__main__":
     # ex_run_cfg.use_cache = True
 
     srv1 = example_1D_cat(ex_run_cfg).show()
-
-

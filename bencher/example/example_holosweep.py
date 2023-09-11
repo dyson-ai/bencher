@@ -64,12 +64,12 @@ class PlotFunctions(bch.ParametrizedSweep):
         return None
 
 
-def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
+def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
 
-    bench = bch.Bench("waves", wv, run_cfg=run_cfg)
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg,report=report)
 
     res = bench.plot_sweep(
         "phase",
