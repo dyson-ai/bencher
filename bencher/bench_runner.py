@@ -21,6 +21,7 @@ class BenchRunner:
         self.publisher = publisher
         if bench_class is not None:
             self.add_bench(bench_class)
+        self.results = []
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -51,32 +52,34 @@ class BenchRunner:
         min_level: int = 2,
         max_level: int = 6,
         level: int = None,
+        repeats: int = 1,
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
         debug: bool = True,
         show=False,
     ) -> List[BenchCfg]:
-        results = []
-        if run_cfg is not None:
-            run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
-        else:
+        if run_cfg is None:
             run_run_cfg = deepcopy(self.run_cfg)
+        else:
+            run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
 
         if level is not None:
             min_level = level
-            max_level = level + 1
-        for lvl in range(min_level, max_level + 1):
-            for bch_fn in self.bench_fns:
-                run_lvl = deepcopy(run_run_cfg)
-                run_lvl.level = lvl
-                logging.info(f"Running {bch_fn} at level: {lvl}")
-                res = bch_fn(run_lvl)
-                if publish and self.publisher is not None:
-                    res.publish(remote_callback=self.publisher, debug=debug)
-                if show:
-                    res.show()
-                results.append(res)
-        return results
+            max_level = level
+        for r in range(1, repeats + 1):
+            for lvl in range(min_level, max_level + 1):
+                for bch_fn in self.bench_fns:
+                    run_lvl = deepcopy(run_run_cfg)
+                    run_lvl.level = lvl
+                    run_lvl.repeats = r
+                    logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
+                    res = bch_fn(run_lvl)
+                    if publish and self.publisher is not None:
+                        res.publish(remote_callback=self.publisher, debug=debug)
+                    if show:
+                        res.show()
+                    self.results.append(res)
+        return self.results
 
-    # def show(self)
-    # self.bench_fns[]
+    def show(self) -> None:
+        self.results[-1].show()

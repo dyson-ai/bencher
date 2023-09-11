@@ -56,6 +56,7 @@ def example_sample_cache(run_cfg: bch.BenchRunCfg, trigger_crash: bool) -> bch.B
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 1
+    ex_run_cfg.parallel = False
 
     # this will store the result of of every call to crashy_fn
     ex_run_cfg.use_sample_cache = True

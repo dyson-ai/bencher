@@ -229,6 +229,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
     )
 
+    parallel = param.Boolean(
+        default=False,
+        doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
+    )
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:
         """create a BenchRunCfg by parsing command line arguments
@@ -487,6 +492,10 @@ class BenchCfg(BenchRunCfg):
         return ds
 
     def get_best_trial_params(self, canonical=False):
+        if len(self.studies) == 0:
+            from bencher.optuna_conversions import bench_cfg_to_study
+
+            self.studies = [bench_cfg_to_study(self, True)]
         out = self.studies[0].best_trials[0].params
         if canonical:
             return hmap_canonical_input(out)
@@ -648,15 +657,15 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
 
-    print_meta = True
-    if len(bench_cfg.meta_vars) == 1:
-        mv = bench_cfg.meta_vars[0]
-        if mv.name == "repeat" and mv.samples == 1:
-            print_meta = False
-
     benchmark_sampling_str.append("\nResult Variables:")
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
+
+    print_meta = True
+    # if len(bench_cfg.meta_vars) == 1:
+    #     mv = bench_cfg.meta_vars[0]
+    #     if mv.name == "repeat" and mv.samples == 1:
+    #         print_meta = False
 
     if print_meta:
         benchmark_sampling_str.append("\nMeta Variables:")
