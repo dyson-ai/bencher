@@ -407,7 +407,7 @@ class Bench(BenchPlotServer):
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
-    def show(self, run_cfg: BenchRunCfg = None,pane=None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None, pane=None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:

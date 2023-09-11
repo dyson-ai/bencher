@@ -7,7 +7,6 @@ import time
 from bencher.example.benchmark_data import SimpleBenchClass
 
 # from concurrent.futures import Future
-import concurrent.futures
 
 
 class TestBenchPlotServer(unittest.TestCase):
@@ -25,8 +24,8 @@ class TestBenchPlotServer(unittest.TestCase):
 
         bps = bch.BenchPlotServer()
 
-        server =bps.plot_server(bench.bench_name)
-        time.sleep(1)  #wait for server to start
+        server = bps.plot_server(bench.bench_name)
+        time.sleep(1)  # wait for server to start
         server.stop()
 
     # Tests that the plot server raises FileNotFoundError when no data is found in the cache
@@ -47,3 +46,6 @@ class TestBenchPlotServer(unittest.TestCase):
             else:
                 with self.assertRaises(FileNotFoundError):
                     server.load_data_from_cache(bench_name)
+
+    def test_plot_server_port(self):
+        
