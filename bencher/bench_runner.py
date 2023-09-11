@@ -48,8 +48,10 @@ class BenchRunner:
         self.bench_fns.append(bench_fn)
 
     def add_bench(self, class_instance: ParametrizedSweep) -> None:
-        def cb(run_cfg: BenchRunCfg,report:BenchReport) -> BenchCfg:
-            bench = Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg,report=report)
+        def cb(run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
+            bench = Bench(
+                f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg, report=report
+            )
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)
