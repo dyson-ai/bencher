@@ -17,7 +17,13 @@ def example_float_cat(
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Float_Cat", bench_function, ExampleBenchCfgIn,run_cfg=run_cfg,report=report)
+    bench = bch.Bench(
+        "Bencher_Example_Float_Cat",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     bench.plot_sweep(
         input_vars=[

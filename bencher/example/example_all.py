@@ -15,9 +15,9 @@ from bencher.example.example_custom_sweep import example_custom_sweep
 
 # from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_holosweep import example_holosweep
-# from bencher.example.example_holosweep_tap import example_holosweep_tap
-# from bencher.example.optuna.example_optuna import optuna_rastrigin
-# from bencher.example.example_sample_cache import example_sample_cache
+from bencher.example.example_holosweep_tap import example_holosweep_tap
+from bencher.example.optuna.example_optuna import optuna_rastrigin
+from bencher.example.example_sample_cache import example_sample_cache
 
 
 if __name__ == "__main__":
@@ -34,5 +34,10 @@ if __name__ == "__main__":
     bench_runner.add_run(run_example_float_cat)
     bench_runner.add_run(run_example_time_event)
     bench_runner.add_run(example_custom_sweep)
+    bench_runner.add_run(example_holosweep)
+    bench_runner.add_run(example_holosweep_tap)
+
+
+
 
     bench_runner.run(level=2, show=True)

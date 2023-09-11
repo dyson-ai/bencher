@@ -19,8 +19,13 @@ def example_pareto(
     """
     run_cfg.use_optuna = True
 
-    bench = bch.Bench("Multi-objective optimisation", bench_function, ExampleBenchCfgIn,run_cfg=run_cfg,report=report)
-
+    bench = bch.Bench(
+        "Multi-objective optimisation",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     res = bench.plot_sweep(
         title="Pareto Optimisation with Optuna",
