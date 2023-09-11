@@ -53,7 +53,7 @@ class TestBenchExamples(unittest.TestCase):
         b_run.add_run(example_categorical)
         b_run.add_run(example_floats)
 
-        b_run.run(level=2,grouped=True)
+        b_run.run(level=2, grouped=True)
         b_run.report.save_index()
 
     # def test_example_categorical(self) -> None:

@@ -85,7 +85,7 @@ class BenchRunner:
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
                     if grouped:
-                        res = bch_fn(run_lvl, self.report)                        
+                        res = bch_fn(run_lvl, self.report)
                     else:
                         res = bch_fn(run_lvl, BenchReport())
                     if publish and self.publisher is not None:
