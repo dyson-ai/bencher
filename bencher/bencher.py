@@ -408,6 +408,21 @@ class Bench(BenchPlotServer):
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
+    def show(self, run_cfg: BenchRunCfg = None, pane=None) -> None:
+        """Launches a webserver with plots of the benchmark results, blocking
+
+        Args:
+            run_cfg (BenchRunCfg, optional): Options for the webserve such as the port. Defaults to None.
+
+        """
+        if run_cfg is None:
+            if self.last_run_cfg is not None:
+                run_cfg = self.last_run_cfg
+            else:
+                run_cfg = BenchRunCfg()
+
+        return BenchPlotServer().plot_server(self.bench_name, run_cfg, pane)
+
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
     ) -> xr.Dataset:

@@ -21,7 +21,11 @@ class TestBenchPlotServer(unittest.TestCase):
 
         bps = bch.BenchPlotServer()
 
-        bps.load_data_from_cache(bench.bench_name)
+        server_cfg = bch.BenchRunCfg()
+        server_cfg.show = False
+
+        server = bps.plot_server(bench.bench_name, server_cfg)
+        server.stop()
 
     # Tests that the plot server raises FileNotFoundError when no data is found in the cache
     def test_plot_server_no_data_in_cache(self):
@@ -41,3 +45,10 @@ class TestBenchPlotServer(unittest.TestCase):
             else:
                 with self.assertRaises(FileNotFoundError):
                     server.load_data_from_cache(bench_name)
+
+    def test_plot_server_port(self):
+        bps = bch.BenchPlotServer()
+        server_cfg = bch.BenchRunCfg()
+        server_cfg.port = 34343
+        server_cfg.show = False
+        bps.plot_server("test_bench_server", server_cfg)
