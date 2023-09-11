@@ -26,7 +26,7 @@ def example_floats2D(
         call,
         run_cfg=run_cfg,
         report=report,
-        plot_lib=bch.PlotLibrary().with_plotly()
+        plot_lib=bch.PlotLibrary().with_plotly(),
     )
 
     run_cfg.use_optuna = True
@@ -102,8 +102,7 @@ def example_floats2D(
 
 
 if __name__ == "__main__":
-
     bench_run = bch.BenchRunner()
     bench_run.add_run(example_floats2D)
-    bench_run.run(level=4,show=True)
+    bench_run.run(level=4, show=True)
     # example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()

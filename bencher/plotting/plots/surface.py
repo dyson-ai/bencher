@@ -1,18 +1,14 @@
 from typing import Optional
-
 import panel as pn
 import logging
 import xarray as xr
+import holoviews as hv
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
-
-from bencher.plotting_functions import wrap_long_time_labels
-import holoviews as hv
-
-
 from bencher.variables.results import ResultVar
+from bencher.plotting_functions import wrap_long_time_labels
 
 
 def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
