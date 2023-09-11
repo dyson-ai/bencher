@@ -23,7 +23,7 @@ class BenchPlotter:
 
         Returns:
             pn.pane: A panel containing plot results
-        """ 
+        """
         plot_cols = pn.Column()
         plot_cols.append(bench_cfg.summarise_sweep(name="Plots View"))
 
@@ -33,9 +33,7 @@ class BenchPlotter:
                 plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
             else:
                 plot_cols.append(
-                    pn.pane.Markdown(
-                        "Results over time needs at least 2 time snapshots to plot"
-                    )
+                    pn.pane.Markdown("Results over time needs at least 2 time snapshots to plot")
                 )
 
         if bench_cfg.over_time:

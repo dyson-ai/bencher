@@ -1,11 +1,10 @@
 # pylint: disable=duplicate-code
 
-import pathlib
 
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
-from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function, ExampleBenchCfg
+from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, ExampleBenchCfg
 
 
 def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
@@ -22,7 +21,7 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
 
-    bench.report.append(readme,"Intro")
+    bench.report.append(readme, "Intro")
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.theta],

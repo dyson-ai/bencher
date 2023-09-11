@@ -2,6 +2,7 @@ import bencher as bch
 
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
+
 # from bencher.example.example_floats2D import example_floats2D
 # from bencher.example.example_pareto import example_pareto
 # from bencher.example.example_simple_cat import example_1D_cat
@@ -18,10 +19,9 @@ from bencher.example.example_floats import example_floats
 # from bencher.example.example_sample_cache import example_sample_cache
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()
     bench_runner = bch.BenchRunner(run_cfg=run_cfg)
-
 
     bench_runner.add_run(example_categorical)
     bench_runner.add_run(example_floats)
@@ -29,4 +29,3 @@ if __name__=="__main__":
     bench_runner.run(max_level=2)
     bench_runner.report.save_index()
     bench_runner.report.show()
-

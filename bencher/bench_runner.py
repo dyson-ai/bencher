@@ -14,7 +14,11 @@ class Benchable(Protocol):
 
 class BenchRunner:
     def __init__(
-        self, bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None,report= BenchReport()
+        self,
+        bench_class=None,
+        run_cfg: BenchRunCfg = BenchRunCfg(),
+        publisher: Callable = None,
+        report=BenchReport(),
     ) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
