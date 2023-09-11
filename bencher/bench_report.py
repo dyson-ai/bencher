@@ -126,8 +126,6 @@ class BenchReport(BenchPlotServer):
 
         remote, publish_url = remote_callback(branch_name)
 
-        # if debug:
-        # publish_url
 
         directory = "tmpgit"
         report_path = self.save(directory, filename="index.html", in_html_folder=False)
