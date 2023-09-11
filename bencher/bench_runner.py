@@ -10,7 +10,7 @@ import panel as pn
 
 class Benchable(Protocol):
     def bench(self, run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
-        ...
+        raise NotImplementedError
 
 
 class BenchRunner:
@@ -40,18 +40,16 @@ class BenchRunner:
 
     @staticmethod
     def from_parametrized_sweep(
-        class_instance: ParametrizedSweep, run_cfg: BenchRunCfg = BenchRunCfg()
+        class_instance: ParametrizedSweep, run_cfg: BenchRunCfg = BenchRunCfg(), report: BenchReport = BenchReport()
     ):
-        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
+        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg,report=report)
 
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
 
     def add_bench(self, class_instance: ParametrizedSweep) -> None:
         def cb(run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
-            bench = Bench(
-                f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg, report=report
-            )
+            bench =BenchRunner.from_parametrized_sweep(class_instance,run_cfg=run_cfg,report=report)
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)

@@ -40,3 +40,4 @@ if __name__ == "__main__":
     bench_runner.add_run(example_sample_cache)
 
     bench_runner.run(level=2, show=True)
+

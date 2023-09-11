@@ -48,20 +48,33 @@ class TestBenchExamples(unittest.TestCase):
             path = example_result.report.save_index("cachedir")
             self.assertTrue(os.path.exists(path))
 
-    def test_example_categorical(self) -> None:
-        self.examples_asserts(example_categorical(self.create_run_cfg()))
+    def test_publish_docs(self):
+        b_run = bch.BenchRunner(run_cfg=self.create_run_cfg())
+        b_run.add_run(example_categorical)
+        b_run.add_run(example_floats)
 
-    def test_example_floats(self) -> None:
-        self.examples_asserts(example_floats(self.create_run_cfg()))
+        b_run.run(level=2)
+        b_run.report.save_index()
 
+    # def test_example_categorical(self) -> None:
+    #     self.examples_asserts(example_categorical(self.create_run_cfg()))
+
+ 
+
+    # def test_example_floats(self) -> None:
+    #     self.examples_asserts(example_floats(self.create_run_cfg()))
+
+    def test_example_simple_cat(self) -> None:
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
+
+   
     def test_example_floats2D(self) -> None:
         self.examples_asserts(example_floats2D(self.create_run_cfg()))
 
     def test_example_pareto(self) -> None:
         self.examples_asserts(example_pareto(self.create_run_cfg()))
 
-    def test_example_simple_cat(self) -> None:
-        self.examples_asserts(example_1D_cat(self.create_run_cfg()), save=True)
+  
 
     def test_example_simple_float(self) -> None:
         self.examples_asserts(example_1D_float(self.create_run_cfg()))
