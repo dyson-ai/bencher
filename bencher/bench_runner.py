@@ -3,18 +3,22 @@ import logging
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
-
+from bencher.bench_report import BenchReport
 from copy import deepcopy
 
 
 class Benchable(Protocol):
-    def bench(self, run_cfg: BenchRunCfg) -> BenchCfg:
-        ...
+    def bench(self, run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
+        raise NotImplementedError
 
 
 class BenchRunner:
     def __init__(
-        self, bench_class=None, run_cfg: BenchRunCfg = BenchRunCfg(), publisher: Callable = None
+        self,
+        bench_class=None,
+        run_cfg: BenchRunCfg = BenchRunCfg(),
+        publisher: Callable = None,
+        report=BenchReport(),
     ) -> None:
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
@@ -22,6 +26,8 @@ class BenchRunner:
         if bench_class is not None:
             self.add_bench(bench_class)
         self.results = []
+        self.report = report
+        self.servers = []
 
     @staticmethod
     def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
@@ -33,16 +39,20 @@ class BenchRunner:
 
     @staticmethod
     def from_parametrized_sweep(
-        class_instance: ParametrizedSweep, run_cfg: BenchRunCfg = BenchRunCfg()
+        class_instance: ParametrizedSweep,
+        run_cfg: BenchRunCfg = BenchRunCfg(),
+        report: BenchReport = BenchReport(),
     ):
-        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
+        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg, report=report)
 
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
 
     def add_bench(self, class_instance: ParametrizedSweep) -> None:
-        def cb(run_cfg: BenchRunCfg) -> BenchCfg:
-            bench = Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg)
+        def cb(run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
+            bench = BenchRunner.from_parametrized_sweep(
+                class_instance, run_cfg=run_cfg, report=report
+            )
             return bench.plot_sweep(f"bench_{class_instance.name}")
 
         self.add_run(cb)
@@ -57,6 +67,7 @@ class BenchRunner:
         publish: bool = False,
         debug: bool = True,
         show=False,
+        grouped=True,
     ) -> List[BenchCfg]:
         if run_cfg is None:
             run_run_cfg = deepcopy(self.run_cfg)
@@ -73,13 +84,13 @@ class BenchRunner:
                     run_lvl.level = lvl
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
-                    res = bch_fn(run_lvl)
+                    if grouped:
+                        res = bch_fn(run_lvl, self.report)
+                    else:
+                        res = bch_fn(run_lvl, BenchReport())
                     if publish and self.publisher is not None:
                         res.publish(remote_callback=self.publisher, debug=debug)
                     if show:
-                        res.show()
+                        self.servers.append(res.report.show())
                     self.results.append(res)
         return self.results
-
-    def show(self) -> None:
-        self.results[-1].show()

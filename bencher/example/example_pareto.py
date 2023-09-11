@@ -6,7 +6,9 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_pareto(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
+def example_pareto(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """Example of how to calculate the pareto front of a parameter sweep
 
     Args:
@@ -15,9 +17,15 @@ def example_pareto(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Multi-objective optimisation", bench_function, ExampleBenchCfgIn)
-
     run_cfg.use_optuna = True
+
+    bench = bch.Bench(
+        "Multi-objective optimisation",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     res = bench.plot_sweep(
         title="Pareto Optimisation with Optuna",
@@ -32,10 +40,9 @@ def example_pareto(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
         ),
         post_description="""# Post Description 
 This is a slightly unusual way of doing pareto optimisation as we are not using a typical multi-objective optimisation algorithm [TODO, add example].  Instead we are performing a grid search and looking at the resulting pareto plot.  The reason for doing a grid search instead of standard pareto optimisation is that we can produce more isolated plots of how an input affects an output which can help understanding of the parameter space.  Future examples will show how to use grid search to bootstrap further optimisation with a multi objective optimiser""",
-        run_cfg=run_cfg,
     )
 
-    bench.append(res.to_optuna())
+    bench.report.append(res.to_optuna())
     return bench
 
 

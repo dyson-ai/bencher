@@ -1,17 +1,24 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
 # pylint: disable=duplicate-code
 
-
-from bencher.bencher import Bench, BenchRunCfg
+import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_time_event(run_cfg: BenchRunCfg) -> Bench:
+def example_time_event(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """This example shows how to manually set time events as a string so that progress can be monitored over time"""
 
-    bencher = Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
+    bencher = bch.Bench(
+        "benchmarking_example_categorical1D",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     ExampleBenchCfgIn.param.offset.bounds = [0, 100]
 

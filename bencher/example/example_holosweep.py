@@ -64,11 +64,14 @@ class PlotFunctions(bch.ParametrizedSweep):
         return None
 
 
-def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench:
+def example_holosweep(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, run_cfg=run_cfg)
+
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
@@ -79,11 +82,11 @@ def example_holosweep(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg()) -> bch.Bench
     print("best", res.get_best_trial_params(True))
     print(res.hmap_kdims)
     print(res.hmap.keys())
-    bench.append(res.summarise_sweep())
-    bench.append(res.to_optuna())
-    bench.append(res.get_best_holomap())
-    bench.append(res.to_curve(), "Slider view")
-    bench.append(res.to_holomap().layout())
+    bench.report.append(res.summarise_sweep())
+    bench.report.append(res.to_optuna())
+    bench.report.append(res.get_best_holomap())
+    bench.report.append(res.to_curve(), "Slider view")
+    bench.report.append(res.to_holomap().layout())
     return bench
 
 
