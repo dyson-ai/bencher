@@ -26,7 +26,11 @@ class UnreliableClass(bch.ParametrizedSweep):
         return {"return_value": input_val, "trigger_crash": self.trigger_crash}
 
 
-def example_sample_cache(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport(), trigger_crash: bool=False) -> bch.Bench:
+def example_sample_cache(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(),
+    report: bch.BenchReport = bch.BenchReport(),
+    trigger_crash: bool = False,
+) -> bch.Bench:
     """This example shows how to use the use_sample_cache option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashed during the run
 
     Args:
@@ -40,7 +44,7 @@ def example_sample_cache(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: b
     instance = UnreliableClass()
     instance.trigger_crash = trigger_crash
 
-    bencher = bch.Bench("example_sample_cache", instance.crashy_fn)
+    bencher = bch.Bench("example_sample_cache", instance.crashy_fn, run_cfg=run_cfg, report=report)
 
     bencher.plot_sweep(
         title="Example Crashy Function with the sample_cache",

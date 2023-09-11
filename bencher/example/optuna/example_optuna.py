@@ -45,7 +45,9 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def optuna_rastrigin(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()):
+def optuna_rastrigin(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+):
     explorer = ToyOptimisationProblem()
 
     bench = bch.Bench("Rastrigin", explorer.rastrigin)

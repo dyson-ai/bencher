@@ -97,7 +97,7 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(optuna_rastrigin(self.create_run_cfg()))
 
     def test_example_sample_cache(self) -> None:
-        self.examples_asserts(example_sample_cache(self.create_run_cfg(), False))
+        self.examples_asserts(example_sample_cache(self.create_run_cfg(), trigger_crash=False))
 
     # shelved
     # def test_example_cone(self) -> None:

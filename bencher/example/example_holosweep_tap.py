@@ -75,11 +75,13 @@ class PlotFunctions(bch.ParametrizedSweep):
         return self.get_results_values_as_dict(holomap=pt)
 
 
-def example_holosweep_tap(run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_holosweep_tap(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, plot_lib=None,run_cfg=run_cfg,report=report)
+    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
