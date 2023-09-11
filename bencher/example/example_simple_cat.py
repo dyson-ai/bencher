@@ -32,6 +32,12 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     return bencher
 
 
+def plot_server(bench_name, run_cfg):
+    from bencher.bench_plot_server import BenchPlotServer
+
+    BenchPlotServer().plot_server(bench_name, run_cfg)
+
+
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 10
@@ -39,7 +45,13 @@ if __name__ == "__main__":
     # ex_run_cfg.over_time = True
     # ex_run_cfg.use_cache = True
 
-    ex_res = example_1D_cat(ex_run_cfg)
+    srv1 = example_1D_cat(ex_run_cfg).show()
 
-    # ex_res.publish()
-    ex_res.show()
+    print("after")
+    # srv1.join()
+    import time
+
+    time.sleep(5)
+    srv1.stop()
+    print("join")
+    # srv2 =example_1D_cat(ex_run_cfg).show()
