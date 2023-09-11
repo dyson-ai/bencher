@@ -39,9 +39,9 @@ if __name__ == "__main__":
         result_vars=[inv.param.portfolio_value],
     )
 
-    bench.append(res.to_grid())
-    bench.append(res.to(hv.Table).opts(width=1000))
+    bench.report.append(res.to_grid())
+    bench.report.append(res.to(hv.Table).opts(width=1000))
 
-    bench.append_tab(Investment().to_dynamic_map(name="Investment"))
+    bench.report.append_tab(Investment().to_dynamic_map(name="Investment"))
 
     bench.show()

@@ -85,21 +85,21 @@ def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
 
 def run_levels_1D(bench: bch.Bench) -> bch.Bench:
     results = run_with_dim(bench, [LevelsExample.param.xval])
-    bench.append_markdown("# Using Levels to define sample density", "Levels")
+    bench.report.append_markdown("# Using Levels to define sample density", "Levels")
 
     bench1 = bch.Bench("lol", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
     res1 = bench1.plot_sweep("Levels", input_vars=[RunWithLevel.param.level])
 
-    bench.append_markdown(
+    bench.report.append_markdown(
         "Sample levels let you perform parameter sweeps without having to decide how many samples to take.  If you perform a sweep at level 1, then all the points are reused when sampling at level 2.  The higher levels reuse the points from lower levels to avoid having to recompute potentially expensive samples. The other advantage is that it enables a workflow where you can quickly see the results of the sweep at a low resolution to sense check the code, and then run it at a high level to get the fidelity you want.  When calling a sweep at a high level, you can publish the intermediate lower level results as the computiation continues so that you can track the progress of the computation and end the sweep early when you have sufficient resolution",
         width=600,
     )
     row = pn.Row()
     row.append(res1.to_table())
     row.append(res1.to_curve().opts(shared_axes=False))
-    bench.append(row)
+    bench.report.append(row)
 
-    bench.append_markdown(
+    bench.report.append_markdown(
         "Level 1 returns a single point at the lower bound of the parameter. Level 2 uses the uppper and lower bounds of the parameter. All subsequent levels are created by adding a sample between each previously calculated sample to ensure that all previous values can be reused while retaining an equal sample spacing.  The following plots show the sample points as circles and the corresponding plot of a sin function sampled at that level.",
         width=600,
     )
@@ -118,20 +118,20 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
         combined_curve *= crv
         row.append(pts)
         row.append(crv)
-        bench.append_markdown(f"## {r.title}")
-        bench.append(row)
+        bench.report.append_markdown(f"## {r.title}")
+        bench.report.append(row)
 
-    bench.append_markdown(
+    bench.report.append_markdown(
         "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"
     )
 
-    bench.append(pn.Row(combined_pts, combined_curve))
+    bench.report.append(pn.Row(combined_pts, combined_curve))
     return bench
 
 
 def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     results = run_with_dim(bench, [LevelsExample.param.xval, LevelsExample.param.yval])
-    bench.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
+    bench.report.append_markdown("# Using Levels to define 2D sample density", "Levels 2D")
 
     bench1 = bch.Bench("lol", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
     res1 = bench1.plot_sweep(
@@ -142,12 +142,12 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     row = pn.Row()
     row.append(res1.to_table())
     row.append(res1.to_curve().opts(shared_axes=False))
-    bench.append(row)
+    bench.report.append(row)
 
     for it, r in enumerate(results):
         lvl = it + 1
         row = pn.Row()
-        bench.append_markdown(f"## {r.title}")
+        bench.report.append_markdown(f"## {r.title}")
         row.append(
             r.to_holomap()
             .overlay()
@@ -156,9 +156,9 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
         row.append(
             r.to_heatmap().opts(title=f"Function Value Heatmap for level: {lvl}", shared_axes=False)
         )
-        bench.append(row)
+        bench.report.append(row)
 
-    bench.append_markdown(
+    bench.report.append_markdown(
         "This plot overlays the previous plots into a single image. It shows how each level overlaps the previous level"
     )
     overlay = hv.Overlay()
@@ -169,7 +169,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
             .opts(width=1000, height=1000, show_legend=False, shared_axes=False)
         )
 
-    bench.append(overlay)
+    bench.report.append(overlay)
     return bench
 
 

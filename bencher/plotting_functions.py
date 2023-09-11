@@ -11,6 +11,7 @@ from bencher.bench_cfg import BenchCfg, PltCfgBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.variables.results import ResultVar, ResultVec
+import matplotlib
 
 
 # hv.extension("plotly", "bokeh")
@@ -52,6 +53,7 @@ def plot_sns(bench_cfg: BenchCfg, rv: ParametrizedSweep, sns_cfg: PltCfgBase) ->
     Returns:
         pn.pane: A seaborn plot as a panel pane
     """
+    matplotlib.use("agg")
 
     bench_cfg = wrap_long_time_labels(bench_cfg)
 

@@ -9,6 +9,8 @@ from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plt_cfg import PltCfgBase
 
+import matplotlib
+
 
 class Catplot:
     # shared plot filter for catplots
@@ -21,6 +23,8 @@ class Catplot:
 
     @staticmethod
     def plot_setup(pl_in: PlotInput) -> Tuple[pd.DataFrame, PltCfgBase]:
+        matplotlib.use("agg")
+
         plt.figure(figsize=(4, 4))
         df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
         sns_cfg = PltCfgBase()

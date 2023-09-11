@@ -48,3 +48,38 @@ class TestJob(unittest.TestCase):
         jc3 = JobFunctionCache(cp3.__call__, parallel=parallel, cache_name="test_cache2")
         res1cp3 = jc3.call(var1=1).result()
         self.assertNotEqual(res1["result"], res1cp3["result"])
+
+    @settings(deadline=500)
+    @given(st.booleans())
+    def test_overwrite(self, parallel):
+        cp = CachedParamExample()  # clears cache by default
+
+        jc = JobFunctionCache(cp.__call__, parallel=parallel, cache_name="test_cache1")
+        jc.clear()
+
+        res1 = jc.call(var1=1).result()
+
+        self.assertEqual(jc.worker_wrapper_call_count, 1)
+        self.assertEqual(jc.worker_cache_call_count, 0)
+        self.assertEqual(jc.worker_fn_call_count, 1)
+
+        jc.clear_call_counts()
+        res2 = jc.call(var1=1).result()
+
+        self.assertEqual(jc.worker_wrapper_call_count, 1)
+        self.assertEqual(jc.worker_cache_call_count, 1)
+        self.assertEqual(jc.worker_fn_call_count, 0)
+
+        self.assertEqual(res1["result"], res2["result"])
+
+        jc.clear_call_counts()
+        jc.overwrite = True
+        res3 = jc.call(var1=1).result()
+        self.assertEqual(jc.worker_wrapper_call_count, 1)
+        self.assertEqual(jc.worker_cache_call_count, 0)
+        self.assertEqual(jc.worker_fn_call_count, 1)
+
+        self.assertNotEqual(res1["result"], res3["result"], f"{res1}")
+
+
+# if __name__ == "__main__":
