@@ -7,12 +7,9 @@ import xarray as xr
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
-from bencher.bench_cfg import BenchCfg
-from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.plotting_functions import wrap_long_time_labels
 import holoviews as hv
-import plotly.graph_objs as go
 
 
 from bencher.variables.results import ResultVar
@@ -48,8 +45,6 @@ def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltC
             xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
             xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
     return xr_cfg
-
-
 
 
 class SurfacePlot:
@@ -91,11 +86,12 @@ class SurfacePlot:
             print(ds)
 
             # try:
-            surface = ds.to(hv.Surface, vdims=[pl_in.rv.name])
+           
             # except Exception:
             #     return plot_surface_plotly(bench_cfg, rv, xr_cfg)
 
             try:
+                surface = ds.to(hv.Surface, vdims=[pl_in.rv.name])
                 surface = surface.opts(colorbar=True)
             except Exception as e:
                 logging.warning(e)
@@ -130,7 +126,6 @@ class SurfacePlot:
             return pn.Column(out, name=PlotTypes.surface_hv)
 
         return None
-
 
 
 # def plot_surface_plotly(
