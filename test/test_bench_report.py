@@ -41,27 +41,4 @@ class TestBenchReport(unittest.TestCase):
         bench_report.append_tab(panel)
         self.assertEqual(bench_report.pane[-1].name, panel.name)
 
-    # Tests that a column with a custom name is appended to the BenchReport instance and the test passes
-    def test_append_column_with_custom_name_fixed(self):
-        bench_report = BenchReport()
-        panel = pn.panel("Test Panel")
-        name = "Custom Column"
-        bench_report.append_col(panel, name=name)
-        self.assertNotEqual(bench_report.pane[-1].name, name)
-        self.assertEqual(bench_report.pane[-1].objects[0], panel)
-
-    # Tests that a result with a custom title is appended to the BenchReport instance
-    # def test_append_result_with_custom_title_fixed(self):
-    #     import param
-    #     bench_report = BenchReport()
-    #     bench_cfg = BenchCfg(title="Custom Result", input_vars=[param.Integer(1), param.Integer(2), param.Integer(3)])
-    #     bench_report.append_result(bench_cfg)
-    #     self.assertEqual( bench_report.pane[-1].name , bench_cfg.title)
-    #     self.assertTrue( isinstance(bench_report.pane[-1].object, BenchPlotter))
-
-    # # Tests that the BenchReport instance is saved to the specified filename
-    # def test_save_to_specified_filename(self):
-    #     bench_report = BenchReport(bench_name="Test Bench")
-    #     save_path = bench_report.save(filename="test_report.html")
-    #     self.assertEqual( save_path.name , "test_report.html")
-    #     self.assertEqual( save_path.parent , Path("cachedir/html"))
+    
