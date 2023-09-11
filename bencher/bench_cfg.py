@@ -106,7 +106,7 @@ class BenchPlotSrvCfg(param.Parameterized):
         False,
         doc="Add the port to the whilelist, (warning will disable remote access if set to true)",
     )
-    show:bool = param.Boolean(True,doc="Open the served page in a web browser")
+    show: bool = param.Boolean(True, doc="Open the served page in a web browser")
 
 
 class BenchRunCfg(BenchPlotSrvCfg):

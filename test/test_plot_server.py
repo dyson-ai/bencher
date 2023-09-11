@@ -26,9 +26,9 @@ class TestBenchPlotServer(unittest.TestCase):
 
         server_cfg = bch.BenchRunCfg()
         server_cfg.port = 34343
-        server_cfg.show=False
+        server_cfg.show = False
 
-        server = bps.plot_server(bench.bench_name,server_cfg)
+        server = bps.plot_server(bench.bench_name, server_cfg)
         time.sleep(1)  # wait for server to start
         server.stop()
 
@@ -55,5 +55,5 @@ class TestBenchPlotServer(unittest.TestCase):
         bps = bch.BenchPlotServer()
         server_cfg = bch.BenchRunCfg()
         server_cfg.port = 34343
-        server_cfg.show=False
-        bps.plot_server("test_bench_server",server_cfg)
+        server_cfg.show = False
+        bps.plot_server("test_bench_server", server_cfg)
