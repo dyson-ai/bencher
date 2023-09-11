@@ -7,7 +7,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_1D_cat(run_cfg: bch.BenchRunCfg,report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
     """This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function
 
     Args:
@@ -18,7 +18,7 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """
 
     explorer = ExampleBenchCfgIn()
-    bench = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench("benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn,run_cfg=run_cfg,report=report)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
     bench.plot_sweep(
@@ -27,7 +27,6 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         const_vars=explorer.get_input_defaults(),
         description=example_1D_cat.__doc__,
-        run_cfg=run_cfg,
     )
     return bench
 
@@ -35,9 +34,6 @@ def example_1D_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 10
-    # ex_run_cfg.print_pandas = True
-    # ex_run_cfg.over_time = True
-    # ex_run_cfg.use_cache = True
 
     ex_res = example_1D_cat(ex_run_cfg)
 

@@ -7,7 +7,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, ExampleBenchCfg
 
 
-def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_floats(run_cfg: bch.BenchRunCfg,report=bch.BenchReport) -> bch.Bench:
     """Example of how to perform a parameter sweep for floating point variables
 
     Args:
@@ -16,7 +16,7 @@ def example_floats(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Floats", ExampleBenchCfg())
+    bench = bch.Bench("Bencher_Example_Floats", ExampleBenchCfg(),report=report,run_cfg=run_cfg)
 
     with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
