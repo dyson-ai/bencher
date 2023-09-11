@@ -6,7 +6,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_plot_library(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
     """This example shows how use PlotLibrary.all() to display all possible plot types for a given benchmark
 
     Args:
@@ -17,10 +17,9 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     """
 
     bencher = bch.Bench(
-        "benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn, run_cfg=run_cfg
+        "benchmarking_example_categorical1D", bench_function, ExampleBenchCfgIn, run_cfg=run_cfg,report=report,plot_lib=bch.PlotLibrary.all()
     )
 
-    plot_lib = bch.PlotLibrary.all()
 
     bencher.plot_sweep(
         title="Example 1D Categorical",
@@ -28,8 +27,6 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
-        run_cfg=run_cfg,
-        plot_lib=plot_lib,
     )
 
     bencher.plot_sweep(
@@ -38,8 +35,6 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         const_vars=[ExampleBenchCfgIn.param.noisy.with_const(True)],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
-        run_cfg=run_cfg,
-        plot_lib=plot_lib,
     )
 
     bencher.plot_sweep(
@@ -49,7 +44,6 @@ def example_plot_library(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         description=example_plot_library.__doc__,
         run_cfg=bch.BenchRunCfg(repeats=1),
-        plot_lib=plot_lib,
     )
 
     # WIP

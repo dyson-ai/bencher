@@ -7,7 +7,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, ExampleBenchCfg
 
 
-def example_floats(run_cfg: bch.BenchRunCfg,report=bch.BenchReport) -> bch.Bench:
+def example_floats(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
     """Example of how to perform a parameter sweep for floating point variables
 
     Args:

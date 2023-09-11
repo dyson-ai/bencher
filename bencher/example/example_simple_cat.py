@@ -7,7 +7,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_1D_cat(run_cfg: bch.BenchRunCfg,report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
+def example_1D_cat(run_cfg: bch.BenchRunCfg= bch.BenchRunCfg(),report:bch.BenchReport = bch.BenchReport()) -> bch.Bench:
     """This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function
 
     Args:
