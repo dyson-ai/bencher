@@ -10,6 +10,8 @@ from bencher.plotting.plots.catplot import Catplot
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plots.plot_base import PlotBase
 
+import matplotlib
+
 
 class Lineplot(PlotBase):
     # shared plot filter for lineplots
@@ -30,6 +32,8 @@ class Lineplot(PlotBase):
             Optional[pn.panel]: a line plot of the data
         """
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
+            matplotlib.use("agg")
+
             df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
             sns_cfg = PltCfgBase()
 

@@ -13,6 +13,7 @@ from bencher.example.example_float3D import example_floats3D
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_plot_library import example_plot_library
+from bencher.example.example_holosweep import example_holosweep
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 
 from bencher.example.optuna.example_optuna import optuna_rastrigin
@@ -44,23 +45,31 @@ class TestBenchExamples(unittest.TestCase):
         self.assertIsNotNone(example_result)
         if save or self.generate_all:
             # example_result.save("bencher/example/html")
-            path = example_result.save_index("cachedir")
+            path = example_result.report.save_index("cachedir")
             self.assertTrue(os.path.exists(path))
 
-    def test_example_categorical(self) -> None:
-        self.examples_asserts(example_categorical(self.create_run_cfg()))
+    def test_publish_docs(self):
+        b_run = bch.BenchRunner(run_cfg=self.create_run_cfg())
+        b_run.add_run(example_categorical)
+        b_run.add_run(example_floats)
 
-    def test_example_floats(self) -> None:
-        self.examples_asserts(example_floats(self.create_run_cfg()))
+        b_run.run(level=2, grouped=True)
+        b_run.report.save_index()
+
+    # def test_example_categorical(self) -> None:
+    #     self.examples_asserts(example_categorical(self.create_run_cfg()))
+
+    # def test_example_floats(self) -> None:
+    #     self.examples_asserts(example_floats(self.create_run_cfg()))
+
+    def test_example_simple_cat(self) -> None:
+        self.examples_asserts(example_1D_cat(self.create_run_cfg()))
 
     def test_example_floats2D(self) -> None:
         self.examples_asserts(example_floats2D(self.create_run_cfg()))
 
     def test_example_pareto(self) -> None:
         self.examples_asserts(example_pareto(self.create_run_cfg()))
-
-    def test_example_simple_cat(self) -> None:
-        self.examples_asserts(example_1D_cat(self.create_run_cfg()), save=True)
 
     def test_example_simple_float(self) -> None:
         self.examples_asserts(example_1D_float(self.create_run_cfg()))
@@ -86,6 +95,9 @@ class TestBenchExamples(unittest.TestCase):
     def test_plot_library(self) -> None:
         self.examples_asserts(example_plot_library(self.create_run_cfg()))
 
+    def test_holosweep(self) -> None:
+        self.examples_asserts(example_holosweep(self.create_run_cfg()))
+
     def test_holosweep_tap(self) -> None:
         self.examples_asserts(example_holosweep_tap(self.create_run_cfg()))
 
@@ -93,7 +105,7 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(optuna_rastrigin(self.create_run_cfg()))
 
     def test_example_sample_cache(self) -> None:
-        self.examples_asserts(example_sample_cache(self.create_run_cfg(), False))
+        self.examples_asserts(example_sample_cache(self.create_run_cfg(), trigger_crash=False))
 
     # shelved
     # def test_example_cone(self) -> None:

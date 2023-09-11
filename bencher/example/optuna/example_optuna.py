@@ -45,17 +45,19 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def optuna_rastrigin(run_cfg=bch.BenchRunCfg()):
+def optuna_rastrigin(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+):
     explorer = ToyOptimisationProblem()
 
-    bench = bch.Bench("Rastrigin", explorer.rastrigin)
+    bench = bch.Bench("Rastrigin", explorer.rastrigin, run_cfg=run_cfg, report=report)
 
     bench.to_optuna(
         input_vars=[explorer.param.input1, explorer.param.input2],
         result_vars=[explorer.param.output],
     )
 
-    bench.get_panel(False).append(
+    bench.report.append_markdown(
         f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
     )
 

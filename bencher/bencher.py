@@ -3,20 +3,21 @@ from datetime import datetime
 from itertools import product
 from typing import Callable, List
 from copy import deepcopy
-import os
 import numpy as np
-import panel as pn
 import param
 import xarray as xr
 from diskcache import Cache
-from sortedcontainers import SortedDict
 from contextlib import suppress
+from optuna import Study
+from functools import partial
+
+
+from bencher.worker_job import WorkerJob
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
 from bencher.bench_plot_server import BenchPlotServer
+from bencher.bench_report import BenchReport
 
-
-from bencher.variables.sweep_base import hash_sha1
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import ResultVar, ResultVec
@@ -24,19 +25,16 @@ from bencher.variables.results import ResultVar, ResultVec
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.plotting.plot_collection import PlotCollection
-from bencher.plt_cfg import BenchPlotter
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
-from bencher.utils import hmap_canonical_input
 
 from bencher.optuna_conversions import to_optuna, summarise_study
-from optuna import Study
-from pathlib import Path
-import shutil
 
+from bencher.job import Job, JobCache
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
 
 for handler in logging.root.handlers:
     handler.setFormatter(formatter)
@@ -99,7 +97,31 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
                 index_tuple[7],
                 index_tuple[8],
             ] = value
+
     return data_array
+
+
+def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep, **kwargs) -> ParametrizedSweep:
+    input_cfg = worker_input_cfg()
+    for k, v in kwargs.items():
+        input_cfg.param.set_param(k, v)
+    return input_cfg
+
+
+def worker_cfg_wrapper(worker, worker_input_cfg: ParametrizedSweep, **kwargs) -> dict:
+    input_cfg = kwargs_to_input_cfg(worker_input_cfg, **kwargs)
+    return worker(input_cfg)
+
+
+def worker_kwargs_wrapper(worker, bench_cfg, **kwargs) -> dict:
+    function_input_deep = deepcopy(kwargs)
+    if not bench_cfg.pass_repeat:
+        function_input_deep.pop("repeat")
+    if "over_time" in function_input_deep:
+        function_input_deep.pop("over_time")
+    if "time_event" in function_input_deep:
+        function_input_deep.pop("time_event")
+    return worker(**function_input_deep)
 
 
 class Bench(BenchPlotServer):
@@ -111,6 +133,7 @@ class Bench(BenchPlotServer):
         plot_lib: PlotCollection = None,
         remove_plots: list = None,
         run_cfg=None,
+        report=None,
     ) -> None:
         """Create a new Bench object from a function and a class defining the inputs to the function
 
@@ -127,13 +150,11 @@ class Bench(BenchPlotServer):
         self.worker_class_instance = None
         self.set_worker(worker, worker_input_cfg)
         self.run_cfg = run_cfg
+        if report is None:
+            self.report = BenchReport()
+        else:
+            self.report = report
 
-        self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
-        # The number of times the wrapped worker was called
-        self.worker_wrapper_call_count = 0
-        self.worker_fn_call_count = 0  # The number of times the raw worker was called
-        # The number of times the cache was used instead of the raw worker
-        self.worker_cache_call_count = 0
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
@@ -155,10 +176,14 @@ class Bench(BenchPlotServer):
             # if issubclass(worker,ParametrizedSweep):
             # logging.warning("This should be a class instance, not a class")
             self.worker_class_instance = worker
+            # self.worker_class_type = type(worker)
             self.worker = self.worker_class_instance.__call__
             logging.info("setting worker from bench class.__call__")
         else:
-            self.worker = worker
+            if worker_input_cfg is None:
+                self.worker = worker
+            else:
+                self.worker = partial(worker_cfg_wrapper, worker, worker_input_cfg)
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
@@ -181,7 +206,7 @@ class Bench(BenchPlotServer):
         n_trials: int = 100,
     ) -> Study:
         optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
-        self.append(summarise_study(optu))
+        self.report.append(summarise_study(optu))
         return optu
 
     def plot_sweep(
@@ -312,12 +337,10 @@ class Bench(BenchPlotServer):
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
 
-        if bench_cfg.use_sample_cache:
-            self.sample_cache = Cache(
-                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
-            )
-            if bench_cfg.clear_sample_cache:
-                self.clear_tag_from_cache(bench_cfg.tag)
+        if self.sample_cache is None:
+            self.sample_cache = self.init_sample_cache(run_cfg)
+        if bench_cfg.clear_sample_cache:
+            self.clear_tag_from_sample_cache(bench_cfg.tag, run_cfg)
 
         calculate_results = True
         with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
@@ -344,8 +367,6 @@ class Bench(BenchPlotServer):
             bench_cfg = self.calculate_benchmark_results(
                 bench_cfg, time_src, bench_cfg_sample_hash, run_cfg
             )
-            if self.sample_cache is not None:
-                self.sample_cache.close()
 
             # use the hash of the inputs to look up historical values in the cache
             if run_cfg.over_time:
@@ -356,12 +377,12 @@ class Bench(BenchPlotServer):
             self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
             self.cache_results(bench_cfg, bench_cfg_hash)
 
-        if self.sample_cache is not None:
-            logging.info(
-                f"cache size :{int(self.sample_cache.volume() / 1000000)}MB / {int(self.cache_size/1000000)}MB"
-            )
+        logging.info(self.sample_cache.stats())
+        self.sample_cache.close()
 
-        self.pane = BenchPlotter.plot(bench_cfg, self.pane)
+        if bench_cfg.auto_plot:
+            self.report.append_result(bench_cfg)
+
         return bench_cfg
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
@@ -387,41 +408,7 @@ class Bench(BenchPlotServer):
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
-    def calculate_benchmark_results(
-        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
-    ):
-        """A function for generating an n-d xarray from a set of input variables in the BenchCfg
-
-        Args:
-            bench_cfg (BenchCfg): description of the benchmark parameters
-            time_src (datetime): a representation of the sample time
-
-        Returns:
-            bench_cfg (BenchCfg): description of the benchmark parameters
-        """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
-        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
-        callcount = 1
-        bench_cfg.hmap_kdims = sorted(dims_name)
-
-        for idx_tuple, function_input_vars in func_inputs:
-            logging.info(f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}")
-            self.call_worker_and_store_results(
-                bench_cfg,
-                idx_tuple,
-                function_input_vars,
-                dims_name,
-                constant_inputs,
-                bench_cfg_sample_hash,
-                bench_run_cfg,
-            )
-            callcount += 1
-
-        for inp in bench_cfg.all_vars:
-            self.add_metadata_to_dataset(bench_cfg, inp)
-        return bench_cfg
-
-    def show(self, run_cfg: BenchRunCfg = None) -> None:
+    def show(self, run_cfg: BenchRunCfg = None, pane=None) -> None:
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -434,7 +421,7 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = BenchRunCfg()
 
-        BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
+        return BenchPlotServer().plot_server(self.bench_name, run_cfg, pane)
 
     def load_history_cache(
         self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
@@ -552,112 +539,81 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
-    def worker_wrapper(self, bench_cfg: BenchCfg, function_input: dict):
-        self.worker_fn_call_count += 1
-        if not bench_cfg.pass_repeat:
-            function_input.pop("repeat")
-        if "over_time" in function_input:
-            function_input.pop("over_time")
-        if "time_event" in function_input:
-            function_input.pop("time_event")
-
-        if self.worker_input_cfg is None:  # worker takes kwargs
-            return self.worker(**function_input)
-
-        # worker takes a parametrised input object
-        input_cfg = self.worker_input_cfg()
-        for k, v in function_input.items():
-            input_cfg.param.set_param(k, v)
-
-        return self.worker(input_cfg)
-
-    def call_worker_and_store_results(
-        self,
-        bench_cfg: BenchCfg,
-        index_tuple: tuple,
-        function_input_vars: List,
-        dims_name: List[str],
-        constant_inputs: dict,
-        bench_cfg_sample_hash: str,
-        bench_run_cfg: BenchRunCfg,
-    ) -> None:
-        """A wrapper around the benchmarking function to set up and store the results of the benchmark function
+    def calculate_benchmark_results(
+        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
+    ) -> BenchCfg:
+        """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
         Args:
             bench_cfg (BenchCfg): description of the benchmark parameters
-            index_tuple (tuple): tuple of n-d array indices
-            function_input_vars (List): list of function inputs as dicts
-            dims_name (List[str]): names of the n-d dimension
-            constant_inputs (dict): input values to keep constant
+            time_src (datetime): a representation of the sample time
+
+        Returns:
+            bench_cfg (BenchCfg): description of the benchmark parameters
         """
-        self.worker_wrapper_call_count += 1
-        function_input = SortedDict(zip(dims_name, function_input_vars))
+        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
+        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
+        bench_cfg.hmap_kdims = sorted(dims_name)
 
-        canonical_input = hmap_canonical_input(function_input)
-        if constant_inputs is not None:
-            function_input = function_input | constant_inputs
+        callcount = 1
 
-        if bench_cfg.print_bench_inputs:
-            logging.info("Bench Inputs:")
-            for k, v in function_input.items():
-                logging.info(f"\t {k}:{v}")
+        results_list = []
+        jobs = []
 
-        # store a tuple of the inputs as keys for a holomap
-        if bench_cfg.use_sample_cache:
-            # the signature is the hash of the inputs to to the function + meta variables such as repeat and time + the hash of the benchmark sweep as a whole (without the repeats hash)
-            fn_inputs_sorted = list(SortedDict(function_input).items())
-            function_input_signature_pure = hash_sha1((fn_inputs_sorted, bench_cfg.tag))
-
-            function_input_signature_benchmark_context = hash_sha1(
-                (function_input_signature_pure, bench_cfg_sample_hash)
+        for idx_tuple, function_input_vars in func_inputs:
+            job = WorkerJob(
+                function_input_vars,
+                idx_tuple,
+                dims_name,
+                constant_inputs,
+                bench_cfg_sample_hash,
+                bench_cfg.tag,
             )
-            # logging.info(f"inputs: {fn_inputs_sorted}")
-            # logging.info(f"pure: {function_input_signature_pure}")
-            if (
-                not bench_cfg.overwrite_sample_cache
-                and function_input_signature_benchmark_context in self.sample_cache
-            ):
-                logging.info(
-                    f"Hash: {function_input_signature_benchmark_context} was found in context cache, loading..."
-                )
-                result = self.sample_cache[function_input_signature_benchmark_context]
-                self.worker_cache_call_count += 1
-            elif (
-                not bench_cfg.overwrite_sample_cache
-                and bench_run_cfg.only_hash_tag
-                and (function_input_signature_pure in self.sample_cache)
-            ):
-                logging.info(
-                    f"Hash: {function_input_signature_benchmark_context} not found in context cache"
-                )
-                logging.info(
-                    f"Hash: {function_input_signature_pure} was found in the function cache, loading..."
-                )
+            job.setup_hashes()
+            jobs.append(job)
 
-                result = self.sample_cache[function_input_signature_pure]
-                self.worker_cache_call_count += 1
-            else:
-                logging.info(f"Context not in cache: {function_input_signature_benchmark_context}")
-                logging.info(f"Function inputs not cache: {function_input_signature_pure}")
-                logging.info("Calling benchmark function")
+            jid = f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}"
+            worker = partial(worker_kwargs_wrapper, self.worker, bench_cfg)
+            cache_job = Job(
+                job_id=jid,
+                function=worker,
+                job_args=job.function_input,
+                job_key=job.function_input_signature_pure,
+                tag=job.tag,
+            )
+            result = self.sample_cache.add_job(cache_job)
+            results_list.append(result)
+            callcount += 1
 
-                result = self.worker_wrapper(bench_cfg, function_input)
-                self.sample_cache.set(
-                    function_input_signature_benchmark_context, result, tag=bench_cfg.tag
-                )
-                self.sample_cache.set(function_input_signature_pure, result, tag=bench_cfg.tag)
-        else:
-            result = self.worker_wrapper(bench_cfg, function_input)
+            if not bench_run_cfg.parallel:
+                self.store_results(result, bench_cfg, job, bench_run_cfg)
+
+        if bench_run_cfg.parallel:
+            for job, res in zip(jobs, results_list):
+                self.store_results(res, bench_cfg, job, bench_run_cfg)
+
+        for inp in bench_cfg.all_vars:
+            self.add_metadata_to_dataset(bench_cfg, inp)
+        return bench_cfg
+
+    def store_results(
+        self,
+        job_result,
+        bench_cfg: BenchCfg,
+        worker_job: WorkerJob,
+        bench_run_cfg: BenchRunCfg,
+    ) -> None:
+        result = job_result.result()
+        if bench_cfg.print_bench_inputs:
+            logging.info(f"{job_result.job_id} inputs:")
+            for k, v in worker_job.function_input.items():
+                logging.info(f"\t {k}:{v}")
 
         # construct a dict for a holomap
         if isinstance(result, dict):  # todo holomaps with named types
             if "hmap" in result:
-                # print(isinstance(result["hmap"], hv.element.Element))
-                bench_cfg.hmap[canonical_input] = result["hmap"]
+                bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
 
-        logging.debug(f"input_index {index_tuple}")
-        logging.debug(f"input {function_input_vars}")
-        logging.debug(f"result {result}")
         for rv in bench_cfg.result_vars:
             if isinstance(result, dict):
                 result_value = result[rv.name]
@@ -668,30 +624,38 @@ class Bench(BenchPlotServer):
                 logging.info(f"{rv.name}: {result_value}")
 
             if isinstance(rv, ResultVar):
-                set_xarray_multidim(bench_cfg.ds[rv.name], index_tuple, result_value)
+                set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
             elif isinstance(rv, ResultVec):
                 if isinstance(result_value, (list, np.ndarray)):
                     if len(result_value) == rv.size:
                         for i in range(rv.size):
                             set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)], index_tuple, result_value[i]
+                                bench_cfg.ds[rv.index_name(i)],
+                                worker_job.index_tuple,
+                                result_value[i],
                             )
 
             else:
                 raise RuntimeError("Unsupported result type")
 
-    def clear_tag_from_cache(self, tag: str):
+    def init_sample_cache(self, run_cfg: BenchRunCfg):
+        return JobCache(
+            overwrite=run_cfg.overwrite_sample_cache,
+            parallel=run_cfg.parallel,
+            cache_name="sample_cache",
+            tag_index=True,
+            size_limit=self.cache_size,
+            use_cache=run_cfg.use_sample_cache,
+        )
+
+    def clear_tag_from_sample_cache(self, tag: str, run_cfg):
         """Clear all samples from the cache that match a tag
         Args:
             tag(str): clear samples with this tag
         """
         if self.sample_cache is None:
-            self.sample_cache = Cache(
-                "cachedir/sample_cache", tag_index=True, size_limit=self.cache_size
-            )
-        logging.info(f"clearing the sample cache for tag: {tag}")
-        removed_vals = self.sample_cache.evict(tag)
-        logging.info(f"removed: {removed_vals} items from the cache")
+            self.sample_cache = self.init_sample_cache(run_cfg)
+        self.sample_cache.clear_tag(tag)
 
     def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
         """Adds variable metadata to the xrarry so that it can be used to automatically plot the dimension units etc.
@@ -734,235 +698,4 @@ class Bench(BenchPlotServer):
 
     def clear_call_counts(self) -> None:
         """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
-        self.worker_wrapper_call_count = 0
-        self.worker_fn_call_count = 0
-        self.worker_cache_call_count = 0
-
-    def get_panel(
-        self,
-        main_plot: bool = True,
-    ) -> pn.pane:
-        """Get the panel instance where bencher collates results
-
-        Args:
-            main_plot (bool, optional): return the last added page. Defaults to True.
-
-        Returns:
-            pn.pane: results panel
-        """
-        if main_plot:
-            if len(self.pane) > 0:
-                return self.pane[-1]
-            return self.pane
-        return self.pane[-1]
-
-    def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
-        md = pn.pane.Markdown(markdown, name=name, **kwargs)
-        self.append(md, name)
-        return md
-
-    def append(self, pane: pn.panel, name: str = None) -> None:
-        if name is None:
-            name = pane.name
-        if len(self.pane) == 0:
-            self.append_tab(pane, name)
-        else:
-            self.pane[-1].append(pane)
-
-    def append_col(self, pane: pn.panel, name=None) -> None:
-        if name is not None:
-            col = pn.Column(pane, name)
-        else:
-            col = pn.Column(pane)
-        # self.get_panel().append(col)
-        self.pane.append(col)
-
-    def append_tab(self, pane: pn.panel, name: str = None) -> None:
-        if name is None:
-            name = pane.name
-        self.pane.append(pn.Column(pane, name=name))
-
-    def save_index(self, directory="", filename="index.html") -> Path:
-        """Saves the result to index.html in the root folder so that it can be displayed by github pages.
-
-        Returns:
-            Path: save path
-        """
-        return self.save(directory, filename, False)
-
-    def save(
-        self,
-        directory: str | Path = "cachedir",
-        filename: str = None,
-        in_html_folder=True,
-        **kwargs,
-    ) -> Path:
-        """Save the result to a html file.  Note that dynamic content will not work.  by passing save(__file__) the html output will be saved in the same folder as the source code in a html subfolder.
-
-        Args:
-            directory (str | Path, optional): base folder to save to. Defaults to "cachedir" which should be ignored by git.
-            filename (str, optional): The name of the html file. Defaults to the name of the benchmark
-            in_html_folder (bool, optional): Put the saved files in a html subfolder to help keep the results separate from source code. Defaults to True.
-
-        Returns:
-            Path: the save path
-        """
-
-        if filename is None:
-            filename = f"{self.bench_name}.html"
-
-        base_path = Path(directory)
-
-        if in_html_folder:
-            base_path /= "html"
-
-        logging.info(f"creating dir {base_path.absolute()}")
-        os.makedirs(base_path.absolute(), exist_ok=True)
-
-        base_path = base_path / filename
-
-        logging.info(f"saving html output to: {base_path.absolute()}")
-
-        self.pane.save(filename=base_path, progress=True, **kwargs)
-        return base_path
-
-    def publish(self, remote_callback: Callable, branch_name=None, debug: bool = True) -> str:
-        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
-
-        def publish_args(branch_name) -> Tuple[str, str]:
-            return (
-                "https://github.com/dyson-ai/bencher.git",
-                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
-            )
-
-        Args:
-            remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
-
-
-        Returns:
-            str: the url of the published report
-        """
-
-        if branch_name is None:
-            branch_name = self.bench_name
-        branch_name += "_debug" if debug else ""
-
-        remote, publish_url = remote_callback(branch_name)
-
-        # if debug:
-        # publish_url
-
-        directory = "tmpgit"
-        report_path = self.save(directory, filename="index.html", in_html_folder=False)
-        logging.info(f"created report at: {report_path.absolute()}")
-
-        cd_dir = f"cd {directory} &&"
-
-        os.system(f"{cd_dir} git init")
-        os.system(f"{cd_dir} git checkout -b {branch_name}")
-        os.system(f"{cd_dir} git add index.html")
-        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
-        os.system(f"{cd_dir} git remote add origin {remote}")
-        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
-
-        logging.info("Published report @")
-        logging.info(publish_url)
-
-        shutil.rmtree(directory)
-
-        return publish_url
-
-    # def publish_old(
-    #     self,
-    #     directory: str = "bench_results",
-    #     branch_name: str = "bench_results",
-    #     url_postprocess: Callable = None,
-    #     **kwargs,
-    # ) -> str:
-    #     """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.
-
-    #     Args:
-    #         directory (str, optional): Directory to save the results. Defaults to "bench_results".
-    #         branch_name (str, optional): Branch to publish on. Defaults to "bench_results".
-    #         url_postprocess (Callable, optional): A function that maps the origin url to a github pages url. Pass your own function if you are using another git providers. Defaults to None.
-
-    #     Returns:
-    #         str: _description_
-    #     """
-
-    #     def get_output(cmd: str) -> str:
-    #         return (
-    #             subprocess.run(cmd.split(" "), stdout=subprocess.PIPE, check=False)
-    #             .stdout.decode("utf=8")
-    #             .strip()
-    #         )
-
-    #     def postprocess_url(publish_url: str, branch_name: str, report_path: str, **kwargs) -> str:
-    #         # import re
-
-    #         # return re.sub(
-    #         #     """((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?""",
-    #         #     """https://$7/""",
-    #         #     publish_url,
-    #         # )
-    #         # git@github.com:user/project.git
-    #         # https://github.com/user/project.git
-    #         # http://github.com/user/project.git
-    #         # git@192.168.101.127:user/project.git
-    #         # https://192.168.101.127/user/project.git
-    #         # http://192.168.101.127/user/project.git
-    #         # ssh://user@host.xz:port/path/to/repo.git/
-    #         # ssh://user@host.xz/path/to/repo.git/
-    #         # ssh://host.xz:port/path/to/repo.git/
-    #         # ssh://host.xz/path/to/repo.git/
-    #         # ssh://user@host.xz/path/to/repo.git/
-    #         # ssh://host.xz/path/to/repo.git/
-    #         # ssh://user@host.xz/~user/path/to/repo.git/
-    #         # ssh://host.xz/~user/path/to/repo.git/
-    #         # ssh://user@host.xz/~/path/to/repo.git
-    #         # ssh://host.xz/~/path/to/repo.git
-    #         # git://host.xz/path/to/repo.git/
-    #         # git://host.xz/~user/path/to/repo.git/
-    #         # http://host.xz/path/to/repo.git/
-    #         # https://host.xz/path/to/repo.git/
-    #         # https://regex101.com/r/qT7NP0/3
-
-    #         return publish_url.replace(".git", f"/blob/{directory}/{report_path}")
-
-    #     if url_postprocess is None:
-    #         url_postprocess = postprocess_url
-    #     current_branch = get_output("git symbolic-ref --short HEAD")
-    #     logging.info(f"on branch: {current_branch}")
-    #     stash_msg = get_output("git stash")
-    #     logging.info(f"stashing current work :{stash_msg}")
-    #     checkout_msg = get_output(f"git checkout -b {branch_name}")
-    #     checkout_msg = get_output(f"git checkout {branch_name}")
-    #     get_output("git pull")
-
-    #     logging.info(f"checking out branch: {checkout_msg}")
-    #     report_path = self.save(directory, in_html_folder=False)
-    #     logging.info(f"created report at: {report_path.absolute()}")
-    #     # commit_msg = f""
-    #     logging.info("adding report to git")
-    #     get_output(f"git add {report_path.absolute()}")
-    #     get_output("git status")
-    #     logging.info("committing report")
-    #     cmd = f'git commit -m "generate_report:{self.bench_name}"'
-    #     logging.info(cmd)
-    #     get_output(cmd)
-    #     logging.info("pushing report to origin")
-    #     get_output(f"git push --set-upstream origin {branch_name}")
-    #     logging.info("checking out original branch")
-    #     get_output(f"git checkout {current_branch}")
-    #     if "No local changes" not in stash_msg:
-    #         logging.info("restoring work with git stash pop")
-    #         get_output("git stash pop")
-
-    #     publish_url = get_output("git remote get-url --push origin")
-    #     logging.info(f"raw url:{publish_url}")
-    #     publish_url = url_postprocess(
-    #         publish_url, branch_name=branch_name, report_path=report_path, **kwargs
-    #     )
-    #     logging.info("Published report @")
-    #     logging.info(publish_url)
-    #     return publish_url
+        self.sample_cache.clear_call_counts()

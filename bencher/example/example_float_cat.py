@@ -6,7 +6,9 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_float_cat(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """Example of how to perform a parameter sweep for categorical variables
 
     Args:
@@ -15,7 +17,13 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench("Bencher_Example_Float_Cat", bench_function, ExampleBenchCfgIn)
+    bench = bch.Bench(
+        "Bencher_Example_Float_Cat",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
 
     bench.plot_sweep(
         input_vars=[
@@ -28,7 +36,6 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         title="Float 2D Cat 1D Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -38,7 +45,6 @@ def example_float_cat(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         title="Float 1D Cat 1D  Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
-        run_cfg=run_cfg,
     )
 
     # # this does not work yet because it tries to find min and max of categorical values

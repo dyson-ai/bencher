@@ -1,15 +1,14 @@
 # pylint: disable=duplicate-code
-import pathlib
 
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
-bench = bch.Bench("Bencher_Example_Categorical", bench_function, ExampleBenchCfgIn)
 
-
-def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
+def example_categorical(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     """Example of how to perform a categorical parameter sweep
 
     Args:
@@ -19,11 +18,18 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         Bench: results of the parameter sweep
     """
 
-    rdmepath = pathlib.Path(__file__).parent.parent.parent / "README.md"
-    with open(rdmepath, "r", encoding="utf-8") as file:
+    with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
 
-    bench.plot_sweep(title="Intro", description=readme)
+    bench = bch.Bench(
+        "Bencher_Example_Categorical",
+        bench_function,
+        ExampleBenchCfgIn,
+        run_cfg=run_cfg,
+        report=report,
+    )
+
+    bench.report.append(readme, "Intro")
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.noisy],
@@ -44,7 +50,6 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         
         """,
         post_description="The plot shows when noise=True the output has uniform random noise.",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -66,10 +71,9 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         title="Categorical 3D Example",
         description="""Adding another categorical value extends the facets to the right""",
         post_description="The output shows swarm plots of different noise distributions",
-        run_cfg=run_cfg,
     )
 
-    run_cfg.over_time = True
+    bench.run_cfg.over_time = True
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfgIn.param.noisy,
@@ -80,7 +84,6 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description="""Lastly, what if you want to track these distributions over time? Set over_time=True and bencher will cache and display historical resuts alongside the latest result.  Use clear_history=True to clear that cache.""",
         post_description="The output shows faceted line plot with confidence intervals for the mean value over time.",
-        run_cfg=run_cfg,
     )
 
     return bench
@@ -89,5 +92,6 @@ def example_categorical(run_cfg: bch.BenchRunCfg) -> bch.Bench:
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg(repeats=5)
     ex_run_cfg.over_time = True
+    ex_run_cfg.parallel = True
 
-    example_categorical(ex_run_cfg).show()
+    example_categorical(ex_run_cfg).report.show()

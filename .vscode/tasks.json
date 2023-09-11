@@ -70,7 +70,7 @@
 			"label": "git pull origin main",
 			"detail": "merge changes from master into the current branch and push",
 			"type": "shell",
-			"command": "git pull origin main"
+			"command": "git pull --commit --no-edit ; git pull origin main --commit --no-edit && git push"
 		},
 		{
 			"label": "git push",
