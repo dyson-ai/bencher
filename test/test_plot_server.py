@@ -2,7 +2,6 @@
 from diskcache import Cache
 import unittest
 import bencher as bch
-from time import time
 
 from bencher.example.benchmark_data import SimpleBenchClass
 
@@ -26,7 +25,6 @@ class TestBenchPlotServer(unittest.TestCase):
         server_cfg.show = False
 
         server = bps.plot_server(bench.bench_name, server_cfg)
-        time.sleep(1)  # wait for server to start
         server.stop()
 
     # Tests that the plot server raises FileNotFoundError when no data is found in the cache
