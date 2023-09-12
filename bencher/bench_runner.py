@@ -89,7 +89,7 @@ class BenchRunner:
                     else:
                         res = bch_fn(run_lvl, BenchReport())
                     if publish and self.publisher is not None:
-                        res.publish(remote_callback=self.publisher, debug=debug)
+                        res.report.publish(remote_callback=self.publisher, debug=debug)
                     if show:
                         self.servers.append(res.report.show())
                     self.results.append(res)
