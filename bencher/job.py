@@ -24,16 +24,19 @@ class Job:
 
 # @dataclass
 class JobFuture:
-    def __init__(self, job_id: int, res: dict = None, future: Future = None) -> None:
+    def __init__(self, job_id: int,job_key:str, res: dict = None, future: Future = None,cache=None) -> None:
         self.job_id = job_id
+        self.job_key=job_key
         self.res = res
         self.future = future
         # either a result or a future needs to be passed
         assert self.res is not None or self.future is not None
+        self.cache = cache
 
     def result(self):
         if self.future is not None:
-            return self.future.result()
+            self.res = self.future.result()
+        self.cache.set(self.job_key,self.res)
         return self.res
 
 
@@ -88,13 +91,8 @@ class JobCache:
         else:
             self.cache = None
             self.cache_args = None
-        if parallel:
-            self.executor = ProcessPoolExecutor()
-        else:
-            self.executor = None
-
+        self.executor = ProcessPoolExecutor() if parallel else None
         self.overwrite = overwrite
-
         self.call_count = 0
         self.size_limit = size_limit
 
@@ -118,10 +116,11 @@ class JobCache:
             self.overwrite_msg(job, " starting parallel job...")
             return JobFuture(
                 job_id=job.job_id,
-                future=self.executor.submit(run_job, job, self.cache, close_cache=False),
+                job_key=job.job_key,
+                future=self.executor.submit(run_job, job, None, close_cache=False),cache=self.cache
             )
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(job_id=job.job_id, res=run_job(job, self.cache, close_cache=False))
+        return JobFuture(job_id=job.job_id,job_key=job.job_key, res=run_job(job, None, close_cache=False),cache=self.cache)
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:
