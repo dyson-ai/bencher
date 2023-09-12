@@ -22,7 +22,7 @@ from bencher.example.example_sample_cache import example_sample_cache
 
 if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()
-    run_cfg.run_tag = "v1"
+    run_cfg.overwrite_sample_cache = True
     bench_runner = bch.BenchRunner("bencher_examples", run_cfg=run_cfg)
 
     bench_runner.add_run(example_categorical)
