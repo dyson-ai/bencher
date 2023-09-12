@@ -23,22 +23,30 @@ class Job:
         self.tag = tag
 
 
-@dataclass
+# @dataclass
 class JobFuture:
-    res: dict
-    job_id: str
 
+    def __init__(self,job_id:int,res:dict=None,future:Future=None) -> None:
+        self.job_id = job_id
+        self.res = res
+        self.future = future
+        #either a result or a future needs to be passed
+        assert self.res is not None or self.future is not None
+    
     def result(self):
+        if self.future is not None:
+            return self.future.result()
         return self.res
+    
+        
 
-
-def run_job(job: Job, cache: Cache) -> JobFuture:
+def run_job(job: Job, cache: Cache) -> dict:
     # logging.info(f"starting job:{job.job_id}")
     result = job.function(**job.job_args)
     # logging.info(f"finished job:{job.job_id}")
     if cache is not None:
         cache.set(job.job_key, result, tag=job.tag)
-    return JobFuture(result,job.job_id)
+    return result
 
 
 class JobCache:
@@ -71,7 +79,7 @@ class JobCache:
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
 
-    def add_job(self, job: Job) -> JobFuture | Future:
+    def add_job(self, job: Job) -> JobFuture :
         self.worker_wrapper_call_count += 1
 
         if self.cache is not None:
@@ -79,15 +87,15 @@ class JobCache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
-                return JobFuture(self.cache[job.job_key], job.job_id)
+                return JobFuture(job_id=job.job_id,res = self.cache[job.job_key])
 
         self.worker_fn_call_count += 1
 
         if self.executor is not None:
             self.overwrite_msg(job, " starting parallel job...")
-            return self.executor.submit(run_job, job, self.cache)
+            return JobFuture(job_id=job.job_id,  future=self.executor.submit(run_job, job, self.cache))
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(run_job(job, self.cache), job.job_id)
+        return JobFuture(job_id= job.job_id,res =run_job(job, self.cache))
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:

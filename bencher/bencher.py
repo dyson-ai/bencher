@@ -29,7 +29,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, JobCache
+from bencher.job import Job, JobCache,JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -598,16 +598,14 @@ class Bench(BenchPlotServer):
 
     def store_results(
         self,
-        job_result,
+        job_result:JobFuture,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
-        if isinstance(job_result, Future):
-            job_result = job_result.result()
         result = job_result.result()
         if bench_cfg.print_bench_inputs:
-            logging.info(f"{result.job_id} inputs:")
+            logging.info(f"{job_result.job_id} inputs:")
             for k, v in worker_job.function_input.items():
                 logging.info(f"\t {k}:{v}")
 
