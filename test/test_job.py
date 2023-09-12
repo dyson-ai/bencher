@@ -87,7 +87,7 @@ class TestJob(unittest.TestCase):
         run_cfg = bch.BenchRunCfg()
         run_cfg.overwrite_sample_cache = True
         run_cfg.parallel = parallel
-        bench_run = bch.BenchRunner(run_cfg=run_cfg)
+        bench_run = bch.BenchRunner("test_bench_runner", run_cfg=run_cfg)
 
         bench_run.add_bench(CachedParamExample())
 

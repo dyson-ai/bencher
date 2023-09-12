@@ -49,12 +49,12 @@ class TestBenchExamples(unittest.TestCase):
             self.assertTrue(os.path.exists(path))
 
     def test_publish_docs(self):
-        b_run = bch.BenchRunner(run_cfg=self.create_run_cfg())
+        b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
         b_run.add_run(example_categorical)
         b_run.add_run(example_floats)
 
-        b_run.run(level=2, grouped=True)
-        b_run.report.save_index()
+        b_run.run(level=2, grouped=True, save=True)
+        b_run.shutdown()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))

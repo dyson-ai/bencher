@@ -14,7 +14,6 @@ class BenchReport(BenchPlotServer):
     def __init__(
         self,
         bench_name: str = None,
-        # run_cfg=None,
     ) -> None:
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)

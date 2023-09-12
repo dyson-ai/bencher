@@ -15,18 +15,18 @@ class Benchable(Protocol):
 class BenchRunner:
     def __init__(
         self,
+        name: str,
         bench_class=None,
         run_cfg: BenchRunCfg = BenchRunCfg(),
         publisher: Callable = None,
-        report=BenchReport(),
     ) -> None:
+        self.name = name
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
         self.publisher = publisher
         if bench_class is not None:
             self.add_bench(bench_class)
         self.results = []
-        self.report = report
         self.servers = []
 
     @staticmethod
@@ -67,6 +67,7 @@ class BenchRunner:
         publish: bool = False,
         debug: bool = True,
         show=False,
+        save=False,
         grouped=True,
     ) -> List[BenchCfg]:
         if run_cfg is None:
@@ -79,18 +80,35 @@ class BenchRunner:
             max_level = level
         for r in range(1, repeats + 1):
             for lvl in range(min_level, max_level + 1):
+                if grouped:
+                    report_level = BenchReport(self.name)
+
                 for bch_fn in self.bench_fns:
                     run_lvl = deepcopy(run_run_cfg)
                     run_lvl.level = lvl
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
                     if grouped:
-                        res = bch_fn(run_lvl, self.report)
+                        res = bch_fn(run_lvl, report_level)
                     else:
                         res = bch_fn(run_lvl, BenchReport())
-                    if publish and self.publisher is not None:
-                        res.publish(remote_callback=self.publisher, debug=debug)
-                    if show:
-                        self.servers.append(res.report.show())
+                        self.show_publish(res.report, show, publish, save, debug)
                     self.results.append(res)
+                if grouped:
+                    self.show_publish(report_level, show, publish, save, debug)
         return self.results
+
+    def show_publish(self, report, show, publish, save, debug):
+        if save:
+            report.save_index()
+        if publish and self.publisher is not None:
+            report.publish(remote_callback=self.publisher, debug=debug)
+        if show:
+            self.servers.append(report.show())
+
+    def shutdown(self):
+        while self.servers:
+            self.servers.pop().stop()
+
+    def __del__(self) -> None:
+        self.shutdown()
