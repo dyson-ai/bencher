@@ -1,7 +1,6 @@
 from typing import Callable
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
-
 import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
@@ -18,7 +17,6 @@ class Job:
             self.job_key = hash_sha1(tuple(SortedDict(self.job_args).items()))
         else:
             self.job_key = job_key
-        # self.cache =None
         self.tag = tag
 
 
