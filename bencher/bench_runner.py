@@ -15,12 +15,12 @@ class Benchable(Protocol):
 class BenchRunner:
     def __init__(
         self,
+        name: str,
         bench_class=None,
         run_cfg: BenchRunCfg = BenchRunCfg(),
         publisher: Callable = None,
-        report=BenchReport(),
     ) -> None:
-        self.report = report
+        self.name = name
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []
         self.publisher = publisher
@@ -81,7 +81,7 @@ class BenchRunner:
         for r in range(1, repeats + 1):
             for lvl in range(min_level, max_level + 1):
                 if grouped:
-                    report_level = deepcopy(self.report)
+                    report_level = BenchReport(self.name)
 
                 for bch_fn in self.bench_fns:
                     run_lvl = deepcopy(run_run_cfg)
