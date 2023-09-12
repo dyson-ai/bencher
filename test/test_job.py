@@ -85,12 +85,8 @@ class TestJob(unittest.TestCase):
 
         run_cfg = bch.BenchRunCfg()
         run_cfg.overwrite_sample_cache=True
-        bench_run = bch.BenchRunner(run_cfg=run_cfg)
-
-        # def bench_cache(run_cfg,report):
-        #     bench = bch.Bench(CachedParamExample(),run_cfg=run_cfg,report=report)
-        #     bench.plot_sweep(input_vars=[CachedParamExample.param.var1],result_vars=CachedParamExample.param.result,const_vars=CachedParamExample.get_input_defaults())
-        #     return bench
+        run_cfg.parallel=True
+        bench_run = bch.BenchRunner(run_cfg=run_cfg)       
 
         bench_run.add_bench(CachedParamExample())
 
