@@ -38,7 +38,8 @@ class JobFuture:
     def result(self):
         if self.future is not None:
             self.res = self.future.result()
-        self.cache.set(self.job_key, self.res)
+        if self.cache is not None:
+            self.cache.set(self.job_key, self.res)
         return self.res
 
 
@@ -111,7 +112,9 @@ class JobCache:
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
                 return JobFuture(
-                    job_id=job.job_id, job_key=job.job_key, res=self.cache[job.job_key]
+                    job_id=job.job_id,
+                    job_key=job.job_key,
+                    res=self.cache[job.job_key],
                 )
 
         self.worker_fn_call_count += 1
