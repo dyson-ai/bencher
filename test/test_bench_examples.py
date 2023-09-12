@@ -54,6 +54,7 @@ class TestBenchExamples(unittest.TestCase):
         b_run.add_run(example_floats)
 
         b_run.run(level=2, grouped=True, save=True)
+        b_run.shutdown()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
