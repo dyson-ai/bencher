@@ -2,8 +2,6 @@ import bencher as bch
 
 from bencher.example.example_categorical import example_categorical
 from bencher.example.example_floats import example_floats
-from bencher.example.example_categorical import example_categorical
-from bencher.example.example_floats import example_floats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
@@ -43,7 +41,4 @@ if __name__ == "__main__":
 
     # bench_runner.run(level=2, show=True, grouped=True)
 
-    bench_runner.run(level=4,show=True, grouped=True,save=True)
-
-
- 
+    bench_runner.run(level=4, show=True, grouped=True, save=True)
