@@ -141,7 +141,6 @@ class JobCache:
     def close(self) -> None:
         if self.cache:
             self.cache.close()
-            self.cache = None
 
     def __del__(self):
         self.close()
