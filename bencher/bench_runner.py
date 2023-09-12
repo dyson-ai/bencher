@@ -67,6 +67,7 @@ class BenchRunner:
         publish: bool = False,
         debug: bool = True,
         show=False,
+        save=False,
         grouped=True,
     ) -> List[BenchCfg]:
         if run_cfg is None:
@@ -91,17 +92,20 @@ class BenchRunner:
                         res = bch_fn(run_lvl, report_level)                        
                     else:
                         res = bch_fn(run_lvl, BenchReport())
-                        self.show_publish(res.report,show,publish,debug)                    
+                        self.show_publish(res.report,show,publish,save,debug)                    
                     self.results.append(res)
                 if grouped:
-                    self.show_publish(report_level,show,publish,debug)
+                    self.show_publish(report_level,show,publish,save,debug)
         return self.results
 
-    def show_publish(self,report,show,publish,debug):
+    def show_publish(self,report,show,publish,save,debug):
+        if save:
+            report.save_index()
         if publish and self.publisher is not None:
             report.publish(remote_callback=self.publisher, debug=debug)
         if show:
             self.servers.append(report.show())
+            
 
     def shutdown(self):
         while self.servers:

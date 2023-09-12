@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     # bench_runner.run(level=2, show=True, grouped=True)
 
-    bench_runner.run(level=4,show=True, grouped=True)
+    bench_runner.run(level=4,show=True, grouped=True,save=True)
+
 
  
