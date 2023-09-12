@@ -21,7 +21,7 @@ from bencher.variables.results import OptDir
 from bencher.utils import hmap_canonical_input
 
 from enum import Enum, auto
-
+from datetime import datetime
 
 class ReduceType(Enum):
     AUTO = auto()
@@ -228,6 +228,11 @@ class BenchRunCfg(BenchPlotSrvCfg):
     run_tag = param.String(
         default="",
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
+    )
+
+    run_date = param.Date(
+        default=datetime.now(),
+        doc="The date the bench run was performed",
     )
 
     parallel = param.Boolean(

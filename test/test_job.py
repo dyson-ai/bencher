@@ -81,5 +81,24 @@ class TestJob(unittest.TestCase):
 
         self.assertNotEqual(res1["result"], res3["result"], f"{res1}")
 
+    def test_bench_runner_parallel(self):
 
-# if __name__ == "__main__":
+        run_cfg = bch.BenchRunCfg()
+        run_cfg.overwrite_sample_cache=True
+        bench_run = bch.BenchRunner(run_cfg=run_cfg)
+
+        # def bench_cache(run_cfg,report):
+        #     bench = bch.Bench(CachedParamExample(),run_cfg=run_cfg,report=report)
+        #     bench.plot_sweep(input_vars=[CachedParamExample.param.var1],result_vars=CachedParamExample.param.result,const_vars=CachedParamExample.get_input_defaults())
+        #     return bench
+
+        bench_run.add_bench(CachedParamExample())
+
+        bench_run.run(level=3)
+
+        bench_run.report.show() 
+
+if __name__ == "__main__":
+
+
+    TestJob().test_bench_runner_parallel()
