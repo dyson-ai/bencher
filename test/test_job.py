@@ -92,7 +92,6 @@ class TestJob(unittest.TestCase):
         bench_run.add_bench(CachedParamExample())
 
         bench_run.run(level=2)
-        return bench_run
 
 
 if __name__ == "__main__":
