@@ -1,7 +1,6 @@
 from typing import Callable
 from sortedcontainers import SortedDict
 from .utils import hash_sha1
-from dataclasses import dataclass
 import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
@@ -77,7 +76,7 @@ class JobCache:
         use_cache=True,
     ):
         if use_cache:
-            self.cache = Cache(  f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
+            self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
         else:
             self.cache = None
