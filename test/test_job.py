@@ -92,9 +92,10 @@ class TestJob(unittest.TestCase):
         bench_run.add_bench(CachedParamExample())
 
         bench_run.run(level=2)
+        return bench_run
 
-        bench_run.report.show()
+        # bench_run.report.show()
 
 
 if __name__ == "__main__":
-    TestJob().test_bench_runner_parallel(True)
+    TestJob().test_bench_runner_parallel(True).report.show()
