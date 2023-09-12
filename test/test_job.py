@@ -81,5 +81,20 @@ class TestJob(unittest.TestCase):
 
         self.assertNotEqual(res1["result"], res3["result"], f"{res1}")
 
+    def test_bench_runner_parallel(self):
 
-# if __name__ == "__main__":
+        run_cfg = bch.BenchRunCfg()
+        run_cfg.overwrite_sample_cache=True
+        run_cfg.parallel=True
+        bench_run = bch.BenchRunner(run_cfg=run_cfg)       
+
+        bench_run.add_bench(CachedParamExample())
+
+        bench_run.run(level=3)
+
+        bench_run.report.show() 
+
+if __name__ == "__main__":
+
+
+    TestJob().test_bench_runner_parallel()
