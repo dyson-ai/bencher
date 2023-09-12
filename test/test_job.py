@@ -94,8 +94,6 @@ class TestJob(unittest.TestCase):
         bench_run.run(level=2)
         return bench_run
 
-        # bench_run.report.show()
-
 
 if __name__ == "__main__":
     TestJob().test_bench_runner_parallel(True).report.show()
