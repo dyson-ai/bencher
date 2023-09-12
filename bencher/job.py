@@ -24,9 +24,11 @@ class Job:
 
 # @dataclass
 class JobFuture:
-    def __init__(self, job_id: int,job_key:str, res: dict = None, future: Future = None,cache=None) -> None:
+    def __init__(
+        self, job_id: int, job_key: str, res: dict = None, future: Future = None, cache=None
+    ) -> None:
         self.job_id = job_id
-        self.job_key=job_key
+        self.job_key = job_key
         self.res = res
         self.future = future
         # either a result or a future needs to be passed
@@ -36,7 +38,7 @@ class JobFuture:
     def result(self):
         if self.future is not None:
             self.res = self.future.result()
-        self.cache.set(self.job_key,self.res)
+        self.cache.set(self.job_key, self.res)
         return self.res
 
 
@@ -108,7 +110,9 @@ class JobCache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
-                return JobFuture(job_id=job.job_id, res=self.cache[job.job_key])
+                return JobFuture(
+                    job_id=job.job_id, job_key=job.job_key, res=self.cache[job.job_key]
+                )
 
         self.worker_fn_call_count += 1
 
@@ -117,10 +121,16 @@ class JobCache:
             return JobFuture(
                 job_id=job.job_id,
                 job_key=job.job_key,
-                future=self.executor.submit(run_job, job, None, close_cache=False),cache=self.cache
+                future=self.executor.submit(run_job, job, None, close_cache=False),
+                cache=self.cache,
             )
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(job_id=job.job_id,job_key=job.job_key, res=run_job(job, None, close_cache=False),cache=self.cache)
+        return JobFuture(
+            job_id=job.job_id,
+            job_key=job.job_key,
+            res=run_job(job, None, close_cache=False),
+            cache=self.cache,
+        )
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:
