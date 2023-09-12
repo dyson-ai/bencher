@@ -23,6 +23,7 @@ from bencher.utils import hmap_canonical_input
 from enum import Enum, auto
 from datetime import datetime
 
+
 class ReduceType(Enum):
     AUTO = auto()
     SQUEEZE = auto()

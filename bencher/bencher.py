@@ -11,7 +11,6 @@ from contextlib import suppress
 from optuna import Study
 from functools import partial
 
-from concurrent.futures import Future
 from bencher.worker_job import WorkerJob
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
@@ -29,7 +28,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, JobCache,JobFuture
+from bencher.job import Job, JobCache, JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -598,7 +597,7 @@ class Bench(BenchPlotServer):
 
     def store_results(
         self,
-        job_result:JobFuture,
+        job_result: JobFuture,
         bench_cfg: BenchCfg,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
