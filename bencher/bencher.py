@@ -150,9 +150,11 @@ class Bench(BenchPlotServer):
         self.set_worker(worker, worker_input_cfg)
         self.run_cfg = run_cfg
         if report is None:
-            self.report = BenchReport()
+            self.report = BenchReport(self.bench_name)
         else:
             self.report = report
+            if self.report.bench_name is None:
+                self.report.bench_name = self.bench_name
 
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
