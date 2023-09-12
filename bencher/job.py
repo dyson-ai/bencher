@@ -57,7 +57,7 @@ def run_job_future(job: Job, cache: CacheArgs) -> dict:
     return result
 
 
-def run_job(job: Job, cache: Cache,close_cache:bool) -> dict:
+def run_job(job: Job, cache: Cache, close_cache: bool) -> dict:
     # logging.info(f"starting job:{job.job_id}")
     result = job.function(**job.job_args)
     # logging.info(f"finished job:{job.job_id}")
@@ -79,7 +79,9 @@ class JobCache:
         use_cache=True,
     ):
         if use_cache:
-            self.cache_args = CacheArgs(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
+            self.cache_args = CacheArgs(
+                f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
+            )
             self.cache = self.cache_args.to_cache()
             # self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
@@ -115,10 +117,11 @@ class JobCache:
         if self.executor is not None:
             self.overwrite_msg(job, " starting parallel job...")
             return JobFuture(
-                job_id=job.job_id, future=self.executor.submit(run_job, job, self.cache,close_cache=False)
+                job_id=job.job_id,
+                future=self.executor.submit(run_job, job, self.cache, close_cache=False),
             )
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(job_id=job.job_id, res=run_job(job, self.cache,close_cache=False))
+        return JobFuture(job_id=job.job_id, res=run_job(job, self.cache, close_cache=False))
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:
@@ -149,7 +152,7 @@ class JobCache:
             self.cache.close()
 
     # def __del__(self):
-        # self.close()
+    # self.close()
 
     def stats(self) -> str:
         logging.info(f"job calls: {self.worker_wrapper_call_count}")
