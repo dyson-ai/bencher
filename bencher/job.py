@@ -38,7 +38,7 @@ def run_job(job: Job, cache: Cache) -> JobFuture:
     # logging.info(f"finished job:{job.job_id}")
     if cache is not None:
         cache.set(job.job_key, result, tag=job.tag)
-    return result
+    return JobFuture(result,job.job_id)
 
 
 class JobCache:

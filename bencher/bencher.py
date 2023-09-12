@@ -11,7 +11,7 @@ from contextlib import suppress
 from optuna import Study
 from functools import partial
 
-
+from concurrent.futures import Future
 from bencher.worker_job import WorkerJob
 
 from bencher.bench_cfg import BenchCfg, BenchRunCfg, DimsCfg
@@ -603,11 +603,11 @@ class Bench(BenchPlotServer):
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
-        # if isinstance(job_result, Future):
-        # job_result = job_result.result()
+        if isinstance(job_result, Future):
+            job_result = job_result.result()
         result = job_result.result()
         if bench_cfg.print_bench_inputs:
-            logging.info(f"{job_result.job_id} inputs:")
+            logging.info(f"{result.job_id} inputs:")
             for k, v in worker_job.function_input.items():
                 logging.info(f"\t {k}:{v}")
 
