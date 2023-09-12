@@ -37,24 +37,24 @@ class JobFuture:
         return self.res
 
 
-@dataclass
-class CacheArgs:
-    name: str
-    tag_index: bool
-    size_limit: int
+# @dataclass
+# class CacheArgs:
+#     name: str
+#     tag_index: bool
+#     size_limit: int
 
-    def to_cache(self):
-        return Cache(self.name, tag_inde=self.tag_index, size_limit=self.size_limit)
+#     def to_cache(self):
+#         return Cache(self.name, tag_inde=self.tag_index, size_limit=self.size_limit)
 
 
-def run_job_future(job: Job, cache_args: CacheArgs) -> dict:
-    # logging.info(f"starting job:{job.job_id}")
-    result = job.function(**job.job_args)
-    # logging.info(f"finished job:{job.job_id}")
-    if cache_args is not None:
-        with cache_args.to_cache() as c:
-            c.set(job.job_key, result, tag=job.tag)
-    return result
+# def run_job_future(job: Job, cache_args: CacheArgs) -> dict:
+#     # logging.info(f"starting job:{job.job_id}")
+#     result = job.function(**job.job_args)
+#     # logging.info(f"finished job:{job.job_id}")
+#     if cache_args is not None:
+#         with cache_args.to_cache() as c:
+#             c.set(job.job_key, result, tag=job.tag)
+#     return result
 
 
 def run_job_serial(job: Job, cache: Cache) -> dict:
@@ -77,14 +77,10 @@ class JobCache:
         use_cache=True,
     ):
         if use_cache:
-            self.cache_args = CacheArgs(
-                f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
-            )
-            self.cache = self.cache_args.to_cache()
+            self.cache = Cache(  f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
         else:
             self.cache = None
-            self.cache_args = None
         if parallel:
             self.executor = ProcessPoolExecutor()
         else:
