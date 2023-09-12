@@ -675,6 +675,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
 
     if print_meta:
         benchmark_sampling_str.append("\nMeta Variables:")
+        benchmark_sampling_str.append(f"    run date: {bench_cfg.run_date}")
         if bench_cfg.run_tag is not None and len(bench_cfg.run_tag) > 0:
             benchmark_sampling_str.append(f"    run tag: {bench_cfg.run_tag}")
         if bench_cfg.level is not None:
@@ -682,6 +683,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         benchmark_sampling_str.append(f"    use_cache: {bench_cfg.use_cache}")
         benchmark_sampling_str.append(f"    use_sample_cache: {bench_cfg.use_sample_cache}")
         benchmark_sampling_str.append(f"    only_hash_tag: {bench_cfg.only_hash_tag}")
+        benchmark_sampling_str.append(f"    parallel: {bench_cfg.parallel}")
 
         for mv in bench_cfg.meta_vars:
             benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
