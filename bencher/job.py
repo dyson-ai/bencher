@@ -3,7 +3,6 @@ from sortedcontainers import SortedDict
 import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
-from dataclasses import dataclass
 from .utils import hash_sha1
 
 
@@ -18,53 +17,60 @@ class Job:
             self.job_key = hash_sha1(tuple(SortedDict(self.job_args).items()))
         else:
             self.job_key = job_key
-        # self.cache =None
         self.tag = tag
 
 
 # @dataclass
 class JobFuture:
-    def __init__(self, job_id: int, res: dict = None, future: Future = None) -> None:
-        self.job_id = job_id
+    def __init__(self, job: Job, res: dict = None, future: Future = None, cache=None) -> None:
+        self.job = job
         self.res = res
         self.future = future
         # either a result or a future needs to be passed
         assert self.res is not None or self.future is not None
+        self.cache = cache
 
     def result(self):
         if self.future is not None:
-            return self.future.result()
+            self.res = self.future.result()
+        if self.cache is not None:
+            self.cache.set(self.job.job_key, self.res, tag=self.job.tag)
         return self.res
 
 
-@dataclass
-class CacheArgs:
-    name: str
-    tag_index: bool
-    size_limit: int
+# @dataclass
+# class CacheArgs:
+#     name: str
+#     tag_index: bool
+#     size_limit: int
 
-    def to_cache(self) -> Cache:
-        return Cache(self.name, tag_index=self.tag_index, size_limit=self.size_limit)
+#     def to_cache(self) -> Cache:
+#         return Cache(self.name, tag_index=self.tag_index, size_limit=self.size_limit)
 
 
-def run_job_future(job: Job, cache: CacheArgs) -> dict:
-    # logging.info(f"starting job:{job.job_id}")
+# def run_job_future(job: Job, cache: CacheArgs) -> dict:
+#     # logging.info(f"starting job:{job.job_id}")
+#     result = job.function(**job.job_args)
+#     # logging.info(f"finished job:{job.job_id}")
+#     if cache is not None:
+#         with cache.to_cache() as c:
+#             c.set(job.job_key, result, tag=job.tag)
+#     return result
+
+
+# def run_job(job: Job, cache: Cache, close_cache: bool) -> dict:
+#     # logging.info(f"starting job:{job.job_id}")
+#     result = job.function(**job.job_args)
+#     # logging.info(f"finished job:{job.job_id}")
+#     if cache is not None:
+#         cache.set(job.job_key, result, tag=job.tag)
+#         if close_cache:
+#             cache.close()
+#     return result
+
+
+def run_job(job: Job) -> dict:
     result = job.function(**job.job_args)
-    # logging.info(f"finished job:{job.job_id}")
-    if cache is not None:
-        with cache.to_cache() as c:
-            c.set(job.job_key, result, tag=job.tag)
-    return result
-
-
-def run_job(job: Job, cache: Cache, close_cache: bool) -> dict:
-    # logging.info(f"starting job:{job.job_id}")
-    result = job.function(**job.job_args)
-    # logging.info(f"finished job:{job.job_id}")
-    if cache is not None:
-        cache.set(job.job_key, result, tag=job.tag)
-        if close_cache:
-            cache.close()
     return result
 
 
@@ -79,22 +85,17 @@ class JobCache:
         use_cache=True,
     ):
         if use_cache:
-            self.cache_args = CacheArgs(
-                f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
-            )
-            self.cache = self.cache_args.to_cache()
-            # self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
+            # self.cache_args = CacheArgs(
+            # f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit
+            # )
+            # self.cache = self.cache_args.to_cache()
+            self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
         else:
             self.cache = None
             self.cache_args = None
-        if parallel:
-            self.executor = ProcessPoolExecutor()
-        else:
-            self.executor = None
-
+        self.executor = ProcessPoolExecutor() if parallel else None
         self.overwrite = overwrite
-
         self.call_count = 0
         self.size_limit = size_limit
 
@@ -110,26 +111,34 @@ class JobCache:
                 logging.info(f"Found job: {job.job_id} in cache, loading...")
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
-                return JobFuture(job_id=job.job_id, res=self.cache[job.job_key])
+                return JobFuture(
+                    job=job,
+                    res=self.cache[job.job_key],
+                )
 
         self.worker_fn_call_count += 1
 
         if self.executor is not None:
             self.overwrite_msg(job, " starting parallel job...")
             return JobFuture(
-                job_id=job.job_id,
-                future=self.executor.submit(run_job, job, self.cache, close_cache=False),
+                job=job,
+                future=self.executor.submit(run_job, job),
+                cache=self.cache,
             )
         self.overwrite_msg(job, " starting serial job...")
-        return JobFuture(job_id=job.job_id, res=run_job(job, self.cache, close_cache=False))
+        return JobFuture(
+            job=job,
+            res=run_job(job),
+            cache=self.cache,
+        )
 
     def overwrite_msg(self, job, suffix) -> None:
         if self.overwrite:
-            # logging.info(f"Overwriting key: {job.job_key}{suffix}")
+            logging.debug(f"Overwriting key: {job.job_key}{suffix}")
             logging.info(f"{job.job_id} OVERWRITING cache{suffix}")
 
         else:
-            # logging.info(f"No key: {job.job_key} in cache{suffix}")
+            logging.debug(f"No key: {job.job_key} in cache{suffix}")
             logging.info(f"{job.job_id} NOT in cache{suffix}")
 
     def clear_call_counts(self) -> None:

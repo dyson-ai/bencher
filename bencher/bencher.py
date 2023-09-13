@@ -606,7 +606,7 @@ class Bench(BenchPlotServer):
     ) -> None:
         result = job_result.result()
         if bench_cfg.print_bench_inputs:
-            logging.info(f"{job_result.job_id} inputs:")
+            logging.info(f"{job_result.job.job_id} inputs:")
             for k, v in worker_job.function_input.items():
                 logging.info(f"\t {k}:{v}")
 
