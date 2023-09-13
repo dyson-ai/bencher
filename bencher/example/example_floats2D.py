@@ -102,7 +102,10 @@ def example_floats2D(
 
 
 if __name__ == "__main__":
-    bench_run = bch.BenchRunner("bench_runner_test",run_cfg=bch.BenchRunCfg(parallel=True))
+    run_cfg = bch.BenchRunCfg()
+    run_cfg.parallel = True
+    run_cfg.overwrite_sample_cache=True
+    bench_run = bch.BenchRunner("bench_runner_test",run_cfg=run_cfg)
     bench_run.add_run(example_floats2D)
-    bench_run.run(level=4, show=True)
+    bench_run.run(level=8, show=True)
     # example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()
