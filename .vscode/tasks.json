@@ -14,7 +14,7 @@
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'autoformatted and ruff --fix all code'"
+			"command": "git commit -a -m 'autoformatted and ruff --fix all code' || true"
 		},
 		{
 			"label": "pylint",
@@ -26,12 +26,15 @@
 			"label": "code coverage",
 			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
 			"type": "shell",
-			"command": "coverage run -m pytest; coverage xml -o coverage.xml; coverage report -m"
+			"command": "coverage run -m pytest; coverage xml -o coverage.xml"
 		},
 		{
 			"label": "code coverage report",
 			"detail": "Display the code coverage report. This assumes you have already have a coverage report generated. If not run the code ocverage task",
 			"type": "shell",
+			"dependsOn": [
+				"code coverage"
+			],
 			"command": "coverage report -m"
 		},
 		{
@@ -47,13 +50,55 @@
 			"dependsOn": [
 				"autoformat",
 				"pylint",
-				"code coverage"
+				"code coverage report"
 			],
 			"dependsOrder": "sequence",
-			"presentation": {
-				"reveal": "always",
-				"panel": "dedicated"
-			}
+		},
+		{
+			"label": "check CI and commit",
+			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
+			"type": "shell",
+			"dependsOn": [
+				"git pull origin main",
+				"check CI",
+				"autoformat and commit",
+				"git push"
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "git pull origin main",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git pull --commit --no-edit ; git pull origin main --commit --no-edit && git push"
+		},
+		{
+			"label": "git push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git push"
+		},
+		{
+			"label": "git pull origin main and push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"dependsOn": [
+				"git pull origin main",
+				"git push"
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "pull updates from template repo",
+			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
+			"type": "shell",
+			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
+		},
+		{
+			"label": "rename template project name",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
 			"label": "flit install",
@@ -64,18 +109,6 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
-		},
-		{
-			"label": "git merge origin main and push",
-			"detail": "merge changes from master into the current branch and push",
-			"type": "shell",
-			"command": "git merge origin main && git push"
-		},
-		{
-			"label": "pull updates from template repo",
-			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
-			"type": "shell",
-			"command": "git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "sa: Set Active File",
@@ -96,6 +129,14 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
+		}
+	],
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "new_project_name",
+			"description": "The new name of the project",
+			"default": "python_template"
 		}
 	]
 }

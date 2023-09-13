@@ -1,21 +1,14 @@
 from typing import Optional
-
 import panel as pn
 import logging
 import xarray as xr
+import holoviews as hv
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
-from bencher.bench_cfg import BenchCfg
-from bencher.variables.parametrised_sweep import ParametrizedSweep
-
-from bencher.plotting_functions import wrap_long_time_labels
-import holoviews as hv
-import plotly.graph_objs as go
-
-
 from bencher.variables.results import ResultVar
+from bencher.plotting_functions import wrap_long_time_labels
 
 
 def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
@@ -48,54 +41,6 @@ def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltC
             xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
             xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
     return xr_cfg
-
-
-def plot_surface_plotly(
-    bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
-) -> pn.pane.Plotly:
-    """Given a benchCfg generate a 2D surface plot
-    Args:
-        bench_cfg (BenchCfg): description of benchmark
-        rv (ParametrizedSweep): result variable to plot
-        xr_cfg (PltCfgBase): config of x,y variables
-    Returns:
-        pn.pane.Plotly: A 2d surface plot as a holoview in a pane
-    """
-
-    bench_cfg = wrap_long_time_labels(bench_cfg)
-
-    da = bench_cfg.ds[rv.name].transpose()
-
-    mean = da.mean("repeat")
-
-    x = da.coords[xr_cfg.x]
-    y = da.coords[xr_cfg.y]
-
-    opacity = 0.3
-
-    surfaces = [go.Surface(x=x, y=y, z=mean)]
-
-    if bench_cfg.repeats > 1:
-        std_dev = da.std("repeat")
-        surfaces.append(go.Surface(x=x, y=y, z=mean + std_dev, showscale=False, opacity=opacity))
-        surfaces.append(go.Surface(x=x, y=y, z=mean - std_dev, showscale=False, opacity=opacity))
-
-    eye_dis = 1.7
-    layout = go.Layout(
-        title=xr_cfg.title,
-        width=700,
-        height=700,
-        scene=dict(
-            xaxis_title=xr_cfg.xlabel,
-            yaxis_title=xr_cfg.ylabel,
-            zaxis_title=xr_cfg.zlabel,
-            camera={"eye": {"x": eye_dis, "y": eye_dis, "z": eye_dis}},
-        ),
-    )
-
-    fig = {"data": surfaces, "layout": layout}
-
-    return pn.pane.Plotly(fig)
 
 
 class SurfacePlot:
@@ -136,12 +81,13 @@ class SurfacePlot:
             ds = hv.Dataset(mean)
             print(ds)
 
-            try:
-                surface = ds.to(hv.Surface, vdims=[pl_in.rv.name])
-            except Exception:
-                return plot_surface_plotly(bench_cfg, rv, xr_cfg)
+            # try:
+
+            # except Exception:
+            #     return plot_surface_plotly(bench_cfg, rv, xr_cfg)
 
             try:
+                surface = ds.to(hv.Surface, vdims=[pl_in.rv.name])
                 surface = surface.opts(colorbar=True)
             except Exception as e:
                 logging.warning(e)
@@ -176,3 +122,51 @@ class SurfacePlot:
             return pn.Column(out, name=PlotTypes.surface_hv)
 
         return None
+
+
+# def plot_surface_plotly(
+#     bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
+# ) -> pn.pane.Plotly:
+#     """Given a benchCfg generate a 2D surface plot
+#     Args:
+#         bench_cfg (BenchCfg): description of benchmark
+#         rv (ParametrizedSweep): result variable to plot
+#         xr_cfg (PltCfgBase): config of x,y variables
+#     Returns:
+#         pn.pane.Plotly: A 2d surface plot as a holoview in a pane
+#     """
+
+#     bench_cfg = wrap_long_time_labels(bench_cfg)
+
+#     da = bench_cfg.ds[rv.name].transpose()
+
+#     mean = da.mean("repeat")
+
+#     x = da.coords[xr_cfg.x]
+#     y = da.coords[xr_cfg.y]
+
+#     opacity = 0.3
+
+#     surfaces = [go.Surface(x=x, y=y, z=mean)]
+
+#     if bench_cfg.repeats > 1:
+#         std_dev = da.std("repeat")
+#         surfaces.append(go.Surface(x=x, y=y, z=mean + std_dev, showscale=False, opacity=opacity))
+#         surfaces.append(go.Surface(x=x, y=y, z=mean - std_dev, showscale=False, opacity=opacity))
+
+#     eye_dis = 1.7
+#     layout = go.Layout(
+#         title=xr_cfg.title,
+#         width=700,
+#         height=700,
+#         scene=dict(
+#             xaxis_title=xr_cfg.xlabel,
+#             yaxis_title=xr_cfg.ylabel,
+#             zaxis_title=xr_cfg.zlabel,
+#             camera={"eye": {"x": eye_dis, "y": eye_dis, "z": eye_dis}},
+#         ),
+#     )
+
+#     fig = {"data": surfaces, "layout": layout}
+
+#     return pn.pane.Plotly(fig)

@@ -21,6 +21,7 @@ from bencher.variables.results import OptDir
 from bencher.utils import hmap_canonical_input
 
 from enum import Enum, auto
+from datetime import datetime
 
 
 class ReduceType(Enum):
@@ -106,6 +107,7 @@ class BenchPlotSrvCfg(param.Parameterized):
         False,
         doc="Add the port to the whilelist, (warning will disable remote access if set to true)",
     )
+    show: bool = param.Boolean(True, doc="Open the served page in a web browser")
 
 
 class BenchRunCfg(BenchPlotSrvCfg):
@@ -219,14 +221,24 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     level = param.Integer(
-        default=1,
-        bounds=[1, 12],
+        default=0,
+        bounds=[0, 12],
         doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 
     run_tag = param.String(
         default="",
         doc="Define a tag for a run to isolate the results stored in the cache from other runs",
+    )
+
+    run_date = param.Date(
+        default=datetime.now(),
+        doc="The date the bench run was performed",
+    )
+
+    parallel = param.Boolean(
+        default=False,
+        doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
     )
 
     @staticmethod
@@ -487,6 +499,10 @@ class BenchCfg(BenchRunCfg):
         return ds
 
     def get_best_trial_params(self, canonical=False):
+        if len(self.studies) == 0:
+            from bencher.optuna_conversions import bench_cfg_to_study
+
+            self.studies = [bench_cfg_to_study(self, True)]
         out = self.studies[0].best_trials[0].params
         if canonical:
             return hmap_canonical_input(out)
@@ -638,6 +654,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
     """
     benchmark_sampling_str = ["```text"]
     benchmark_sampling_str.append("")
+
     benchmark_sampling_str.append("Input Variables:")
     for iv in bench_cfg.input_vars:
         benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
@@ -647,20 +664,30 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         for cv in bench_cfg.const_vars:
             benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
 
-    print_meta = True
-    if len(bench_cfg.meta_vars) == 1:
-        mv = bench_cfg.meta_vars[0]
-        if mv.name == "repeat" and mv.samples == 1:
-            print_meta = False
-
-    if print_meta:
-        benchmark_sampling_str.append("\nMeta Variables:")
-        for mv in bench_cfg.meta_vars:
-            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
-
     benchmark_sampling_str.append("\nResult Variables:")
     for rv in bench_cfg.result_vars:
         benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
+
+    print_meta = True
+    # if len(bench_cfg.meta_vars) == 1:
+    #     mv = bench_cfg.meta_vars[0]
+    #     if mv.name == "repeat" and mv.samples == 1:
+    #         print_meta = False
+
+    if print_meta:
+        benchmark_sampling_str.append("\nMeta Variables:")
+        benchmark_sampling_str.append(f"    run date: {bench_cfg.run_date}")
+        if bench_cfg.run_tag is not None and len(bench_cfg.run_tag) > 0:
+            benchmark_sampling_str.append(f"    run tag: {bench_cfg.run_tag}")
+        if bench_cfg.level is not None:
+            benchmark_sampling_str.append(f"    bench level: {bench_cfg.level}")
+        benchmark_sampling_str.append(f"    use_cache: {bench_cfg.use_cache}")
+        benchmark_sampling_str.append(f"    use_sample_cache: {bench_cfg.use_sample_cache}")
+        benchmark_sampling_str.append(f"    only_hash_tag: {bench_cfg.only_hash_tag}")
+        benchmark_sampling_str.append(f"    parallel: {bench_cfg.parallel}")
+
+        for mv in bench_cfg.meta_vars:
+            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
 
     benchmark_sampling_str.append("```")
 

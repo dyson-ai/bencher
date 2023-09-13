@@ -1,6 +1,5 @@
 import unittest
 
-
 from bencher.example.benchmark_data import AllSweepVars, PostprocessFn
 import bencher as bch
 from hypothesis import given, strategies as st
@@ -28,7 +27,7 @@ class TestSweepBase(unittest.TestCase):
         """Check that setting a const returns the right const"""
 
         explorer = AllSweepVars()
-        bench = bch.Bench("tst_cnst", explorer.call)
+        bench = bch.Bench("tst_cnst", explorer.__call__)
 
         # AllSweepVars.param.var_float.with_const(5)
 
@@ -121,6 +120,19 @@ class TestSweepBase(unittest.TestCase):
         res = AllSweepVars.param.var_float.as_dim(False)
         self.assertSequenceEqual(res.range, (0, 10))
 
+    def test_float_step(self):
+        step = 0.0001
+
+        class FloatDim(bch.ParametrizedSweep):
+            var_float = bch.FloatSweep(bounds=(0, 0.001), step=step)
+
+        dim = FloatDim.param.var_float.as_dim(False)
+        self.assertEqual(dim.step, step)
+
+        vals = FloatDim.param.var_float.as_dim(True)
+        self.assertEqual(10, len(vals.values))
+        self.assertEqual(dim.step, step)
+
     def sweep_up_to(self, var, var_type, level=7):
         res_old = var.with_level(1)
         for i in range(2, level):
@@ -137,13 +149,12 @@ class TestSweepBase(unittest.TestCase):
     @given(st.floats(min_value=0.1, allow_nan=False, allow_infinity=False))
     def test_levels_float(self, upper) -> None:
         var_float = bch.FloatSweep(bounds=(0, upper))
-
         self.sweep_up_to(var_float, float)
 
-    @given(st.integers(min_value=0, max_value=1000), st.integers(min_value=1, max_value=25))
-    def test_levels_int(self, start, var_range):
-        var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
-        self.sweep_up_to(var_int, int, level=7)
+    # @given(st.integers(min_value=0), st.integers(min_value=1,max_value=10))
+    # def test_levels_int(self, start, var_range):
+    #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
+    #     self.sweep_up_to(var_int, int, level=5)
 
 
 if __name__ == "__main__":

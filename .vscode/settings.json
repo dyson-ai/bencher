@@ -16,4 +16,8 @@
 	"[python]": {
 		"editor.defaultFormatter": "ms-python.black-formatter"
 	},
+	"files.exclude": {
+		"**/__pycache__/**": true
+	},
+	"python.analysis.autoImportCompletions": false //vscode gets it wrong more than right and mostly gets in the way
 }

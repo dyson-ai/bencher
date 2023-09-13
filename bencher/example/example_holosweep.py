@@ -63,58 +63,36 @@ class PlotFunctions(bch.ParametrizedSweep):
             return pt
         return None
 
-    def calc_vec(self, **kwargs) -> dict:
-        theta = self.param.theta.values()
-        kwargs.pop("theta", 0)
-        dat = [self.__call__(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
-        # print(dat)
-        self.out_sum = sum(dat)
-        pt = hv.Curve((theta, dat), "theta", "voltage")
-        # pt = hv.Text(0, 0, f"{self.compute_fn}\n{self.phase}\n{self.freq}")
-        # pt *= hv.Ellipse(0, 0, 1)
-        return self.get_results_values_as_dict(holomap=pt)
 
-
-def example_holosweep_tap(
+def example_holosweep(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
-        input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq, PlotFunctions.param.phase],
+        input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
         result_vars=[PlotFunctions.param.fn_output],
-        run_cfg=run_cfg,
     )
 
-    print(res.get_best_trial_params())
+    print("best", res.get_best_trial_params(True))
+    print(res.hmap_kdims)
+    print(res.hmap.keys())
+    bench.report.append(res.summarise_sweep())
+    bench.report.append(res.to_optuna())
     bench.report.append(res.get_best_holomap())
-
-    heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
-    posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
-    sld1 = wv.param.phase.as_slider(run_cfg.debug)
-
-    def tap_plot(x, y):
-        print(x, y)
-        selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=sld1.value, repeat=1)
-        return res.hmap[bch.hmap_canonical_input(selres)]
-
-    tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
-
-    bench.report.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
-
-    bench.report.append(sld1)
-
-    bench.report.append_tab(res.to_curve(), "Slider view")
-
+    bench.report.append(res.to_curve(), "Slider view")
+    bench.report.append(res.to_holomap().layout())
     return bench
 
 
 if __name__ == "__main__":
-    example_holosweep_tap(bch.BenchRunCfg()).show()
-
-
-# todo  https://discourse.holoviz.org/t/pointdraw-as-parameterized-class/3539
+    bench_run = bch.BenchRunner(
+        "bench_runner_test", run_cfg=bch.BenchRunCfg(parallel=False, run_tag="12342341")
+    )
+    bench_run.add_run(example_holosweep)
+    bench_run.run(level=4, show=True)

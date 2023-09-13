@@ -47,6 +47,20 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(int_sweep.with_level(5).values(), [0, 1, 2, 3, 5, 6, 7, 8, 10])
         self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
+    def test_int_sweep_level_1000_with_values_(self):
+        int_sweep = IntSweep(default=100, bounds=[100, 1000])
+        self.assertListEqual(int_sweep.with_level(1).values(), [100])
+        self.assertListEqual(int_sweep.with_level(2).values(), [100, 1000])
+        self.assertListEqual(int_sweep.with_level(3).values(), [100, 550, 1000])
+        self.assertListEqual(int_sweep.with_level(4).values(), [100, 325, 550, 775, 1000])
+        self.assertListEqual(
+            int_sweep.with_level(5).values(), [100, 212, 325, 437, 550, 662, 775, 887, 1000]
+        )
+        self.assertListEqual(
+            int_sweep.with_level(6).values(),
+            [100, 156, 212, 268, 325, 381, 437, 493, 550, 606, 662, 718, 775, 831, 887, 943, 1000],
+        )
+
     def test_float_sweep(self):
         float_sweep = FloatSweep(bounds=[0, 1])
 
@@ -54,6 +68,42 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(list(float_sweep.with_level(2).values()), [0.0, 1.0])
         self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
         self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
+
+    def test_float_step(self):
+        float_sweep = FloatSweep(bounds=[0, 1], step=0.1)
+
+        self.assertListEqual(
+            list(float_sweep.values()),
+            [
+                0.0,
+                0.1,
+                0.2,
+                0.30000000000000004,
+                0.4,
+                0.5,
+                0.6000000000000001,
+                0.7000000000000001,
+                0.8,
+                0.9,
+            ],
+        )
+
+        float_sweep2 = FloatSweep(bounds=[0, 0.9], step=0.1)
+        # note that it does not return the upper bound of 0.9 even though it a multiple of 0.1
+        self.assertListEqual(
+            list(float_sweep2.values()),
+            [
+                0.0,
+                0.1,
+                0.2,
+                0.30000000000000004,
+                0.4,
+                0.5,
+                0.6000000000000001,
+                0.7000000000000001,
+                0.8,
+            ],
+        )
 
     def test_enum_sweep_level(self):
         class Enum1(StrEnum):
@@ -77,6 +127,13 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(
             enum_sweep.with_level(5).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
         )
+
+    def test_bool_default(self) -> None:
+        bool_sweep_true = BoolSweep(default=True)
+        self.assertTrue(bool_sweep_true.default)
+
+        bool_sweep_false = BoolSweep(default=False)
+        self.assertFalse(bool_sweep_false.default)
 
     def test_bool_sweep_level(self):
         bool_sweep = BoolSweep()
