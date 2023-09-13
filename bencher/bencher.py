@@ -610,6 +610,8 @@ class Bench(BenchPlotServer):
                 logging.info(f"{job_result.job.job_id} inputs:")
                 for k, v in worker_job.function_input.items():
                     logging.info(f"\t {k}:{v}")
+            else:
+                logging.info(f"finished {job_result.job.job_id}")
 
             # construct a dict for a holomap
             if isinstance(result, dict):  # todo holomaps with named types
