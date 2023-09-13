@@ -17,6 +17,9 @@ class CachedParamExample(bch.ParametrizedSweep):
         self.result = self.var1 + self.var2 + random.uniform(0, 1)
         return self.get_results_values_as_dict()
 
+    def call_args(self, *args, **kwargs):
+        return self, __call__(**kwargs)
+
 
 class TestJob(unittest.TestCase):
     @settings(deadline=500)
@@ -103,35 +106,47 @@ class BasicParam(param.Parameterized):
 
     var1 = param.Number()
 
+    def __call__(self, **kwargs):
+        var1 = kwargs.get("var1", 0)
+
+        return var1
+
 
 def wrapper(**kwargs):
 
     # cp = CachedParamExample()  # clears cache by default
     var1 = kwargs.get("var1", 0)
     print(f"starting {var1}")
-    # bp = BasicParam()
-    for i in range(1000000):
+    bp = BasicParam()
+    for i in range(1000):
         logging.debug(i)
 
     print(f"finishing {var1}")
 
     result = var1 + random.uniform(0, 1)
     return dict(result=result)
-    # return cp.__call__(**kwargs)
+    # res = cp.__call__(**kwargs)
+    # return res
+
 
 if __name__ == "__main__":
 
-    
-    location = 'cachedir/joblib'
+    location = "cachedir/joblib"
     memory = Memory(location, verbose=0)
+    memory.clear()
+    # cp = CachedParamExample()
+    # costly_compute_cached = memory.cache(cp.__call__)
     costly_compute_cached = memory.cache(wrapper)
+
+    # costly_compute_cached = memory.cache(BasicParam.__call__)
 
     # for i in range(100000):
 
-    results = Parallel()(
-        delayed(costly_compute_cached)(var1=i) for i in range(10000)
+    results = Parallel(n_jobs=-2, return_as="generator")(
+        delayed(costly_compute_cached)(**dict(var1=i)) for i in range(1000)
     )
 
+    print("collecting results")
     for r in results:
         print(r)
 

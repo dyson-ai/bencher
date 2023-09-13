@@ -6,6 +6,7 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
 
 from dask.distributed import Client  # Start a Dask Client
+
 # from scoop import futures
 
 
@@ -98,7 +99,7 @@ class JobCache:
             self.cache = None
             self.cache_args = None
         # self.executor = Client() if parallel else None
-        self.executor = ProcessPoolExecutor() if parallel else None
+        self.executor = ProcessPoolExecutor(10) if parallel else None
         # self.executor = futures
 
         self.overwrite = overwrite
