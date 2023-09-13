@@ -6,7 +6,7 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
 
 from dask.distributed import Client  # Start a Dask Client
-from scoop import futures
+# from scoop import futures
 
 
 class Job:
