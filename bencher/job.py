@@ -4,7 +4,9 @@ import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
-from dask.distributed import Client # Start a Dask Client
+
+from dask.distributed import Client  # Start a Dask Client
+
 
 class Job:
     def __init__(
@@ -94,7 +96,9 @@ class JobCache:
         else:
             self.cache = None
             self.cache_args = None
-        self.executor = Client() if parallel else None
+        # self.executor = Client() if parallel else None
+        self.executor = ProcessPoolExecutor() if parallel else None
+
         self.overwrite = overwrite
         self.call_count = 0
         self.size_limit = size_limit
