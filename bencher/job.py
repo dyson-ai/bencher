@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from .utils import hash_sha1
 
 
+    
+
 class Job:
     def __init__(
         self, job_id: str, function: Callable, job_args: dict, job_key=None, tag=""
@@ -25,10 +27,9 @@ class Job:
 # @dataclass
 class JobFuture:
     def __init__(
-        self, job_id: int, job_key: str, res: dict = None, future: Future = None, cache=None
+        self, job:Job, res: dict = None, future: Future = None, cache=None
     ) -> None:
-        self.job_id = job_id
-        self.job_key = job_key
+        self.job =job
         self.res = res
         self.future = future
         # either a result or a future needs to be passed
@@ -39,7 +40,7 @@ class JobFuture:
         if self.future is not None:
             self.res = self.future.result()
         if self.cache is not None:
-            self.cache.set(self.job_key, self.res)
+            self.cache.set(self.job.job_key, self.res,tag=self.job.tag)
         return self.res
 
 
@@ -112,8 +113,7 @@ class JobCache:
                 # logging.info(f"Found key: {job.job_key} in cache")
                 self.worker_cache_call_count += 1
                 return JobFuture(
-                    job_id=job.job_id,
-                    job_key=job.job_key,
+                    job=job,
                     res=self.cache[job.job_key],
                 )
 
@@ -122,15 +122,13 @@ class JobCache:
         if self.executor is not None:
             self.overwrite_msg(job, " starting parallel job...")
             return JobFuture(
-                job_id=job.job_id,
-                job_key=job.job_key,
+                job=job,
                 future=self.executor.submit(run_job, job, None, close_cache=False),
                 cache=self.cache,
             )
         self.overwrite_msg(job, " starting serial job...")
         return JobFuture(
-            job_id=job.job_id,
-            job_key=job.job_key,
+            job=job,
             res=run_job(job, None, close_cache=False),
             cache=self.cache,
         )
