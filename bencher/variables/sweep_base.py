@@ -141,6 +141,9 @@ class SweepBase(param.Parameter):
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         output.samples = samples  # pylint: disable = attribute-defined-outside-init
+        if hasattr(output, "step"):
+            # hack TODO fix this
+            output.step = None  # pylint: disable = attribute-defined-outside-init
         return output
 
     def with_sample_values(self, sample_values: int) -> SweepBase:
@@ -167,4 +170,5 @@ class SweepBase(param.Parameter):
         assert level >= 1
         # TODO work out if the order can be returned in level order always
         samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
-        return self.with_samples(samples[min(max_level, level)])
+        out = self.with_sample_values(self.with_samples(samples[min(max_level, level)]).values())
+        return out
