@@ -47,6 +47,15 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(int_sweep.with_level(5).values(), [0, 1, 2, 3, 5, 6, 7, 8, 10])
         self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
+    def test_int_sweep_level_10_with_values_and_step(self):
+        int_sweep = IntSweep(bounds=[0, 10],step=2)
+        self.assertListEqual(int_sweep.with_level(1).values(), [0])
+        self.assertListEqual(int_sweep.with_level(2).values(), [0, 10])
+        self.assertListEqual(int_sweep.with_level(3).values(), [0, 5, 10])
+        self.assertListEqual(int_sweep.with_level(4).values(), [0, 2, 5, 7, 10])
+        self.assertListEqual(int_sweep.with_level(5).values(), [0, 1, 2, 3, 5, 6, 7, 8, 10])
+        self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
     def test_int_sweep_level_1000_with_values_(self):
         int_sweep = IntSweep(default=100, bounds=[100, 1000])
         self.assertListEqual(int_sweep.with_level(1).values(), [100])
@@ -63,6 +72,14 @@ class TestVarSweeps(unittest.TestCase):
 
     def test_float_sweep(self):
         float_sweep = FloatSweep(bounds=[0, 1])
+
+        self.assertListEqual(list(float_sweep.with_level(1).values()), [0.0])
+        self.assertListEqual(list(float_sweep.with_level(2).values()), [0.0, 1.0])
+        self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
+        self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
+
+    def test_float_sweep_with_step(self):
+        float_sweep = FloatSweep(bounds=[0, 1],step=0.01)
 
         self.assertListEqual(list(float_sweep.with_level(1).values()), [0.0])
         self.assertListEqual(list(float_sweep.with_level(2).values()), [0.0, 1.0])
