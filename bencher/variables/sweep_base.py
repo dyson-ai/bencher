@@ -142,8 +142,8 @@ class SweepBase(param.Parameter):
         # TODO set up class properly. Slightly complicated due to slots
         output.samples = samples  # pylint: disable = attribute-defined-outside-init
         if hasattr(output, "step"):
-             # hack TODO fix this
-            output.step =                   None # pylint: disable = attribute-defined-outside-init             
+            # hack TODO fix this
+            output.step = None  # pylint: disable = attribute-defined-outside-init
         return output
 
     def with_sample_values(self, sample_values: int) -> SweepBase:
