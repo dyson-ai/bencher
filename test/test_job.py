@@ -96,6 +96,7 @@ class TestJob(unittest.TestCase):
 
 import param
 import logging
+from joblib import Memory, Parallel, delayed
 
 
 class BasicParam(param.Parameterized):
@@ -119,6 +120,10 @@ if __name__ == "__main__":
         # result = var1 + var2 + random.uniform(0, 1)
         # return dict(result=result)
         return cp.__call__(**kwargs)
+
+    results = Parallel(n_jobs=2)(
+        delayed(data_processing_mean_using_cache)(data, col) for col in range(data.shape[1])
+    )
 
     jc = JobCache(parallel=True, cache_name="test_cache")
     jc.clear()
