@@ -151,6 +151,26 @@ class TestSweepBase(unittest.TestCase):
         var_float = bch.FloatSweep(bounds=(0, upper))
         self.sweep_up_to(var_float, float)
 
+    def test_level_limits(self):
+        asv = AllSweepVars()
+
+        bench = bch.Bench("test_level_limits", asv)
+        run_cfg = bch.BenchRunCfg()
+
+        run_cfg.level = 4
+        res = bench.plot_sweep("asv", input_vars=[AllSweepVars.param.var_float], run_cfg=run_cfg)
+        self.assertEqual(len(res.get_dataframe().index), 5)
+
+        run_cfg.level = 4
+        res = bench.plot_sweep(
+            "asv",
+            input_vars=[AllSweepVars.param.var_float.with_level(level=run_cfg.level, max_level=3)],
+            run_cfg=run_cfg,
+        )
+        self.assertEqual(
+            len(res.get_dataframe().index), 3, "the number of samples should be limited to 3"
+        )
+
     # @given(st.integers(min_value=0), st.integers(min_value=1,max_value=10))
     # def test_levels_int(self, start, var_range):
     #     var_int = bch.IntSweep(default=start, bounds=(start, start + var_range))
