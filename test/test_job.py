@@ -1,13 +1,13 @@
 import unittest
 import bencher as bch
 import random
-from bencher.job import JobFunctionCache
+from bencher.job import JobFunctionCache, JobCache, Job
 
 from hypothesis import given, strategies as st, settings
 
 
-class CachedParamExample(bch.CachedParams):
-    var1 = bch.FloatSweep(default=0, bounds=[0, 10])
+class CachedParamExample(bch.ParametrizedSweep):
+    var1 = bch.FloatSweep(default=0, bounds=[0, 100000])
     var2 = bch.IntSweep(default=10, bounds=[0, 10])
 
     result = bch.ResultVar()
@@ -94,5 +94,40 @@ class TestJob(unittest.TestCase):
         bench_run.run(level=2)
 
 
+import param
+import logging
+
+
+class BasicParam(param.Parameterized):
+
+    var1 = param.Number()
+
+
 if __name__ == "__main__":
-    TestJob().test_bench_runner_parallel(True).report.show()
+
+    def wrapper(**kwargs):
+
+        cp = CachedParamExample()  # clears cache by default
+        var1 = kwargs.get("var1", 0)
+        print(f"starting {var1}")
+        # bp = BasicParam()
+        for i in range(1000000):
+            logging.debug(i)
+
+        print(f"finishing {var1}")
+
+        # result = var1 + var2 + random.uniform(0, 1)
+        # return dict(result=result)
+        return cp.__call__(**kwargs)
+
+    jc = JobCache(parallel=True, cache_name="test_cache")
+    jc.clear()
+
+    futures = []
+    for i in range(100000):
+        futures.append(jc.add_job(Job(i, wrapper, job_args=dict(var1=i))))
+
+    for f in futures:
+        print(f.result())
+
+    # TestJob().test_bench_runner_parallel(True).report.show()
