@@ -5,9 +5,12 @@ import random
 import numpy as np
 import param
 
-# import bencher as bch
+import bencher as bch
 import logging
 import os, dispy
+
+
+from bencher.example.benchmark_data import AllSweepVars
 
 # https://pycos.org/dispycos.html#examples
 # https://pycos.org/dispycos.html#docker-container
@@ -36,9 +39,10 @@ if __name__ == '__main__':
     # cluster = dispy.JobCluster(wrapper_bench,nodes=["10.50.103.17"], depends=depends,cleanup=False)
 
 
-    # bench = bch.Bench("all_vars",wrapper)
-    # bench.plot_sweep("remote",[AllSweepVars.param.var_float])
-    # bench.report.show()
+    run_cfg = bch.BenchRunCfg
+    bench = bch.Bench("all_vars",wrapper)
+    bench.plot_sweep("remote",[AllSweepVars.param.var_float])
+    bench.report.show()
 
     jobs = []
     for i in range(3):
