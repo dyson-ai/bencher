@@ -10,3 +10,5 @@ RUN apt-get update && \
 
 CMD ["/usr/local/bin/dispynode.py","-d"]
 
+# sudo ufw allow 9701
+# sudo ufw allow 9700
