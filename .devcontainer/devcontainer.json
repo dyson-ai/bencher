@@ -43,5 +43,11 @@
 			]
 		}
 	},
+	"mounts": [
+		"source=/etc/resolv.conf,target=/etc/resolv.conf,type=bind,consistency=cached"
+	]
+	// "runArgs": [
+	// "--network=host"
+	// ],
 	// "onCreateCommand": "pre-commit install-hooks"
 }
