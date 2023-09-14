@@ -34,7 +34,7 @@ class JobFuture:
     def result(self):
         if self.future is not None:
             self.res = self.future.result()
-        if self.cache is not None:
+        if self.cache is not None and self.res is not None:
             self.cache.set(self.job.job_key, self.res, tag=self.job.tag)
         return self.res
 
