@@ -130,6 +130,16 @@
 				"isDefault": "True"
 			}
 		}
+		{
+			"label": "ra: Run Active File with scoop",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 -m scoop $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		}
 	],
 	"inputs": [
 		{
