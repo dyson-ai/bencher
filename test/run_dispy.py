@@ -32,31 +32,13 @@ if __name__ == '__main__':
     depends =[]
     # depends =["/home/agsmith/bencher/test/run_dispy.py","/home/agsmith/bencher/test/basic_param.py"]
     # depends =  param_deps+bench_deps +func_deps
-
-
-    # cluster = dispy.JobCluster(C.__call__, depends=[C])
-    cluster = dispy.JobCluster(wrapper,nodes=["10.50.103.17","10.50.103.16","10.51.103.13"], depends=depends,cleanup=True)
-    # sudo ufw allow 9701
-    # sudo ufw allow 9700
-
-
-
+    cluster = dispy.JobCluster(wrapper,nodes=["10.50.103.17","10.50.103.16","10.51.103.13"], depends=depends)
     # cluster = dispy.JobCluster(wrapper_bench,nodes=["10.50.103.17"], depends=depends,cleanup=False)
 
-    # cluster = dispy.JobCluster(wrapper,depends=depends)
-    # cluster = dispy.JobCluster(wrapper_bench,depends=depends)
 
-
-    # cluster = dispy.JobCluster(wrapper, depends=[C,param,bch,bch.SweepBase,bch.FloatSweep])
-    # import functools
-    # wrapped1 = functools.partial(BasicParam.__call__,BasicParam())
-
-
-    # cluster = dispy.JobCluster(BasicParam.__call__, depends=depends)
-    # cluster = dispy.JobCluster(wrapped1, depends=depends)
-
-
-
+    # bench = bch.Bench("all_vars",wrapper)
+    # bench.plot_sweep("remote",[AllSweepVars.param.var_float])
+    # bench.report.show()
 
     jobs = []
     for i in range(300):
