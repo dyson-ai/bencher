@@ -4,6 +4,7 @@ import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
+from scoop import futures
 
 
 class Job:
@@ -94,7 +95,8 @@ class JobCache:
         else:
             self.cache = None
             self.cache_args = None
-        self.executor = ProcessPoolExecutor() if parallel else None
+        # self.executor = ProcessPoolExecutor() if parallel else None
+        self.executor = futures if parallel else None
         self.overwrite = overwrite
         self.call_count = 0
         self.size_limit = size_limit
