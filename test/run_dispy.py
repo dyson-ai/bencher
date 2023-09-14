@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # bench.report.show()
 
     jobs = []
-    for i in range(300):
+    for i in range(3):
         # c = C(i, random.uniform(1, 3)) # create object of C
         # job = cluster.submit(c) # it is sent to a node for executing 'compute'
 
