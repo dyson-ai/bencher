@@ -32,30 +32,30 @@ print(os.path.join(os.path.dirname(dispy.__file__), 'data'))
 #     def __call__(self,**kwargs) :
 #         return dict(n=self.n,a=self.a)
 
-
-
-# class BasicParam(param.Parameterized):
-
-#     var1 = param.Number()
-
-#     def __call__(self, **kwargs):
-#         var1 = kwargs.get("var1", 0)
-
-#         return var1
-
-
 # def setup(args):
     # import param
     # pass
 
-def wrapper(**kwargs):
-    
+def wrapper(**kwargs):    
     import param 
-    import bencher as bch
-    # import bch.example.benchmark_data.AllSweepVars
+    from bencher.example.benchmark_data import AllSweepVars
+
+    asv = AllSweepVars()
+
+    return asv.__call__(**kwargs)
+
 
     # asv =AllSweepVars()
     # class BasicParam(param.Parameterized):
+
+    #     var1 = param.Number()
+
+    #     def __call__(self, **kwargs):
+    #         var1 = kwargs.get("var1", 0)
+
+    #         return var1+1
+
+    # class BasicSweep(bch.ParameterizedSweep):
 
     #     var1 = param.Number()
 
@@ -68,7 +68,7 @@ def wrapper(**kwargs):
     # bch.FloatSweep()
     # import param
     # cp = CachedParamExample()  # clears cache by default
-    var1 = kwargs.get("var1", 0)
+    # var1 = kwargs.get("var1", 0)
     # print(f"starting {var1}")
     # bp = BasicParam()
     # return bp.__call__(**kwargs)
@@ -84,6 +84,9 @@ def wrapper(**kwargs):
     # # res = cp.__call__(**kwargs)
     # # return res
 
+def wrapper_bench(**kwargs):
+    from bencher.example.benchmark_data import AllSweepVars
+    return AllSweepVars().__call__(**kwargs)
 
 if __name__ == '__main__':
     import random, dispy
@@ -98,12 +101,15 @@ if __name__ == '__main__':
     # depends =  func_deps+param_deps
     depends = param_deps
     depends =[]
+    # depends =["/home/agsmith/bencher/test/run_dispy.py","/home/agsmith/bencher/test/basic_param.py"]
     # depends =  param_deps+bench_deps +func_deps
 
 
     # cluster = dispy.JobCluster(C.__call__, depends=[C])
-    cluster = dispy.JobCluster(wrapper,nodes=["10.51.103.13"], depends=depends)
+    cluster = dispy.JobCluster(wrapper_bench,nodes=["10.51.103.13","10.50.103.17"], depends=depends)
     # cluster = dispy.JobCluster(wrapper,depends=depends)
+    # cluster = dispy.JobCluster(wrapper_bench,depends=depends)
+
 
     # cluster = dispy.JobCluster(wrapper, depends=[C,param,bch,bch.SweepBase,bch.FloatSweep])
     # import functools
@@ -117,11 +123,11 @@ if __name__ == '__main__':
 
 
     jobs = []
-    for i in range(10):
+    for i in range(100):
         # c = C(i, random.uniform(1, 3)) # create object of C
         # job = cluster.submit(c) # it is sent to a node for executing 'compute'
 
-        job = cluster.submit(var1=i) # it is sent to a node for executing 'compute'
+        job = cluster.submit(var_float=i/100.) # it is sent to a node for executing 'compute'
 
 
         # job.id = c # store this object for later use
