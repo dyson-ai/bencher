@@ -8,5 +8,5 @@ RUN apt-get update && \
 
 # CMD ["/usr/local/bin/dispycosnode.py"]
 
-CMD ["/usr/local/bin/dispynode.py"]
+CMD ["/usr/local/bin/dispynode.py","-d"]
 

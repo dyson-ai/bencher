@@ -51,7 +51,7 @@ print(os.path.join(os.path.dirname(dispy.__file__), 'data'))
 def wrapper(**kwargs):
     
     import param 
-    # import bencher as bch
+    import bencher as bch
     # import bch.example.benchmark_data.AllSweepVars
 
     # asv =AllSweepVars()
@@ -97,6 +97,7 @@ if __name__ == '__main__':
     func_deps =[]
     # depends =  func_deps+param_deps
     depends = param_deps
+    depends =[]
     # depends =  param_deps+bench_deps +func_deps
 
 
