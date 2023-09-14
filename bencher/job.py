@@ -97,8 +97,8 @@ class JobCache:
         else:
             self.cache = None
             self.cache_args = None
-        # self.executor = Client() if parallel else None
-        self.executor = ProcessPoolExecutor() if parallel else None
+        self.executor = Client() if parallel else None
+        # self.executor = ProcessPoolExecutor() if parallel else None
         # self.executor = futures
 
         self.overwrite = overwrite

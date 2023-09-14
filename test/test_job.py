@@ -109,7 +109,7 @@ def wrapper(**kwargs):
     # cp = CachedParamExample()  # clears cache by default
     var1 = kwargs.get("var1", 0)
     print(f"starting {var1}")
-    # bp = BasicParam()
+    bp = BasicParam()
     for i in range(1000000):
         logging.debug(i)
 
@@ -121,28 +121,28 @@ def wrapper(**kwargs):
 
 if __name__ == "__main__":
 
-    
-    location = 'cachedir/joblib'
-    memory = Memory(location, verbose=0)
-    costly_compute_cached = memory.cache(wrapper)
+    if False:
+        location = 'cachedir/joblib'
+        memory = Memory(location, verbose=0)
+        costly_compute_cached = memory.cache(wrapper)
 
-    # for i in range(100000):
+        # for i in range(100000):
 
-    results = Parallel()(
-        delayed(costly_compute_cached)(var1=i) for i in range(10000)
-    )
+        results = Parallel()(
+            delayed(costly_compute_cached)(var1=i) for i in range(10000)
+        )
 
-    for r in results:
-        print(r)
+        for r in results:
+            print(r)
+    else:
+        jc = JobCache(parallel=True, cache_name="test_cache")
+        jc.clear()
 
-    # jc = JobCache(parallel=True, cache_name="test_cache")
-    # jc.clear()
+        futures = []
+        for i in range(100000):
+            futures.append(jc.add_job(Job(i, wrapper, job_args=dict(var1=i))))
 
-    # futures = []
-    # for i in range(100000):
-    #     futures.append(jc.add_job(Job(i, wrapper, job_args=dict(var1=i))))
-
-    # for f in futures:
-    #     print(f.result())
+        for f in futures:
+            print(f.result())
 
     # TestJob().test_bench_runner_parallel(True).report.show()
