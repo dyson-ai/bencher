@@ -106,7 +106,16 @@ if __name__ == '__main__':
 
 
     # cluster = dispy.JobCluster(C.__call__, depends=[C])
-    cluster = dispy.JobCluster(wrapper_bench,nodes=["10.51.103.13","10.50.103.17"], depends=depends)
+    cluster = dispy.JobCluster(wrapper_bench,nodes=["10.51.103.13","10.50.103.17","10.50.103.16"], depends=depends,cleanup=False)
+
+
+    # sudo ufw allow 9701
+    # sudo ufw allow 9700
+
+
+
+    # cluster = dispy.JobCluster(wrapper_bench,nodes=["10.50.103.17"], depends=depends,cleanup=False)
+
     # cluster = dispy.JobCluster(wrapper,depends=depends)
     # cluster = dispy.JobCluster(wrapper_bench,depends=depends)
 
