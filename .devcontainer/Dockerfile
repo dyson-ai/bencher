@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/devcontainers/python:0-3.10
 
-RUN apt-get update && apt install git-lfs
+RUN apt-get update && apt install git-lfs iputils-ping
 
 RUN python -m pip install --upgrade pip \
     && python -m pip install 'flit>=3.8.0'
