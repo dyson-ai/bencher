@@ -19,7 +19,7 @@ from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.utils import hmap_canonical_input
-
+from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
 
@@ -236,9 +236,14 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The date the bench run was performed",
     )
 
-    parallel = param.Boolean(
-        default=False,
-        doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
+    # parallel = param.Boolean(
+    #     default=False,
+    #     doc="Run the sweep in parallel.  Warning! You need to make sure your code is threadsafe before using this option",
+    # )
+
+    executor = param.Selector(
+        list(Executors),
+        doc="The function can be run serially or in parallel with different futures executors",
     )
 
     @staticmethod
@@ -684,7 +689,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         benchmark_sampling_str.append(f"    use_cache: {bench_cfg.use_cache}")
         benchmark_sampling_str.append(f"    use_sample_cache: {bench_cfg.use_sample_cache}")
         benchmark_sampling_str.append(f"    only_hash_tag: {bench_cfg.only_hash_tag}")
-        benchmark_sampling_str.append(f"    parallel: {bench_cfg.parallel}")
+        benchmark_sampling_str.append(f"    parallel: {bench_cfg.executor}")
 
         for mv in bench_cfg.meta_vars:
             benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))

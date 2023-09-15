@@ -28,7 +28,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, JobCache, JobFuture
+from bencher.job import Job, FutureCache, JobFuture, Executors
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -582,14 +582,14 @@ class Bench(BenchPlotServer):
                 job_key=job.function_input_signature_pure,
                 tag=job.tag,
             )
-            result = self.sample_cache.add_job(cache_job)
+            result = self.sample_cache.submit(cache_job)
             results_list.append(result)
             callcount += 1
 
-            if not bench_run_cfg.parallel:
+            if bench_run_cfg.executor == Executors.SERIAL:
                 self.store_results(result, bench_cfg, job, bench_run_cfg)
 
-        if bench_run_cfg.parallel:
+        if bench_run_cfg.executor != Executors.SERIAL:
             for job, res in zip(jobs, results_list):
                 self.store_results(res, bench_cfg, job, bench_run_cfg)
 
@@ -605,44 +605,45 @@ class Bench(BenchPlotServer):
         bench_run_cfg: BenchRunCfg,
     ) -> None:
         result = job_result.result()
-        if bench_cfg.print_bench_inputs:
-            logging.info(f"{job_result.job.job_id} inputs:")
-            for k, v in worker_job.function_input.items():
-                logging.info(f"\t {k}:{v}")
+        if result is not None:
+            logging.info(f"{job_result.job.job_id}:")
+            if bench_cfg.print_bench_inputs:
+                for k, v in worker_job.function_input.items():
+                    logging.info(f"\t {k}:{v}")
 
-        # construct a dict for a holomap
-        if isinstance(result, dict):  # todo holomaps with named types
-            if "hmap" in result:
-                bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+            # construct a dict for a holomap
+            if isinstance(result, dict):  # todo holomaps with named types
+                if "hmap" in result:
+                    bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
 
-        for rv in bench_cfg.result_vars:
-            if isinstance(result, dict):
-                result_value = result[rv.name]
-            else:
-                result_value = result.param.values()[rv.name]
+            for rv in bench_cfg.result_vars:
+                if isinstance(result, dict):
+                    result_value = result[rv.name]
+                else:
+                    result_value = result.param.values()[rv.name]
 
-            if bench_run_cfg.print_bench_results:
-                logging.info(f"{rv.name}: {result_value}")
+                if bench_run_cfg.print_bench_results:
+                    logging.info(f"{rv.name}: {result_value}")
 
-            if isinstance(rv, ResultVar):
-                set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
-            elif isinstance(rv, ResultVec):
-                if isinstance(result_value, (list, np.ndarray)):
-                    if len(result_value) == rv.size:
-                        for i in range(rv.size):
-                            set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)],
-                                worker_job.index_tuple,
-                                result_value[i],
-                            )
+                if isinstance(rv, ResultVar):
+                    set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
+                elif isinstance(rv, ResultVec):
+                    if isinstance(result_value, (list, np.ndarray)):
+                        if len(result_value) == rv.size:
+                            for i in range(rv.size):
+                                set_xarray_multidim(
+                                    bench_cfg.ds[rv.index_name(i)],
+                                    worker_job.index_tuple,
+                                    result_value[i],
+                                )
 
-            else:
-                raise RuntimeError("Unsupported result type")
+                else:
+                    raise RuntimeError("Unsupported result type")
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):
-        return JobCache(
+        return FutureCache(
             overwrite=run_cfg.overwrite_sample_cache,
-            parallel=run_cfg.parallel,
+            executor=run_cfg.executor,
             cache_name="sample_cache",
             tag_index=True,
             size_limit=self.cache_size,
