@@ -31,7 +31,7 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
     """
     search_space = {}
     for iv in bench_cfg.all_vars:
-        search_space[iv.name] = iv.values(bench_cfg.debug)
+        search_space[iv.name] = iv.values(bench_cfg.level)
     directions = []
     for rv in bench_cfg.result_vars:
         if rv.direction != OptDir.none:

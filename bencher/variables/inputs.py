@@ -142,9 +142,7 @@ class FloatSweep(Number, SweepBase):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(
-        self, units="ul", samples=10, sample_values=None, step=None, **params
-    ):
+    def __init__(self, units="ul", samples=10, sample_values=None, step=None, **params):
         SweepBase.__init__(self)
         Number.__init__(self, step=step, **params)
 

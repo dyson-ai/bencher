@@ -173,7 +173,7 @@ class VolumePlot:
         ).matches(pl_in.plt_cnt_cfg):
             sns_cfg = PltCfgBase()
             sns_cfg.y = pl_in.rv.name
-            xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.debug)
+            xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.level)
             return plot_volume_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
         return None
 

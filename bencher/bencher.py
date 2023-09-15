@@ -473,7 +473,7 @@ class Bench(BenchPlotServer):
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
 
         for i in bench_cfg.all_vars:
-            logging.info(i.sampling_str(bench_cfg.debug))
+            logging.info(i.sampling_str(bench_cfg.level))
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(

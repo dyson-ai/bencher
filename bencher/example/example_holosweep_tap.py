@@ -95,7 +95,7 @@ def example_holosweep_tap(
 
     heatmap = res.to_heatmap().opts(tools=["hover", "tap"])
     posxy = hv.streams.Tap(source=heatmap, x=0, y=0)
-    sld1 = wv.param.phase.as_slider(run_cfg.debug)
+    sld1 = wv.param.phase.as_slider(run_cfg.level)
 
     def tap_plot(x, y):
         print(x, y)

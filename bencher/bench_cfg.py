@@ -120,9 +120,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true each time the function is called it will plot a timeseries of historical and the latest result.",
     )
 
-    debug: bool = param.Boolean(
-        False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
-    )
 
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
@@ -402,7 +399,7 @@ class BenchCfg(BenchRunCfg):
                 hash_sha1(str(self.title)),
                 hash_sha1(self.over_time),
                 repeats_hash,
-                hash_sha1(self.debug),
+                hash_sha1(self.level),
                 hash_sha1(self.tag),
             )
         )
@@ -596,7 +593,7 @@ class BenchCfg(BenchRunCfg):
 
         kdims = []
         for i in self.input_vars + [self.iv_repeat]:
-            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
+            kdims.append(i.as_dim(compute_values=True, debug=self.level))
 
         return hv.DynamicMap(cb, kdims=kdims)
 
@@ -662,7 +659,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
 
     benchmark_sampling_str.append("Input Variables:")
     for iv in bench_cfg.input_vars:
-        benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
+        benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.level, True))
 
     if bench_cfg.const_vars and (bench_cfg.summarise_constant_inputs or summarise_constant_inputs):
         benchmark_sampling_str.append("\nConstants:")
@@ -671,7 +668,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
 
     benchmark_sampling_str.append("\nResult Variables:")
     for rv in bench_cfg.result_vars:
-        benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
+        benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.level, False))
 
     print_meta = True
     # if len(bench_cfg.meta_vars) == 1:
@@ -692,7 +689,7 @@ def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
         benchmark_sampling_str.append(f"    parallel: {bench_cfg.executor}")
 
         for mv in bench_cfg.meta_vars:
-            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
+            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.level, True))
 
     benchmark_sampling_str.append("```")
 
@@ -726,7 +723,7 @@ class DimsCfg:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
 
         self.dim_ranges = []
-        self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
+        self.dim_ranges = [i.values(bench_cfg.level) for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]
         self.dim_ranges_str = [f"{s}\n" for s in self.dim_ranges]
