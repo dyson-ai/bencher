@@ -15,7 +15,7 @@ import panel as pn
 
 
 import bencher as bch
-from bencher.variables.sweep_base import hash_sha1, describe_variable
+from bencher.variables.sweep_base import hash_sha1, describe_variable, hash_extra_vars
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.utils import hmap_canonical_input
@@ -408,10 +408,14 @@ class BenchCfg(BenchRunCfg):
         )
         all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash_sha1((hash_val, v.hash_persistent()))
+            # hash_val = hash_sha1((hash_val, v.hash_persistent()))
+            hash_val = hash_sha1((hash_val, hash_extra_vars(v) ))
+
 
         for v in self.const_vars:
-            hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
+            # hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
+            hash_val = hash_sha1((hash_extra_vars(v[0]), hash_sha1(v[1])))
+
 
         return hash_val
 
