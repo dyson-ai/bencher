@@ -48,7 +48,7 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
     def test_int_sweep_level_10_with_values_and_step(self):
-        int_sweep = IntSweep(bounds=[0, 10], step=2 ,samples=4)
+        int_sweep = IntSweep(bounds=[0, 10], step=2, samples=4)
         self.assertListEqual(int_sweep.with_level(1).values(), [0])
         self.assertListEqual(int_sweep.with_level(2).values(), [0, 10])
         self.assertListEqual(int_sweep.with_level(3).values(), [0, 5, 10])

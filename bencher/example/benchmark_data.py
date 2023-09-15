@@ -165,7 +165,7 @@ class AllSweepVars(ParametrizedSweep):
 
     var_float = FloatSweep(default=5, bounds=(0, 10), units="m/s")
     var_int = IntSweep(default=3, bounds=[0, 4])
-    var_int_big = IntSweep(default=0,bounds=[0,100],samples=3)
+    var_int_big = IntSweep(default=0, bounds=[0, 100], samples=3)
     var_bool = BoolSweep()
     var_string = StringSweep(["string1", "string2"])
     var_enum = EnumSweep(PostprocessFn)
