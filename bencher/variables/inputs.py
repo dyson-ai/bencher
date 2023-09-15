@@ -11,7 +11,7 @@ class SweepSelector(Selector, SweepBase):
 
     __slots__ = shared_slots
 
-    def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
+    def __init__(self, units: str = "ul", samples: int = None, **params):
         SweepBase.__init__(self)
         Selector.__init__(self, **params)
 
@@ -20,12 +20,10 @@ class SweepSelector(Selector, SweepBase):
             self.samples = len(self.objects)
         else:
             self.samples = samples
-        self.samples_debug = min(self.samples, samples_debug)
 
     def values(self, debug=False) -> List[Any]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         return self.indices_to_samples(self.samples, self.objects)
-    
 
 
 class BoolSweep(SweepSelector):
@@ -58,7 +56,6 @@ class StringSweep(SweepSelector):
             instantiate=True,
             units=units,
             samples=samples,
-            samples_debug=samples_debug,
             **params,
         )
 
@@ -78,7 +75,6 @@ class EnumSweep(SweepSelector):
             instantiate=True,
             units=units,
             samples=samples,
-            samples_debug=samples_debug,
             **params,
         )
         if not list_of_enums:  # Grab the docs from the enum type def
@@ -90,7 +86,7 @@ class IntSweep(Integer, SweepBase):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=None, samples_debug=2, sample_values=None, **params):
+    def __init__(self, units="ul", samples=None, sample_values=None, **params):
         SweepBase.__init__(self)
         Integer.__init__(self, **params)
 
@@ -147,7 +143,7 @@ class FloatSweep(Number, SweepBase):
     __slots__ = shared_slots + ["sample_values"]
 
     def __init__(
-        self, units="ul", samples=10, samples_debug=2, sample_values=None, step=None, **params
+        self, units="ul", samples=10, sample_values=None, step=None, **params
     ):
         SweepBase.__init__(self)
         Number.__init__(self, step=step, **params)
