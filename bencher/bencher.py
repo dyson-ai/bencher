@@ -605,39 +605,40 @@ class Bench(BenchPlotServer):
         bench_run_cfg: BenchRunCfg,
     ) -> None:
         result = job_result.result()
-        if bench_cfg.print_bench_inputs:
-            logging.info(f"{job_result.job.job_id} inputs:")
-            for k, v in worker_job.function_input.items():
-                logging.info(f"\t {k}:{v}")
+        if result is not None:
+            if bench_cfg.print_bench_inputs:
+                logging.info(f"{job_result.job.job_id} inputs:")
+                for k, v in worker_job.function_input.items():
+                    logging.info(f"\t {k}:{v}")
 
-        # construct a dict for a holomap
-        if isinstance(result, dict):  # todo holomaps with named types
-            if "hmap" in result:
-                bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+            # construct a dict for a holomap
+            if isinstance(result, dict):  # todo holomaps with named types
+                if "hmap" in result:
+                    bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
 
-        for rv in bench_cfg.result_vars:
-            if isinstance(result, dict):
-                result_value = result[rv.name]
-            else:
-                result_value = result.param.values()[rv.name]
+            for rv in bench_cfg.result_vars:
+                if isinstance(result, dict):
+                    result_value = result[rv.name]
+                else:
+                    result_value = result.param.values()[rv.name]
 
-            if bench_run_cfg.print_bench_results:
-                logging.info(f"{rv.name}: {result_value}")
+                if bench_run_cfg.print_bench_results:
+                    logging.info(f"{rv.name}: {result_value}")
 
-            if isinstance(rv, ResultVar):
-                set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
-            elif isinstance(rv, ResultVec):
-                if isinstance(result_value, (list, np.ndarray)):
-                    if len(result_value) == rv.size:
-                        for i in range(rv.size):
-                            set_xarray_multidim(
-                                bench_cfg.ds[rv.index_name(i)],
-                                worker_job.index_tuple,
-                                result_value[i],
-                            )
+                if isinstance(rv, ResultVar):
+                    set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
+                elif isinstance(rv, ResultVec):
+                    if isinstance(result_value, (list, np.ndarray)):
+                        if len(result_value) == rv.size:
+                            for i in range(rv.size):
+                                set_xarray_multidim(
+                                    bench_cfg.ds[rv.index_name(i)],
+                                    worker_job.index_tuple,
+                                    result_value[i],
+                                )
 
-            else:
-                raise RuntimeError("Unsupported result type")
+                else:
+                    raise RuntimeError("Unsupported result type")
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):
         return JobCache(
