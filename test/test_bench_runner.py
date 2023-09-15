@@ -58,12 +58,12 @@ class TestBenchRunner(unittest.TestCase):
         res = bch.Bench(
             "float", SimpleBenchClassFloat(), run_cfg=bch.BenchRunCfg(level=2, repeats=1)
         ).plot_sweep("float")
-        self.assertEqual(res.samples(), 2)
+        self.assertEqual(res.result_samples(), 2)
 
         res = bch.Bench(
             "float", SimpleBenchClassFloat(), run_cfg=bch.BenchRunCfg(level=2, repeats=5)
         ).plot_sweep("float")
-        self.assertEqual(res.samples(), 10)
+        self.assertEqual(res.result_samples(), 10)
 
     # # Tests that bch.BenchRunner can run Benchable functions with default configuration (fixed)
     # def test_benchrunner_run_default_configuration_fixed(self):

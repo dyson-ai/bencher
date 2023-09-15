@@ -503,7 +503,7 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-    def samples(self) -> int:
+    def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
         return len(self.get_dataframe().index)
 
