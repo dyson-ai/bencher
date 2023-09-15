@@ -503,6 +503,10 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
+    def result_samples(self) -> int:
+        """The number of samples in the results dataframe"""
+        return len(self.get_dataframe().index)
+
     def get_best_trial_params(self, canonical=False):
         if len(self.studies) == 0:
             from bencher.optuna_conversions import bench_cfg_to_study
