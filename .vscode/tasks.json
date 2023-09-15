@@ -129,7 +129,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		}
+		},
 		{
 			"label": "ra: Run Active File with scoop",
 			"type": "shell",
