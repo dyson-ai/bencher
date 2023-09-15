@@ -28,7 +28,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, JobCache, JobFuture
+from bencher.job import Job, FutureCache, JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -582,7 +582,7 @@ class Bench(BenchPlotServer):
                 job_key=job.function_input_signature_pure,
                 tag=job.tag,
             )
-            result = self.sample_cache.add_job(cache_job)
+            result = self.sample_cache.submit(cache_job)
             results_list.append(result)
             callcount += 1
 
@@ -641,7 +641,7 @@ class Bench(BenchPlotServer):
                     raise RuntimeError("Unsupported result type")
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):
-        return JobCache(
+        return FutureCache(
             overwrite=run_cfg.overwrite_sample_cache,
             parallel=run_cfg.parallel,
             cache_name="sample_cache",

@@ -25,7 +25,7 @@ class TestJob(unittest.TestCase):
         cp = CachedParamExample()  # clears cache by default
 
         jc = JobFunctionCache(cp.__call__, parallel=parallel, cache_name="test_cache")
-        jc.clear()
+        jc.clear_cache()
 
         res1 = jc.call(var1=1).result()
         res2 = jc.call(var1=1).result()
@@ -55,7 +55,7 @@ class TestJob(unittest.TestCase):
         cp = CachedParamExample()  # clears cache by default
 
         jc = JobFunctionCache(cp.__call__, parallel=parallel, cache_name="test_cache1")
-        jc.clear()
+        jc.clear_cache()
 
         res1 = jc.call(var1=1).result()
 
