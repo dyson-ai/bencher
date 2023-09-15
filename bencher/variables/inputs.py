@@ -14,11 +14,17 @@ class SweepSelector(SweepBase, Selector):
     __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        Selector.__init__(self, **params)
+        Selector.__init__(self, **params)   
+
         self.units = units
         if samples is None:
-            self.samples = 2
+            self.samples = len(self.objects)
+        else:
+            self.samples = samples
         self.samples_debug = min(self.samples, samples_debug)
+
+
+        
 
     def values(self, debug=False) -> List[Any]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
@@ -37,18 +43,14 @@ class BoolSweep(SweepSelector):
             samples=samples,
             samples_debug=samples_debug,
             default=default,
+            objects=  [True, False] if default else  [False, True]
             **params,
         )
-        if default:
-            self.objects = [True, False]
-        else:
-            self.objects = [False, True]
 
 
 class StringSweep(SweepBase, Selector):
     """A class to reprsent a parameter sweep of strings"""
 
-    __slots__ = shared_slots
 
     def __init__(
         self,
@@ -58,17 +60,8 @@ class StringSweep(SweepBase, Selector):
         samples_debug: int = 2,
         **params,
     ):
-        Selector.__init__(self, string_list, instantiate=True, **params)
-        self.units = units
-        if samples is None:
-            self.samples = len(self.objects)
-        else:
-            self.samples = samples
-        self.samples_debug = min(self.samples, samples_debug)
-
-    def values(self, debug=False) -> List[Enum]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
+        SweepSelector.__init__(self, objects=string_list, instantiate=True,units=units,samples=samples,samples_debug=samples_debug, **params)
+        
 
 
 class EnumSweep(SweepBase, Selector):
@@ -81,24 +74,11 @@ class EnumSweep(SweepBase, Selector):
     ):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = isinstance(enum_type, list)
-        if list_of_enums:
-            selector_list = enum_type  # already a list of enums
-        else:
-            # create a list of enums from the enum type definition
-            selector_list = list(enum_type)
-        Selector.__init__(self, selector_list, **params)
+        selector_list = enum_type if list_of_enums else  list(enum_type)       
+        SweepSelector.__init__(self, objects = selector_list,  instantiate=True,units=units,samples=samples,samples_debug=samples_debug,**params)
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
-        self.units = units
-        if samples is None:
-            self.samples = len(self.objects)
-        else:
-            self.samples = samples
-        self.samples_debug = min(self.samples, samples_debug)
-
-    def values(self, debug=False) -> List[Enum]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.indices_to_samples(self.samples_debug if debug else self.samples, self.objects)
+       
 
 
 class IntSweep(SweepBase, Integer):
