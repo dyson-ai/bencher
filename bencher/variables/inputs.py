@@ -158,9 +158,12 @@ class FloatSweep(Number, SweepBase):
 
     def values(self, level: int) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        samps = self.samples
         if self.sample_values is None:
             if self.step is None:
+                samps = self.define_level(level)
                 return np.linspace(self.bounds[0], self.bounds[1], samps)
-            return np.arange(self.bounds[0], self.bounds[1], self.step)
-        return self.sample_values
+            sample_values= np.arange(self.bounds[0], self.bounds[1], self.step)
+        else:
+            sample_values= self.sample_values
+
+        return self.level_to_samples(level, sample_values)

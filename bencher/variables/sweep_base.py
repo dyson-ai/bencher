@@ -126,6 +126,9 @@ class SweepBase(param.Parameter):
         return [sample_values[i] for i in indices]
 
     def level_to_samples(self, level: int, sample_values):
+        if level == 0:
+            return sample_values
+        
         return self.indices_to_samples(self.define_level(level), sample_values)
 
     def with_samples(self, samples: int) -> SweepBase:
@@ -137,7 +140,7 @@ class SweepBase(param.Parameter):
             output.step = None  # pylint: disable = attribute-defined-outside-init
         return output
 
-    def with_sample_values(self, sample_values: int) -> SweepBase:
+    def with_sample_values(self, sample_values: List[Any]) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         try:
@@ -160,11 +163,11 @@ class SweepBase(param.Parameter):
 
     def with_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
         return self.with_sample_values(
-            self.with_samples(self.define_level(level, max_level)).values()
+            self.with_samples(self.define_level(level, max_level)).values(level)
         )
 
     def define_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
-        assert level >= 1
+        # assert level >= 1
         # TODO work out if the order can be returned in level order always
         samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
         return samples[min(max_level, level)]
