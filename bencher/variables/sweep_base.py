@@ -26,9 +26,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     return hash_sha1((parameter.units, parameter.samples))
 
 
-def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, value=None
-) -> List[str]:
+def describe_variable(v: Parameterized, level: int, include_samples: bool, value=None) -> List[str]:
     """Generate a string description of a variable
 
     Args:
@@ -44,8 +42,8 @@ def describe_variable(
     sampling_str.append(f"{v.name}:")
     if include_samples:
         # sampling_str.append(f"{indent}{v.sampling_str(debug)}")
-        sampling_str.append(f"{indent}number of samples: {len(v.values(debug))}")
-        sampling_str.append(f"{indent}sample values: {v.values(debug)}")
+        sampling_str.append(f"{indent}number of samples: {len(v.values(level))}")
+        sampling_str.append(f"{indent}sample values: {v.values(level)}")
 
     if value is not None:
         sampling_str.append(f"{indent}value: {value}")
@@ -59,7 +57,7 @@ def describe_variable(
 
 
 class SweepBase(param.Parameter):
-    def values(self, debug: bool) -> List[Any]:
+    def values(self, level: int) -> List[Any]:
         """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
 
         Args:
@@ -127,6 +125,9 @@ class SweepBase(param.Parameter):
 
         return [sample_values[i] for i in indices]
 
+    def level_to_samples(self, level: int, sample_values):
+        return self.indices_to_samples(self.define_level(level), sample_values)
+
     def with_samples(self, samples: int) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
@@ -158,8 +159,12 @@ class SweepBase(param.Parameter):
         return (deepcopy(self), const_value)
 
     def with_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
+        return self.with_sample_values(
+            self.with_samples(self.define_level(level, max_level)).values()
+        )
+
+    def define_level(self, level: int = 1, max_level: int = 12) -> SweepBase:
         assert level >= 1
         # TODO work out if the order can be returned in level order always
         samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
-        out = self.with_sample_values(self.with_samples(samples[min(max_level, level)]).values())
-        return out
+        return samples[min(max_level, level)]

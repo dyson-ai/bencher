@@ -120,7 +120,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true each time the function is called it will plot a timeseries of historical and the latest result.",
     )
 
-
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
     summarise_constant_inputs = param.Boolean(

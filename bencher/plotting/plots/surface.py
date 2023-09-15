@@ -11,7 +11,7 @@ from bencher.variables.results import ResultVar
 from bencher.plotting_functions import wrap_long_time_labels
 
 
-def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, level: int) -> PltCfgBase:
     """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
 
     Args:
@@ -35,11 +35,11 @@ def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltC
         if plt_cnt_cfg.cat_cnt >= 1:
             logging.info("surface plot with 1 categorical")
             xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-            xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
+            xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(level))
         if plt_cnt_cfg.cat_cnt >= 2:
             logging.info("surface plot with 2> categorical")
             xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-            xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
+            xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(level))
     return xr_cfg
 
 

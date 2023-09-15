@@ -21,9 +21,9 @@ class SweepSelector(Selector, SweepBase):
         else:
             self.samples = samples
 
-    def values(self, debug=False) -> List[Any]:
+    def values(self, level: int) -> List[Any]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return self.indices_to_samples(self.samples, self.objects)
+        return self.level_to_samples(level, self.objects)
 
 
 class BoolSweep(SweepSelector):
@@ -106,7 +106,7 @@ class IntSweep(Integer, SweepBase):
             if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug=False) -> List[int]:
+    def values(self, level: int) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         sample_values = (
             self.sample_values
@@ -114,7 +114,7 @@ class IntSweep(Integer, SweepBase):
             else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         )
 
-        return self.indices_to_samples(self.samples, sample_values)
+        return self.level_to_samples(level, sample_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -156,7 +156,7 @@ class FloatSweep(Number, SweepBase):
             if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(self, debug=False) -> List[float]:
+    def values(self, level: int) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         samps = self.samples
         if self.sample_values is None:
