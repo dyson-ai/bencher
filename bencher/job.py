@@ -84,6 +84,7 @@ class JobCache:
         tag_index: bool = True,
         size_limit: int = int(100e8),
         use_cache=True,
+        future_provider="scoop",
     ):
         if use_cache:
             # self.cache_args = CacheArgs(
@@ -95,8 +96,11 @@ class JobCache:
         else:
             self.cache = None
             self.cache_args = None
-        # self.executor = ProcessPoolExecutor() if parallel else None
-        self.executor = futures if parallel else None
+        if future_provider == "scoop":
+            self.executor = futures if parallel else None
+        else:
+            self.executor = ProcessPoolExecutor() if parallel else None
+
         self.overwrite = overwrite
         self.call_count = 0
         self.size_limit = size_limit
@@ -190,6 +194,7 @@ class JobFunctionCache(JobCache):
             tag_index=tag_index,
             size_limit=size_limit,
             overwrite=overwrite,
+            future_provider="",
         )
         self.function = function
 
