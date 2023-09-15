@@ -286,7 +286,6 @@ class Bench(BenchPlotServer):
 
         self.last_run_cfg = run_cfg
 
-       
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
             for i in input_vars:
@@ -309,7 +308,6 @@ class Bench(BenchPlotServer):
             for i in input_vars:
                 inputs.append(i.with_level(run_cfg.level))
             input_vars = inputs
-
 
         if post_description is None:
             post_description = (
@@ -525,7 +523,7 @@ class Bench(BenchPlotServer):
         bench_cfg.iv_repeat = IntSweep(
             default=repeats,
             bounds=[1, repeats],
-            step=1,
+            sample_values=range(1,repeats),
             units="repeats",
         )
         bench_cfg.iv_repeat.name = "repeat"

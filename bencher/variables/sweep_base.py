@@ -128,7 +128,7 @@ class SweepBase(param.Parameter):
     def level_to_samples(self, level: int, sample_values):
         if level == 0:
             return sample_values
-        
+
         return self.indices_to_samples(self.define_level(level), sample_values)
 
     def with_samples(self, samples: int) -> SweepBase:

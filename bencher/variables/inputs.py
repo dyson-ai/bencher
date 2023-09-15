@@ -108,13 +108,12 @@ class IntSweep(Integer, SweepBase):
 
     def values(self, level: int) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
-        sample_values = (
-            self.sample_values
-            if self.sample_values is not None
-            else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
-        )
+        if self.sample_values is None:
+       
+            self.level_to_samples(level, list(range(int(self.bounds[0]), int(self.bounds[1] + 1))))
+        
 
-        return self.level_to_samples(level, sample_values)
+        return self.sample_values
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -165,8 +164,8 @@ class FloatSweep(Number, SweepBase):
                 else:
                     samps = self.define_level(level)
                 return np.linspace(self.bounds[0], self.bounds[1], samps)
-            sample_values= np.arange(self.bounds[0], self.bounds[1], self.step)
+            sample_values = np.arange(self.bounds[0], self.bounds[1], self.step)
         else:
-            sample_values= self.sample_values
+            sample_values = self.sample_values
 
         return self.level_to_samples(level, sample_values)

@@ -58,9 +58,7 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(int_sweep.values(2), [100, 1000])
         self.assertListEqual(int_sweep.values(3), [100, 550, 1000])
         self.assertListEqual(int_sweep.values(4), [100, 325, 550, 775, 1000])
-        self.assertListEqual(
-            int_sweep.values(5), [100, 212, 325, 437, 550, 662, 775, 887, 1000]
-        )
+        self.assertListEqual(int_sweep.values(5), [100, 212, 325, 437, 550, 662, 775, 887, 1000])
         self.assertListEqual(
             int_sweep.values(6),
             [100, 156, 212, 268, 325, 381, 437, 493, 550, 606, 662, 718, 775, 831, 887, 943, 1000],
@@ -131,15 +129,9 @@ class TestVarSweeps(unittest.TestCase):
 
         self.assertListEqual(enum_sweep.values(2), [Enum1.VAL1, Enum1.VAL4])
 
-        self.assertListEqual(
-            enum_sweep.values(3), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL4]
-        )
-        self.assertListEqual(
-            enum_sweep.values(4), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
-        )
-        self.assertListEqual(
-            enum_sweep.values(5), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
-        )
+        self.assertListEqual(enum_sweep.values(3), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL4])
+        self.assertListEqual(enum_sweep.values(4), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4])
+        self.assertListEqual(enum_sweep.values(5), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4])
 
     def test_bool_default(self) -> None:
         bool_sweep_true = BoolSweep(default=True)
