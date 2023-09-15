@@ -161,10 +161,22 @@ class TestSweepBase(unittest.TestCase):
         res = bench.plot_sweep("asv", input_vars=[AllSweepVars.param.var_float], run_cfg=run_cfg)
         self.assertEqual(len(res.get_dataframe().index), 5)
 
+        res = bench.plot_sweep("asv", input_vars=[AllSweepVars.param.var_int_big], run_cfg=run_cfg)
+        self.assertEqual(len(res.get_dataframe().index), 5)
+
         run_cfg.level = 4
         res = bench.plot_sweep(
             "asv",
             input_vars=[AllSweepVars.param.var_float.with_level(level=run_cfg.level, max_level=3)],
+            run_cfg=run_cfg,
+        )
+        self.assertEqual(
+            len(res.get_dataframe().index), 3, "the number of samples should be limited to 3"
+        )  
+
+        res = bench.plot_sweep(
+            "asv",
+            input_vars=[AllSweepVars.param.var_int_big.with_level(level=run_cfg.level, max_level=3)],
             run_cfg=run_cfg,
         )
         self.assertEqual(

@@ -150,9 +150,10 @@ class SweepBase(param.Parameter):
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         try:
-            output.sample_values = sample_values  # pylint: disable = attribute-defined-outside-init
+            output.sample_values = sample_values  # pylint: disable = attribute-defined-outside-init            
         except AttributeError:
             output.objects = sample_values  # pylint: disable = attribute-defined-outside-init
+        output.samples = len(sample_values)        
         return output
 
     def with_const(self, const_value: Any) -> Tuple[SweepBase, Any]:
