@@ -286,12 +286,7 @@ class Bench(BenchPlotServer):
 
         self.last_run_cfg = run_cfg
 
-        if run_cfg.level > 0:
-            inputs = []
-            for i in input_vars:
-                inputs.append(i.with_level(run_cfg.level))
-            input_vars = inputs
-
+       
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
             for i in input_vars:
@@ -308,6 +303,13 @@ class Bench(BenchPlotServer):
         for i in const_vars:
             # consts come as tuple pairs
             self.check_var_is_a_param(i[0], "const")
+
+        if run_cfg.level > 0:
+            inputs = []
+            for i in input_vars:
+                inputs.append(i.with_level(run_cfg.level))
+            input_vars = inputs
+
 
         if post_description is None:
             post_description = (
