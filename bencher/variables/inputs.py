@@ -5,19 +5,22 @@ import numpy as np
 from param import Integer, Number, Selector
 from bencher.variables.sweep_base import SweepBase, shared_slots
 
-# pylint: disable=super-init-not-called
 
-
-class SweepSelector(SweepBase, Selector):
+class SweepSelector(Selector, SweepBase):
     """A class to reprsent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
-    def __init__(self, units: str = "ul", samples: int = None, **params):
+    def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
+        SweepBase.__init__(self)
         Selector.__init__(self, **params)
+
         self.units = units
         if samples is None:
-            self.samples = 2
+            self.samples = len(self.objects)
+        else:
+            self.samples = samples
+        self.samples_debug = min(self.samples, samples_debug)
 
     def values(self, debug=False) -> List[Any]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
@@ -34,16 +37,13 @@ class BoolSweep(SweepSelector):
             units=units,
             samples=samples,
             default=default,
-            object = [True, False] if default else [False, True]
+            objects=[True, False] if default else [False, True],
             **params,
         )
-      
 
 
-class StringSweep(SweepBase, Selector):
+class StringSweep(SweepSelector):
     """A class to reprsent a parameter sweep of strings"""
-
-    __slots__ = shared_slots
 
     def __init__(
         self,
@@ -52,17 +52,18 @@ class StringSweep(SweepBase, Selector):
         samples: int = None,
         **params,
     ):
-        Selector.__init__(self, string_list, instantiate=True, **params)
-        self.units = units
-        if samples is None:
-            self.samples = len(self.objects)
-        else:
-            self.samples = samples
+        SweepSelector.__init__(
+            self,
+            objects=string_list,
+            instantiate=True,
+            units=units,
+            samples=samples,
+            samples_debug=samples_debug,
+            **params,
+        )
 
-   
 
-
-class EnumSweep(SweepBase, Selector):
+class EnumSweep(SweepSelector):
     """A class to reprsent a parameter sweep of enums"""
 
     __slots__ = shared_slots
@@ -70,29 +71,29 @@ class EnumSweep(SweepBase, Selector):
     def __init__(self, enum_type: Enum | List[Enum], units="ul", samples=None, **params):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = isinstance(enum_type, list)
-        if list_of_enums:
-            selector_list = enum_type  # already a list of enums
-        else:
-            # create a list of enums from the enum type definition
-            selector_list = list(enum_type)
-        Selector.__init__(self, selector_list, **params)
+        selector_list = enum_type if list_of_enums else list(enum_type)
+        SweepSelector.__init__(
+            self,
+            objects=selector_list,
+            instantiate=True,
+            units=units,
+            samples=samples,
+            samples_debug=samples_debug,
+            **params,
+        )
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
-        self.units = units
-        if samples is None:
-            self.samples = len(self.objects)
-        else:
-            self.samples = samples
-   
 
 
-class IntSweep(SweepBase, Integer):
+class IntSweep(Integer, SweepBase):
     """A class to reprsent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=None, sample_values=None, **params):
+    def __init__(self, units="ul", samples=None, samples_debug=2, sample_values=None, **params):
+        SweepBase.__init__(self)
         Integer.__init__(self, **params)
+
         self.units = units
 
         if sample_values is None:
@@ -140,13 +141,17 @@ class IntSweep(SweepBase, Integer):
             )
 
 
-class FloatSweep(SweepBase, Number):
+class FloatSweep(Number, SweepBase):
     """A class to represent a parameter sweep of floats"""
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=10, sample_values=None, step=None, **params):
+    def __init__(
+        self, units="ul", samples=10, samples_debug=2, sample_values=None, step=None, **params
+    ):
+        SweepBase.__init__(self)
         Number.__init__(self, step=step, **params)
+
         self.units = units
         self.sample_values = sample_values
 
