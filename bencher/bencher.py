@@ -28,7 +28,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, FutureCache, JobFuture
+from bencher.job import Job, FutureCache, JobFuture, Executors
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -586,10 +586,10 @@ class Bench(BenchPlotServer):
             results_list.append(result)
             callcount += 1
 
-            if not bench_run_cfg.parallel:
+            if bench_run_cfg.executor == Executors.SERIAL:
                 self.store_results(result, bench_cfg, job, bench_run_cfg)
 
-        if bench_run_cfg.parallel:
+        if bench_run_cfg.executor != Executors.SERIAL:
             for job, res in zip(jobs, results_list):
                 self.store_results(res, bench_cfg, job, bench_run_cfg)
 
@@ -643,7 +643,7 @@ class Bench(BenchPlotServer):
     def init_sample_cache(self, run_cfg: BenchRunCfg):
         return FutureCache(
             overwrite=run_cfg.overwrite_sample_cache,
-            parallel=run_cfg.parallel,
+            executor=run_cfg.executor,
             cache_name="sample_cache",
             tag_index=True,
             size_limit=self.cache_size,

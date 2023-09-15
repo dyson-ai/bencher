@@ -92,6 +92,6 @@ def example_categorical(
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg(repeats=5)
     ex_run_cfg.over_time = True
-    ex_run_cfg.parallel = True
+    ex_run_cfg.executor = bch.Executors.SCOOP
 
     example_categorical(ex_run_cfg).report.show()

@@ -5,7 +5,7 @@ import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
-from scoop import futures
+from scoop import futures as scoop_future_executor
 from strenum import StrEnum
 from enum import auto
 
@@ -47,18 +47,18 @@ def run_job(job: Job) -> dict:
     return result
 
 
-class FutureProvider(StrEnum):
-    # THREADS=auto()
-    MULTIPROCESSING = auto()
-    SCOOP = auto()
-    NONE = auto()
+class Executors(StrEnum):
+    SERIAL = auto()  # slow but reliable
+    MULTIPROCESSING = auto()  # breaks for large number of futures
+    SCOOP = auto()  # requires running with python -m scoop your_file.py
+    # THREADS=auto() #not that useful as most bench code is cpu bound
 
     @staticmethod
-    def factory(provider: FutureProvider) -> Future():
+    def factory(provider: Executors) -> Future():
         providers = {
-            FutureProvider.MULTIPROCESSING: ProcessPoolExecutor,
-            FutureProvider.SCOOP: futures,
-            FutureProvider.NONE: None,
+            Executors.SERIAL: None,
+            Executors.MULTIPROCESSING: ProcessPoolExecutor(),
+            Executors.SCOOP: scoop_future_executor,
         }
         return providers[provider]
 
@@ -68,16 +68,14 @@ class FutureCache:
 
     def __init__(
         self,
-        parallel: bool = False,
+        executor=Executors.SERIAL,
         overwrite: bool = True,
         cache_name: str = "fcache",
         tag_index: bool = True,
         size_limit: int = int(20e9),  # 20 GB
         use_cache=True,
-        future_provider=FutureProvider.SCOOP,
     ):
-        self.executor = FutureProvider.factory(future_provider) if parallel else None
-
+        self.executor = Executors.factory(executor)
         if use_cache:
             self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
@@ -143,9 +141,11 @@ class FutureCache:
     def close(self) -> None:
         if self.cache:
             self.cache.close()
+        if self.executor:
+            self.executor.shutdown()
 
     # def __del__(self):
-    # self.close()
+    #     self.close()
 
     def stats(self) -> str:
         logging.info(f"job calls: {self.worker_wrapper_call_count}")
@@ -161,20 +161,19 @@ class JobFunctionCache(FutureCache):
         self,
         function: Callable,
         overwrite=False,
-        parallel: bool = False,
+        executor: bool = False,
         cache_name: str = "fcache",
         tag_index: bool = True,
         size_limit: int = int(100e8),
     ):
         super().__init__(
-            parallel=parallel,
+            executor=executor,
             cache_name=cache_name,
             tag_index=tag_index,
             size_limit=size_limit,
             overwrite=overwrite,
-            future_provider=FutureProvider.MULTIPROCESSING,
         )
         self.function = function
 
-    def call(self, **kwargs) -> JobFuture | Future:
+    def call(self, **kwargs) -> JobFuture:
         return self.submit(Job(self.call_count, self.function, kwargs))

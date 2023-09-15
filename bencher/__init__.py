@@ -16,3 +16,4 @@ from .caching import CachedParams
 from .optuna_conversions import to_optuna, summarise_study
 from .bench_cfg import ReduceType
 from .bench_report import BenchReport
+from .job import Executors

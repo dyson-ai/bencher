@@ -20,11 +20,11 @@ class CachedParamExample(bch.CachedParams):
 
 class TestJob(unittest.TestCase):
     @settings(deadline=500)
-    @given(st.booleans())
-    def test_basic(self, parallel):
+    @given(st.sampled_from([bch.Executors.SERIAL, bch.Executors.MULTIPROCESSING]))
+    def test_basic(self, executor):
         cp = CachedParamExample()  # clears cache by default
 
-        jc = JobFunctionCache(cp.__call__, parallel=parallel, cache_name="test_cache")
+        jc = JobFunctionCache(cp.__call__, executor=executor, cache_name="test_cache")
         jc.clear_cache()
 
         res1 = jc.call(var1=1).result()
@@ -39,22 +39,22 @@ class TestJob(unittest.TestCase):
 
         # create new class, make sure it has the same results
         cp2 = CachedParamExample()
-        jc2 = JobFunctionCache(cp2.__call__, parallel=parallel, cache_name="test_cache")
+        jc2 = JobFunctionCache(cp2.__call__, executor=executor, cache_name="test_cache")
         res1cp2 = jc2.call(var1=1).result()
         self.assertEqual(res1["result"], res1cp2["result"])
 
         # create cache with a different name and check it does not have the same results
         cp3 = CachedParamExample()
-        jc3 = JobFunctionCache(cp3.__call__, parallel=parallel, cache_name="test_cache2")
+        jc3 = JobFunctionCache(cp3.__call__, executor=executor, cache_name="test_cache2")
         res1cp3 = jc3.call(var1=1).result()
         self.assertNotEqual(res1["result"], res1cp3["result"])
 
     @settings(deadline=500)
-    @given(st.booleans())
-    def test_overwrite(self, parallel):
+    @given(st.sampled_from([bch.Executors.SERIAL, bch.Executors.MULTIPROCESSING]))
+    def test_overwrite(self, executor):
         cp = CachedParamExample()  # clears cache by default
 
-        jc = JobFunctionCache(cp.__call__, parallel=parallel, cache_name="test_cache1")
+        jc = JobFunctionCache(cp.__call__, executor=executor, cache_name="test_cache1")
         jc.clear_cache()
 
         res1 = jc.call(var1=1).result()
@@ -82,11 +82,11 @@ class TestJob(unittest.TestCase):
         self.assertNotEqual(res1["result"], res3["result"], f"{res1}")
 
     @settings(deadline=1000)
-    @given(st.booleans())
-    def test_bench_runner_parallel(self, parallel):
+    @given(st.sampled_from([bch.Executors.SERIAL, bch.Executors.MULTIPROCESSING]))
+    def test_bench_runner_parallel(self, executor):
         run_cfg = bch.BenchRunCfg()
         run_cfg.overwrite_sample_cache = True
-        run_cfg.parallel = parallel
+        run_cfg.executor = executor
         bench_run = bch.BenchRunner("test_bench_runner", run_cfg=run_cfg)
 
         bench_run.add_bench(CachedParamExample())
