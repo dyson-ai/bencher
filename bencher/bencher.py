@@ -524,7 +524,6 @@ class Bench(BenchPlotServer):
             default=repeats,
             bounds=[1, repeats],
             samples=repeats,
-            samples_debug=2 if repeats > 2 else 1,
             units="repeats",
         )
         bench_cfg.iv_repeat.name = "repeat"

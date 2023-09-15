@@ -10,8 +10,8 @@ import panel as pn
 from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
-# param does not work with multiple inheritance so define here
-shared_slots = ["units", "samples", "samples_debug"]
+# param does not work well with multiple inheritance so define here
+shared_slots = ["units", "samples"]
 
 
 def hash_extra_vars(parameter: Parameterized) -> int:
@@ -23,7 +23,7 @@ def hash_extra_vars(parameter: Parameterized) -> int:
     Returns:
         int: hash
     """
-    return hash_sha1((parameter.units, parameter.samples, parameter.samples_debug))
+    return hash_sha1((parameter.units, parameter.samples))
 
 
 def describe_variable(
@@ -59,12 +59,6 @@ def describe_variable(
 
 
 class SweepBase(param.Parameter):
-    # def __init__(self, **params):
-    # super().__init__(**params)
-    # self.units = ""
-    # slots = ["units", "samples", "samples_debug"]
-    # __slots__ = shared_slots
-
     def values(self, debug: bool) -> List[Any]:
         """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
 
@@ -81,11 +75,7 @@ class SweepBase(param.Parameter):
         return hash_extra_vars(self)
 
     def sampling_str(self, debug=False) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
+        """Generate a string representation of the of the sampling procedure"""
 
         samples = self.values(debug)
         object_str = ",".join([str(i) for i in samples])
