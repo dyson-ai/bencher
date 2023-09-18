@@ -3,23 +3,7 @@ pip:
   - test: hypothesis
   - test: pytest-cov
   
-  - buildrun: diskcache
-  - buildrun: optuna
-  - buildrun: pandas==2.0.1
-  - buildrun: panel
-  - buildrun: hvplot
-  - buildrun: strenum
-  - buildrun: xarray
-  - buildrun: plotly
-  - buildrun: seaborn==0.12.2
-  - buildrun: matplotlib==3.7.1
-  - buildrun: param
-  - buildrun: optuna
-  - buildrun: numpy
-  - buildrun: scikit-learn
-  - buildrun: str2bool
-  - buildrun: mypy
-  - buildrun: scoop
+  - buildrun: holobench
 
 
   
