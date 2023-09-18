@@ -11,7 +11,7 @@ from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
 # param does not work with multiple inheritance so define here
-shared_slots = ["units", "samples", "samples_debug"]
+# shared_slots = ["units", "samples", "samples_debug"]
 
 
 def hash_extra_vars(parameter: Parameterized) -> int:
@@ -62,7 +62,7 @@ class SweepBase(param.Parameter):
     # def __init__(self, **params):
     # super().__init__(**params)
     # self.units = ""
-    # slots = ["units", "samples", "samples_debug"]
+    slots = ["units", "samples","sample_values"]
     # __slots__ = shared_slots
 
     def values(self, debug: bool) -> List[Any]:
