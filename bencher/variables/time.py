@@ -3,13 +3,11 @@ from typing import List
 
 from pandas import Timestamp
 from param import Selector
-from bencher.variables.sweep_base import SweepBase, shared_slots
+from bencher.variables.sweep_base import SweepBase
 
 
 class TimeBase(SweepBase, Selector):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
-
-    __slots__ = shared_slots
 
     def values(self, debug=False) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
@@ -19,8 +17,6 @@ class TimeBase(SweepBase, Selector):
 
 class TimeSnapshot(TimeBase):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
-
-    __slots__ = shared_slots
 
     def __init__(
         self,
@@ -49,8 +45,6 @@ class TimeSnapshot(TimeBase):
 
 class TimeEvent(TimeBase):
     """A class to represent a discrete event in time where the data was captured i.e a series of pull requests.  Here time is discrete and can't be interpolated, to represent time as a continous value use the TimeSnapshot class.  The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
-
-    __slots__ = shared_slots
 
     def __init__(
         self,

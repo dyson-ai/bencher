@@ -62,7 +62,7 @@ class SweepBase(param.Parameter):
     # def __init__(self, **params):
     # super().__init__(**params)
     # self.units = ""
-    slots = ["units", "samples","sample_values"]
+    slots = ["units", "samples", "sample_values"]
     # __slots__ = shared_slots
 
     def values(self, debug: bool) -> List[Any]:

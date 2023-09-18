@@ -3,17 +3,17 @@ from typing import List, Any
 
 import numpy as np
 from param import Integer, Number, Selector
-from bencher.variables.sweep_base import SweepBase, shared_slots
+from bencher.variables.sweep_base import SweepBase
 
 
-class SweepSelector(Selector, SweepBase):
+class SweepSelector(SweepBase, Selector):
     """A class to reprsent a parameter sweep of bools"""
 
     # __slots__ = shared_slots
 
     def __init__(self, units: str = "ul", samples: int = None, samples_debug: int = 2, **params):
-        SweepBase.__init__(self)
         Selector.__init__(self, **params)
+        SweepBase.__init__(self)
 
         self.units = units
         if samples is None:
@@ -68,8 +68,6 @@ class StringSweep(SweepSelector):
 
 class EnumSweep(SweepSelector):
     """A class to reprsent a parameter sweep of enums"""
-
-    __slots__ = shared_slots
 
     def __init__(
         self, enum_type: Enum | List[Enum], units="ul", samples=None, samples_debug=2, **params
