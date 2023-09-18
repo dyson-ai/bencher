@@ -72,10 +72,10 @@ class SweepBase(param.Parameter):
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_extra_vars(self)
 
-    def sampling_str(self, debug=False) -> str:
+    def sampling_str(self, level) -> str:
         """Generate a string representation of the of the sampling procedure"""
 
-        samples = self.values(debug)
+        samples = self.values(level)
         object_str = ",".join([str(i) for i in samples])
         return f"Taking {len(samples)} samples from {self.name} with values: [{object_str}]"
 
