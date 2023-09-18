@@ -57,6 +57,8 @@ def describe_variable(v: Parameterized, level: int, include_samples: bool, value
 
 
 class SweepBase(param.Parameter):
+    # __slots__ = shared_slots
+
     def values(self, level: int) -> List[Any]:
         """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
 

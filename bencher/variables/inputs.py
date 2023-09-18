@@ -109,10 +109,10 @@ class IntSweep(Integer, SweepBase):
     def values(self, level: int) -> List[int]:
         """return all the values for a parameter sweep.  If debug is true return the  list"""
         if self.sample_values is None:
-       
-            self.level_to_samples(level, list(range(int(self.bounds[0]), int(self.bounds[1] + 1))))
-        
-
+            num_samples = self.define_level(level) if self.samples is None else self.samples
+            return self.indices_to_samples(
+                num_samples, list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
+            )
         return self.sample_values
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
@@ -141,7 +141,7 @@ class FloatSweep(Number, SweepBase):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=10, sample_values=None, step=None, **params):
+    def __init__(self, units="ul", samples=None, sample_values=None, step=None, **params):
         SweepBase.__init__(self)
         Number.__init__(self, step=step, **params)
 
@@ -158,14 +158,16 @@ class FloatSweep(Number, SweepBase):
     def values(self, level: int) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         if self.sample_values is None:
-            if self.step is None:
-                if level == 0:
-                    samps = self.samples
-                else:
-                    samps = self.define_level(level)
-                return np.linspace(self.bounds[0], self.bounds[1], samps)
-            sample_values = np.arange(self.bounds[0], self.bounds[1], self.step)
-        else:
-            sample_values = self.sample_values
+            # if self.sam
+            # if self.step is None:
 
-        return self.level_to_samples(level, sample_values)
+            num_samples = self.define_level(level) if self.samples is None else self.samples
+            return np.linspace(self.bounds[0], self.bounds[1], num_samples)
+
+            # if level == 0:
+            # samps = self.samples
+            # else:
+            # samps = self.define_level(level)
+            # sample_values = np.arange(self.bounds[0], self.bounds[1], self.step)
+            # return self.level_to_samples(level, sample_values)
+        return self.sample_values

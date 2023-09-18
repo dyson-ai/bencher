@@ -523,7 +523,7 @@ class Bench(BenchPlotServer):
         bench_cfg.iv_repeat = IntSweep(
             default=repeats,
             bounds=[1, repeats],
-            sample_values=range(1,repeats),
+            sample_values=range(1, repeats),
             units="repeats",
         )
         bench_cfg.iv_repeat.name = "repeat"
