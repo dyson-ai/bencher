@@ -23,7 +23,7 @@ dependencies = [
   "scikit-learn>=1.2,<=1.3.0",
   "str2bool>=1.1,<=1.1",
   "mortgage>=1.0.5,<=1.0.5",
-  # "scoop>=0.7.2.0,<=0.7.2.0",
+  "scoop>=0.7.0,<=0.7.2.0",
 ]
 
 [project.optional-dependencies]
