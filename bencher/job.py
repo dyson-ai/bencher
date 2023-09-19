@@ -5,9 +5,14 @@ import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
-from scoop import futures as scoop_future_executor
 from strenum import StrEnum
 from enum import auto
+
+try:
+    from scoop import futures as scoop_future_executor
+except:
+    scoop_future_executor = None
+
 
 
 class Job:
