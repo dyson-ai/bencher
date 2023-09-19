@@ -15,7 +15,6 @@ except ImportError as e:
     scoop_future_executor = None
 
 
-
 class Job:
     def __init__(
         self, job_id: str, function: Callable, job_args: dict, job_key=None, tag=""
