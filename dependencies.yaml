@@ -1,29 +1,4 @@
 pip:
-  - test: pytest
-  - test: hypothesis
-  - test: pytest-cov
-  
-
-pip:
-  - test: pytest
-  - test: hypothesis
-  - test: pytest-cov
-  
-  - buildrun: diskcache
-  - buildrun: optuna
-  - buildrun: pandas>=2.0
-  - buildrun: panel
-  - buildrun: hvplot
-  - buildrun: strenum
-  - buildrun: xarray
-  - buildrun: plotly
-  - buildrun: seaborn
-  - buildrun: matplotlib
-  - buildrun: param
-  - buildrun: optuna
-  - buildrun: numpy
-  - buildrun: scikit-learn
-  - buildrun: str2bool
-  - buildrun: mypy
+  - buildrun: holobench
   
 
