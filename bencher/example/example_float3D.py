@@ -81,33 +81,35 @@ def example_floats3D(
         report=report,
     )
 
-    bench.plot_sweep(
+    res =bench.plot_sweep(
+        title="Float 3D Example",
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[
             VolumeResult.param.value,
             VolumeResult.param.occupancy,
             VolumeResult.param.interesting,
         ],
-        title="Float 3D Example",
         description="""This example shows how to sample 3 floating point variables and plot a volumetric representation of the results.  The benchmark function returns the distance to the origin""",
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
-        run_cfg=run_cfg,
     )
 
+    bench.report.append(res.to_heatmap())
+
     bench.plot_sweep(
+        title="Float 3D Cone Example",
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[
             VolumeResult.param.interesting_vec,
             VolumeResult.param.interesting_vec_and_occ,
         ],
-        title="Float 3D Cone Example",
         description="""This example shows how to sample 3 floating point variables and plot a 3D vector field of the results.""",
-        run_cfg=run_cfg,
     )
+
+    # bench.report.append(res.to_volume())
 
     return bench
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    example_floats3D(ex_run_cfg).show()
+    example_floats3D(ex_run_cfg).report.show()
