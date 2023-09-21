@@ -25,5 +25,7 @@ pip:
   - buildrun: scikit-learn
   - buildrun: str2bool
   - buildrun: mypy
+  - buildrun: scoop
+  - buildrun: mortgage
   
 
