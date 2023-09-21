@@ -13,7 +13,7 @@ from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
 class BenchReport(BenchPlotServer):
     def __init__(
         self,
-        bench_name: str = None,
+        bench_name: str = "no_name_set",
     ) -> None:
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
@@ -24,9 +24,9 @@ class BenchReport(BenchPlotServer):
         return md
 
     def append(self, pane: pn.panel, name: str = None) -> None:
-        if name is None:
-            name = pane.name
         if len(self.pane) == 0:
+            if name is None:
+                name = pane.name
             self.append_tab(pane, name)
         else:
             self.pane[-1].append(pane)
