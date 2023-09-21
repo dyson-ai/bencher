@@ -94,6 +94,8 @@ def example_floats3D(
     )
 
     bench.report.append(res.to_heatmap())
+    # bench.report.append(res.to_volume())
+
 
     bench.plot_sweep(
         title="Float 3D Cone Example",
@@ -105,7 +107,6 @@ def example_floats3D(
         description="""This example shows how to sample 3 floating point variables and plot a 3D vector field of the results.""",
     )
 
-    # bench.report.append(res.to_volume())
 
     return bench
 
