@@ -592,6 +592,12 @@ class BenchCfg(BenchRunCfg):
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
 
+    def to_animation(self, slider) -> hv.HoloMap:
+        # return hv.HoloMap(self.hmap, self.hmap_kdims)
+        from bencher.plotting.animate import HoloMapPlayer
+
+        return HoloMapPlayer(self.to_holomap(), slider).layout
+
     def to_dynamic_map(self) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
 

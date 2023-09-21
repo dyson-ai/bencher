@@ -87,6 +87,61 @@ def example_holosweep(
     bench.report.append(res.get_best_holomap())
     bench.report.append(res.to_curve(), "Slider view")
     bench.report.append(res.to_holomap().layout())
+    # bench.report.append(res.to_animation(PlotFunctions.param.theta))
+
+    return bench
+
+
+def example_holosweep1d(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    wv = PlotFunctions()
+
+    run_cfg.auto_plot = False
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
+
+    res = bench.plot_sweep(
+        "phase",
+        input_vars=[PlotFunctions.param.freq],
+        result_vars=[PlotFunctions.param.fn_output],
+    )
+
+    bench.report.append(res.to_curve(), "Slider view")
+    # bench.report.append(res.to_holomap())
+
+    slider = PlotFunctions.param.freq.as_slider()
+    # slider_index=0
+
+    # from tornado.ioloop import PeriodicCallback
+    # from tornado import gen
+
+    # @gen.coroutine
+    # def slider_cb():
+    #     print("hit callb")
+    #     # from math import
+    #     # mo
+    #     opts = slider.options()
+    #     slider.value = opts[slider_index]
+    #     slider_index =  (slider_index+1)%len(opts)
+    # slider_index
+
+    # pcb = PeriodicCallback(slider_cb,1)
+
+    # pn.state.add_periodic_callback(slider_cb,200)
+
+    # hmap = res.to_holomap()
+
+    # bench.report.append(res.to_holomap().opts(animate=True))
+
+    # dmap = hv.DynamicMap(hmap)
+    # bench.report.append(dmap)
+    # bench.report.append(slider)
+
+    # pcb.start()
+
+    # bench.report.append(res.to_dynamic_map())
+    bench.report.append(res.to_animation(PlotFunctions.param.theta))
+
     return bench
 
 
@@ -94,5 +149,6 @@ if __name__ == "__main__":
     bench_run = bch.BenchRunner(
         "bench_runner_test", run_cfg=bch.BenchRunCfg(parallel=False, run_tag="12342341")
     )
-    bench_run.add_run(example_holosweep)
+    # bench_run.add_run(example_holosweep)
+    bench_run.add_run(example_holosweep1d)
     bench_run.run(level=4, show=True)

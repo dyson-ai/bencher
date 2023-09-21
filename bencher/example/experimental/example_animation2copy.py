@@ -12,7 +12,6 @@ The app can be served using:
 import numpy as np
 import holoviews as hv
 
-from bokeh.io.doc import curdoc
 from bokeh.layouts import layout
 from bokeh.models import Slider, Button
 import panel as pn
@@ -28,7 +27,7 @@ class HoloMapPlayer:
         self.slider.on_change("value", self.slider_update)
         self.button = Button(label="► Play", width=60)
         self.button.on_click(self.animate)
-        self.ms_update = 1.0 / fps
+        self.ms_update = int(1.0 / fps)
 
         # Combine the bokeh plot on plot.state with the widgets
         self.layout = layout(
@@ -39,7 +38,7 @@ class HoloMapPlayer:
             sizing_mode="fixed",
         )
 
-        curdoc().add_root(self.layout)
+        # curdoc().add_root(self.layout)
         self.running = True
         self.first_time = True
 
@@ -57,7 +56,8 @@ class HoloMapPlayer:
         if self.button.label == "► Play":
             self.button.label = "❚❚ Pause"
             if self.first_time:
-                curdoc().add_periodic_callback(self.animate_update, self.ms_update)
+                # curdoc().add_periodic_callback(self.animate_update, self.ms_update)
+                pn.state.add_periodic_callback(self.animate_update, self.ms_update)
                 self.first_time = False
             self.running = True
 
