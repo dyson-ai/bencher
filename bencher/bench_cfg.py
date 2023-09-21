@@ -591,14 +591,14 @@ class BenchCfg(BenchRunCfg):
     def to_holomap(self) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
-    
-    # def to_volume(self)-> pn.panel:
-    #     from bencher.plotting.plots.volume import VolumePlot
-    #     from bencher.plotting.plot_collection import PlotInput
-    #     from bencher.plt_cfg import BenchPlotter
-    #     # BenchPlotter.plot_result_variable()
-        # return VolumePlot().volume_plotly(PlotInput(self,self.result_vars))
 
+    def to_volume(self)-> pn.panel:
+        from bencher.plotting.plots.volume import VolumePlot
+        from bencher.plotting.plot_collection import PlotInput
+        from bencher.plt_cfg import BenchPlotter
+        # BenchPlotter.plot_result_variable()
+        return BenchPlotter.plot_results_row(self)
+        # return VolumePlot().volume_plotly(PlotInput(self,self.result_vars))
 
     def to_dynamic_map(self) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""

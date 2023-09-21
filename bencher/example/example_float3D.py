@@ -81,7 +81,7 @@ def example_floats3D(
         report=report,
     )
 
-    res =bench.plot_sweep(
+    res = bench.plot_sweep(
         title="Float 3D Example",
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[
@@ -93,9 +93,7 @@ def example_floats3D(
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
     )
 
-    bench.report.append(res.to_heatmap())
-    # bench.report.append(res.to_volume())
-
+    bench.report.append(res.to_volume())
 
     bench.plot_sweep(
         title="Float 3D Cone Example",
@@ -106,7 +104,6 @@ def example_floats3D(
         ],
         description="""This example shows how to sample 3 floating point variables and plot a 3D vector field of the results.""",
     )
-
 
     return bench
 
