@@ -592,10 +592,9 @@ class BenchCfg(BenchRunCfg):
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
 
-    def to_volume(self)-> pn.panel:
-        from bencher.plotting.plots.volume import VolumePlot
-        from bencher.plotting.plot_collection import PlotInput
+    def to_volume(self) -> pn.panel:
         from bencher.plt_cfg import BenchPlotter
+
         # BenchPlotter.plot_result_variable()
         return BenchPlotter.plot_results_row(self)
         # return VolumePlot().volume_plotly(PlotInput(self,self.result_vars))
