@@ -94,7 +94,6 @@ def example_floats3D(
     )
 
     bench.report.append(res.to_volume())
-    # bench.report.append(res.to_volume_vtk())
 
     bench.plot_sweep(
         title="Float 3D Cone Example",
