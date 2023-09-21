@@ -83,22 +83,18 @@ class HoloMapPlayer:
         renderer = hv.renderer("bokeh")
         # Convert the HoloViews object into a plot
         self.plot = renderer.get_plot(hmap)
-        # self.slider = pn.widget.In
-        self.slider = Slider(start=start, end=end, value=0, step=1, title="Year")
-        self.slider.on_change("value", self.slider_update)
+        self.slider = pn.widgets.IntSlider(start=start, end=end, value=0,  title="Year")
+        self.bound_slider = pn.bind(self.slider_update,self.slider)
         self.button = Button(label="► Play", width=60)
+        # self.button = pn.widgets.Button(label="► Play",)
         self.button.on_click(self.animate)
         self.ms_update = int(1.0 / fps)
 
-        # Combine the bokeh plot on plot.state with the widgets
-        self.layout = layout(
-            [
-                [self.plot.state],
-                [self.slider],
-                [self.button],
-            ],
-            sizing_mode="fixed",
-        )
+        self.layout = pn.Column()
+        self.layout.append(self.plot.state)
+        self.layout.append(self.slider)
+        self.layout.append(self.bound_slider)
+        self.layout.append(self.button)
 
         self.cb =pn.state.add_periodic_callback(self.animate_update, self.ms_update,start=False)
 
@@ -108,8 +104,8 @@ class HoloMapPlayer:
         if year > end:
             year = start
         self.slider.value = year
-
-    def slider_update(self, attrname, old, new):
+    
+    def slider_update(self,*args,**kwargs):        
         self.plot.update(self.slider.value)
 
     def animate(self):
