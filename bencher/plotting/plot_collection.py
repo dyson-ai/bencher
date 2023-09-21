@@ -81,7 +81,10 @@ class PlotCollection:
         return self
 
     def gather_plots(
-        self, bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg, **opts
+        self,
+        bench_cfg: BenchCfg,
+        rv: ParametrizedSweep,
+        plt_cnt_cfg: PltCntCfg,
     ) -> pn.pane.panel:
         """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
 
