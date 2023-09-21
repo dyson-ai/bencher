@@ -606,8 +606,6 @@ class BenchCfg(BenchRunCfg):
             PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
         )
 
-
-
     def to_dynamic_map(self) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
 

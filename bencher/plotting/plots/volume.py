@@ -178,9 +178,6 @@ class VolumePlot:
             return plot_volume_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
         return None
 
-    
-  
-    
     # def cone_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:
     #     if PlotFilter(
     #         float_range=VarRange(3, 3),
