@@ -98,7 +98,7 @@ class BenchPlotter:
         # return tabs
 
     @staticmethod
-    def plot_results_row(bench_cfg: BenchCfg) -> pn.Row:
+    def plot_results_row(bench_cfg: BenchCfg, **opts) -> pn.Row:
         """Given a BenchCfg, plot each result variable and add to a panel row
 
         Args:

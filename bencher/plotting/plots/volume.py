@@ -87,8 +87,8 @@ def plot_volume_plotly(
 
     layout = go.Layout(
         title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
-        width=700,
-        height=700,
+        width=xr_cfg.width,
+        height=xr_cfg.height,
         margin=dict(t=50, b=50, r=50, l=50),
         scene=dict(
             xaxis_title=xr_cfg.xlabel,
@@ -164,7 +164,7 @@ def plot_volume_plotly(
 
 
 class VolumePlot:
-    def volume_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    def volume_plotly(self, pl_in: PlotInput, **opts) -> Optional[pn.panel]:
         if PlotFilter(
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
@@ -174,6 +174,8 @@ class VolumePlot:
             sns_cfg = PltCfgBase()
             sns_cfg.y = pl_in.rv.name
             xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.debug)
+            print(opts)
+            xr_cfg.param.update(**opts)
             return plot_volume_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
         return None
 
