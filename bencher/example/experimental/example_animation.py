@@ -1,72 +1,57 @@
-# -*- coding: utf-8 -*-
-"""
-An example of a simple player widget animating an Image demonstrating
-how to connect a simple HoloViews plot with custom widgets and
-combine them into a bokeh layout.
-
-The app can be served using:
-
-    bokeh serve --show player.py
-
-"""
 import numpy as np
 import holoviews as hv
-
-from bokeh.io.doc import curdoc
-from bokeh.layouts import layout
-from bokeh.models import Slider, Button
+from bokeh.models import Button
 import panel as pn
 
 
 class HoloMapPlayer:
-    def __init__(self, hmap, fps=10.0) -> None:
+    def __init__(self, holomap, slider=None, fps=10.0) -> None:
         renderer = hv.renderer("bokeh")
-        # Convert the HoloViews object into a plot
-        self.plot = renderer.get_plot(hmap)
-        # self.slider = pn.
-        self.slider = Slider(start=start, end=end, value=0, step=1, title="Year")
-        self.slider.on_change("value", self.slider_update)
+
+        #THIS IS THE LINE I NEED TO CHANGE
+        self.plot = renderer.get_plot(holomap) 
+
+        self.holomap = holomap
+        
+        if slider is None:
+            self.slider = pn.widgets.DiscreteSlider(options=holomap.keys())
+        else:
+            self.slider = slider
+
+        self.holomap_index=0
+
+        self.bound_slider = pn.bind(self.slider_update, self.slider)
         self.button = Button(label="► Play", width=60)
         self.button.on_click(self.animate)
-        self.ms_update = 1.0 / fps
+        self.ms_update = int(1.0 / fps)
 
-        # Combine the bokeh plot on plot.state with the widgets
-        self.layout = layout(
-            [
-                [self.plot.state],
-                [self.slider, self.button],
-            ],
-            sizing_mode="fixed",
-        )
+        self.layout = pn.Column()
+        self.layout.append(self.plot.state)
+        self.layout.append(self.slider)
+        self.layout.append(self.bound_slider)
+        self.layout.append(self.button)
 
-        curdoc().add_root(self.layout)
-        self.running = True
-        self.first_time = True
+        self.cb = pn.state.add_periodic_callback(self.animate_update, self.ms_update, start=False)
 
     def animate_update(self):
-        if self.running:
-            year = self.slider.value + 1
-            if year > end:
-                year = start
-            self.slider.value = year
+        self.holomap_index = (self.holomap_index+1)%len(self.holomap.keys())        
+        self.slider.value = self.holomap_index
 
-    def slider_update(self, attrname, old, new):
+    def slider_update(self, *args, **kwargs):
         self.plot.update(self.slider.value)
 
-    def animate(self):
+        #I WOULD LIKE SOMETHING LIKE THIS
+        # return self.holomap[self.slider.value]
+
+    def animate(self) -> None:
         if self.button.label == "► Play":
             self.button.label = "❚❚ Pause"
-            if self.first_time:
-                curdoc().add_periodic_callback(self.animate_update, self.ms_update)
-                self.first_time = False
-            self.running = True
-
+            self.cb.start()
         else:
             self.button.label = "► Play"
-            self.running = False
+            self.cb.stop()
 
-    def show(self):
-        # pn.Row(curdoc()).show()
+    def show(self) -> None:
         pn.Row(self.layout).show()
 
 
@@ -74,5 +59,5 @@ if __name__ == "__main__":
     start = 0
     end = 10
     hmap = hv.HoloMap({i: hv.Image(np.random.rand(10, 10)) for i in range(start, end + 1)})
-    hmp = HoloMapPlayer(hmap, fps=30)
-    hmp.show()
+
+    HoloMapPlayer(hmap, fps=30).show()
