@@ -92,7 +92,7 @@ class BenchReport(BenchPlotServer):
 
         logging.info(f"saving html output to: {base_path.absolute()}")
 
-        self.pane.save(filename=base_path, progress=True, **kwargs)
+        self.pane.save(filename=base_path, progress=True,embed=True, **kwargs)
         return base_path
 
     def show(self, run_cfg: BenchRunCfg = None) -> Thread:
