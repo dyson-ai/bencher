@@ -108,13 +108,14 @@ def example_holosweep_tap(
 
     bench.report.append(sld1)
 
+    
     bench.report.append_tab(res.to_curve(), "Slider view")
 
     return bench
 
 
 if __name__ == "__main__":
-    example_holosweep_tap(bch.BenchRunCfg()).show()
+    example_holosweep_tap(bch.BenchRunCfg()).report.show()
 
 
 # todo  https://discourse.holoviz.org/t/pointdraw-as-parameterized-class/3539

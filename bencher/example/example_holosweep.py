@@ -140,7 +140,18 @@ def example_holosweep1d(
     # pcb.start()
 
     # bench.report.append(res.to_dynamic_map())
-    bench.report.append(res.to_animation(PlotFunctions.param.theta))
+
+    # hmap = res.to_holomap()
+    # print(hmap)
+    # print(hmap.para)
+    # bench.report.append(hmap)
+
+    bench.report.append(res.to_dynamic_map1())
+
+
+    # hmap.params.up
+    # pn.state.add_periodic_cal
+    # bench.report.append(res.to_animation(None))
 
     return bench
 

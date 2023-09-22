@@ -610,6 +610,25 @@ class BenchCfg(BenchRunCfg):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
+    def to_dynamic_map1(self) -> hv.DynamicMap:
+        """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
+
+        def cb(**kwargs):
+            return self.hmap[hmap_canonical_input(kwargs)].opts(framewise=True, shared_axes=False)
+
+        kdims = []
+        for i in self.input_vars + [self.iv_repeat]:
+            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
+        from holoviews.streams import Stream
+        
+        stream_var = Stream.define(self.input_vars[0].name,freq=0)
+
+        # def update_stream():
+
+        return hv.DynamicMap(cb, kdims=kdims,streams=[stream_var])
+    
+
+
     def to_grid(self, inputs=None):
         if inputs is None:
             inputs = self.inputs_as_str()

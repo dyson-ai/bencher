@@ -73,18 +73,36 @@ The app can be served using:
 import numpy as np
 import holoviews as hv
 
-from bokeh.layouts import layout
-from bokeh.models import Slider, Button
+from bokeh.models import Button
 import panel as pn
 
 
 class HoloMapPlayer:
-    def __init__(self, hmap, fps=10.0) -> None:
+    def __init__(self, hmap, slider=None, fps=10.0) -> None:
         renderer = hv.renderer("bokeh")
         # Convert the HoloViews object into a plot
         self.plot = renderer.get_plot(hmap)
-        self.slider = pn.widgets.IntSlider(start=start, end=end, value=0,  title="Year")
-        self.bound_slider = pn.bind(self.slider_update,self.slider)
+
+        self.key_dict={}
+        if slider is None:
+            print(hmap.keys())
+
+            keys = hmap.keys()
+            single_k=[]
+            for k in keys:
+                if isinstance(k,tuple):
+                    single_k.append(k[0])
+                    self.key_dict[single_k[-1]] = k
+                else:
+                    single_k.append(k)
+                    self.key_dict[k] = k
+
+            self.slider = pn.widgets.DiscreteSlider(options=single_k)
+        else:
+            self.slider = slider
+        # self.slider = pn.widgets.IntSlider(start=start, end=end, value=0,  title="Year")
+
+        self.bound_slider = pn.bind(self.slider_update, self.slider)
         self.button = Button(label="► Play", width=60)
         # self.button = pn.widgets.Button(label="► Play",)
         self.button.on_click(self.animate)
@@ -96,17 +114,18 @@ class HoloMapPlayer:
         self.layout.append(self.bound_slider)
         self.layout.append(self.button)
 
-        self.cb =pn.state.add_periodic_callback(self.animate_update, self.ms_update,start=False)
-
+        self.cb = pn.state.add_periodic_callback(self.animate_update, self.ms_update, start=False)
 
     def animate_update(self):
         year = self.slider.value + 1
         if year > end:
             year = start
         self.slider.value = year
-    
-    def slider_update(self,*args,**kwargs):        
-        self.plot.update(self.slider.value)
+
+    def slider_update(self, *args, **kwargs):
+        # self.plot.
+        self.plot.update(self.key_dict[self.slider.value])
+        # self.plot.state = hmap[self.slider.value]
 
     def animate(self):
         if self.button.label == "► Play":
@@ -125,5 +144,8 @@ if __name__ == "__main__":
     start = 0
     end = 10
     hmap = hv.HoloMap({i: hv.Image(np.random.rand(10, 10)) for i in range(start, end + 1)})
-    hmp = HoloMapPlayer(hmap, fps=30)
+
+    # slider = pn.widgets.DiscreteSlider(options=hmap.keys())
+
+    hmp = HoloMapPlayer(hmap,  fps=30)
     hmp.show()
