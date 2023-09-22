@@ -19,5 +19,10 @@
 	"files.exclude": {
 		"**/__pycache__/**": true
 	},
-	"python.analysis.autoImportCompletions": false //vscode gets it wrong more than right and mostly gets in the way
+	"python.analysis.autoImportCompletions": false,
+	"workbench.colorCustomizations": {
+		"activityBar.background": "#113507",
+		"titleBar.activeBackground": "#184A0A",
+		"titleBar.activeForeground": "#F4FDF1"
+	} //vscode gets it wrong more than right and mostly gets in the way
 }
