@@ -48,3 +48,8 @@ class TestBenchReport(unittest.TestCase):
         panel = pn.panel("Test Panel")
         bench_report.append_tab(panel)
         self.assertEqual(bench_report.pane[-1].name, panel.name)
+
+    def test_append_title(self):
+        bench_report = BenchReport()
+        bench_report.append_title("Title1")
+        self.assertEqual(bench_report.pane[-1].name,"Title1")
