@@ -52,4 +52,4 @@ class TestBenchReport(unittest.TestCase):
     def test_append_title(self):
         bench_report = BenchReport()
         bench_report.append_title("Title1")
-        self.assertEqual(bench_report.pane[-1].name,"Title1")
+        self.assertEqual(bench_report.pane[-1].name, "Title1")
