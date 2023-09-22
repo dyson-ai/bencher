@@ -18,7 +18,12 @@ class BenchReport(BenchPlotServer):
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
 
+    def append_title(self, title):
+        return self.append_markdown(f"# {title}", title)
+
     def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+        if name is None:
+            name = markdown
         md = pn.pane.Markdown(markdown, name=name, **kwargs)
         self.append(md, name)
         return md
@@ -87,7 +92,7 @@ class BenchReport(BenchPlotServer):
 
         logging.info(f"saving html output to: {base_path.absolute()}")
 
-        self.pane.save(filename=base_path, progress=True, **kwargs)
+        self.pane.save(filename=base_path, progress=True, embed=True, **kwargs)
         return base_path
 
     def show(self, run_cfg: BenchRunCfg = None) -> Thread:
