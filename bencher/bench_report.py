@@ -18,7 +18,12 @@ class BenchReport(BenchPlotServer):
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
 
+    def append_title(self, title):
+        return self.append_markdown(f"# {title}", title)
+
     def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+        if name is None:
+            name = markdown
         md = pn.pane.Markdown(markdown, name=name, **kwargs)
         self.append(md, name)
         return md
