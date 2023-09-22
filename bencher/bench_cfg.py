@@ -60,6 +60,9 @@ class PltCfgBase(param.Parameterized):
 
     title: str = param.String(None, doc="The title of the graph")
 
+    width: int = param.Integer(700, doc="Width of the plot in pixels")
+    height: int = param.Integer(700, doc="Height of the plot in pixels")
+
     def as_dict(self, include_params: List[str] = None, exclude_params: List[str] = None) -> dict:
         """Return this class as dictionary to pass to plotting functions but exclude parameters that are not expected by those functions
 
@@ -608,6 +611,17 @@ class BenchCfg(BenchRunCfg):
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
         return self.hmap[canonical_inp].opts(framewise=True)
+
+    def to_volume(self, **opts) -> pn.panel:
+        from bencher.plt_cfg import BenchPlotter
+        from bencher.plotting.plots.volume import VolumePlot
+        from bencher.plotting.plot_collection import PlotInput
+
+        # BenchPlotter.plot_result_variable()
+        # return BenchPlotter.plot_results_row(self)
+        return VolumePlot().volume_plotly(
+            PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
+        )
 
     def to_dynamic_map(self) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
