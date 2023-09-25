@@ -89,6 +89,7 @@ class FutureCache:
         size_limit: int = int(20e9),  # 20 GB
         use_cache=True,
     ):
+        self.executor_type = executor
         self.executor = Executors.factory(executor)
         if use_cache:
             self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
@@ -134,11 +135,10 @@ class FutureCache:
         )
 
     def map_as_completed(self, joblist: List[Job]):
-        if self.executor == Executors.SCOOP:
+        if self.executor_type == Executors.SCOOP:
             return scoop_future_executor.map_as_completed(
                 job_fut, joblist, [self.cache] * len(joblist)
             )
-
         else:
             raise RuntimeError("You must select scoop as a the executor")
 

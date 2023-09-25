@@ -589,6 +589,7 @@ class Bench(BenchPlotServer):
                 self.store_results(self.sample_cache.submit(cache_job), bench_cfg, bench_run_cfg)
         if bench_run_cfg.executor == Executors.SCOOP:
             for res in self.sample_cache.map_as_completed(cache_jobs):
+                logging.info(f"storing result {res.job.job_id}")
                 callcount += 1
                 self.store_results(res, bench_cfg, bench_run_cfg)
             # self.sample_cache.map_as_completed(cache_jobs)
