@@ -585,12 +585,14 @@ class Bench(BenchPlotServer):
                 meta=job,
             )
             cache_jobs.append(cache_job)
+            callcount+=1
             if bench_run_cfg.executor == Executors.SERIAL:
                 self.store_results(self.sample_cache.submit(cache_job), bench_cfg, bench_run_cfg)
+
         if bench_run_cfg.executor == Executors.SCOOP:
             for res in self.sample_cache.map_as_completed(cache_jobs):
-                logging.info(f"storing result {res.job.job_id}")
-                callcount += 1
+                # logging.info(f"storing result {res.job.job_id}")
+                # callcount += 1
                 self.store_results(res, bench_cfg, bench_run_cfg)
             # self.sample_cache.map_as_completed(cache_jobs)
             # for cache_job in cache_jobs:
@@ -616,13 +618,13 @@ class Bench(BenchPlotServer):
         if result is not None:
             logging.info(f"{job_result.job.job_id}:")
             if bench_cfg.print_bench_inputs:
-                for k, v in job_result.meta.function_input.items():
+                for k, v in job_result.job.meta.function_input.items():
                     logging.info(f"\t {k}:{v}")
 
             # construct a dict for a holomap
             if isinstance(result, dict):  # todo holomaps with named types
                 if "hmap" in result:
-                    bench_cfg.hmap[job_result.meta.canonical_input] = result["hmap"]
+                    bench_cfg.hmap[job_result.job.meta.canonical_input] = result["hmap"]
 
             for rv in bench_cfg.result_vars:
                 if isinstance(result, dict):
@@ -635,7 +637,7 @@ class Bench(BenchPlotServer):
 
                 if isinstance(rv, ResultVar):
                     set_xarray_multidim(
-                        bench_cfg.ds[rv.name], job_result.meta.index_tuple, result_value
+                        bench_cfg.ds[rv.name], job_result.job.meta.index_tuple, result_value
                     )
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
@@ -643,7 +645,7 @@ class Bench(BenchPlotServer):
                             for i in range(rv.size):
                                 set_xarray_multidim(
                                     bench_cfg.ds[rv.index_name(i)],
-                                    job_result.meta.index_tuple,
+                                    job_result.job.meta.index_tuple,
                                     result_value[i],
                                 )
 
