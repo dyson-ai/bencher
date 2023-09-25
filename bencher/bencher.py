@@ -28,7 +28,7 @@ from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=un
 
 from bencher.optuna_conversions import to_optuna, summarise_study
 
-from bencher.job import Job, FutureCache, JobFuture, Executors
+from bencher.job import Job, FutureCache, JobFuture
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -558,7 +558,6 @@ class Bench(BenchPlotServer):
 
         callcount = 1
 
-        results_list = []
         worker_job = []
         cache_jobs = []
 
@@ -585,15 +584,15 @@ class Bench(BenchPlotServer):
                 meta=job,
             )
             cache_jobs.append(cache_job)
-            callcount+=1
-            if bench_run_cfg.executor == Executors.SERIAL:
-                self.store_results(self.sample_cache.submit(cache_job), bench_cfg, bench_run_cfg)
+            callcount += 1
+            # if bench_run_cfg.executor == Executors.SERIAL:
+            # self.store_results(self.sample_cache.submit(cache_job), bench_cfg, bench_run_cfg)
 
-        if bench_run_cfg.executor == Executors.SCOOP:
-            for res in self.sample_cache.map_as_completed(cache_jobs):
-                # logging.info(f"storing result {res.job.job_id}")
-                # callcount += 1
-                self.store_results(res, bench_cfg, bench_run_cfg)
+        # if bench_run_cfg.executor == Executors.SCOOP:
+        for res in self.sample_cache.map_as_completed(cache_jobs):
+            # logging.info(f"storing result {res.job.job_id}")
+            # callcount += 1
+            self.store_results(res, bench_cfg, bench_run_cfg)
             # self.sample_cache.map_as_completed(cache_jobs)
             # for cache_job in cache_jobs:
             # result = self.sample_cache.submit(cache_job)
@@ -660,6 +659,7 @@ class Bench(BenchPlotServer):
             tag_index=True,
             size_limit=self.cache_size,
             use_cache=run_cfg.use_sample_cache,
+            worker=self.worker,
         )
 
     def clear_tag_from_sample_cache(self, tag: str, run_cfg):

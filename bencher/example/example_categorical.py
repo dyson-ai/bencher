@@ -93,5 +93,7 @@ if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg(repeats=5)
     ex_run_cfg.over_time = True
     ex_run_cfg.executor = bch.Executors.SCOOP
+    ex_run_cfg.use_sample_cache=True
+    ex_run_cfg.only_hash_tag=True
 
     example_categorical(ex_run_cfg).report.show()

@@ -7,6 +7,8 @@ from concurrent.futures import Future, ProcessPoolExecutor
 from .utils import hash_sha1
 from strenum import StrEnum
 from enum import auto
+import functools
+
 
 try:
     from scoop import futures as scoop_future_executor
@@ -53,6 +55,14 @@ def run_job(job: Job) -> dict:
     return result
 
 
+def overwrite_msg(job: Job, suffix: str, overwrite) -> None:
+    msg = "OVERWRITING" if overwrite else "NOT in"
+    logging.info(f"{job.job_id} {msg} cache{suffix}")
+
+
+
+
+
 class Executors(StrEnum):
     SERIAL = auto()  # slow but reliable
     MULTIPROCESSING = auto()  # breaks for large number of futures
@@ -76,6 +86,27 @@ def job_fut(job, cache):
         cache=cache,
     )
 
+def run_job_cache(job: Job, cache=None) -> dict:
+    print(job.job_key)
+    if job.job_key in cache:
+        logging.info(f"Found job: {job.job_id} in cache, loading...")
+        result= cache[job.job_key]
+    else:
+        overwrite_msg(job, " starting job...", False)
+        result = job.function(**job.job_args)
+        overwrite_msg(job, " saving job in cache...", False)
+        # if result
+        cache.set(job.job_key, result, tag=job.tag)
+        print(job.job_key in cache)
+        # cache.close()
+    
+    return JobFuture(
+                    job=job,
+                    res=result,
+                    # cache=cache
+                )
+    # return result
+
 
 class FutureCache:
     """The aim of this class is to provide a unified interface for running jobs.  T"""
@@ -88,6 +119,7 @@ class FutureCache:
         tag_index: bool = True,
         size_limit: int = int(20e9),  # 20 GB
         use_cache=True,
+        worker=None,
     ):
         self.executor_type = executor
         self.executor = Executors.factory(executor)
@@ -104,6 +136,7 @@ class FutureCache:
         self.worker_wrapper_call_count = 0
         self.worker_fn_call_count = 0
         self.worker_cache_call_count = 0
+        self.worker = functools.partial(run_job_cache, cache=self.cache)
 
     def submit(self, job: Job) -> JobFuture:
         self.worker_wrapper_call_count += 1
@@ -135,12 +168,25 @@ class FutureCache:
         )
 
     def map_as_completed(self, joblist: List[Job]):
+
+        # print()
+        # filtered_jobs=joblist
+        # if self.cache is not None:
+        # for job in joblist:
+        # if not job.job_key in self.cache:
+        # filtered_jobs.append(job)
+        # print(self.cache)
+
         if self.executor_type == Executors.SCOOP:
-            return scoop_future_executor.map_as_completed(
-                job_fut, joblist, [self.cache] * len(joblist)
-            )
-        else:
-            raise RuntimeError("You must select scoop as a the executor")
+            print("starting scoop")
+            return scoop_future_executor.map_as_completed(self.worker, joblist)
+            # return scoop_future_executor.map_as_completed(run_job_cache, joblist,[self.cache]*len(joblist))
+        return map(self.worker, joblist)
+
+        # else:
+        # return map(self.worker, joblist)
+        # return map(run_job_cache, joblist,[self.cache]*len(joblist))
+    
 
     def overwrite_msg(self, job: Job, suffix: str) -> None:
         msg = "OVERWRITING" if self.overwrite else "NOT in"
