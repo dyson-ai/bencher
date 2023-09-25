@@ -559,7 +559,10 @@ class Bench(BenchPlotServer):
         callcount = 1
 
         results_list = []
-        jobs = []
+        worker_job = []
+        cache_jobs=[]
+
+        
 
         for idx_tuple, function_input_vars in func_inputs:
             job = WorkerJob(
@@ -571,7 +574,7 @@ class Bench(BenchPlotServer):
                 bench_cfg.tag,
             )
             job.setup_hashes()
-            jobs.append(job)
+            worker_job.append(job)
 
             jid = f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}"
             worker = partial(worker_kwargs_wrapper, self.worker, bench_cfg)
@@ -581,17 +584,24 @@ class Bench(BenchPlotServer):
                 job_args=job.function_input,
                 job_key=job.function_input_signature_pure,
                 tag=job.tag,
+                meta=job
             )
-            result = self.sample_cache.submit(cache_job)
-            results_list.append(result)
-            callcount += 1
-
+            cache_jobs.append(cache_job)
             if bench_run_cfg.executor == Executors.SERIAL:
-                self.store_results(result, bench_cfg, job, bench_run_cfg)
+                self.store_results(self.sample_cache.submit(cache_job), bench_cfg,  bench_run_cfg)
+        if bench_run_cfg.executor == Executors.SCOOP:
+            for res in self.sample_cache.map_as_completed(cache_jobs):
+                callcount += 1                                  
+                self.store_results(res, bench_cfg, , bench_run_cfg)
+            # self.sample_cache.map_as_completed(cache_jobs)
+            # for cache_job in cache_jobs:
+                # result = self.sample_cache.submit(cache_job)
+                # results_list.append(result)
+                # callcount += 1              
 
-        if bench_run_cfg.executor != Executors.SERIAL:
-            for job, res in zip(jobs, results_list):
-                self.store_results(res, bench_cfg, job, bench_run_cfg)
+            # if bench_run_cfg.executor != Executors.SERIAL:
+            #     for job, res in zip(worker_job, results_list):
+            #         self.store_results(res, bench_cfg, job, bench_run_cfg)
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
@@ -601,20 +611,19 @@ class Bench(BenchPlotServer):
         self,
         job_result: JobFuture,
         bench_cfg: BenchCfg,
-        worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
         result = job_result.result()
         if result is not None:
             logging.info(f"{job_result.job.job_id}:")
             if bench_cfg.print_bench_inputs:
-                for k, v in worker_job.function_input.items():
+                for k, v in job_result.meta.function_input.items():
                     logging.info(f"\t {k}:{v}")
 
             # construct a dict for a holomap
             if isinstance(result, dict):  # todo holomaps with named types
                 if "hmap" in result:
-                    bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+                    bench_cfg.hmap[job_result.meta.canonical_input] = result["hmap"]
 
             for rv in bench_cfg.result_vars:
                 if isinstance(result, dict):
@@ -626,14 +635,14 @@ class Bench(BenchPlotServer):
                     logging.info(f"{rv.name}: {result_value}")
 
                 if isinstance(rv, ResultVar):
-                    set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
+                    set_xarray_multidim(bench_cfg.ds[rv.name], job_result.meta.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:
                             for i in range(rv.size):
                                 set_xarray_multidim(
                                     bench_cfg.ds[rv.index_name(i)],
-                                    worker_job.index_tuple,
+                                    job_result.meta.index_tuple,
                                     result_value[i],
                                 )
 
