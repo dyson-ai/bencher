@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable,List
+from typing import Callable, List
 from sortedcontainers import SortedDict
 import logging
 from diskcache import Cache
@@ -17,7 +17,7 @@ except ImportError as e:
 
 class Job:
     def __init__(
-        self, job_id: str, function: Callable, job_args: dict, job_key=None, tag="",meta=None
+        self, job_id: str, function: Callable, job_args: dict, job_key=None, tag="", meta=None
     ) -> None:
         self.job_id = job_id
         self.function = function
@@ -68,12 +68,14 @@ class Executors(StrEnum):
         }
         return providers[provider]
 
-def job_fut(job,cache):
+
+def job_fut(job, cache):
     return JobFuture(
-            job=job,
-            res=run_job(job),
-            cache=cache,
-        )
+        job=job,
+        res=run_job(job),
+        cache=cache,
+    )
+
 
 class FutureCache:
     """The aim of this class is to provide a unified interface for running jobs.  T"""
@@ -130,10 +132,12 @@ class FutureCache:
             res=run_job(job),
             cache=self.cache,
         )
-    
-    def map_as_completed(self,joblist: List[Job]):
+
+    def map_as_completed(self, joblist: List[Job]):
         if self.executor == Executors.SCOOP:
-            return scoop_future_executor.map_as_completed(job_fut,joblist,[self.cache]*len(joblist))
+            return scoop_future_executor.map_as_completed(
+                job_fut, joblist, [self.cache] * len(joblist)
+            )
 
         else:
             raise RuntimeError("You must select scoop as a the executor")

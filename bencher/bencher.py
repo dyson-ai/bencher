@@ -560,9 +560,7 @@ class Bench(BenchPlotServer):
 
         results_list = []
         worker_job = []
-        cache_jobs=[]
-
-        
+        cache_jobs = []
 
         for idx_tuple, function_input_vars in func_inputs:
             job = WorkerJob(
@@ -584,20 +582,20 @@ class Bench(BenchPlotServer):
                 job_args=job.function_input,
                 job_key=job.function_input_signature_pure,
                 tag=job.tag,
-                meta=job
+                meta=job,
             )
             cache_jobs.append(cache_job)
             if bench_run_cfg.executor == Executors.SERIAL:
-                self.store_results(self.sample_cache.submit(cache_job), bench_cfg,  bench_run_cfg)
+                self.store_results(self.sample_cache.submit(cache_job), bench_cfg, bench_run_cfg)
         if bench_run_cfg.executor == Executors.SCOOP:
             for res in self.sample_cache.map_as_completed(cache_jobs):
-                callcount += 1                                  
-                self.store_results(res, bench_cfg, , bench_run_cfg)
+                callcount += 1
+                self.store_results(res, bench_cfg, bench_run_cfg)
             # self.sample_cache.map_as_completed(cache_jobs)
             # for cache_job in cache_jobs:
-                # result = self.sample_cache.submit(cache_job)
-                # results_list.append(result)
-                # callcount += 1              
+            # result = self.sample_cache.submit(cache_job)
+            # results_list.append(result)
+            # callcount += 1
 
             # if bench_run_cfg.executor != Executors.SERIAL:
             #     for job, res in zip(worker_job, results_list):
@@ -635,7 +633,9 @@ class Bench(BenchPlotServer):
                     logging.info(f"{rv.name}: {result_value}")
 
                 if isinstance(rv, ResultVar):
-                    set_xarray_multidim(bench_cfg.ds[rv.name], job_result.meta.index_tuple, result_value)
+                    set_xarray_multidim(
+                        bench_cfg.ds[rv.name], job_result.meta.index_tuple, result_value
+                    )
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:
