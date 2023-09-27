@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "0.3.1"
+version = "0.3.2"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -17,10 +17,10 @@ dependencies = [
   "xarray>=2023.7,<=2023.8.0",
   "plotly>=5.15,<=5.17.0",
   "sortedcontainers>=2.4,<=2.4",
-  "pandas>=2.0,<=2.1.0",
+  "pandas>=2.0,<=2.1.1",
   "strenum>=0.4.0,<=0.4.15",
   "seaborn>=0.12.1,<=0.12.2",
-  "scikit-learn>=1.2,<=1.3.0",
+  "scikit-learn>=1.2,<=1.3.1",
   "str2bool>=1.1,<=1.1",
   "mortgage>=1.0.5,<=1.0.5",
   "scoop>=0.7.0,<=0.7.2.0",
@@ -36,8 +36,8 @@ test = [
   "pytest-mock>=3.10,<=3.11.1",
   "pytest-runner>=6.0,<=6.0",
   "pytest>=7.4,<=7.4.2",
-  "hypothesis>=6.82,<=6.86.1",
-  "ruff>=0.0.280,<=0.0.290",
+  "hypothesis>=6.82,<=6.87.0",
+  "ruff>=0.0.280,<=0.0.291",
   "coverage>=7.2.7,<=7.3.1",
 ]
 

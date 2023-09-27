@@ -108,7 +108,7 @@ class BenchReport(BenchPlotServer):
         return BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
     def publish(
-        self, remote_callback: Callable, branch_name: str = None, debug: bool = True
+        self, remote_callback: Callable, branch_name: str = None, debug: bool = False
     ) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
