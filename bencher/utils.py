@@ -33,7 +33,7 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def get_nearest_coords(ds: xr.Dataset, **kwargs) -> dict:
+def get_nearest_coords(ds: xr.Dataset, collapse_list=False, **kwargs) -> dict:
     """Given an xarray dataset and kwargs of key value pairs of coordinate values, return a dictionary of the nearest coordinate name value pair that was found in the dataset
 
     Args:
@@ -48,6 +48,8 @@ def get_nearest_coords(ds: xr.Dataset, **kwargs) -> dict:
     cd2 = {}
     for k, v in cd.items():
         cd2[k] = v["data"]
+        if collapse_list and isinstance(cd2[k], list):
+            cd2[k] = cd2[k][0]  # select the first item in the list
     return cd2
 
 

@@ -18,7 +18,7 @@ import bencher as bch
 from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
-from bencher.utils import hmap_canonical_input
+from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
@@ -586,6 +586,18 @@ class BenchCfg(BenchRunCfg):
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         return self.to(hv.HeatMap, reduce, **kwargs)
 
+    def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
+        htmap = self.to_heatmap(reduce).opts(tools=["hover", "tap"], width=width, height=height)
+        htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
+
+        def tap_plot(x, y):
+            kwargs[self.input_vars[0].name] = x
+            kwargs[self.input_vars[1].name] = y
+            return self.get_nearest_holomap(**kwargs).opts(width=width, height=height)
+
+        tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
+        return htmap + tap_htmap
+
     def to_nd_layout(self) -> hv.NdLayout:
         return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
@@ -594,6 +606,12 @@ class BenchCfg(BenchRunCfg):
     def to_holomap(self) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
         return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+
+    def get_nearest_holomap(self, **kwargs):
+        canonical_inp = hmap_canonical_input(
+            get_nearest_coords(self.ds, collapse_list=True, **kwargs)
+        )
+        return self.hmap[canonical_inp].opts(framewise=True)
 
     def to_volume(self, **opts) -> pn.panel:
         from bencher.plt_cfg import BenchPlotter
