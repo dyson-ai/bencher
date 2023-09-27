@@ -58,7 +58,7 @@ class PlotFunctions(bch.ParametrizedSweep):
     def plot_holo(self, plot=True) -> hv.core.ViewableElement:
         """Plots a generic representation of the object that is not a basic hv datatype. In this case its an image of the values of the object, but it could be any representation of the object, e.g. a screenshot of the object state"""
         if plot:
-            pt = hv.Text(0, 0, f"{self.phase}\n{self.freq}\n {self.theta}")
+            pt = hv.Text(0, 0, f"phase:{self.phase}\nfreq:{self.freq}\ntheta:{self.theta}")
             pt *= hv.Ellipse(0, 0, 1)
             return pt
         return None
@@ -76,6 +76,27 @@ class PlotFunctions(bch.ParametrizedSweep):
 
 
 def example_holosweep_tap(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    wv = PlotFunctions()
+
+    run_cfg.use_optuna = True
+    run_cfg.auto_plot=False
+    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+
+    res = bench.plot_sweep(
+        "phase",
+        input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
+        result_vars=[PlotFunctions.param.fn_output],
+        run_cfg=run_cfg,
+    )
+
+    bench.report.append(res.summarise_sweep())
+    bench.report.append(res.to_heatmap_tap())
+
+    return bench
+
+def example_holosweep_tap_slider(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     wv = PlotFunctions()
@@ -105,16 +126,14 @@ def example_holosweep_tap(
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
     bench.report.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
-
-    bench.report.append(sld1)
+    bench.report.append(sld1)    
 
     bench.report.append_tab(res.to_curve(), "Slider view")
 
     return bench
 
-
 if __name__ == "__main__":
-    example_holosweep_tap(bch.BenchRunCfg()).show()
+    example_holosweep_tap(bch.BenchRunCfg()).report.show()
 
 
 # todo  https://discourse.holoviz.org/t/pointdraw-as-parameterized-class/3539
