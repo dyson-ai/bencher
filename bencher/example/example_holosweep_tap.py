@@ -81,7 +81,7 @@ def example_holosweep_tap(
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    run_cfg.auto_plot=False
+    run_cfg.auto_plot = False
     bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
@@ -95,6 +95,7 @@ def example_holosweep_tap(
     bench.report.append(res.to_heatmap_tap())
 
     return bench
+
 
 def example_holosweep_tap_slider(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
@@ -126,11 +127,12 @@ def example_holosweep_tap_slider(
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 
     bench.report.append_tab(heatmap + tap_dmap, "Interactive Heatmap")
-    bench.report.append(sld1)    
+    bench.report.append(sld1)
 
     bench.report.append_tab(res.to_curve(), "Slider view")
 
     return bench
+
 
 if __name__ == "__main__":
     example_holosweep_tap(bch.BenchRunCfg()).report.show()

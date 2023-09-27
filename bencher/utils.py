@@ -48,7 +48,7 @@ def get_nearest_coords(ds: xr.Dataset, collapse_list=False, **kwargs) -> dict:
     cd2 = {}
     for k, v in cd.items():
         cd2[k] = v["data"]
-        if collapse_list and type(cd2[k]) == list:
+        if collapse_list and isinstance(cd2[k], list):
             cd2[k] = cd2[k][0]  # select the first item in the list
     return cd2
 
