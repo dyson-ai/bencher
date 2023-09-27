@@ -67,8 +67,8 @@ class SweepBase(param.Parameter):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(
-            (self.units, self.samples, self.samples_debug)
-        )  # pylint: disable=no-member
+            (self.units, self.samples, self.samples_debug)  # pylint: disable=no-member
+        )
 
     def sampling_str(self, debug=False) -> str:
         """Generate a string representation of the of the sampling procedure
