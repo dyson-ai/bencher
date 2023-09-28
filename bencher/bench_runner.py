@@ -65,7 +65,7 @@ class BenchRunner:
         repeats: int = 1,
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
-        debug: bool = True,
+        debug: bool = False,
         show=False,
         save=False,
         grouped=True,
