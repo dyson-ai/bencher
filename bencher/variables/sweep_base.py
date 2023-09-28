@@ -10,7 +10,7 @@ import panel as pn
 from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
-# param does not work with multiple inheritance so define here
+# param and slots don't work easily with multiple inheritance so define here
 shared_slots = ["units", "samples", "samples_debug"]
 
 
