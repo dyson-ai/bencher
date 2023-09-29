@@ -13,7 +13,7 @@ from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
 class BenchReport(BenchPlotServer):
     def __init__(
         self,
-        bench_name: str = "no_name_set",
+        bench_name: str = None,
     ) -> None:
         self.bench_name = bench_name
         self.pane = pn.Tabs(tabs_location="left", name=self.bench_name)
