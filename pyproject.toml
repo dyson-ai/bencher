@@ -16,14 +16,14 @@ test = [
   "black>=23,<=23.9.1",
   "check-manifest>=0.49,<=0.49",
   "pre-commit>=3.3.3,<=3.4.0",
-  "pylint>=2.16,<=2.17.6",
+  "pylint>=2.16,<=3.0.1",
   "pytest-cov>=4.1,<=4.1",
   "pytest-mock>=3.10,<=3.11.1",
   "pytest-runner>=6.0,<=6.0",
   "pytest>=7.4,<=7.4.2",
-  "hypothesis>=6.82,<=6.87.0",
-  "ruff>=0.0.280,<=0.0.291",
-  "coverage>=7.2.7,<=7.3.1",
+  "hypothesis>=6.82,<=6.87.3",
+  "ruff>=0.0.280,<=0.0.292",
+  "coverage>=7.2.7,<=7.3.2",
 ]
 
 [project.urls]
