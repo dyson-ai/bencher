@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # takes a pyproject.toml files and generates a dependencies.yaml file.
 import tomli
 
