@@ -6,7 +6,7 @@ authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
 readme = "README.md"
 
-requires-python = ">=3.10"
+requires-python = ">=3.10,<=3.11"
 
 
 dependencies = [
