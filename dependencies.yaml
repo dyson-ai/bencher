@@ -15,7 +15,7 @@ pip:
   - buildrun: panel
   - buildrun: hvplot
   - buildrun: strenum
-  - buildrun: xarray
+  - buildrun: xarray<=2023.8.0
   - buildrun: plotly
   - buildrun: seaborn
   - buildrun: matplotlib
