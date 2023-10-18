@@ -63,9 +63,9 @@ def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
 
 def run_levels_1D(bench: bch.Bench) -> bch.Bench:
     results = run_with_dim(bench, [LevelsExample.param.xval])
-    bench.report.append_markdown("# Using Levels to define sample density", "Levels")
+    bench.report.append_title("Using Levels to define sample density")
 
-    bench1 = bch.Bench("lol", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
+    bench1 = bch.Bench("levels", RunWithLevel(), run_cfg=bch.BenchRunCfg(auto_plot=False))
     res1 = bench1.plot_sweep("Levels", input_vars=[RunWithLevel.param.level])
 
     bench.report.append_markdown(
