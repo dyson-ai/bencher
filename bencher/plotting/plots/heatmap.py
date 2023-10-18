@@ -142,11 +142,13 @@ class Heatmap:
             rv = pl_in.rv
             res = pl_in.bench_cfg
 
-            x = pl_in.bench_cfg.input_vars[0]
-            y = pl_in.bench_cfg.input_vars[1]
             z = pl_in.rv
+            title = f"{z.name} vs ({pl_in.bench_cfg.input_vars[0].name}"
 
-            title = f"{z.name} vs ({x.name} vs {y.name})"
+            for iv in pl_in.bench_cfg.input_vars[1:]:
+                title += f" vs {iv.name}"
+            title += ")"
+
             color_label = f"{z.name} [{z.units}]"
 
             return pn.panel(
