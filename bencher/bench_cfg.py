@@ -526,7 +526,9 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-    def to_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO, ds:Dataset =None) -> hv.Dataset:
+    def to_hv_dataset(
+        self, reduce: ReduceType = ReduceType.AUTO, ds: hv.Dataset = None
+    ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
