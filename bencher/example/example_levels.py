@@ -34,20 +34,6 @@ class RunWithLevel(bch.ParametrizedSweep):
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
-        # bench_level = bch.Bench(
-        #     "lvl", LevelsExample(), run_cfg=bch.BenchRunCfg(level=self.level, auto_plot=False)
-        # )
-
-        # res = bench.plot_sweep(
-        #     f"Level:{self.level}",
-        #     input_vars=dims,
-        #     const_vars=LevelsExample.get_input_defaults(
-        #         [LevelsExample.param.level.with_const(self.level)]
-        #     ),
-        #     result_vars=[LevelsExample.param.output],
-        #     run_cfg=bch.BenchRunCfg(level=self.level, auto_plot=False),
-        # )
-
         self.level_samples = int(
             pow(
                 len(bch.FloatSweep(bounds=[0, 1]).with_level(self.level).values(False)),
@@ -55,14 +41,6 @@ class RunWithLevel(bch.ParametrizedSweep):
             )
         )
         return self.get_results_values_as_dict()
-
-        # return self.get_results_values_as_dict(res1.to_holomap().overlay())
-
-
-# def to_bench(class_instance) -> bch.Bench:
-#     bench = bch.Bench(f"bench_{class_instance.name}", class_instance)
-#     bench.plot_sweep(f"bench_{class_instance.name}")
-#     return bench
 
 
 def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
@@ -173,14 +151,16 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     return bench
 
 
-def run_levels() -> bch.Bench:
+def run_levels(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     hv.extension("bokeh")
     opts.defaults(
         opts.Curve(show_legend=False),
         opts.Points(show_legend=False),
     )
 
-    bench = bch.Bench("Levels", LevelsExample())
+    bench = bch.Bench("Levels", LevelsExample(), run_cfg=run_cfg, report=report)
     bench = run_levels_1D(bench)
     bench = run_levels_2D(bench)
 
@@ -188,4 +168,4 @@ def run_levels() -> bch.Bench:
 
 
 if __name__ == "__main__":
-    run_levels().show()
+    run_levels().report.show()
