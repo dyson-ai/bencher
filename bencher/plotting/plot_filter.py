@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 
 from bencher.bench_cfg import BenchCfg, PltCntCfg
@@ -79,12 +80,12 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        return (
-            self.float_range.matches(plt_cng_cfg.float_cnt)
-            and self.cat_range.matches(plt_cng_cfg.cat_cnt)
-            and self.vector_len.matches(plt_cng_cfg.vector_len)
-            and self.result_vars.matches(plt_cng_cfg.result_vars)
-        )
+        fl_match = self.float_range.matches(plt_cng_cfg.float_cnt)
+        cat_match = self.cat_range.matches(plt_cng_cfg.cat_cnt)
+        vec_match = self.vector_len.matches(plt_cng_cfg.vector_len)
+        results_match = self.result_vars.matches(plt_cng_cfg.result_vars)
+        # logging.info(f"{fl_match}, {cat_match}, {vec_match}, {results_match}")
+        return fl_match and cat_match and vec_match and results_match
 
 
 @dataclass
