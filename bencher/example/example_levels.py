@@ -160,7 +160,7 @@ def run_levels(
         opts.Points(show_legend=False),
     )
 
-    bench = bch.Bench("Levels", LevelsExample(),run_cfg=run_cfg, report=report)
+    bench = bch.Bench("Levels", LevelsExample(), run_cfg=run_cfg, report=report)
     bench = run_levels_1D(bench)
     bench = run_levels_2D(bench)
 
