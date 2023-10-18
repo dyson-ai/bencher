@@ -18,6 +18,7 @@ from bencher.example.example_holosweep_tap import example_holosweep_tap
 
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
+from bencher.example.example_levels import run_levels
 
 import os
 
@@ -52,6 +53,7 @@ class TestBenchExamples(unittest.TestCase):
         b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
         b_run.add_run(example_categorical)
         b_run.add_run(example_floats)
+        b_run.add_run(run_levels)
 
         b_run.run(level=2, grouped=True, save=True)
         b_run.shutdown()

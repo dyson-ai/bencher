@@ -151,14 +151,17 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     return bench
 
 
-def run_levels() -> bch.Bench:
+def run_levels(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
     hv.extension("bokeh")
     opts.defaults(
         opts.Curve(show_legend=False),
         opts.Points(show_legend=False),
     )
 
-    bench = bch.Bench("Levels", LevelsExample())
+    # don't pass the run_cfg as we way always want show how levels work
+    bench = bch.Bench("Levels", LevelsExample(), report=report)
     bench = run_levels_1D(bench)
     bench = run_levels_2D(bench)
 
