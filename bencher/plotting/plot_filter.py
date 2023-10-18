@@ -84,7 +84,7 @@ class PlotFilter:
         cat_match = self.cat_range.matches(plt_cng_cfg.cat_cnt)
         vec_match = self.vector_len.matches(plt_cng_cfg.vector_len)
         results_match = self.result_vars.matches(plt_cng_cfg.result_vars)
-        # logging.info(f"{fl_match}, {cat_match}, {vec_match}, {results_match}")
+        logging.debug(f"{fl_match}, {cat_match}, {vec_match}, {results_match}")
         return fl_match and cat_match and vec_match and results_match
 
 
