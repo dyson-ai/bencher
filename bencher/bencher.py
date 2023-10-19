@@ -615,6 +615,10 @@ class Bench(BenchPlotServer):
             if isinstance(result, dict):  # todo holomaps with named types
                 if "hmap" in result:
                     bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+            else:
+                bench_cfg.hmap[worker_job.canonical_input] = result.hmap
+
+
 
             for rv in bench_cfg.result_vars:
                 if isinstance(result, dict):
