@@ -615,16 +615,14 @@ class Bench(BenchPlotServer):
             if isinstance(result, dict):  # todo holomaps with named types
                 if "hmap" in result:
                     bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+                result_dict = result
             else:
-                bench_cfg.hmap[worker_job.canonical_input] = result.hmap
-
-
+                result_dict = result.param.values()
+            # else:
+            # bench_cfg.hmap[worker_job.canonical_input] = result.hmap
 
             for rv in bench_cfg.result_vars:
-                if isinstance(result, dict):
-                    result_value = result[rv.name]
-                else:
-                    result_value = result.param.values()[rv.name]
+                result_value = result_dict[rv.name]
 
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
