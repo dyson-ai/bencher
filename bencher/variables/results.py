@@ -85,8 +85,8 @@ class ResultHmap(param.Parameter):
 
 # class ResultCurve(ResultHmap):
 
-    # def __init__(self, default=None, doc=None, label=None, **params):
-        # super().__init__(default, doc, label,**params)
+# def __init__(self, default=None, doc=None, label=None, **params):
+# super().__init__(default, doc, label,**params)
 
 
 def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
