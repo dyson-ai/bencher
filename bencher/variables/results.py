@@ -78,6 +78,8 @@ class ResultVec(param.List):
 class ResultHmap(param.Parameter):
     """A class to represent a holomap return type"""
 
+    # __slots__ = ["units"]
+
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)

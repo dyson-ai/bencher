@@ -45,6 +45,8 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
+    hmap = bch.ResultHmap()
+
     def __call__(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         noise = 0.1
@@ -53,7 +55,9 @@ class PlotFunctions(bch.ParametrizedSweep):
             0, noise
         )
 
-        return self.get_results_values_as_dict(holomap=self.plot_holo(plot))
+        self.hmap = self.plot_holo(plot)
+
+        return self.get_results_values_as_dict()
 
     def plot_holo(self, plot=True) -> hv.core.ViewableElement:
         """Plots a generic representation of the object that is not a basic hv datatype. In this case its an image of the values of the object, but it could be any representation of the object, e.g. a screenshot of the object state"""
@@ -76,12 +80,11 @@ def example_holosweep(
     res = bench.plot_sweep(
         "phase",
         input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
-        result_vars=[PlotFunctions.param.fn_output],
+        result_vars=[PlotFunctions.param.fn_output, PlotFunctions.param.hmap],
     )
 
     print("best", res.get_best_trial_params(True))
     print(res.hmap_kdims)
-    print(res.hmap.keys())
     bench.report.append(res.summarise_sweep())
     bench.report.append(res.to_optuna())
     bench.report.append(res.get_best_holomap())
