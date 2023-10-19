@@ -36,7 +36,7 @@ def describe_variable(
         sampling_str.append(f"{indent}sample values: {v.values(debug)}")
 
     if value is not None:
-        sampling_str.append(f"{indent}value: {value}")    
+        sampling_str.append(f"{indent}value: {value}")
     if v.units != "ul":
         sampling_str.append(f"{indent}units: [{v.units}]")
     if v.doc is not None:

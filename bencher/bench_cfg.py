@@ -525,7 +525,7 @@ class BenchCfg(BenchRunCfg):
             return hmap_canonical_input(out)
         return out
 
-    def get_best_holomap(self,name:str=None):
+    def get_best_holomap(self, name: str = None):
         if name is None:
             name = "hmap"
         return self.hmaps[name][self.get_best_trial_params(True)]
@@ -605,8 +605,7 @@ class BenchCfg(BenchRunCfg):
         tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
         return htmap + tap_htmap
 
-    def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:    
-
+    def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
         return hv.NdLayout(self.hmaps[hmap_name], kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
@@ -617,7 +616,6 @@ class BenchCfg(BenchRunCfg):
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
 
     def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
-
         if hmap_names is None:
             hmap_names = [i.name for i in self.result_hmaps]
         col = pn.Column()
@@ -625,7 +623,7 @@ class BenchCfg(BenchRunCfg):
             self.to_holomap(name)
         return col
 
-    def get_nearest_holomap(self,name:str=None, **kwargs):
+    def get_nearest_holomap(self, name: str = None, **kwargs):
         if name is None:
             name = "hmap"
         canonical_inp = hmap_canonical_input(
@@ -644,14 +642,16 @@ class BenchCfg(BenchRunCfg):
             PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
         )
 
-    def to_dynamic_map(self,name: str = None) -> hv.DynamicMap:
+    def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
 
         if name is None:
             name = "hmap"
 
         def cb(**kwargs):
-            return self.hmaps[name][hmap_canonical_input(kwargs)].opts(framewise=True, shared_axes=False)
+            return self.hmaps[name][hmap_canonical_input(kwargs)].opts(
+                framewise=True, shared_axes=False
+            )
 
         kdims = []
         for i in self.input_vars + [self.iv_repeat]:

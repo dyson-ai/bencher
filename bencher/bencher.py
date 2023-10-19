@@ -310,7 +310,7 @@ class Bench(BenchPlotServer):
             self.check_var_is_a_param(i[0], "const")
 
         result_hmaps = []
-        result_vars_only=[]
+        result_vars_only = []
         for i in result_vars:
             if isinstance(i, ResultHmap):
                 result_hmaps.append(i)
@@ -620,7 +620,7 @@ class Bench(BenchPlotServer):
                 for k, v in worker_job.function_input.items():
                     logging.info(f"\t {k}:{v}")
 
-            result_dict = result if isinstance(result, dict) else result.param.values() 
+            result_dict = result if isinstance(result, dict) else result.param.values()
 
             for rv in bench_cfg.result_vars:
                 result_value = result_dict[rv.name]
@@ -643,7 +643,7 @@ class Bench(BenchPlotServer):
                     raise RuntimeError("Unsupported result type")
             for rv in bench_cfg.result_hmaps:
                 bench_cfg.hmaps[rv.name][worker_job.canonical_input] = result_dict[rv.name]
-            
+
             # bench_cfg.hmap = bench_cfg.hmaps[bench_cfg.result_hmaps[0].name]
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):

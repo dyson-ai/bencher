@@ -54,7 +54,7 @@ def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
             const_vars=LevelsExample.get_input_defaults(
                 [LevelsExample.param.level.with_const(level)]
             ),
-            result_vars=[LevelsExample.param.output,LevelsExample.param.hmap],
+            result_vars=[LevelsExample.param.output, LevelsExample.param.hmap],
             run_cfg=bch.BenchRunCfg(level=level, auto_plot=False),
         )
 
