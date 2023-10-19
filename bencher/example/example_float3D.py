@@ -95,15 +95,15 @@ def example_floats3D(
 
     bench.report.append(res.to_volume())
 
-    bench.plot_sweep(
-        title="Float 3D Cone Example",
-        input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
-        result_vars=[
-            VolumeResult.param.interesting_vec,
-            VolumeResult.param.interesting_vec_and_occ,
-        ],
-        description="""This example shows how to sample 3 floating point variables and plot a 3D vector field of the results.""",
-    )
+    # bench.plot_sweep(
+    #     title="Float 3D Cone Example",
+    #     input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
+    #     result_vars=[
+    #         VolumeResult.param.interesting_vec,
+    #         VolumeResult.param.interesting_vec_and_occ,
+    #     ],
+    #     description="""This example shows how to sample 3 floating point variables and plot a 3D vector field of the results.""",
+    # )
 
     return bench
 
