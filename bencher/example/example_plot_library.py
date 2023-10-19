@@ -67,4 +67,4 @@ def example_plot_library(
 
 
 if __name__ == "__main__":
-    example_plot_library(bch.BenchRunCfg(repeats=5)).show()
+    example_plot_library(bch.BenchRunCfg(repeats=5)).report.show()
