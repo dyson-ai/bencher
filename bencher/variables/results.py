@@ -78,11 +78,19 @@ class ResultVec(param.List):
 class ResultHmap(param.Parameter):
     """A class to represent a holomap return type"""
 
-    # __slots__ = ["units"]
-
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)
+
+
+# class ResultCurve(ResultHmap):
+
+    # def __init__(self, default=None, doc=None, label=None, **params):
+        # super().__init__(default, doc, label,**params)
+
+
+def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
+    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
 
 
 # class ResultList(param.Parameter):
