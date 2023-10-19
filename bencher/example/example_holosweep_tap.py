@@ -90,7 +90,7 @@ def example_holosweep_tap(
     res = bench.plot_sweep(
         "phase",
         input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
-        result_vars=[PlotFunctions.param.fn_output,PlotFunctions.param.hmap],
+        result_vars=[PlotFunctions.param.fn_output, PlotFunctions.param.hmap],
         run_cfg=run_cfg,
     )
 
