@@ -14,15 +14,16 @@ class LevelsExample(bch.ParametrizedSweep):
     level = bch.IntSweep(default=1, bounds=[1, 6])
 
     output = bch.ResultVar(units="v")
+    hmap = bch.ResultHmap()
 
     def __call__(self, **kwargs: Any) -> Any:
         self.update_params_from_kwargs(**kwargs)
         self.output = math.sin(self.xval) + math.cos(self.yval)
-        pt = hv.Points((self.xval, self.yval)).opts(
+        self.hmap = hv.Points((self.xval, self.yval)).opts(
             marker="o", size=110 - self.level * 20, color=int_to_col(self.level - 1)
         )
 
-        return self.get_results_values_as_dict(pt)
+        return self.get_results_values_as_dict()
 
 
 class RunWithLevel(bch.ParametrizedSweep):
@@ -53,7 +54,7 @@ def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
             const_vars=LevelsExample.get_input_defaults(
                 [LevelsExample.param.level.with_const(level)]
             ),
-            result_vars=[LevelsExample.param.output],
+            result_vars=[LevelsExample.param.output,LevelsExample.param.hmap],
             run_cfg=bch.BenchRunCfg(level=level, auto_plot=False),
         )
 

@@ -85,7 +85,6 @@ def example_holosweep(
 
     print("best", res.get_best_trial_params(True))
     print(res.hmap_kdims)
-    # print(res.hmap.keys())
     bench.report.append(res.summarise_sweep())
     bench.report.append(res.to_optuna())
     bench.report.append(res.get_best_holomap())
