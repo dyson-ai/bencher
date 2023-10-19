@@ -110,8 +110,16 @@ class Heatmap:
 
             color_label = f"{z.name} [{z.units}]"
 
+            kdims = [i.as_dim() for i in pl_in.bench_cfg.input_vars[:2]]
+
+            print(kdims)
+
+            # return None
+
+            print(res.to_hv_dataset())
+
             return pn.panel(
-                res.to_heatmap(vdims=[rv.name]).opts(title=title, clabel=color_label),
+                res.to_heatmap(vdims=[rv.name],kdims=kdims).opts(title=title, clabel=color_label),
                 name=PlotTypes.heatmap_ND,
             )
         return None
