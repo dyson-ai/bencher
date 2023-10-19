@@ -20,6 +20,7 @@ class PlotTypes(StrEnum):
     xarray = auto()
 
     heatmap_1D = auto()
+    heatmap_2D = auto()
     heatmap_ND = auto()
 
     lineplot = auto()

@@ -87,6 +87,39 @@ class Heatmap:
                 ),
             ]
         return None
+    
+    def heatmap_2D(self, pl_in: PlotInput) -> Optional[pn.panel]:
+        """use the imshow plotting method to display 2D data
+        Args:
+            pl_in (PlotInput): The data to plot
+        Returns:
+            pn.panel: A panel with a image representation of the data
+        """
+        if len(pl_in.bench_cfg.input_vars) == 2:
+            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+            mean = da.mean("repeat")
+
+            x = pl_in.bench_cfg.input_vars[0]
+            y = pl_in.bench_cfg.input_vars[1]
+            z = pl_in.rv
+
+            title = f"{z.name} vs ({x.name} vs {y.name})"
+            color_label = f"{z.name} [{z.units}]"
+
+            return pn.panel(
+                mean.hvplot.heatmap(
+                    x=x.name,
+                    y=y.name,
+                    C=z.name,
+                    title=title,
+                    label=pl_in.rv.name,
+                    colorbar=True,
+                    clabel=color_label,
+                    cmap="viridis",
+                ),
+                name=PlotTypes.heatmap_2D,
+            )
+        return None
 
     def heatmap_ND(self, pl_in: PlotInput) -> Optional[pn.panel]:
         """use the imshow plotting method to display 2D data
@@ -97,7 +130,8 @@ class Heatmap:
         Returns:
             pn.panel: A panel with a image representation of the data
         """
-        if len(pl_in.bench_cfg.input_vars) >= 2:
+        ivl = len(pl_in.bench_cfg.input_vars)
+        if ivl >= 2 and ivl <4:
             rv = pl_in.rv
             res = pl_in.bench_cfg
 
@@ -110,16 +144,11 @@ class Heatmap:
 
             color_label = f"{z.name} [{z.units}]"
 
-            kdims = [i.as_dim() for i in pl_in.bench_cfg.input_vars[:2]]
-
-            print(kdims)
-
-            # return None
-
+            # kdims = [i.as_dim() for i in pl_in.bench_cfg.input_vars[:2]]
             print(res.to_hv_dataset())
 
             return pn.panel(
-                res.to_heatmap(vdims=[rv.name],kdims=kdims).opts(title=title, clabel=color_label),
+                res.to_heatmap(vdims=[rv.name]).opts(title=title, clabel=color_label),
                 name=PlotTypes.heatmap_ND,
             )
         return None
