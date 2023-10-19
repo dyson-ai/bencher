@@ -4,7 +4,7 @@ import param
 from param import Parameterized
 import holoviews as hv
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ResultVar, ResultVec
+from bencher.variables.results import ResultVar, ResultVec,ResultHmap
 from functools import partial
 
 
@@ -68,7 +68,7 @@ class ParametrizedSweep(Parameterized):
         inputs = {}
         results = {}
         for k, v in cls.param.params().items():
-            if isinstance(v, (ResultVar, ResultVec)):
+            if isinstance(v, (ResultVar, ResultVec,ResultHmap)):
                 results[k] = v
             else:
                 inputs[k] = v
