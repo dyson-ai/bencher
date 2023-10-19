@@ -629,7 +629,7 @@ class BenchCfg(BenchRunCfg):
         canonical_inp = hmap_canonical_input(
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
-        return self.hmaps[name][canonical_inp].opts(framewise=True)
+        return self.get_hmap(name)[canonical_inp].opts(framewise=True)
 
     def to_volume(self, **opts) -> pn.panel:
         from bencher.plt_cfg import BenchPlotter
