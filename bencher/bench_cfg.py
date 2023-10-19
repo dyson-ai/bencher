@@ -612,15 +612,19 @@ class BenchCfg(BenchRunCfg):
             shared_axes=False, shared_datasource=False
         )
 
-    def to_holomap(self, hmap_names: List[str] = None) -> hv.HoloMap:
+    def to_holomap(self, name: str = None) -> hv.HoloMap:
+        if name is None:
+            name = "hmap"
+        return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
+
+    def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
 
         if hmap_names is None:
             hmap_names = [i.name for i in self.result_hmaps]
-        # if len(hmap_names)
         col = pn.Column()
         for name in hmap_names:
-            col.append(hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False))
+            self.to_holomap(name)
         return col
 
     def get_nearest_holomap(self, **kwargs):
