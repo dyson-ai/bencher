@@ -28,7 +28,6 @@ class Function(StrEnum):
         return getattr(np, self.removeprefix("fn_"))(arg)
 
 
-    
 class FunctionInputs(bch.ParametrizedSweep):
     phase = bch.FloatSweep(
         default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=5
@@ -42,6 +41,7 @@ class FunctionInputs(bch.ParametrizedSweep):
 
     compute_fn = bch.EnumSweep(Function)
 
+
 class FunctionOutputs(bch.ParametrizedSweep):
     fn_output = bch.ResultVar(units="v", doc="sin of theta with some noise")
 
@@ -52,20 +52,17 @@ class FunctionOutputs(bch.ParametrizedSweep):
     hmap2 = bch.ResultHmap()
 
 
-
-
 def bench_fn(self, **kwargs) -> dict:
     fin = FunctionInputs()
     fin.update_params_from_kwargs(**kwargs)
 
     output = FunctionOutputs()
 
-    output.fn_output = fin.compute_fn.call(fin.phase + fin.freq * fin.theta) + random.uniform(
-        0, 0
-    )
-    output.hmap =   hv.Text(0, 0, f"{fin.phase}\n{fin.freq}\n {fin.theta}")
-    output.hmap2 =   hv.Ellipse(0, 0,1)
+    output.fn_output = fin.compute_fn.call(fin.phase + fin.freq * fin.theta) + random.uniform(0, 0)
+    output.hmap = hv.Text(0, 0, f"{fin.phase}\n{fin.freq}\n {fin.theta}")
+    output.hmap2 = hv.Ellipse(0, 0, 1)
     return output
+
 
 def plot_holo(self, plot=True) -> hv.core.ViewableElement:
     """Plots a generic representation of the object that is not a basic hv datatype. In this case its an image of the values of the object, but it could be any representation of the object, e.g. a screenshot of the object state"""
@@ -83,17 +80,23 @@ def example_holosweep(
 
     # run_cfg.use_optuna = True
 
-    bench = bch.Bench("waves",bench_fn,worker_input_cfg=FunctionInputs, run_cfg=run_cfg, report=report)
+    bench = bch.Bench(
+        "waves", bench_fn, worker_input_cfg=FunctionInputs, run_cfg=run_cfg, report=report
+    )
 
     res = bench.plot_sweep(
         "phase",
         input_vars=[FunctionInputs.param.theta, FunctionInputs.param.freq],
-        result_vars=[FunctionOutputs.param.fn_output,FunctionOutputs.param.hmap,FunctionOutputs.param.hmap2],
+        result_vars=[
+            FunctionOutputs.param.fn_output,
+            FunctionOutputs.param.hmap,
+            FunctionOutputs.param.hmap2,
+        ],
     )
 
     # print("best", res.get_best_trial_params(True))
     # print(res.hmap_kdims)
-    # print(res.hmap.keys())    
+    # print(res.hmap.keys())
     # bench.report.append(res.summarise_sweep())
     # bench.report.append(res.to_optuna())
     # bench.report.append(res.get_best_holomap())
@@ -103,12 +106,12 @@ def example_holosweep(
     bench.report.append(res.to_holomap())
     # bench.report.append(res.to_holomap())
 
-
     return bench
 
 
 if __name__ == "__main__":
     from datetime import datetime
+
     bench_run = bch.BenchRunner(
         "bench_runner_test", run_cfg=bch.BenchRunCfg(parallel=False, run_tag=str(datetime.now()))
     )

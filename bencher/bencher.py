@@ -19,7 +19,7 @@ from bencher.bench_report import BenchReport
 
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec,ResultHmap
+from bencher.variables.results import ResultVar, ResultVec, ResultHmap
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -309,9 +309,9 @@ class Bench(BenchPlotServer):
             # consts come as tuple pairs
             self.check_var_is_a_param(i[0], "const")
 
-        result_hmaps=[]
+        result_hmaps = []
         for i in result_vars:
-            if isinstance(i,ResultHmap):
+            if isinstance(i, ResultHmap):
                 result_hmaps.append(i)
         for i in result_hmaps:
             result_vars.remove(i)
@@ -620,7 +620,7 @@ class Bench(BenchPlotServer):
                     logging.info(f"\t {k}:{v}")
 
             # construct a dict for a holomap
-            if isinstance(result, dict):  # todo holomaps with named types                
+            if isinstance(result, dict):  # todo holomaps with named types
                 result_dict = result
             else:
                 result_dict = result.param.values()
@@ -629,11 +629,10 @@ class Bench(BenchPlotServer):
                 print(rv)
                 print(rv.name)
 
-                
             # if "hmap" in result_dict:
-                # bench_cfg.hmap[worker_job.canonical_input] = result_dict["hmap"]
+            # bench_cfg.hmap[worker_job.canonical_input] = result_dict["hmap"]
 
-            for rv in bench_cfg.result_vars:                
+            for rv in bench_cfg.result_vars:
                 result_value = result_dict[rv.name]
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
@@ -649,7 +648,7 @@ class Bench(BenchPlotServer):
                                     worker_job.index_tuple,
                                     result_value[i],
                                 )
-            
+
                 else:
                     raise RuntimeError("Unsupported result type")
             for rv in bench_cfg.result_hmaps:
