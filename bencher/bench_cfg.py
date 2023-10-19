@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import copy
 import logging
+from collections import defaultdict
+
 from typing import Any, Callable, List, Tuple
 
 import param
@@ -320,6 +322,8 @@ class BenchCfg(BenchRunCfg):
         doc="Variables to keep constant but are different from the default value",
     )
 
+    result_hmaps = param.List(default=None,doc="a list of holomap results")
+
     meta_vars = param.List(
         default=None,
         doc="Meta variables such as recording time and repeat id",
@@ -383,6 +387,7 @@ class BenchCfg(BenchRunCfg):
         self.ds = xr.Dataset()
         self.plot_lib = None
         self.hmap = {}
+        self.hmaps = defaultdict(dict)
         self.hmap_kdims = None
         self.iv_repeat = None
 
@@ -598,14 +603,26 @@ class BenchCfg(BenchRunCfg):
         tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
         return htmap + tap_htmap
 
-    def to_nd_layout(self) -> hv.NdLayout:
-        return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
+    def to_nd_layout(self,hmap_name:str) -> hv.NdLayout:
+        # return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
+        #     shared_axes=False, shared_datasource=False
+        # )
+       
+        
+        return hv.NdLayout(self.hmaps[hmap_name], kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
-    def to_holomap(self) -> hv.HoloMap:
+    def to_holomap(self,hmap_names:List[str]=None) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
-        return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+
+        if hmap_names is None:
+            hmap_names = [i.name for i in self.result_hmaps]
+        # if len(hmap_names)
+        col =pn.Column()
+        for name in hmap_names:
+            col.append(hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False))
+        return col
 
     def get_nearest_holomap(self, **kwargs):
         canonical_inp = hmap_canonical_input(

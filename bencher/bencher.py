@@ -19,7 +19,7 @@ from bencher.bench_report import BenchReport
 
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec
+from bencher.variables.results import ResultVar, ResultVec,ResultHmap
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -309,6 +309,13 @@ class Bench(BenchPlotServer):
             # consts come as tuple pairs
             self.check_var_is_a_param(i[0], "const")
 
+        result_hmaps=[]
+        for i in result_vars:
+            if isinstance(i,ResultHmap):
+                result_hmaps.append(i)
+        for i in result_hmaps:
+            result_vars.remove(i)
+
         if post_description is None:
             post_description = (
                 "## Results Description\nPlease set post_description to explain these results"
@@ -317,6 +324,7 @@ class Bench(BenchPlotServer):
         bench_cfg = BenchCfg(
             input_vars=input_vars,
             result_vars=result_vars,
+            result_hmaps=result_hmaps,
             const_vars=const_vars,
             bench_name=self.bench_name,
             description=description,
@@ -612,18 +620,21 @@ class Bench(BenchPlotServer):
                     logging.info(f"\t {k}:{v}")
 
             # construct a dict for a holomap
-            if isinstance(result, dict):  # todo holomaps with named types
-                if "hmap" in result:
-                    bench_cfg.hmap[worker_job.canonical_input] = result["hmap"]
+            if isinstance(result, dict):  # todo holomaps with named types                
                 result_dict = result
             else:
                 result_dict = result.param.values()
-            # else:
-            # bench_cfg.hmap[worker_job.canonical_input] = result.hmap
 
             for rv in bench_cfg.result_vars:
-                result_value = result_dict[rv.name]
+                print(rv)
+                print(rv.name)
 
+                
+            # if "hmap" in result_dict:
+                # bench_cfg.hmap[worker_job.canonical_input] = result_dict["hmap"]
+
+            for rv in bench_cfg.result_vars:                
+                result_value = result_dict[rv.name]
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
 
@@ -638,9 +649,11 @@ class Bench(BenchPlotServer):
                                     worker_job.index_tuple,
                                     result_value[i],
                                 )
-
+            
                 else:
                     raise RuntimeError("Unsupported result type")
+            for rv in bench_cfg.result_hmaps:
+                bench_cfg.hmaps[rv.name][worker_job.canonical_input] = result_dict[rv.name]
 
     def init_sample_cache(self, run_cfg: BenchRunCfg):
         return FutureCache(

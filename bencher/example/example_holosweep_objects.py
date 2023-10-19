@@ -49,6 +49,8 @@ class FunctionOutputs(bch.ParametrizedSweep):
 
     hmap = bch.ResultHmap()
 
+    hmap2 = bch.ResultHmap()
+
 
 
 
@@ -61,18 +63,9 @@ def bench_fn(self, **kwargs) -> dict:
     output.fn_output = fin.compute_fn.call(fin.phase + fin.freq * fin.theta) + random.uniform(
         0, 0
     )
-
     output.hmap =   hv.Text(0, 0, f"{fin.phase}\n{fin.freq}\n {fin.theta}")
-
-
+    output.hmap2 =   hv.Ellipse(0, 0,1)
     return output
-
-    # self.update_params_from_kwargs(**kwargs)
-    # noise = 0.1
-
-   
-
-    return self.get_results_values_as_dict()
 
 def plot_holo(self, plot=True) -> hv.core.ViewableElement:
     """Plots a generic representation of the object that is not a basic hv datatype. In this case its an image of the values of the object, but it could be any representation of the object, e.g. a screenshot of the object state"""
@@ -95,7 +88,7 @@ def example_holosweep(
     res = bench.plot_sweep(
         "phase",
         input_vars=[FunctionInputs.param.theta, FunctionInputs.param.freq],
-        result_vars=[FunctionOutputs.param.fn_output],
+        result_vars=[FunctionOutputs.param.fn_output,FunctionOutputs.param.hmap,FunctionOutputs.param.hmap2],
     )
 
     # print("best", res.get_best_trial_params(True))
@@ -106,8 +99,10 @@ def example_holosweep(
     # bench.report.append(res.get_best_holomap())
     # bench.report.append(res.to_curve(), "Slider view")
     # bench.report.append(res.to_holomap().layout())
-    print(res.to_holomap())
+    # print(res.to_holomap())
     bench.report.append(res.to_holomap())
+    # bench.report.append(res.to_holomap())
+
 
     return bench
 
