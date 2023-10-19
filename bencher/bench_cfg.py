@@ -322,7 +322,7 @@ class BenchCfg(BenchRunCfg):
         doc="Variables to keep constant but are different from the default value",
     )
 
-    result_hmaps = param.List(default=None,doc="a list of holomap results")
+    result_hmaps = param.List(default=None, doc="a list of holomap results")
 
     meta_vars = param.List(
         default=None,
@@ -603,25 +603,28 @@ class BenchCfg(BenchRunCfg):
         tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
         return htmap + tap_htmap
 
-    def to_nd_layout(self,hmap_name:str) -> hv.NdLayout:
+    def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
         # return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
         #     shared_axes=False, shared_datasource=False
         # )
-       
-        
+
         return hv.NdLayout(self.hmaps[hmap_name], kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
-    def to_holomap(self,hmap_names:List[str]=None) -> hv.HoloMap:
+    def to_holomap(self, name: str = None) -> hv.HoloMap:
+        if name is None:
+            name = "hmap"
+        return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
+
+    def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
         # return hv.HoloMap(self.hmap, self.hmap_kdims)
 
         if hmap_names is None:
             hmap_names = [i.name for i in self.result_hmaps]
-        # if len(hmap_names)
-        col =pn.Column()
+        col = pn.Column()
         for name in hmap_names:
-            col.append(hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False))
+            self.to_holomap(name)
         return col
 
     def get_nearest_holomap(self, **kwargs):
