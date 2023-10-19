@@ -45,6 +45,8 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
+    hmap = bch.ResultHmap()
+
     def __call__(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
         noise = 0.1
@@ -69,10 +71,10 @@ class PlotFunctions(bch.ParametrizedSweep):
         dat = [self.__call__(plot=False, theta=i, **kwargs)["fn_output"] for i in theta]
         # print(dat)
         self.out_sum = sum(dat)
-        pt = hv.Curve((theta, dat), "theta", "voltage")
+        self.hmap = hv.Curve((theta, dat), "theta", "voltage")
         # pt = hv.Text(0, 0, f"{self.compute_fn}\n{self.phase}\n{self.freq}")
         # pt *= hv.Ellipse(0, 0, 1)
-        return self.get_results_values_as_dict(holomap=pt)
+        return self.get_results_values_as_dict()
 
 
 def example_holosweep_tap(

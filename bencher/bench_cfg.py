@@ -526,9 +526,13 @@ class BenchCfg(BenchRunCfg):
         return out
 
     def get_best_holomap(self, name: str = None):
+        return self.get_hmap(name)[self.get_best_trial_params(True)]
+
+
+    def get_hmap(self, name: str = None):
         if name is None:
             name = "hmap"
-        return self.hmaps[name][self.get_best_trial_params(True)]
+        return self.hmaps[name]
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
@@ -606,13 +610,11 @@ class BenchCfg(BenchRunCfg):
         return htmap + tap_htmap
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
-        return hv.NdLayout(self.hmaps[hmap_name], kdims=self.hmap_kdims).opts(
+        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
     def to_holomap(self, name: str = None) -> hv.HoloMap:
-        if name is None:
-            name = "hmap"
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
 
     def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
@@ -624,8 +626,6 @@ class BenchCfg(BenchRunCfg):
         return col
 
     def get_nearest_holomap(self, name: str = None, **kwargs):
-        if name is None:
-            name = "hmap"
         canonical_inp = hmap_canonical_input(
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
@@ -645,11 +645,9 @@ class BenchCfg(BenchRunCfg):
     def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
 
-        if name is None:
-            name = "hmap"
 
         def cb(**kwargs):
-            return self.hmaps[name][hmap_canonical_input(kwargs)].opts(
+            return self.get_hmap(name)[hmap_canonical_input(kwargs)].opts(
                 framewise=True, shared_axes=False
             )
 
