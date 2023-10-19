@@ -76,7 +76,7 @@ class Heatmap:
                     pl_in.bench_cfg.iv_repeat,
                     pl_in.bench_cfg.input_vars[0],
                     pl_in.rv,
-                    PlotTypes.heatmap_2D,
+                    PlotTypes.heatmap_ND,
                 ),
                 self.imshow_wrapper(
                     mean,
@@ -88,7 +88,7 @@ class Heatmap:
             ]
         return None
 
-    def heatmap_2D(self, pl_in: PlotInput) -> Optional[pn.panel]:
+    def heatmap_ND(self, pl_in: PlotInput) -> Optional[pn.panel]:
         """use the imshow plotting method to display 2D data
 
         Args:
@@ -97,48 +97,7 @@ class Heatmap:
         Returns:
             pn.panel: A panel with a image representation of the data
         """
-        if len(pl_in.bench_cfg.input_vars) == 2:
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
-            mean = da.mean("repeat")
-
-            x = pl_in.bench_cfg.input_vars[0]
-            y = pl_in.bench_cfg.input_vars[1]
-            z = pl_in.rv
-
-            title = f"{z.name} vs ({x.name} vs {y.name})"
-            color_label = f"{z.name} [{z.units}]"
-
-            return pn.panel(
-                mean.hvplot.heatmap(
-                    x=x.name,
-                    y=y.name,
-                    C=z.name,
-                    title=title,
-                    label=pl_in.rv.name,
-                    colorbar=True,
-                    clabel=color_label,
-                    cmap="viridis",
-                ),
-                name=PlotTypes.heatmap_2D,
-            )
-        return None
-
-    def heatmap_ND(self, pl_in: PlotInput) -> Optional[pn.panel]:
-        """use the imshow plotting method to display ND data
-
-        Args:
-            pl_in (PlotInput): The data to plot
-
-        Returns:
-            pn.panel: A panel with a image representation of the data
-        """
-
-        if PlotFilter(
-            float_range=VarRange(3, None),
-            cat_range=VarRange(0, None),
-            vector_len=VarRange(1, 1),
-            result_vars=VarRange(1, 1),
-        ).matches(pl_in.plt_cnt_cfg):
+        if len(pl_in.bench_cfg.input_vars) >= 2:
             rv = pl_in.rv
             res = pl_in.bench_cfg
 
