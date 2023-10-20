@@ -11,7 +11,7 @@ class TestBenchRunner(unittest.TestCase):
         bench_runner = bch.BenchRunner("bench_runner_test")
         self.assertEqual(bench_runner.run_cfg.use_sample_cache, True)
         self.assertEqual(bench_runner.run_cfg.only_hash_tag, True)
-        self.assertEqual(bench_runner.run_cfg.level, 1)
+        self.assertEqual(bench_runner.run_cfg.level, 2)
         self.assertEqual(bench_runner.publisher, None)
         self.assertEqual(bench_runner.bench_fns, [])
 
@@ -44,14 +44,14 @@ class TestBenchRunner(unittest.TestCase):
         run_tag = str(datetime.now())
 
         bench_runner = bch.BenchRunner(
-            "bench_runner_test", run_cfg=bch.BenchRunCfg(run_tag=run_tag)
+            "bench_runner_test_cache", run_cfg=bch.BenchRunCfg(run_tag=run_tag)
         )
 
         bench_class = SimpleBenchClass()
         # bench = bch.Bench("test_bench", bench_class, run_cfg=run_cfg, report=report            )
 
         def run_bench_class(run_cfg: bch.BenchRunCfg, report: bch.BenchReport) -> bch.BenchCfg:
-            bench = bch.Bench("test_bench", bench_class, run_cfg=run_cfg, report=report)
+            bench = bch.Bench("test_bench1_cache", bench_class, run_cfg=run_cfg, report=report)
             bench.plot_sweep("bench_1")
             return bench
 
