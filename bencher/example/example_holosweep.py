@@ -94,8 +94,6 @@ def example_holosweep(
 
 
 if __name__ == "__main__":
-    bench_run = bch.BenchRunner(
-        "bench_runner_test", run_cfg=bch.BenchRunCfg(parallel=False, run_tag="12342341")
-    )
+    bench_run = bch.BenchRunner("bench_runner_test")
     bench_run.add_run(example_holosweep)
-    bench_run.run(level=4, show=True)
+    bench_run.run(level=3, show=True, use_cache=False)

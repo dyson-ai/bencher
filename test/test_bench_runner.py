@@ -38,6 +38,46 @@ class TestBenchRunner(unittest.TestCase):
 
         self.assertEqual(results[0].run_tag, "1")
 
+    def test_benchrunner_cache(self):
+        from datetime import datetime
+
+        run_tag = str(datetime.now())
+
+        bench_runner = bch.BenchRunner(
+            "bench_runner_test", run_cfg=bch.BenchRunCfg(run_tag=run_tag)
+        )
+
+        bench_class = SimpleBenchClass()
+        # bench = bch.Bench("test_bench", bench_class, run_cfg=run_cfg, report=report            )
+
+        def run_bench_class(run_cfg: bch.BenchRunCfg, report: bch.BenchReport) -> bch.BenchCfg:
+            bench = bch.Bench("test_bench", bench_class, run_cfg=run_cfg, report=report)
+            bench.plot_sweep("bench_1")
+            return bench
+
+        bench_runner.add_run(run_bench_class)
+
+        # run with unique tag and with cache, should not hit cache because unique tag
+        results = bench_runner.run()
+        self.assertEqual(results[0].sample_cache.worker_wrapper_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_fn_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_cache_call_count, 0)
+        self.assertEqual(results[0].run_cfg.run_tag, run_tag)
+
+        # run again with the same tag, should hit cache because it was already run
+        results = bench_runner.run()
+        self.assertEqual(results[0].sample_cache.worker_wrapper_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_fn_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_cache_call_count, 0)
+        self.assertEqual(results[0].run_cfg.run_tag, run_tag)
+
+        # run with the same tag but set use cache to false, should not hit cache because even tho the tag is the same, use_cache=false
+        results = bench_runner.run(use_cache=False)
+        self.assertEqual(results[0].sample_cache.worker_wrapper_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_fn_call_count, 2)
+        self.assertEqual(results[0].sample_cache.worker_cache_call_count, 0)
+        self.assertEqual(results[0].run_cfg.run_tag, run_tag)
+
     def test_benchrunner_benchable_class_run_constructor(self):
         bench_runner = bch.BenchRunner("bench_runner_test", run_cfg=bch.BenchRunCfg(run_tag="1"))
         bench_runner.add_bench(SimpleBenchClass())
@@ -64,6 +104,16 @@ class TestBenchRunner(unittest.TestCase):
             "float", SimpleBenchClassFloat(), run_cfg=bch.BenchRunCfg(level=2, repeats=5)
         ).plot_sweep("float")
         self.assertEqual(res.result_samples(), 10)
+
+    # def test_benchrunner_cache(self):
+    #     res = bch.Bench(
+    #         "float", SimpleBenchClassFloat(), run_cfg=bch.BenchRunCfg(level=2, repeats=1)
+    #     ).plot_sweep("float")
+
+    #     res = bch.Bench(
+    #         "float", SimpleBenchClassFloat(), run_cfg=bch.BenchRunCfg(level=2, repeats=5)
+    #     ).plot_sweep("float")
+    #     self.assertEqual(res.result_samples(), 10)
 
     # # Tests that bch.BenchRunner can run Benchable functions with default configuration (fixed)
     # def test_benchrunner_run_default_configuration_fixed(self):

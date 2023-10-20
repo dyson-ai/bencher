@@ -30,10 +30,12 @@ class BenchRunner:
         self.servers = []
 
     @staticmethod
-    def setup_run_cfg(run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 1) -> BenchRunCfg:
+    def setup_run_cfg(
+        run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 2, use_cache=True
+    ) -> BenchRunCfg:
         run_cfg_out = deepcopy(run_cfg)
-        run_cfg_out.use_sample_cache = True
-        run_cfg_out.only_hash_tag = True
+        run_cfg_out.use_sample_cache = use_cache
+        run_cfg_out.only_hash_tag = use_cache
         run_cfg_out.level = level
         return run_cfg_out
 
@@ -69,11 +71,11 @@ class BenchRunner:
         show=False,
         save=False,
         grouped=True,
+        use_cache=True,
     ) -> List[BenchCfg]:
         if run_cfg is None:
-            run_run_cfg = deepcopy(self.run_cfg)
-        else:
-            run_run_cfg = BenchRunner.setup_run_cfg(run_cfg)
+            run_cfg = deepcopy(self.run_cfg)
+        run_cfg = BenchRunner.setup_run_cfg(run_cfg, use_cache=use_cache)
 
         if level is not None:
             min_level = level
@@ -84,7 +86,7 @@ class BenchRunner:
                     report_level = BenchReport(self.name)
 
                 for bch_fn in self.bench_fns:
-                    run_lvl = deepcopy(run_run_cfg)
+                    run_lvl = deepcopy(run_cfg)
                     run_lvl.level = lvl
                     run_lvl.repeats = r
                     logging.info(f"Running {bch_fn} at level: {lvl} with repeats:{r}")
