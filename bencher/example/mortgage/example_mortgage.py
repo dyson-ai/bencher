@@ -42,18 +42,21 @@ class Mortgage(bch.ParametrizedSweep):
         self.hmap = hv.Curve(
             mort_value, self.param.period.as_dim(), self.param.installment_balance.as_dim()
         )
+
+        
         return self.get_results_values_as_dict()
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("Mortgage", Mortgage, plot_lib=None)
+    bench = bch.Bench("Mortgage", Mortgage(), plot_lib=None)
 
     res = bench.plot_sweep(
         "Mortgage",
-        [Mortgage.param.interest],
-        [
+        input_vars=[Mortgage.param.interest],
+        result_vars=[
             Mortgage.param.installment_balance,
             Mortgage.param.installment_principal,
+            Mortgage.param.hmap
         ],
     )
 
@@ -63,8 +66,6 @@ if __name__ == "__main__":
 
     bench.report.append(res.to_holomap())
 
-    # bench.report.append(res.to_grid())
-
-    # bench.report.append_tab(Mortgage().to_dynamic_map(name="Mortgage Calculator"))
+    bench.report.append_tab(Mortgage().to_dynamic_map(name="Mortgage Calculator"))
 
     bench.report.show()

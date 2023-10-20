@@ -529,9 +529,14 @@ class BenchCfg(BenchRunCfg):
         return self.get_hmap(name)[self.get_best_trial_params(True)]
 
     def get_hmap(self, name: str = None):
-        if name is None:
-            name = "hmap"
-        return self.hmaps[name]
+        try:
+            if name is None:
+                name = self.result_hmaps[0].name
+                print(name)
+            if name in self.hmaps:
+                return self.hmaps[name]
+        except Exception as e:
+            raise RuntimeError("You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list")
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
@@ -609,6 +614,7 @@ class BenchCfg(BenchRunCfg):
         return htmap + tap_htmap
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
+        print(self.hmap_kdims)
         return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )

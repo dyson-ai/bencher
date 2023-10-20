@@ -87,4 +87,4 @@ if __name__ == "__main__":
 
     bench.report.append_tab(pf.to_dynamic_map(name="Mortgage Calculator"))
 
-    bench.show()
+    bench.report.show()

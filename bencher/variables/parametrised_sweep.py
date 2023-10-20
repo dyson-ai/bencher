@@ -144,7 +144,7 @@ class ParametrizedSweep(Parameterized):
         remove_dims: str | List[str] = None,
     ) -> hv.DynamicMap:
         if callback is None:
-            callback = self.call
+            callback = self.__call__
 
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
@@ -167,8 +167,8 @@ class ParametrizedSweep(Parameterized):
         #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
         # )
 
-    def call(self):
+    def __call__(self):
         pass
 
     def plot_hmap(self, **kwargs):
-        return self.call(**kwargs)["hmap"]
+        return self.__call__(**kwargs)["hmap"]

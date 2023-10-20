@@ -6,6 +6,7 @@ from param import Number
 from strenum import StrEnum
 import holoviews as hv
 from bencher.utils import hash_sha1
+# from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
 class OptDir(StrEnum):
@@ -83,14 +84,29 @@ class ResultHmap(param.Parameter):
         return hash_sha1(self)
 
 
-# class ResultCurve(ResultHmap):
-
-# def __init__(self, default=None, doc=None, label=None, **params):
-# super().__init__(default, doc, label,**params)
-
-
 def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
+
+class ResultCurve(ResultHmap):
+
+    __slots__ = ["kdim","vdim","data"]
+
+    def __init__(self,kdim ,vdim:ResultVar,doc=None, **params) -> None:
+        super().__init__(self,doc=doc,**params)
+        self.kdim = kdim
+        self.vdim= vdim
+        self.data =[]
+
+
+    def append(self,x,y) -> None:
+        self.data.append((x,y))
+
+    def to_curve(self,**kwargs) -> hv.Curve:
+        return hv.Curve(self.data, kdims=[self.kdim.as_dim()], vdims=[self.vdim.as_dim()], label=self.vdim.name, **kwargs)
+
+        
+
+
 
 
 # class ResultList(param.Parameter):
