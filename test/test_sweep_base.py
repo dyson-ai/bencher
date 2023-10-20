@@ -52,7 +52,7 @@ class TestSweepBase(unittest.TestCase):
         """Check that setting a const returns the right const"""
 
         explorer = AllSweepVars()
-        bch.Bench("tst_cnst", explorer.call)
+        bch.Bench("tst_cnst", explorer)
 
         consts = explorer.get_input_defaults()
         const_override = explorer.get_input_defaults([AllSweepVars.param.var_float.with_const(2)])

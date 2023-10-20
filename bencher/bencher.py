@@ -173,14 +173,15 @@ class Bench(BenchPlotServer):
             worker (Callable): The benchmark worker function
             worker_input_cfg (ParametrizedSweep, optional): The input type the worker expects. Defaults to None.
         """
+
         if isinstance(worker, ParametrizedSweep):
-            # if issubclass(worker,ParametrizedSweep):
-            # logging.warning("This should be a class instance, not a class")
             self.worker_class_instance = worker
             # self.worker_class_type = type(worker)
             self.worker = self.worker_class_instance.__call__
             logging.info("setting worker from bench class.__call__")
         else:
+            if isinstance(worker, type):
+                raise RuntimeError("This should be a class instance, not a class")
             if worker_input_cfg is None:
                 self.worker = worker
             else:
