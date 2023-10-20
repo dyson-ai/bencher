@@ -110,10 +110,7 @@ def example_holosweep(
 
 
 if __name__ == "__main__":
-    from datetime import datetime
+    bench_run = bch.BenchRunner("bench_runner_test", run_cfg=bch.BenchRunCfg())
 
-    bench_run = bch.BenchRunner(
-        "bench_runner_test", run_cfg=bch.BenchRunCfg(parallel=False, run_tag=str(datetime.now()))
-    )
     bench_run.add_run(example_holosweep)
     bench_run.run(level=4, show=True)
