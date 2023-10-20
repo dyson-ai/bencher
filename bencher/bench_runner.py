@@ -68,12 +68,12 @@ class BenchRunner:
         run_cfg: BenchRunCfg = None,
         publish: bool = False,
         debug: bool = False,
-        show:bool=False,
-        save:bool=False,
-        grouped:bool=True,
-        use_cache:bool=True,
-    ) -> List[BenchCfg]:
-        """This function controls how a benchmark or a set of benchmarks are run. If you are only running a single benchmark it can be simpler to just run it directly, but if you are running several benchmarks together and want them to be sampled at different levels of fidelity or published together in a single report this function enables that workflow.  If you have an expensive function, it can be useful to view low fidelity results as they are computed but also continue to compute higher fidelity results while reusing previously computed values. The parameters min_level and max_level let you specify how to progressivly increase the sampling resolution of the benchmark sweep. By default use_cache=True so that previous values are reused. 
+        show: bool = False,
+        save: bool = False,
+        grouped: bool = True,
+        use_cache: bool = True,
+    ) -> List[Bench]:
+        """This function controls how a benchmark or a set of benchmarks are run. If you are only running a single benchmark it can be simpler to just run it directly, but if you are running several benchmarks together and want them to be sampled at different levels of fidelity or published together in a single report this function enables that workflow.  If you have an expensive function, it can be useful to view low fidelity results as they are computed but also continue to compute higher fidelity results while reusing previously computed values. The parameters min_level and max_level let you specify how to progressivly increase the sampling resolution of the benchmark sweep. By default use_cache=True so that previous values are reused.
 
         Args:
             min_level (int, optional): The minimum level to start sampling at. Defaults to 2.
@@ -89,7 +89,7 @@ class BenchRunner:
             use_cache (bool, optional): Use the sample cache to reused previous results. Defaults to True.
 
         Returns:
-            List[BenchCfg]: _description_
+            List[BenchCfg]: A list of bencher instances
         """
         if run_cfg is None:
             run_cfg = deepcopy(self.run_cfg)
