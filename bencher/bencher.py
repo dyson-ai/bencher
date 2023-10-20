@@ -180,7 +180,7 @@ class Bench(BenchPlotServer):
             self.worker = self.worker_class_instance.__call__
             logging.info("setting worker from bench class.__call__")
         else:
-            if issubclass(worker, ParametrizedSweep):
+            if isinstance(worker, type):
                 raise RuntimeError("This should be a class instance, not a class")
             if worker_input_cfg is None:
                 self.worker = worker
