@@ -24,10 +24,10 @@ class Investment(bch.ParametrizedSweep):
             self.portfolio_value += new_interest * (1 + self.tax_rate)
             self.portfolio_value *= 1 - (self.inflation / 100.0)
             values.append((i, self.portfolio_value))
-        self.hmap = hv.Curve(values, self.param.period.as_dim(), self.param.portfolio_value.as_dim())
-        return self.get_results_values_as_dict(
-            
+        self.hmap = hv.Curve(
+            values, self.param.period.as_dim(), self.param.portfolio_value.as_dim()
         )
+        return self.get_results_values_as_dict()
 
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
         "Investment Sweep",
         description="This calculator lets you calculate the value of your investment over time",
         input_vars=[inv.param.monthly_contribution, inv.param.interest, inv.param.inflation],
-        result_vars=[inv.param.portfolio_value,inv.param.hmap],
+        result_vars=[inv.param.portfolio_value, inv.param.hmap],
     )
 
     bench.report.append(res.to_grid())

@@ -43,7 +43,6 @@ class Mortgage(bch.ParametrizedSweep):
             mort_value, self.param.period.as_dim(), self.param.installment_balance.as_dim()
         )
 
-        
         return self.get_results_values_as_dict()
 
 
@@ -56,7 +55,7 @@ if __name__ == "__main__":
         result_vars=[
             Mortgage.param.installment_balance,
             Mortgage.param.installment_principal,
-            Mortgage.param.hmap
+            Mortgage.param.hmap,
         ],
     )
 

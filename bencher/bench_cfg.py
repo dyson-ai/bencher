@@ -536,7 +536,9 @@ class BenchCfg(BenchRunCfg):
             if name in self.hmaps:
                 return self.hmaps[name]
         except Exception as e:
-            raise RuntimeError("You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list")
+            raise RuntimeError(
+                "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
+            )
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
