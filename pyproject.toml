@@ -31,7 +31,7 @@ test = [
   "black>=23,<=23.9.1",
   "check-manifest>=0.49,<=0.49",
   "pre-commit>=3.3.3,<=3.5.0",
-  "pylint>=2.16,<=3.0.1",
+  "pylint>=2.16,<=3.0.2",
   "pytest-cov>=4.1,<=4.1",
   "pytest-mock>=3.10,<=3.11.1",
   "pytest-runner>=6.0,<=6.0",
