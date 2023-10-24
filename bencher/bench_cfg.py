@@ -247,7 +247,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     # )
 
     executor = param.Selector(
-        list(Executors),
+        objects=list(Executors),
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
