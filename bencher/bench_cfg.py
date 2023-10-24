@@ -560,8 +560,8 @@ class BenchCfg(BenchRunCfg):
 
         result_vars_str = [r.name for r in self.result_vars]
         kdims = [i.name for i in self.input_vars]
-        kdims.append("repeat") #repeat is always used
-        hvds = hv.Dataset(ds,kdims=kdims,  vdims=result_vars_str)
+        kdims.append("repeat")  # repeat is always used
+        hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
         if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
