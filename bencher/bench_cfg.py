@@ -684,7 +684,7 @@ class BenchCfg(BenchRunCfg):
             pn.pane.Markdown: _description_
         """
         return pn.pane.Markdown(
-            describe_benchmark(self, self.summarise_constant_inputs), label=self.bench_name
+            describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
     def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:
