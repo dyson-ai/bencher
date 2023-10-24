@@ -100,12 +100,10 @@ class TestBencher(unittest.TestCase):
             input_vars=deepcopy(input_vars),
             result_vars=deepcopy(result_vars),
             const_vars=deepcopy(const_vars),
-            run_cfg=BenchRunCfg(
-                repeats=repeats,
-                over_time=over_time,
-                clear_history=True,  # should not affect hash
-                auto_plot=False,
-            ),
+            repeats=repeats,
+            over_time=over_time,
+            clear_history=True,  # should not affect hash
+            auto_plot=False,
         )
 
         cfg2 = BenchCfg(
@@ -113,12 +111,10 @@ class TestBencher(unittest.TestCase):
             input_vars=deepcopy(input_vars),
             result_vars=deepcopy(result_vars),
             const_vars=deepcopy(const_vars),
-            run_cfg=BenchRunCfg(
-                repeats=repeats,
-                over_time=over_time,
-                clear_history=False,  # should not affect hash
-                auto_plot=False,
-            ),
+            repeats=repeats,
+            over_time=over_time,
+            clear_history=False,  # should not affect hash
+            auto_plot=False,
         )
 
         self.assertEqual(
@@ -151,7 +147,6 @@ class TestBencher(unittest.TestCase):
                     over_time=True,
                     clear_history=i == 0,
                     print_pandas=False,
-                    serve_panel=False,
                 ),
                 time_src=datetime(1970, 1, i + 1),  # repeatable time
             )
@@ -179,7 +174,6 @@ class TestBencher(unittest.TestCase):
                 repeats=repeats,
                 print_pandas=False,
                 over_time=False,
-                serve_panel=False,
             ),
         )
 
@@ -205,7 +199,6 @@ class TestBencher(unittest.TestCase):
             run_cfg=BenchRunCfg(
                 repeats=repeats,
                 print_pandas=False,
-                serve_panel=False,
                 use_optuna=True,
                 debug=True,
             ),
