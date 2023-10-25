@@ -113,4 +113,4 @@ def example_cache_context() -> bch.Bench:
 
 
 if __name__ == "__main__":
-    example_cache_context().show()
+    example_cache_context()report.show()

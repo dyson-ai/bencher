@@ -38,8 +38,8 @@ hvds = hv.Dataset(df_test)
 
 pt = hv.Scatter(hvds, kdims=["x"], vdims=["y"], hover_cols=["img"], tools=[hover])
 
-pn.Row(pt).show()
+pn.Row(pt)report.show()
 
 # pt =df_test.hvplot.scatter(x="x", y="y", hover_cols=["img"], tools=[hover])
 
-# pt.show()
+# ptreport.show()

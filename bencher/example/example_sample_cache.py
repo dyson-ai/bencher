@@ -80,6 +80,6 @@ if __name__ == "__main__":
 
     ex_run_cfg.repeats = 2
 
-    example_sample_cache(ex_run_cfg, trigger_crash=False).show()
+    example_sample_cache(ex_run_cfg, trigger_crash=False)report.show()
 
     # see the test_sample_cache for a more detailed explanation of the mechanisms of the cache

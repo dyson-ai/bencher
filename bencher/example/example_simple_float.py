@@ -41,4 +41,4 @@ if __name__ == "__main__":
     ex_run_cfg.repeats = 5
     ex_run_cfg.over_time = True
 
-    example_1D_float(ex_run_cfg).show()
+    example_1D_float(ex_run_cfg)report.show()
