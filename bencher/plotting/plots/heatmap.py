@@ -131,24 +131,9 @@ class Heatmap:
             pn.panel: A panel with a image representation of the data
         """
         ivl = len(pl_in.bench_cfg.input_vars)
-        if ivl >= 2 and ivl <4:
-            rv = pl_in.rv
-            res = pl_in.bench_cfg
-
-            z = pl_in.rv
-            title = f"{z.name} vs ({pl_in.bench_cfg.input_vars[0].name}"
-
-            for iv in pl_in.bench_cfg.input_vars[1:]:
-                title += f" vs {iv.name}"
-            title += ")"
-
-            color_label = f"{z.name} [{z.units}]"
-
-            # kdims = [i.as_dim() for i in pl_in.bench_cfg.input_vars[:2]]
-            print(res.to_hv_dataset())
-
+        if ivl >= 2 and ivl <4:          
             return pn.panel(
-                res.to_heatmap(vdims=[rv.name]).opts(title=title, clabel=color_label),
+                pl_in.bench_cfg.to_heatmap(vdims=[pl_in.rv.name]),
                 name=PlotTypes.heatmap_ND,
             )
         return None

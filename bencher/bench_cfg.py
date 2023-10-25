@@ -608,7 +608,17 @@ class BenchCfg(BenchRunCfg):
         return pt
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        return self.to(hv.HeatMap, reduce, **kwargs)
+
+        z = self.result_vars[0]
+        title = f"{z.name} vs ({self.input_vars[0].name}"
+
+        for iv in self.input_vars[1:]:
+            title += f" vs {iv.name}"
+        title += ")"
+
+        color_label = f"{z.name} [{z.units}]"
+
+        return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
 
     def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
         htmap = self.to_heatmap(reduce).opts(tools=["hover", "tap"], width=width, height=height)
