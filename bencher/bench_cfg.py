@@ -603,9 +603,7 @@ class BenchCfg(BenchRunCfg):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-
         z = self.result_vars[0]
         title = f"{z.name} vs ({self.input_vars[0].name}"
 
