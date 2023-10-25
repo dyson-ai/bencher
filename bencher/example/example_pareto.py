@@ -50,4 +50,4 @@ if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.repeats = 2
     run_cfg_ex.level = 2
-    example_pareto(run_cfg_ex).show()
+    example_pareto(run_cfg_ex).report.show()

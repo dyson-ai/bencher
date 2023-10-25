@@ -105,4 +105,4 @@ if __name__ == "__main__":
     bench_run = bch.BenchRunner("bench_runner_test")
     bench_run.add_run(example_floats2D)
     bench_run.run(level=4, show=True)
-    # example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).show()
+    # example_floats2D(bch.BenchRunCfg(repeats=1, run_tag="1")).report.show()

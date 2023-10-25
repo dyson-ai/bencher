@@ -60,4 +60,4 @@
 #     )
 
 #     # launch web server and view
-#     bench.show()
+#     bench.report.show()
