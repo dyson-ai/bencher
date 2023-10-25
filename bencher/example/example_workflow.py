@@ -186,4 +186,4 @@ if __name__ == "__main__":
     bench_ex = example_floats2D_workflow(ex_run_cfg)
     example_floats3D_workflow(ex_run_cfg, bench_ex)
 
-    bench_exreport.show()
+    bench_ex.report.show()

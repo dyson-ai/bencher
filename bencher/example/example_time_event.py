@@ -59,4 +59,4 @@ def run_example_time_event(ex_run_cfg):
 
 
 if __name__ == "__main__":
-    run_example_time_eventreport.show()
+    run_example_time_event(bch.BenchRunCfg()).report.show()
