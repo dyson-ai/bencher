@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import copy
 import logging
+from collections import defaultdict
+
 from typing import Any, Callable, List, Tuple
 
 import param
@@ -245,7 +247,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     # )
 
     executor = param.Selector(
-        list(Executors),
+        objects=list(Executors),
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
@@ -320,6 +322,8 @@ class BenchCfg(BenchRunCfg):
         doc="Variables to keep constant but are different from the default value",
     )
 
+    result_hmaps = param.List(default=None, doc="a list of holomap results")
+
     meta_vars = param.List(
         default=None,
         doc="Meta variables such as recording time and repeat id",
@@ -382,7 +386,8 @@ class BenchCfg(BenchRunCfg):
         self.studies = []
         self.ds = xr.Dataset()
         self.plot_lib = None
-        self.hmap = {}
+        # self.hmap = {}
+        self.hmaps = defaultdict(dict)
         self.hmap_kdims = None
         self.iv_repeat = None
 
@@ -520,8 +525,21 @@ class BenchCfg(BenchRunCfg):
             return hmap_canonical_input(out)
         return out
 
-    def get_best_holomap(self):
-        return self.hmap[self.get_best_trial_params(True)]
+    def get_best_holomap(self, name: str = None):
+        return self.get_hmap(name)[self.get_best_trial_params(True)]
+
+    def get_hmap(self, name: str = None):
+        try:
+            if name is None:
+                name = self.result_hmaps[0].name
+                print(name)
+            if name in self.hmaps:
+                return self.hmaps[name]
+        except Exception as e:
+            raise RuntimeError(
+                "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
+            ) from e
+        return None
 
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
@@ -545,7 +563,9 @@ class BenchCfg(BenchRunCfg):
             reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
 
         result_vars_str = [r.name for r in self.result_vars]
-        hvds = hv.Dataset(ds, vdims=result_vars_str)
+        kdims = [i.name for i in self.input_vars]
+        kdims.append("repeat")  # repeat is always used
+        hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
         if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
@@ -602,20 +622,28 @@ class BenchCfg(BenchRunCfg):
         tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
         return htmap + tap_htmap
 
-    def to_nd_layout(self) -> hv.NdLayout:
-        return hv.NdLayout(self.hmap, kdims=self.hmap_kdims).opts(
+    def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
+        print(self.hmap_kdims)
+        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
-    def to_holomap(self) -> hv.HoloMap:
-        # return hv.HoloMap(self.hmap, self.hmap_kdims)
-        return hv.HoloMap(self.to_nd_layout()).opts(shared_axes=False)
+    def to_holomap(self, name: str = None) -> hv.HoloMap:
+        return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
 
-    def get_nearest_holomap(self, **kwargs):
+    def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
+        if hmap_names is None:
+            hmap_names = [i.name for i in self.result_hmaps]
+        col = pn.Column()
+        for name in hmap_names:
+            self.to_holomap(name)
+        return col
+
+    def get_nearest_holomap(self, name: str = None, **kwargs):
         canonical_inp = hmap_canonical_input(
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
-        return self.hmap[canonical_inp].opts(framewise=True)
+        return self.get_hmap(name)[canonical_inp].opts(framewise=True)
 
     def to_volume(self, **opts) -> pn.panel:
         from bencher.plt_cfg import BenchPlotter
@@ -628,11 +656,13 @@ class BenchCfg(BenchRunCfg):
             PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
         )
 
-    def to_dynamic_map(self) -> hv.DynamicMap:
+    def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
 
         def cb(**kwargs):
-            return self.hmap[hmap_canonical_input(kwargs)].opts(framewise=True, shared_axes=False)
+            return self.get_hmap(name)[hmap_canonical_input(kwargs)].opts(
+                framewise=True, shared_axes=False
+            )
 
         kdims = []
         for i in self.input_vars + [self.iv_repeat]:
@@ -660,7 +690,7 @@ class BenchCfg(BenchRunCfg):
             pn.pane.Markdown: _description_
         """
         return pn.pane.Markdown(
-            describe_benchmark(self, self.summarise_constant_inputs), label=self.bench_name
+            describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
     def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:

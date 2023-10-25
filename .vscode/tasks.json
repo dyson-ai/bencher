@@ -111,7 +111,7 @@
 			"command": "flit publish"
 		},
 		{
-			"label": "sa: Set Active File",
+			"label": "set <cfg> from active file; sa",
 			"type": "shell",
 			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
 			"problemMatcher": [],
@@ -121,7 +121,7 @@
 			}
 		},
 		{
-			"label": "ra: Run Active File",
+			"label": "run <cfg>",
 			"type": "shell",
 			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
 			"problemMatcher": [],
@@ -131,7 +131,7 @@
 			}
 		},
 		{
-			"label": "ra: Run Active File with scoop",
+			"label": "run <cfg> with scoop",
 			"type": "shell",
 			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 -m scoop $RUNFILE",
 			"problemMatcher": [],
