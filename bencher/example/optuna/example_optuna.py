@@ -75,4 +75,4 @@ def optuna_rastrigin(
 
 
 if __name__ == "__main__":
-    optuna_rastrigin()report.show()
+    optuna_rastrigin().report.show()
