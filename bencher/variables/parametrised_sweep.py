@@ -149,7 +149,6 @@ class ParametrizedSweep(Parameterized):
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
 
-        print(self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims))
         return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
