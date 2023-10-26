@@ -1,11 +1,11 @@
+from functools import partial
 from typing import List, Tuple, Any
-
-import param
 from param import Parameterized
 import holoviews as hv
+import panel as pn
+
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec, ResultHmap
-from functools import partial
 
 
 class ParametrizedSweep(Parameterized):
@@ -157,7 +157,6 @@ class ParametrizedSweep(Parameterized):
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
     def to_gui(self):
-        import panel as pn
 
         main = pn.Row(
             self.to_dynamic_map(),
@@ -171,10 +170,6 @@ class ParametrizedSweep(Parameterized):
                 kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims),
             )
         )
-        # return hv.HoloMap(self.to_dynamic_map(callback=callback, remove_dims=remove_dims))
-        # return hv.DynamicMap(
-        #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
-        # )
 
     def __call__(self):
         pass
