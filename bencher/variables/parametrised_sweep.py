@@ -1,11 +1,11 @@
+from functools import partial
 from typing import List, Tuple, Any
-
-import param
-from param import Parameterized
+from param import Parameter, Parameterized
 import holoviews as hv
+import panel as pn
+
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec, ResultHmap
-from functools import partial
 
 
 class ParametrizedSweep(Parameterized):
@@ -92,7 +92,7 @@ class ParametrizedSweep(Parameterized):
         return output
 
     @classmethod
-    def get_inputs_only(cls) -> List[param.Parameter]:
+    def get_inputs_only(cls) -> List[Parameter]:
         """Return a list of input parameters
 
         Returns:
@@ -105,7 +105,7 @@ class ParametrizedSweep(Parameterized):
         return item.name != p_name
 
     @classmethod
-    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
+    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[Parameter, Any]]:
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
@@ -115,7 +115,7 @@ class ParametrizedSweep(Parameterized):
         return override_defaults + [(i, i.default) for i in inp]
 
     @classmethod
-    def get_results_only(cls) -> List[param.Parameter]:
+    def get_results_only(cls) -> List[Parameter]:
         """Return a list of input parameters
 
         Returns:
@@ -149,7 +149,6 @@ class ParametrizedSweep(Parameterized):
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
 
-        print(self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims))
         return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
@@ -157,8 +156,6 @@ class ParametrizedSweep(Parameterized):
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
     def to_gui(self):
-        import panel as pn
-
         main = pn.Row(
             self.to_dynamic_map(),
         )
@@ -171,10 +168,6 @@ class ParametrizedSweep(Parameterized):
                 kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims),
             )
         )
-        # return hv.HoloMap(self.to_dynamic_map(callback=callback, remove_dims=remove_dims))
-        # return hv.DynamicMap(
-        #     kdims=self.get_inputs_as_dims(compute_values=True, remove_dims=remove_dims)
-        # )
 
     def __call__(self):
         pass
