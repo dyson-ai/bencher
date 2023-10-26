@@ -111,6 +111,7 @@ class SweepBase(param.Parameter):
 
         else:
             params["values"] = self.values(debug)
+            params["default"] = self.default
 
         if hasattr(self, "step"):
             params["step"] = getattr(self, "step")

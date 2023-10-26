@@ -149,11 +149,20 @@ class ParametrizedSweep(Parameterized):
         def callback_wrapper(**kwargs):
             return callback(**kwargs)["hmap"]
 
+        print(self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims))
         return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
             name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
+
+    def to_gui(self):
+        import panel as pn
+
+        main = pn.Row(
+            self.to_dynamic_map(),
+        )
+        main.show()
 
     def to_holomap(self, callback, remove_dims: str | List[str] = None) -> hv.DynamicMap:
         return hv.HoloMap(
