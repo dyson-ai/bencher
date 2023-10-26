@@ -1,6 +1,6 @@
 from functools import partial
 from typing import List, Tuple, Any
-from param import Parameterized
+from param import Parameter, Parameterized
 import holoviews as hv
 import panel as pn
 
@@ -92,7 +92,7 @@ class ParametrizedSweep(Parameterized):
         return output
 
     @classmethod
-    def get_inputs_only(cls) -> List[param.Parameter]:
+    def get_inputs_only(cls) -> List[Parameter]:
         """Return a list of input parameters
 
         Returns:
@@ -105,7 +105,7 @@ class ParametrizedSweep(Parameterized):
         return item.name != p_name
 
     @classmethod
-    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[param.Parameter, Any]]:
+    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[Parameter, Any]]:
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []
@@ -115,7 +115,7 @@ class ParametrizedSweep(Parameterized):
         return override_defaults + [(i, i.default) for i in inp]
 
     @classmethod
-    def get_results_only(cls) -> List[param.Parameter]:
+    def get_results_only(cls) -> List[Parameter]:
         """Return a list of input parameters
 
         Returns:
@@ -156,7 +156,6 @@ class ParametrizedSweep(Parameterized):
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
     def to_gui(self):
-
         main = pn.Row(
             self.to_dynamic_map(),
         )
