@@ -73,17 +73,6 @@ def example_holosweep(
 ) -> bch.Bench:
     wv = PlotFunctions()
 
-    import panel as pn
-
-    plot_fn = hv.DynamicMap(wv.plot_holo, kdims=wv.get_inputs_as_dims())
-
-    main = pn.Row(
-        wv.to_dynamic_map(),
-        plot_fn,
-        name="StickMan Interactive",
-    )
-    main.show()
-
     run_cfg.use_optuna = True
 
     bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
