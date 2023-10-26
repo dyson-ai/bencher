@@ -9,10 +9,6 @@ class Investment(bch.ParametrizedSweep):
     tax_rate = bch.IntSweep(default=0, bounds=(0, 40), samples=2)
     period = bch.IntSweep(default=12, bounds=[1, 12], units="month")
     starting_value = bch.FloatSweep(default=1000, bounds=(0, 2000), samples=3)
-    # bv = bch.BoolSweep(default=True)
-
-    bs = bch.StringSweep(["a","b"])
-
     portfolio_value = bch.ResultVar(default=0, units="$")
 
     hmap = bch.ResultHmap()
@@ -35,9 +31,6 @@ class Investment(bch.ParametrizedSweep):
 
 
 if __name__ == "__main__":
-
-    Investment().to_gui()
-
     bench = bch.Bench("Investment", Investment(), plot_lib=None)
 
     res = bench.plot_sweep(
