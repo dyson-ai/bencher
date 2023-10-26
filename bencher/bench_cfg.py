@@ -675,8 +675,6 @@ class BenchCfg(BenchRunCfg):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
-    
-
     def to_grid(self, inputs=None):
         if inputs is None:
             inputs = self.inputs_as_str()

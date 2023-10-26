@@ -154,12 +154,12 @@ pf = PersonalFinances()
 bench = bch.Bench("Mortgage", mort_sim.calc_loan)
 
 
-pn.Row(inv.to_dynamic_map(inv.call)).show()
+pn.Row(inv.to_dynamic_map()).show()
 
 
 bench.plot_sweep("lol")
 
-bench.worker = inv.call
+bench.worker = inv.__call__
 
 res = bench.plot_sweep(
     title="Investment Calculator",
@@ -177,7 +177,7 @@ res = bench.plot_sweep(
 
 bench.report.append(res.to_grid())
 # grid(["inflation", "monthly_contribution"]))
-bench.report.append_tab(inv.to_dynamic_map(inv.call))
+bench.report.append_tab(inv.to_dynamic_map())
 
 # bench.report.append_tab(inv.to_holomap(inv.call).layout(kdims=["inflation"]))
 
