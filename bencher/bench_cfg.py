@@ -4,6 +4,8 @@ import argparse
 import copy
 import logging
 from collections import defaultdict
+from itertools import product
+
 
 from typing import Any, Callable, List, Tuple
 
@@ -312,7 +314,18 @@ class BenchCfg(BenchRunCfg):
         default=None,
         doc="A list of ParameterizedSweep variables to perform a parameter sweep over",
     )
+
+    input_tensor = param.List(
+        default=None,
+        doc="A list of ParameterizedSweep variables to perform a parameter sweep over",
+    )
+
     result_vars = param.List(
+        default=None,
+        doc="A list of ParameterizedSweep results collect and plot.",
+    )
+
+    result_tensor = param.List(
         default=None,
         doc="A list of ParameterizedSweep results collect and plot.",
     )
@@ -381,6 +394,11 @@ class BenchCfg(BenchRunCfg):
         doc="store the hash value of the config to avoid having to hash multiple times",
     )
 
+    sample_hash: str = param.String(
+        "",
+        doc="does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash",
+    )
+
     def __init__(self, **params):
         super().__init__(**params)
         self.studies = []
@@ -414,7 +432,9 @@ class BenchCfg(BenchRunCfg):
                 hash_sha1(self.tag),
             )
         )
+        # all_vars = self.input_vars + self.result_vars + self.input_tensor + self.result_tensor
         all_vars = self.input_vars + self.result_vars
+
         for v in all_vars:
             hash_val = hash_sha1((hash_val, v.hash_persistent()))
 
@@ -811,3 +831,7 @@ class DimsCfg:
         logging.debug(f"dim_ranges {self.dim_ranges_str}")
         logging.debug(f"dim_ranges_index {self.dim_ranges_index}")
         logging.debug(f"coords: {self.coords}")
+
+    def function_input_tuple(self):
+        function_inputs = list(zip(product(*self.dim_ranges_index), product(*self.dim_ranges)))
+        return function_inputs
