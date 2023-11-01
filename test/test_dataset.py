@@ -1,7 +1,5 @@
 import unittest
 import bencher as bch
-from bencher.plotting.plot_filter import VarRange, PlotFilter
-from hypothesis import given, strategies as st
 
 
 class ExSweep(bch.ParametrizedSweep):
@@ -19,29 +17,14 @@ class ExSweep(bch.ParametrizedSweep):
 
 
 class TestDataset(unittest.TestCase):
-    def test_matches_zero(self) -> None:
+    def test_dataset_creation(self) -> None:
+        bench = bch.Bench("test_dataset", ExSweep(),run_cfg=bch.BenchRunCfg(level=2))
 
-        bench = bch.Bench("test_dataset", ExSweep())
-
-        bench_cfg = bench.setup_bench_cfg(
+        bench_cfg, _ = bench.setup_bench_cfg(
             "test_dataset", input_vars=[ExSweep.param.float1, ExSweep.param.float2]
         )
+        bench_cfg, _ = bench.setup_dataset(bench_cfg)
+        self.assertEqual(bench_cfg.ds,"")
+        self.assertTupleEqual( bench_cfg.ds["result"].shape ,(2,2,1))
 
-        bench_cfg = bench.setup_dataset(bench_cfg=bench_cfg)
-
-        # bench.plot_sweep()
-
-        # bench_cfg = bch.BenchCfg()
-        # bench_cfg.
-
-        bench_cfg, function_inputs, dims_name = bench.setup_dataset(bench_cfg)
-
-        print(function_inputs)
-        print(dims_name)
-
-    # def test_matches_upto(self) -> None:
-    #     var_range = VarRange(0, 1)
-    #     # self.assertFalse(zero_case.matches(-1))
-    #     self.assertTrue(var_range.matches(0))
-    #     self.assertTrue(var_range.matches(1))
-    #     self.assertFalse(var_range.matches(2))
+ 

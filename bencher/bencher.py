@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
-from itertools import product
-from typing import Callable, List
+from typing import Callable, List, Tuple
 from copy import deepcopy
 import numpy as np
 import param
@@ -148,7 +147,11 @@ class Bench(BenchPlotServer):
         self.worker_input_cfg = None
         self.worker_class_instance = None
         self.set_worker(worker, worker_input_cfg)
-        self.run_cfg = run_cfg
+        if run_cfg is None:
+            self.run_cfg = BenchRunCfg()
+        else:
+            self.run_cfg = run_cfg
+
         if report is None:
             self.report = BenchReport(self.bench_name)
         else:
@@ -226,7 +229,7 @@ class Bench(BenchPlotServer):
         tag: str = "",
         run_cfg: BenchRunCfg = None,
         plot_lib=None,
-    ) -> BenchCfg:
+    ) -> Tuple[BenchCfg, BenchRunCfg]:
         if self.worker_class_instance is not None:
             if input_vars is None:
                 logging.info(
@@ -332,7 +335,17 @@ class Bench(BenchPlotServer):
 
         bench_cfg.hash_value = bench_cfg_hash
         bench_cfg.sample_hash = bench_cfg_sample_hash
-        return bench_cfg
+
+        if time_src is None:
+            if run_cfg.time_event is not None:
+                time_src = run_cfg.time_event
+            else:
+                time_src = datetime.now()
+
+        bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
+        bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
+
+        return bench_cfg, run_cfg
 
     def plot_sweep(
         self,
@@ -373,7 +386,7 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-        bench_cfg = self.setup_bench_cfg(
+        bench_cfg, run_cfg = self.setup_bench_cfg(
             title=title,
             input_vars=input_vars,
             result_vars=result_vars,
@@ -414,11 +427,7 @@ class Bench(BenchPlotServer):
                         raise FileNotFoundError("Was not able to load the results to plot!")
 
         if calculate_results:
-            if run_cfg.time_event is not None:
-                time_src = run_cfg.time_event
-            bench_cfg = self.calculate_benchmark_results(
-                bench_cfg, time_src, bench_cfg.sample_hash, run_cfg
-            )
+            bench_cfg = self.calculate_benchmark_results(bench_cfg, bench_cfg.sample_hash, run_cfg)
 
             # use the hash of the inputs to look up historical values in the cache
             if run_cfg.over_time:
@@ -504,9 +513,7 @@ class Bench(BenchPlotServer):
             c[bench_cfg_hash] = ds
         return ds
 
-    def setup_dataset(
-        self, bench_cfg: BenchCfg, time_src: datetime | str = None
-    ) -> tuple[BenchCfg, List, List]:
+    def setup_dataset(self, bench_cfg: BenchCfg) -> Tuple[BenchCfg, DimsCfg]:
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
         Args:
@@ -517,26 +524,17 @@ class Bench(BenchPlotServer):
             _type_: _description_
         """
 
-        if time_src is None:
-            time_src = datetime.now()
-        bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
-
-        bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
-
         for i in bench_cfg.all_vars:
             logging.info(i.sampling_str(bench_cfg.debug))
 
         dims_cfg = DimsCfg(bench_cfg)
-        function_inputs = list(
-            zip(product(*dims_cfg.dim_ranges_index), product(*dims_cfg.dim_ranges))
-        )
+
         # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have a nd array for each result variable
         data_vars = {}
 
         for rv in bench_cfg.result_vars:
             if type(rv) == ResultVar:
-                result_data = np.empty(dims_cfg.dims_size)
-                result_data.fill(np.nan)
+                result_data = np.full(dims_cfg.dims_size, np.nan)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
@@ -546,7 +544,7 @@ class Bench(BenchPlotServer):
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_cfg.ds_dynamic = self.ds_dynamic
 
-        return bench_cfg, function_inputs, dims_cfg.dims_name
+        return bench_cfg, dims_cfg
 
     def define_const_inputs(self, const_vars) -> dict:
         constant_inputs = None
@@ -592,7 +590,7 @@ class Bench(BenchPlotServer):
         return extra_vars
 
     def calculate_benchmark_results(
-        self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
+        self, bench_cfg, bench_cfg_sample_hash, bench_run_cfg
     ) -> BenchCfg:
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
@@ -603,9 +601,11 @@ class Bench(BenchPlotServer):
         Returns:
             bench_cfg (BenchCfg): description of the benchmark parameters
         """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
+        bench_cfg, dims_cfg = self.setup_dataset(bench_cfg)
+        func_inputs = dims_cfg.function_input_tuple()
+
         constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
-        bench_cfg.hmap_kdims = sorted(dims_name)
+        bench_cfg.hmap_kdims = sorted(dims_cfg.dims_name)
 
         callcount = 1
 
@@ -616,7 +616,7 @@ class Bench(BenchPlotServer):
             job = WorkerJob(
                 function_input_vars,
                 idx_tuple,
-                dims_name,
+                dims_cfg.dims_name,
                 constant_inputs,
                 bench_cfg_sample_hash,
                 bench_cfg.tag,

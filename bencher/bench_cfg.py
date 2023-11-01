@@ -4,6 +4,8 @@ import argparse
 import copy
 import logging
 from collections import defaultdict
+from itertools import product
+
 
 from typing import Any, Callable, List, Tuple
 
@@ -829,3 +831,7 @@ class DimsCfg:
         logging.debug(f"dim_ranges {self.dim_ranges_str}")
         logging.debug(f"dim_ranges_index {self.dim_ranges_index}")
         logging.debug(f"coords: {self.coords}")
+
+    def function_input_tuple(self):
+        function_inputs = list(zip(product(*self.dim_ranges_index), product(*self.dim_ranges)))
+        return function_inputs
