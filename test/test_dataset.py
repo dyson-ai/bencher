@@ -18,13 +18,11 @@ class ExSweep(bch.ParametrizedSweep):
 
 class TestDataset(unittest.TestCase):
     def test_dataset_creation(self) -> None:
-        bench = bch.Bench("test_dataset", ExSweep(),run_cfg=bch.BenchRunCfg(level=2))
+        bench = bch.Bench("test_dataset", ExSweep(), run_cfg=bch.BenchRunCfg(level=2))
 
         bench_cfg, _ = bench.setup_bench_cfg(
             "test_dataset", input_vars=[ExSweep.param.float1, ExSweep.param.float2]
         )
         bench_cfg, _ = bench.setup_dataset(bench_cfg)
-        self.assertEqual(bench_cfg.ds,"")
-        self.assertTupleEqual( bench_cfg.ds["result"].shape ,(2,2,1))
-
- 
+        self.assertEqual(bench_cfg.ds, "")
+        self.assertTupleEqual(bench_cfg.ds["result"].shape, (2, 2, 1))
