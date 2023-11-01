@@ -543,6 +543,7 @@ class Bench(BenchPlotServer):
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_cfg.ds_dynamic = self.ds_dynamic
+        bench_cfg.hmap_kdims = sorted(dims_cfg.dims_name)
 
         return bench_cfg, dims_cfg
 
@@ -589,6 +590,10 @@ class Bench(BenchPlotServer):
             bench_cfg.iv_time = [iv_over_time]
         return extra_vars
 
+
+    def setup_jobs(self):
+        pass
+
     def calculate_benchmark_results(
         self, bench_cfg, bench_cfg_sample_hash, bench_run_cfg
     ) -> BenchCfg:
@@ -604,9 +609,10 @@ class Bench(BenchPlotServer):
         bench_cfg, dims_cfg = self.setup_dataset(bench_cfg)
         func_inputs = dims_cfg.function_input_tuple()
 
-        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
-        bench_cfg.hmap_kdims = sorted(dims_cfg.dims_name)
+        print(dims_cfg.function_input_dict())
+        print(func_inputs)
 
+        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
         callcount = 1
 
         results_list = []

@@ -26,6 +26,7 @@ from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
+from sortedcontainers import SortedDict
 
 
 class ReduceType(Enum):
@@ -827,11 +828,23 @@ class DimsCfg:
         self.dim_ranges_str = [f"{s}\n" for s in self.dim_ranges]
         self.coords = dict(zip(self.dims_name, self.dim_ranges))
 
-        logging.debug(f"dims_name: {self.dims_name}")
-        logging.debug(f"dim_ranges {self.dim_ranges_str}")
-        logging.debug(f"dim_ranges_index {self.dim_ranges_index}")
-        logging.debug(f"coords: {self.coords}")
+        logging.info(f"dims_name: {self.dims_name}")
+        logging.info(f"dim_ranges {self.dim_ranges_str}")
+        logging.info(f"dim_ranges_index {self.dim_ranges_index}")
+        logging.info(f"coords: {self.coords}")
 
     def function_input_tuple(self):
         function_inputs = list(zip(product(*self.dim_ranges_index), product(*self.dim_ranges)))
         return function_inputs
+    
+    def function_input_dict(self):
+        function_input_vars = product(*self.dim_ranges)
+        out =[]
+        for inp in function_input_vars:
+            out.append(SortedDict(zip(self.dims_name,inp)))
+                       
+        print(out)
+        # dic = list(zip(self.dims_name,function_input_vars))
+        # print(dic)
+        #  self.function_input = SortedDict(zip(self.dims_name, self.function_input_vars))
+        # pass
