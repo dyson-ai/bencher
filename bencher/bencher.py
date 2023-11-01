@@ -211,12 +211,14 @@ class Bench(BenchPlotServer):
         self.report.append(summarise_study(optu))
         return optu
 
-    def plot_sweep(
+    def setup_bench_cfg(
         self,
         title: str,
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
+        input_tensor: List[ParametrizedSweep] = None,
+        result_tensor: List[ParametrizedSweep] = None,
         time_src: datetime = None,
         description: str = None,
         post_description: str = None,
@@ -225,29 +227,6 @@ class Bench(BenchPlotServer):
         run_cfg: BenchRunCfg = None,
         plot_lib=None,
     ) -> BenchCfg:
-        """The all in 1 function benchmarker and results plotter.
-
-        Args:
-            input_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
-            result_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
-            const_vars (List[ParametrizedSweep], optional): A list of variables to keep constant with a specified value. Defaults to None.
-            title (str, optional): The title of the benchmark. Defaults to None.
-            description (str, optional): A description of the benchmark. Defaults to None.
-            post_description (str, optional): A description that comes after the benchmark plots. Defaults to None.
-            time_src (datetime, optional): Set a time that the result was generated. Defaults to datetime.now().
-            pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if
-            you want the benchmark function to be passed the repeat number
-            tag (str,optional): Use tags to group different benchmarks together.
-            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
-            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
-
-        Raises:
-            ValueError: If a result variable is not set
-
-        Returns:
-            BenchCfg: A class with all the data used to generate the results and the results
-        """
-
         if self.worker_class_instance is not None:
             if input_vars is None:
                 logging.info(
@@ -274,6 +253,10 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
+        if input_tensor is None:
+            input_tensor = []
+        if result_tensor is None:
+            result_tensor = []
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -343,10 +326,68 @@ class Bench(BenchPlotServer):
         print("plot_lib", bench_cfg.plot_lib)
 
         bench_cfg_hash = bench_cfg.hash_persistent(True)
-        bench_cfg.hash_value = bench_cfg_hash
 
         # does not include repeats in hash as sample_hash already includes repeat as part of the per sample hash
         bench_cfg_sample_hash = bench_cfg.hash_persistent(False)
+
+        bench_cfg.hash_value = bench_cfg_hash
+        bench_cfg.sample_hash = bench_cfg_sample_hash
+        return bench_cfg
+
+    def plot_sweep(
+        self,
+        title: str,
+        input_vars: List[ParametrizedSweep] = None,
+        result_vars: List[ParametrizedSweep] = None,
+        const_vars: List[ParametrizedSweep] = None,
+        input_tensor: List[ParametrizedSweep] = None,
+        result_tensor: List[ParametrizedSweep] = None,
+        time_src: datetime = None,
+        description: str = None,
+        post_description: str = None,
+        pass_repeat: bool = False,
+        tag: str = "",
+        run_cfg: BenchRunCfg = None,
+        plot_lib=None,
+    ) -> BenchCfg:
+        """The all in 1 function benchmarker and results plotter.
+
+        Args:
+            input_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
+            result_vars (List[ParametrizedSweep], optional): _description_. Defaults to None.
+            const_vars (List[ParametrizedSweep], optional): A list of variables to keep constant with a specified value. Defaults to None.
+            title (str, optional): The title of the benchmark. Defaults to None.
+            description (str, optional): A description of the benchmark. Defaults to None.
+            post_description (str, optional): A description that comes after the benchmark plots. Defaults to None.
+            time_src (datetime, optional): Set a time that the result was generated. Defaults to datetime.now().
+            pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if
+            you want the benchmark function to be passed the repeat number
+            tag (str,optional): Use tags to group different benchmarks together.
+            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
+            plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
+
+        Raises:
+            ValueError: If a result variable is not set
+
+        Returns:
+            BenchCfg: A class with all the data used to generate the results and the results
+        """
+
+        bench_cfg = self.setup_bench_cfg(
+            title=title,
+            input_vars=input_vars,
+            result_vars=result_vars,
+            const_vars=const_vars,
+            input_tensor=input_tensor,
+            result_tensor=result_tensor,
+            time_src=time_src,
+            description=description,
+            post_description=post_description,
+            pass_repeat=pass_repeat,
+            tag=tag,
+            run_cfg=run_cfg,
+            plot_lib=plot_lib,
+        )
 
         if self.sample_cache is None:
             self.sample_cache = self.init_sample_cache(run_cfg)
@@ -356,15 +397,15 @@ class Bench(BenchPlotServer):
         calculate_results = True
         with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             if run_cfg.clear_cache:
-                c.delete(bench_cfg_hash)
+                c.delete(bench_cfg.hash_value)
                 logging.info("cleared cache")
             elif run_cfg.use_cache:
                 logging.info(
-                    f"checking for previously calculated results with key: {bench_cfg_hash}"
+                    f"checking for previously calculated results with key: {bench_cfg.hash_value}"
                 )
-                if bench_cfg_hash in c:
-                    logging.info(f"loading cached results from key: {bench_cfg_hash}")
-                    bench_cfg = c[bench_cfg_hash]
+                if bench_cfg.hash_value in c:
+                    logging.info(f"loading cached results from key: {bench_cfg.hash_value}")
+                    bench_cfg = c[bench_cfg.hash_value]
                     # if not over_time:  # if over time we always want to calculate results
                     calculate_results = False
                 else:
@@ -376,17 +417,17 @@ class Bench(BenchPlotServer):
             if run_cfg.time_event is not None:
                 time_src = run_cfg.time_event
             bench_cfg = self.calculate_benchmark_results(
-                bench_cfg, time_src, bench_cfg_sample_hash, run_cfg
+                bench_cfg, time_src, bench_cfg.sample_hash, run_cfg
             )
 
             # use the hash of the inputs to look up historical values in the cache
             if run_cfg.over_time:
                 bench_cfg.ds = self.load_history_cache(
-                    bench_cfg.ds, bench_cfg_hash, run_cfg.clear_history
+                    bench_cfg.ds, bench_cfg.hash_value, run_cfg.clear_history
                 )
 
             self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
-            self.cache_results(bench_cfg, bench_cfg_hash)
+            self.cache_results(bench_cfg, bench_cfg.hash_value)
 
         logging.info(self.sample_cache.stats())
         self.sample_cache.close()
@@ -464,7 +505,7 @@ class Bench(BenchPlotServer):
         return ds
 
     def setup_dataset(
-        self, bench_cfg: BenchCfg, time_src: datetime | str
+        self, bench_cfg: BenchCfg, time_src: datetime | str = None
     ) -> tuple[BenchCfg, List, List]:
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
