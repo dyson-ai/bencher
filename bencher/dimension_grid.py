@@ -1,7 +1,6 @@
 
 import xarray as xr
 import holoviews as hv
-import panel as pn
 from collections import OrderedDict
 from sortedcontainers import SortedDict
 from typing import List, Iterable, Callable, Any
