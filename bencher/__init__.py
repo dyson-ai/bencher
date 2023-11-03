@@ -12,6 +12,7 @@ from .plotting.plot_filter import PlotInput, VarRange, PlotFilter
 from .utils import hmap_canonical_input, get_nearest_coords, make_namedtuple
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
+from .dimension_grid import DimensionGrid
 
 from .optuna_conversions import to_optuna, summarise_study
 from .bench_cfg import ReduceType
