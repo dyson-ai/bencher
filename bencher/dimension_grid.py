@@ -34,6 +34,12 @@ class DimensionGrid:
         """
         return itertools.product(*self.values)
 
+    def items(self) -> int:
+        tot =1
+        for i in self.coord_len:
+            tot*= i
+        return tot
+
     def inputs_dict(self) -> list[SortedDict]:
         """
         Generates inputs as a list of dictionaries, where each dictionary represents a combination of dimension names and their corresponding coordinate values.
@@ -88,15 +94,17 @@ class DimensionGrid:
             np.ndarray: The combined and reshaped results.
         """
         inputs = self.inputs_iterable()
+        total = self.items()
         outputs = []
-        chunk_num=1
+        # chunk_num=1
+        processed = 0
         for chunk in chunked(inputs, chunk_size):
             input_dict = []
             for i in chunk:
                 inp = dict(zip(self.dim_names, i))
                 input_dict.append(build_tensor_cb(**inp))
-            print(f"chunk {chunk_num} size: {len(input_dict)}")
-            chunk_num+=1
+            processed += len(input_dict)
+            print(f"processed: {processed}/{total}")
             res =  process_tensor_cb(input_dict)
             if hasattr(res,"cpu"):
                 res = process_tensor_cb(input_dict).cpu().numpy()
