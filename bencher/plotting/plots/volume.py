@@ -48,6 +48,62 @@ def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -
     return xr_cfg
 
 
+import xarray as xr
+import bencher as bch
+
+def plot_volume_plotly_da(da:   xr.DataArray) -> pn.pane.Plotly:
+    """Given a benchCfg generate a 3D surface plot
+
+    Args:
+        bench_cfg (BenchCfg): description of benchmark
+        rv (ParametrizedSweep): result variable to plot
+        xr_cfg (PltCfgBase): config of x,y variables
+
+    Returns:
+        pn.pane.Plotly: A 3d volume plot as a holoview in a pane
+    """
+    mean = da
+    opacity = 0.1
+    meandf = mean.to_dataframe().reset_index()   
+    xr_cfg =bch.PltCfgBase()
+    xr_cfg.x  =da.dims[0]
+    xr_cfg.y  =da.dims[1]
+    xr_cfg.z  =da.dims[2]
+    xr_cfg.width = 1000
+    xr_cfg.height=1000
+    rv = bch.ResultVar()
+    rv.name = da.name
+
+    data = [
+        go.Volume(
+            x=meandf[xr_cfg.x],
+            y=meandf[xr_cfg.y],
+            z=meandf[xr_cfg.z],
+            value=meandf[rv.name],
+            isomin=meandf[rv.name].min(),
+            isomax=meandf[rv.name].max(),
+            opacity=opacity,
+            surface_count=20,
+        )
+    ]
+
+    layout = go.Layout(
+        title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
+        width=xr_cfg.width,
+        height=xr_cfg.height,
+        margin=dict(t=50, b=50, r=50, l=50),
+        scene=dict(
+            xaxis_title=xr_cfg.xlabel,
+            yaxis_title=xr_cfg.ylabel,
+            zaxis_title=xr_cfg.zlabel,
+        ),
+    )
+
+    fig = dict(data=data, layout=layout)
+
+    return pn.pane.Plotly(fig )
+
+
 def plot_volume_plotly(
     bench_cfg: BenchCfg, rv: ParametrizedSweep, xr_cfg: PltCfgBase
 ) -> pn.pane.Plotly:
@@ -65,7 +121,7 @@ def plot_volume_plotly(
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     da = bench_cfg.ds[rv.name]
-
+    
     mean = da.mean("repeat")
 
     opacity = 0.1
