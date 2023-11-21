@@ -1,4 +1,3 @@
-
 import xarray as xr
 import holoviews as hv
 from collections import OrderedDict
@@ -7,6 +6,7 @@ from typing import List, Iterable, Callable, Any
 import itertools
 from more_itertools import chunked
 import numpy as np
+
 
 def values_from_dim(dim: hv.Dimension, samples):
     return np.linspace(dim.range[0], dim.range[1], samples)
@@ -42,9 +42,9 @@ class DimensionGrid:
         return itertools.product(*self.values)
 
     def items(self) -> int:
-        tot =1
+        tot = 1
         for i in self.coord_len:
-            tot*= i
+            tot *= i
         return tot
 
     def inputs_dict(self) -> list[SortedDict]:
@@ -127,8 +127,8 @@ class DimensionGrid:
                 input_dict.append(build_tensor_cb(**inp))
             processed += len(input_dict)
             print(f"processed: {processed}/{total}")
-            res =  process_tensor_cb(input_dict)
-            if hasattr(res,"cpu"):
+            res = process_tensor_cb(input_dict)
+            if hasattr(res, "cpu"):
                 res = process_tensor_cb(input_dict).cpu().numpy()
             outputs.append(res)
         combined = np.vstack(outputs)

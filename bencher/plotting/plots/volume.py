@@ -11,6 +11,7 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
+from bencher.variables.results import ResultVar
 
 from bencher.plotting_functions import wrap_long_time_labels
 
@@ -48,10 +49,7 @@ def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -
     return xr_cfg
 
 
-import xarray as xr
-import bencher as bch
-
-def plot_volume_plotly_da(da:   xr.DataArray) -> pn.pane.Plotly:
+def plot_volume_plotly_da(da: xr.DataArray) -> pn.pane.Plotly:
     """Given a benchCfg generate a 3D surface plot
 
     Args:
@@ -64,14 +62,14 @@ def plot_volume_plotly_da(da:   xr.DataArray) -> pn.pane.Plotly:
     """
     mean = da
     opacity = 0.1
-    meandf = mean.to_dataframe().reset_index()   
-    xr_cfg =bch.PltCfgBase()
-    xr_cfg.x  =da.dims[0]
-    xr_cfg.y  =da.dims[1]
-    xr_cfg.z  =da.dims[2]
+    meandf = mean.to_dataframe().reset_index()
+    xr_cfg = PltCfgBase()
+    xr_cfg.x = da.dims[0]
+    xr_cfg.y = da.dims[1]
+    xr_cfg.z = da.dims[2]
     xr_cfg.width = 1000
-    xr_cfg.height=1000
-    rv = bch.ResultVar()
+    xr_cfg.height = 1000
+    rv = ResultVar()
     rv.name = da.name
 
     data = [
@@ -101,7 +99,7 @@ def plot_volume_plotly_da(da:   xr.DataArray) -> pn.pane.Plotly:
 
     fig = dict(data=data, layout=layout)
 
-    return pn.pane.Plotly(fig )
+    return pn.pane.Plotly(fig)
 
 
 def plot_volume_plotly(
@@ -121,7 +119,7 @@ def plot_volume_plotly(
     bench_cfg = wrap_long_time_labels(bench_cfg)
 
     da = bench_cfg.ds[rv.name]
-    
+
     mean = da.mean("repeat")
 
     opacity = 0.1
