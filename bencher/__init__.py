@@ -14,7 +14,6 @@ from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .dimension_grid import DimensionGrid
 from .plotting.plots.volume import plot_volume_plotly_da
-from .dimension_grid import DimensionGrid
 from .optuna_conversions import to_optuna, summarise_study
 from .bench_cfg import ReduceType
 from .bench_report import BenchReport
