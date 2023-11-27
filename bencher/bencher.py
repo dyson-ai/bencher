@@ -40,7 +40,7 @@ for handler in logging.root.handlers:
 
 
 def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> xr.DataArray:
-    """This is terrible, I need to do this in a better way, but [] does not like *args syntax and the () version of the set function doesn't either"""
+    # """This is terrible, I need to do this in a better way, but [] does not like *args syntax and the () version of the set function doesn't either"""
     match len(index_tuple):
         case 1:
             data_array[index_tuple[0]] = value
