@@ -1,14 +1,19 @@
+name: Auto-publish
 
-
-name: Python Publish Workflow
-on:
-  push:
-    tags: [ 'v*.*.*' ]
+on: [push, workflow_dispatch]
 
 jobs:
-  publish:
-    name: Publish to PyPi
-    needs: [build]
-    uses: AsifArmanRahman/to-pypi-using-flit@v1
-    with:
-        password: ${{ secrets.PYPI_API_TOKEN }}  
+  # Auto-publish when version is increased
+  publish-job:
+    # Only publish on `main` branch
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:  # Don't forget permissions
+      contents: write
+
+    steps:
+    - uses: etils-actions/pypi-auto-publish@v1
+      with:
+        pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+        gh-token: ${{ secrets.GITHUB_TOKEN }}
+        parse-changelog: true
