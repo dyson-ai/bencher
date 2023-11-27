@@ -1,27 +1,19 @@
+name: Auto-publish
 
-
-name: Python Publish Workflow
-on:
-  workflow_dispatch:
-    release:
-      types: [published]
+on: [push, workflow_dispatch]
 
 jobs:
-  publish:
-    uses: microsoft/action-python/.github/workflows/publish.yml@0.6.4
-    secrets:
-      PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      TEST_PYPI_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD  }}
-  # publishManual:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Set up Python 3.10
-  #     uses: actions/setup-python@v3
-  #     with:
-  #       python-version: "3.10"
-  #   - name: install flit
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install flit
-  #       flit publish 
+  # Auto-publish when version is increased
+  publish-job:
+    # Only publish on `main` branch
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:  # Don't forget permissions
+      contents: write
+
+    steps:
+    - uses: etils-actions/pypi-auto-publish@v1
+      with:
+        pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+        gh-token: ${{ secrets.GITHUB_TOKEN }}
+        parse-changelog: true
