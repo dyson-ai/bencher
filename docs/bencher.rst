@@ -1,7 +1,5 @@
-bencher API Reference
+Bencher API Reference
 =====================
-
-See https://dyson-ai.github.io/bencher/ for example output
 
 
 bencher
