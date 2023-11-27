@@ -13,6 +13,8 @@ class Benchable(Protocol):
 
 
 class BenchRunner:
+    """A class to manage running multiple benchmarks in groups, or running the same benchmark but at multiple resolutions"""
+
     def __init__(
         self,
         name: str,
