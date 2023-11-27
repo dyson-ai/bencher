@@ -8,6 +8,7 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 class VarRange:
     """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers."""
+
     def __init__(self, lower_bound: int = 0, upper_bound: int = -1) -> None:
         """
         Args:
@@ -49,6 +50,7 @@ class VarRange:
 
 class PlotFilter:
     """A class for representing the types of results a plot is able to represent."""
+
     def __init__(
         self,
         float_range: VarRange = VarRange(),
