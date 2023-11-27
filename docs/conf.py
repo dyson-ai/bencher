@@ -10,8 +10,8 @@ from importlib import metadata
 
 copyright = "2023, Austin Gregg-Smith"  # pylint:disable=redefined-builtin
 author = "Austin Gregg-Smith"
-release = metadata.version('holobench')
-project = f"bencher {release}" 
+release = metadata.version("holobench")
+project = f"bencher {release}"
 
 
 # -- General configuration ---------------------------------------------------
