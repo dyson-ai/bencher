@@ -6,10 +6,13 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "bencher"
+from importlib import metadata
+
 copyright = "2023, Austin Gregg-Smith"  # pylint:disable=redefined-builtin
 author = "Austin Gregg-Smith"
-release = "0.3.9"
+release = metadata.version("holobench")
+project = f"bencher {release}"
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
