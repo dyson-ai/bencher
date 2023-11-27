@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "0.3.8"
+version = "0.3.9"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -42,7 +42,7 @@ test = [
   "ruff>=0.0.280,<=0.1.6",
   "coverage>=7.2.7,<=7.3.2",
   "sphinx>=7.2.6,<=7.2.6",
-  "sphinxcontrib-napoleon",
+  "sphinxcontrib-napoleon>=0.7,<=0.7",
 ]
 
 [project.urls]
