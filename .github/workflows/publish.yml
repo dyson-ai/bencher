@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
     release:
       types: [published]
+      
+jobs:
   publish:
     name: Publish to PyPi
     needs: [build]
