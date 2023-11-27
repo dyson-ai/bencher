@@ -14,11 +14,7 @@ release = "0.3.9"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [   
-    "sphinx_rtd_theme",
-    "sphinx.ext.napoleon",
-    "autoapi.extension"
-]
+extensions = ["sphinx_rtd_theme", "sphinx.ext.napoleon", "autoapi.extension"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
@@ -30,8 +26,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "sphinx_rtd_theme"
 # html_static_path = ["_static"]
 
-autoapi_dirs = ['../bencher']
-autoapi_ignore =['*example_*','*example*','*experimental*']
+autoapi_dirs = ["../bencher"]
+autoapi_ignore = ["*example_*", "*example*", "*experimental*"]
 
 
 numpydoc_show_class_members = False
