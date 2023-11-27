@@ -9,9 +9,7 @@ Welcome to bencher's documentation!
 .. toctree::
    :maxdepth: 3
 
-   intro.rst
-   bencher.rst
-
+   intro.rst 
 
 
 Indices and tables
