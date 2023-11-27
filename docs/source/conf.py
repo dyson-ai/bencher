@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "bencher"
-copyright = "2023, Austin Gregg-Smith" #pylint:disable=redefined-builtin
+copyright = "2023, Austin Gregg-Smith"  # pylint:disable=redefined-builtin
 author = "Austin Gregg-Smith"
 release = "0.3.8"
 
