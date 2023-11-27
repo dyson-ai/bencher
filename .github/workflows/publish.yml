@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     release:
       types: [published]
-      
+
 jobs:
   publish:
     name: Publish to PyPi
     needs: [build]
     uses: AsifArmanRahman/to-pypi-using-flit@v1
     with:
-        password: ${{ secrets.PYPI_KEY }}  
+        password: ${{ secrets.PYPI_API_TOKEN }}  
