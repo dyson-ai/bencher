@@ -126,6 +126,7 @@ class BenchReport(BenchPlotServer):
 
         Returns:
             str: the url of the published report
+            
         """
 
         if branch_name is None:

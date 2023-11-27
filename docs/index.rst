@@ -7,8 +7,9 @@ Welcome to bencher's documentation!
 ===================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 3
+
+   bencher.rst
 
 
 
