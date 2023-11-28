@@ -716,7 +716,7 @@ class BenchCfg(BenchRunCfg):
         Returns:
             List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
         """
-       
+
         from bencher.optuna_conversions import collect_optuna_plots
 
         return collect_optuna_plots(self)
