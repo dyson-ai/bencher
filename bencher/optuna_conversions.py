@@ -336,7 +336,8 @@ def bench_cfg_to_study(bench_cfg: BenchCfg, include_meta: bool) -> optuna.Study:
     return study
 
 
-def summarise_study(study: optuna.study.Study) -> None:
+def summarise_study(study: optuna.study.Study) -> pn.pane.panel:
+    """Summarise an optuna study in a panel format"""
     row = pn.Column(name="Optimisation Results")
     row.append(plot_optimization_history(study))
     row.append(plot_param_importances(study))

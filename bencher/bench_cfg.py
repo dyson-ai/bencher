@@ -710,7 +710,13 @@ class BenchCfg(BenchRunCfg):
             col.append(self.describe_sweep())
         return col
 
-    def to_optuna(self):
+    def to_optuna(self) -> List[pn.pane.panel]:
+        """Create an optuna summary from the benchmark results
+
+        Returns:
+            List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
+        """
+
         from bencher.optuna_conversions import collect_optuna_plots
 
         return collect_optuna_plots(self)
