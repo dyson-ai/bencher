@@ -698,7 +698,7 @@ class BenchCfg(BenchRunCfg):
             describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
-    def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:
+    def summarise_sweep(self, name=None, describe=True,results_suffix=True) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
         if name is None:
             name = self.title
@@ -707,7 +707,10 @@ class BenchCfg(BenchRunCfg):
         if self.description is not None:
             col.append(pn.pane.Markdown(self.description))
         if describe:
+            col.append(pn.pane.Markdown("## Data Collection Configuration:"))
             col.append(self.describe_sweep())
+        if results_suffix:
+            col.append(pn.pane.Markdown("## Results:"))
         return col
 
     def to_optuna(self) -> List[pn.pane.panel]:
