@@ -25,7 +25,8 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
-	"postCreateCommand": "flit install --symlink; pre-commit install --hook-type commit-msg; #pre-commit install",
+	"onCreateCommand": "pre-commit install --hook-type commit-msg",
+	"postCreateCommand": "flit install --symlink",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -43,5 +44,4 @@
 			]
 		}
 	},
-	// "onCreateCommand": "pre-commit install-hooks"
 }
