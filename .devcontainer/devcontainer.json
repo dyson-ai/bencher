@@ -1,5 +1,5 @@
 {
-	"name": "Python Environment",
+	"name": "python_template",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": ".."
