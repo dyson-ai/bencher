@@ -5,7 +5,7 @@
 		"context": ".."
 	},
 	// "onCreateCommand": "pre-commit install --hook-type commit-msg",
-	"postCreateCommand": "flit install --symlink",
+	"postCreateCommand": "flit install --symlink; pre-commit uninstall",
 	"customizations": {
 		"vscode": {
 			"extensions": [
