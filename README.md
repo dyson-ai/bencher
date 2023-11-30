@@ -1,6 +1,6 @@
 # Bencher
  
-## Continuous Integration Status
+ ## Continuous Integration Status
 
 [![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
 ![Read the Docs](https://img.shields.io/readthedocs/bencher)
