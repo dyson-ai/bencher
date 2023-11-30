@@ -1,5 +1,5 @@
 {
-	"name": "python_template",
+	"name": "bencher",
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": ".."
