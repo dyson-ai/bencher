@@ -11,6 +11,7 @@ This has basic setup for
 * git-lfs
 * basic github actions ci
 * pulling updates from this template
+* conventional-commit
 
 ## Continuous Integration Status
 
