@@ -13,6 +13,7 @@ This has basic setup for
 * pulling updates from this template
 * conventional-commit
 
+
 ## Continuous Integration Status
 
 [![Ci](https://github.com/blooop/python_template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/blooop/python_template/actions/workflows/ci.yml?query=branch%3Amain)
