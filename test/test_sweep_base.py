@@ -146,6 +146,17 @@ class TestSweepBase(unittest.TestCase):
                     print("\t", i == n)
             res_old = res
 
+#     -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+# =========================== short test summary info ============================
+# FAILED test/test_sweep_base.py::TestSweepBase::test_levels_float - hypothesis.errors.Flaky: Hypothesis test_levels_float(self=<test.test_sweep_base.TestSweepBase testMethod=test_levels_float>, upper=2.5368482639714796e+16) produces unreliable results: Falsified on the first call but did not on a subsequent one
+# Falsifying example: test_levels_float(
+#     self=<test.test_sweep_base.TestSweepBase testMethod=test_levels_float>,
+#     upper=2.5368482639714796e+16,
+# )
+# Unreliable test timings! On an initial run, this test took 788.15ms, which exceeded the deadline of 200.00ms, but on a subsequent run it took 8.17 ms, which did not. If you expect this sort of variability in your test timings, consider turning deadlines off for this test by setting deadline=None.
+
+# You can reproduce this example by temporarily adding @reproduce_failure('6.91.0', b'AAAAAABaIIAkOxnr') as a decorator on your test case
+# ===== 1 failed, 119 passed, 4 skipped, 26149 warnings in 122.03s (0:02:02) =====
     @given(st.floats(min_value=0.1, allow_nan=False, allow_infinity=False))
     def test_levels_float(self, upper) -> None:
         var_float = bch.FloatSweep(bounds=(0, upper))
