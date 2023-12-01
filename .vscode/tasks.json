@@ -120,8 +120,6 @@
 				"isDefault": "True"
 			}
 		},
-
-		
 		{
 			"label": "run <cfg>",
 			"type": "shell",
@@ -131,17 +129,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		},
-		{
-			"label": "run <cfg> with scoop",
-			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 -m scoop $RUNFILE",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": "True"
-			}
-		}
+		},		
 	],
 	"inputs": [
 		{
