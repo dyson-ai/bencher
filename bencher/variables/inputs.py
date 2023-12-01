@@ -89,6 +89,7 @@ class EnumSweep(SweepSelector):
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
 
+    
 
 
 class IntSweep(Integer, SweepBase):
