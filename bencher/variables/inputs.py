@@ -93,6 +93,7 @@ class EnumSweep(SweepSelector):
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         return [str(i) for i in super().values(debug)]
 
+
 class IntSweep(Integer, SweepBase):
     """A class to reprsent a parameter sweep of ints"""
 
