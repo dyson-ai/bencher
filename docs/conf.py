@@ -10,8 +10,8 @@ from importlib import metadata
 
 copyright = "2023, Austin Gregg-Smith"  # pylint:disable=redefined-builtin
 author = "Austin Gregg-Smith"
-release = metadata.version("python_project")
-project = f"python_project {release}"
+release = metadata.version("python_template")
+project = f"python_template {release}"
 
 
 # -- General configuration ---------------------------------------------------
@@ -29,7 +29,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "sphinx_rtd_theme"
 # html_static_path = ["_static"]
 
-autoapi_dirs = ["../python_project"]
+autoapi_dirs = ["../python_template"]
 autoapi_ignore = ["*example_*", "*example*", "*experimental*"]
 
 
