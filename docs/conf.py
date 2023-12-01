@@ -6,23 +6,33 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'python_template'
-copyright = '2023, Austin Gregg-Smith'
-author = 'Austin Gregg-Smith'
-release = '0.0.1'
+from importlib import metadata
+
+copyright = "2023, Austin Gregg-Smith"  # pylint:disable=redefined-builtin
+author = "Austin Gregg-Smith"
+release = metadata.version("python_project")
+project = f"python_project {release}"
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ["sphinx_rtd_theme", "sphinx.ext.napoleon", "autoapi.extension"]
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'alabaster'
-html_static_path = ['_static']
+html_theme = "sphinx_rtd_theme"
+# html_static_path = ["_static"]
+
+autoapi_dirs = ["../python_project"]
+autoapi_ignore = ["*example_*", "*example*", "*experimental*"]
+
+
+numpydoc_show_class_members = False
+
+autosummary_generate = True
