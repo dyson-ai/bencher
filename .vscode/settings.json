@@ -14,7 +14,9 @@
 		"**/cachedir/**": true,
 	},
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.black-formatter"
+		"editor.defaultFormatter": "ms-python.black-formatter",
+	"editor.formatOnSave": true,
+
 	},
 	"files.exclude": {
 		"**/__pycache__/**": true
