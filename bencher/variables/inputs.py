@@ -89,9 +89,7 @@ class EnumSweep(SweepSelector):
         if not list_of_enums:  # Grab the docs from the enum type def
             self.doc = enum_type.__doc__
 
-    def values(self, debug=False) -> List[Any]:
-        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return [str(i) for i in super().values(debug)]
+    
 
 class IntSweep(Integer, SweepBase):
     """A class to reprsent a parameter sweep of ints"""
