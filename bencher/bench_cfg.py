@@ -705,7 +705,7 @@ class BenchCfg(BenchRunCfg):
         col = pn.Column(name=name)
         col.append(pn.pane.Markdown(f"# {self.title}"))
         if self.description is not None:
-            col.append(pn.pane.Markdown(self.description))
+            col.append(pn.pane.Markdown(self.description, width=800))
         if describe:
             col.append(pn.pane.Markdown("## Data Collection Configuration:"))
             col.append(self.describe_sweep())

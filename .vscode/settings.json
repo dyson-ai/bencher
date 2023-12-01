@@ -2,22 +2,20 @@
 	"python.testing.pytestArgs": [],
 	"python.testing.unittestEnabled": false,
 	"python.testing.pytestEnabled": true,
-	"python.formatting.provider": "black",
 	"editor.formatOnSave": true,
 	"search.exclude": {
-		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true
-	},
-	"files.exclude": {
 		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true
 	},
 	"files.watcherExclude": {
 		"**/cachedir/**": true,
 	},
 	"[python]": {
-		"editor.defaultFormatter": "ms-python.black-formatter"
+		"editor.defaultFormatter": "ms-python.black-formatter",
+		"editor.formatOnSave": true,
 	},
 	"files.exclude": {
-		"**/__pycache__/**": true
+		"**/__pycache__/**": true,
+		"/home/vscode/.local/lib/python3.10/site-packages/python_template/**": true
 	},
 	"python.analysis.autoImportCompletions": false,
 	"workbench.colorCustomizations": {

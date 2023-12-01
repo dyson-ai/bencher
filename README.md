@@ -30,6 +30,7 @@ The input types should also be of one of the basic datatypes (bool, int, float, 
 Bencher is designed to work with stochastic pure functions with no side effects.  It assumes that when the objective function is given the same inputs, it will return the same output +- random noise.  This is because the function must be called multiple times to get a good statistical distribution of it and so each call must not be influenced by anything or the results will be corrupted.
 
 ### Pseudocode of bencher
+
     Enumerate a list of all input parameter combinations
     for each set of input parameters:
         pass the inputs to the objective function and store results in the N-D array
