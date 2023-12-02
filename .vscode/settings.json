@@ -4,7 +4,8 @@
 	"python.testing.pytestEnabled": true,
 	"editor.formatOnSave": true,
 	"search.exclude": {
-		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true
+		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true,
+		"index.html": true,
 	},
 	"files.watcherExclude": {
 		"**/cachedir/**": true,
