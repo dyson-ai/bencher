@@ -14,7 +14,7 @@
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'autoformatted and ruff --fix all code' || true"
+			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true"
 		},
 		{
 			"label": "pylint",
@@ -120,8 +120,6 @@
 				"isDefault": "True"
 			}
 		},
-
-		
 		{
 			"label": "run <cfg>",
 			"type": "shell",
@@ -131,17 +129,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		},
-		{
-			"label": "run <cfg> with scoop",
-			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 -m scoop $RUNFILE",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": "True"
-			}
-		}
+		},		
 	],
 	"inputs": [
 		{
