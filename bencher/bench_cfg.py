@@ -698,19 +698,28 @@ class BenchCfg(BenchRunCfg):
             describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
-    def summarise_sweep(self, name=None, describe=True) -> pn.pane.Markdown:
+    def summarise_sweep(self, name=None, describe=True, results_suffix=True) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
         if name is None:
             name = self.title
         col = pn.Column(name=name)
         col.append(pn.pane.Markdown(f"# {self.title}"))
         if self.description is not None:
-            col.append(pn.pane.Markdown(self.description))
+            col.append(pn.pane.Markdown(self.description, width=800))
         if describe:
+            col.append(pn.pane.Markdown("## Data Collection Configuration:"))
             col.append(self.describe_sweep())
+        if results_suffix:
+            col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def to_optuna(self):
+    def to_optuna(self) -> List[pn.pane.panel]:
+        """Create an optuna summary from the benchmark results
+
+        Returns:
+            List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
+        """
+
         from bencher.optuna_conversions import collect_optuna_plots
 
         return collect_optuna_plots(self)

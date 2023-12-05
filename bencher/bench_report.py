@@ -23,10 +23,10 @@ class BenchReport(BenchPlotServer):
             return self.append_tab(pn.pane.Markdown(f"# {title}", name=title), title)
         return self.append_markdown(f"# {title}", title)
 
-    def append_markdown(self, markdown: str, name=None, **kwargs) -> pn.pane.Markdown:
+    def append_markdown(self, markdown: str, name=None, width=800, **kwargs) -> pn.pane.Markdown:
         if name is None:
             name = markdown
-        md = pn.pane.Markdown(markdown, name=name, **kwargs)
+        md = pn.pane.Markdown(markdown, name=name, width=width, **kwargs)
         self.append(md, name)
         return md
 
@@ -114,15 +114,16 @@ class BenchReport(BenchPlotServer):
     ) -> str:
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
-        def publish_args(branch_name) -> Tuple[str, str]:
-            return (
-                "https://github.com/dyson-ai/bencher.git",
-                f"https://github.com/dyson-ai/bencher/blob/{branch_name}",
-            )
+        .. code-block:: python
+
+            def publish_args(branch_name) -> Tuple[str, str]:
+                return (
+                    "https://github.com/dyson-ai/bencher.git",
+                    f"https://github.com/dyson-ai/bencher/blob/{branch_name}")
+
 
         Args:
             remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
-
 
         Returns:
             str: the url of the published report

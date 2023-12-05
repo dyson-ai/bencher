@@ -14,6 +14,8 @@ import xarray as xr
 
 
 class BenchPlotter:
+    """A deprecated class for handling benchmark plotting logic. Deprecation is still a work in progress"""
+
     @staticmethod
     def plot(bench_cfg: BenchCfg) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled

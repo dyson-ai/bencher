@@ -33,11 +33,11 @@ def describe_variable(
     if include_samples:
         # sampling_str.append(f"{indent}{v.sampling_str(debug)}")
         sampling_str.append(f"{indent}number of samples: {len(v.values(debug))}")
-        sampling_str.append(f"{indent}sample values: {v.values(debug)}")
+        sampling_str.append(f"{indent}sample values: {[str(v) for v in v.values(debug)]}")
 
     if value is not None:
         sampling_str.append(f"{indent}value: {value}")
-    if v.units != "ul":
+    if v.units != "ul" and len(v.units) > 0:
         sampling_str.append(f"{indent}units: [{v.units}]")
     if v.doc is not None:
         sampling_str.append(f"{indent}docs: {v.doc}")

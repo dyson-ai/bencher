@@ -84,6 +84,21 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
-def int_to_col(intVal, sat=0.5, val=0.95):
+def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, float]:
+    """Uses the golden angle to generate colors programmatically with minimum overlap between colors.
+    https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
+
+    Args:
+        int_val (_type_): index of an object you want to color, this is mapped to hue in HSV
+        sat (float, optional): saturation in HSV. Defaults to 0.5.
+        val (float, optional): value in HSV. Defaults to 0.95.
+        alpha (int, optional): transparency.  If -1 then only RGB is returned, if 0 or greater, RGBA is returned. Defaults to -1.
+
+    Returns:
+        tuple[float, float, float] | tuple[float, float, float, float]: either RGB or RGBA vector
+    """
     golden_ratio_conjugate = (1 + math.sqrt(5)) / 2
-    return hsv_to_rgb(intVal * golden_ratio_conjugate, sat, val)
+    rgb = hsv_to_rgb(int_val * golden_ratio_conjugate, sat, val)
+    if alpha >= 0:
+        return (*rgb, alpha)
+    return rgb

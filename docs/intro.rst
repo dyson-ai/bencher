@@ -1,19 +1,5 @@
-# Bencher
- 
- ## Continuous Integration Status
-
-[![Ci](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dyson-ai/bencher/actions/workflows/ci.yml?query=branch%3Amain)
-![Read the Docs](https://img.shields.io/readthedocs/bencher)
-[![Codecov](https://codecov.io/gh/dyson-ai/bencher/branch/main/graph/badge.svg?token=Y212GW1PG6)](https://codecov.io/gh/dyson-ai/bencher)
-[![GitHub issues](https://img.shields.io/github/issues/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/issues/)
-[![GitHub pull-requests merged](https://badgen.net/github/merged-prs/dyson-ai/bencher)](https://github.com/dyson-ai/bencher/pulls?q=is%3Amerged)
-[![PyPI](https://img.shields.io/pypi/v/holobench)](https://pypi.org/project/holobench/)
-[![GitHub release](https://img.shields.io/github/release/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/releases/)
-[![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
-[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue)](https://www.python.org/downloads/release/python-310/)
-
-
-## Intro
+Intro
+=====
 
 Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.
 
@@ -23,13 +9,17 @@ Parameters are benchmarked by passing in a list N parameters, and an N-Dimension
 
 The data is stored in a persistent database so that past performance is tracked.
 
-## Assumptions
+Assumptions
+-----------
 
 The input types should also be of one of the basic datatypes (bool, int, float, str, enum, datetime) so that the data can be easily hashed, cached and stored in the database and processed with seaborn and xarray plotting functions. You can use class inheritance to define hierarchical parameter configuration class types that can be reused in a bigger configuration classes.
 
 Bencher is designed to work with stochastic pure functions with no side effects.  It assumes that when the objective function is given the same inputs, it will return the same output +- random noise.  This is because the function must be called multiple times to get a good statistical distribution of it and so each call must not be influenced by anything or the results will be corrupted.
 
-### Pseudocode of bencher
+Pseudocode of bencher
+---------------------
+
+.. code-block:: 
 
     Enumerate a list of all input parameter combinations
     for each set of input parameters:
@@ -45,6 +35,7 @@ Bencher is designed to work with stochastic pure functions with no side effects.
     deduce the type of plot based on the input types
     return data and plot
     
-### Example Output
+Example Output
+--------------
 
 https://dyson-ai.github.io/bencher/
