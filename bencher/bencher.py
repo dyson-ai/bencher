@@ -102,8 +102,7 @@ def set_xarray_multidim(data_array: xr.DataArray, index_tuple, value: float) -> 
 
 def kwargs_to_input_cfg(worker_input_cfg: ParametrizedSweep, **kwargs) -> ParametrizedSweep:
     input_cfg = worker_input_cfg()
-    for k, v in kwargs.items():
-        input_cfg.param.set_param(k, v)
+    input_cfg.param.update(kwargs)
     return input_cfg
 
 
