@@ -40,7 +40,7 @@ class ParametrizedSweep(Parameterized):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return ParametrizedSweep.param_hash(self, True, False)
+        return ParametrizedSweep.param_hash(self, True)
 
     def update_params_from_kwargs(self, **kwargs) -> None:
         """Given a dictionary of kwargs, set the parameters of the passed class 'self' to the values in the dictionary."""
@@ -168,7 +168,7 @@ class ParametrizedSweep(Parameterized):
         )
 
     def __call__(self):
-        raise NotImplementedError()
+        pass
 
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
