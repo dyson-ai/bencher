@@ -334,13 +334,13 @@ class BenchCfg(BenchRunCfg):
     )
     iv_time = param.List(
         default=[],
-        class_=TimeSnapshot | TimeEvent,
+        item_type=TimeSnapshot | TimeEvent,
         doc="A parameter to represent the sampling the same inputs over time as a scalar type",
     )
 
     iv_time_event = param.List(
         default=[],
-        class_=TimeEvent,
+        item_type=TimeEvent,
         doc="A parameter to represent the sampling the same inputs over time as a discrete type",
     )
 
