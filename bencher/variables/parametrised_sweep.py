@@ -33,7 +33,7 @@ class ParametrizedSweep(Parameterized):
                     curhash = hash_sha1((curhash, hash_sha1(v)))
 
         if hash_meta:
-            for k, v in param_type.param.params().items():
+            for k, v in param_type.param.objects().items():
                 if k != "name":
                     print(f"key:{k}, hash:{hash_sha1(k)}")
                     print(f"value:{v}, hash:{hash_sha1(v)}")
@@ -47,7 +47,7 @@ class ParametrizedSweep(Parameterized):
     def update_params_from_kwargs(self, **kwargs) -> None:
         """Given a dictionary of kwargs, set the parameters of the passed class 'self' to the values in the dictionary."""
         used_params = {}
-        for key in self.param.params().keys():
+        for key in self.param.objects().keys():
             if key in kwargs:
                 if key != "name":
                     used_params[key] = kwargs[key]
@@ -67,7 +67,7 @@ class ParametrizedSweep(Parameterized):
         """
         inputs = {}
         results = {}
-        for k, v in cls.param.values().items():
+        for k, v in cls.param.objects().items():
             if isinstance(v, (ResultVar, ResultVec, ResultHmap)):
                 results[k] = v
             else:
