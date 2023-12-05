@@ -222,7 +222,7 @@ class BenchPlotter:
             axis = cat_axis_order[i]
             sns_dict[axis] = v.name
 
-        sns_cfg.param.set_param(**sns_dict)
+        sns_cfg.param.update(**sns_dict)
 
         return sns_cfg
 

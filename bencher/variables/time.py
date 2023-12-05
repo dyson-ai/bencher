@@ -35,7 +35,7 @@ class TimeSnapshot(TimeBase):
         else:
             TimeBase.__init__(
                 self,
-                [Timestamp(datetime_src)],
+                objects=[Timestamp(datetime_src)],
                 instantiate=True,
                 **params,
             )
@@ -62,7 +62,7 @@ class TimeEvent(TimeBase):
     ):
         TimeBase.__init__(
             self,
-            [time_event],
+            objects=[time_event],
             instantiate=True,
             **params,
         )

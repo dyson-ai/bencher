@@ -12,15 +12,13 @@ class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
     @staticmethod
-    def param_hash(
-        param_type: Parameterized, hash_value: bool = True, hash_meta: bool = False
-    ) -> int:
+    def param_hash(param_type: Parameterized, hash_value: bool = True) -> int:
         """A custom hash function for parametrised types with options for hashing the value of the type and hashing metadata
 
         Args:
             param_type (Parameterized): A parameter
             hash_value (bool, optional): use the value as part of the hash. Defaults to True.
-            hash_meta (bool, optional): use metadata as part of the hash. Defaults to False.
+            # hash_meta (bool, optional): use metadata as part of the hash. Defaults to False.
 
         Returns:
             int: a hash
@@ -32,22 +30,22 @@ class ParametrizedSweep(Parameterized):
                 if k != "name":
                     curhash = hash_sha1((curhash, hash_sha1(v)))
 
-        if hash_meta:
-            for k, v in param_type.param.params().items():
-                if k != "name":
-                    print(f"key:{k}, hash:{hash_sha1(k)}")
-                    print(f"value:{v}, hash:{hash_sha1(v)}")
-                    curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
+        # if hash_meta:
+        #     for k, v in param_type.param.objects().items():
+        #         if k != "name":
+        #             print(f"key:{k}, hash:{hash_sha1(k)}")
+        #             print(f"value:{v}, hash:{hash_sha1(v)}")
+        #             curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
         return curhash
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return ParametrizedSweep.param_hash(self, True, False)
+        return ParametrizedSweep.param_hash(self, True)
 
     def update_params_from_kwargs(self, **kwargs) -> None:
         """Given a dictionary of kwargs, set the parameters of the passed class 'self' to the values in the dictionary."""
         used_params = {}
-        for key in self.param.params().keys():
+        for key in self.param.objects().keys():
             if key in kwargs:
                 if key != "name":
                     used_params[key] = kwargs[key]
@@ -67,7 +65,7 @@ class ParametrizedSweep(Parameterized):
         """
         inputs = {}
         results = {}
-        for k, v in cls.param.params().items():
+        for k, v in cls.param.objects().items():
             if isinstance(v, (ResultVar, ResultVec, ResultHmap)):
                 results[k] = v
             else:
