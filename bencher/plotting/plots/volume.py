@@ -11,6 +11,7 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
+from bencher.variables.results import ResultVar
 
 from bencher.plotting_functions import wrap_long_time_labels
 
@@ -46,6 +47,59 @@ def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -
             xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
             xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
     return xr_cfg
+
+
+def plot_volume_plotly_da(da: xr.DataArray) -> pn.pane.Plotly:
+    """Given a benchCfg generate a 3D surface plot
+
+    Args:
+        bench_cfg (BenchCfg): description of benchmark
+        rv (ParametrizedSweep): result variable to plot
+        xr_cfg (PltCfgBase): config of x,y variables
+
+    Returns:
+        pn.pane.Plotly: A 3d volume plot as a holoview in a pane
+    """
+    mean = da
+    opacity = 0.1
+    meandf = mean.to_dataframe().reset_index()
+    xr_cfg = PltCfgBase()
+    xr_cfg.x = da.dims[0]
+    xr_cfg.y = da.dims[1]
+    xr_cfg.z = da.dims[2]
+    xr_cfg.width = 1000
+    xr_cfg.height = 1000
+    rv = ResultVar()
+    rv.name = da.name
+
+    data = [
+        go.Volume(
+            x=meandf[xr_cfg.x],
+            y=meandf[xr_cfg.y],
+            z=meandf[xr_cfg.z],
+            value=meandf[rv.name],
+            isomin=meandf[rv.name].min(),
+            isomax=meandf[rv.name].max(),
+            opacity=opacity,
+            surface_count=20,
+        )
+    ]
+
+    layout = go.Layout(
+        title=f"{rv.name} vs ({xr_cfg.x} vs {xr_cfg.y} vs {xr_cfg.z})",
+        width=xr_cfg.width,
+        height=xr_cfg.height,
+        margin=dict(t=50, b=50, r=50, l=50),
+        scene=dict(
+            xaxis_title=xr_cfg.xlabel,
+            yaxis_title=xr_cfg.ylabel,
+            zaxis_title=xr_cfg.zlabel,
+        ),
+    )
+
+    fig = dict(data=data, layout=layout)
+
+    return pn.pane.Plotly(fig)
 
 
 def plot_volume_plotly(
