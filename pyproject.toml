@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "0.5.0"
+version = "0.5.1"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
