@@ -12,15 +12,13 @@ class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
     @staticmethod
-    def param_hash(
-        param_type: Parameterized, hash_value: bool = True, hash_meta: bool = False
-    ) -> int:
+    def param_hash(param_type: Parameterized, hash_value: bool = True) -> int:
         """A custom hash function for parametrised types with options for hashing the value of the type and hashing metadata
 
         Args:
             param_type (Parameterized): A parameter
             hash_value (bool, optional): use the value as part of the hash. Defaults to True.
-            hash_meta (bool, optional): use metadata as part of the hash. Defaults to False.
+            # hash_meta (bool, optional): use metadata as part of the hash. Defaults to False.
 
         Returns:
             int: a hash
@@ -32,12 +30,12 @@ class ParametrizedSweep(Parameterized):
                 if k != "name":
                     curhash = hash_sha1((curhash, hash_sha1(v)))
 
-        if hash_meta:
-            for k, v in param_type.param.objects().items():
-                if k != "name":
-                    print(f"key:{k}, hash:{hash_sha1(k)}")
-                    print(f"value:{v}, hash:{hash_sha1(v)}")
-                    curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
+        # if hash_meta:
+        #     for k, v in param_type.param.objects().items():
+        #         if k != "name":
+        #             print(f"key:{k}, hash:{hash_sha1(k)}")
+        #             print(f"value:{v}, hash:{hash_sha1(v)}")
+        #             curhash = hash_sha1((curhash, hash_sha1(k), hash_sha1(v)))
         return curhash
 
     def hash_persistent(self) -> str:
