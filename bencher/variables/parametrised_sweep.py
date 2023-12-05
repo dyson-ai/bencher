@@ -67,7 +67,7 @@ class ParametrizedSweep(Parameterized):
         """
         inputs = {}
         results = {}
-        for k, v in cls.param.params().items():
+        for k, v in cls.param.values().items():
             if isinstance(v, (ResultVar, ResultVec, ResultHmap)):
                 results[k] = v
             else:
