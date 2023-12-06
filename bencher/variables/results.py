@@ -95,6 +95,12 @@ class ResultVideo(param.Filename):
         return hash_sha1(self)
 
 
+class ResultImage(param.Filename):
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 # class ResultCurve(ResultHmap):
 #     __slots__ = ["kdim", "vdim", "data"]
 

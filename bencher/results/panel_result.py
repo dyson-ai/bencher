@@ -8,7 +8,7 @@ class PanelResult(BenchResultBase):
         super().__init__(xr_dataset)
 
     def to_video(self):
-        vids = self.xr_dataset["vid"]
+        xr_dataarray = self.xr_dataset["vid"]
 
         row = pn.Row()
         play = pn.widgets.Button(name="Play Videos")
@@ -19,14 +19,12 @@ class PanelResult(BenchResultBase):
 
         buttons = pn.Row(play, pause, reset)
 
-        container = pn.Column(buttons,row)
+        container = pn.Column(buttons, row)
 
-        for v in vids.values:
-            vid = pn.pane.Video(v[0], autoplay=True)
-            # vid.paused=False
-            # vid.autoplay=True
+        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
+            vid = pn.pane.Video(v1[0], autoplay=True)
             vid_p.append(vid)
-            row.append(vid)
+            row.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), vid))
 
         def play_vid(event):
             for r in vid_p:
@@ -44,9 +42,19 @@ class PanelResult(BenchResultBase):
         pn.bind(play_vid, play, watch=True)
         pn.bind(pause_vid, pause, watch=True)
         pn.bind(reset_vid, reset, watch=True)
+        return container
 
+    # def map_to_type(self,)
 
+    def get_var(self, da):
+        coords = [v for v in da.coords]
+        var = coords[0]
+        return var
 
-
-
+    def to_image(self):
+        xr_dataarray = self.xr_dataset["img"]
+        container = pn.Row()
+        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
+            img = pn.pane.PNG(v1[0])
+            container.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), img))
         return container

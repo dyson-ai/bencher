@@ -19,7 +19,7 @@ from bencher.bench_report import BenchReport
 
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo
+from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -499,8 +499,8 @@ class Bench(BenchPlotServer):
                 result_data = np.empty(dims_cfg.dims_size)
                 result_data.fill(np.nan)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if type(rv) == ResultVideo:
-                result_data = np.full(dims_cfg.dims_size,"NAN",dtype=object)
+            if isinstance(rv, (ResultVideo, ResultImage)):
+                result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
@@ -633,7 +633,7 @@ class Bench(BenchPlotServer):
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
 
-                if isinstance(rv, (ResultVar, ResultVideo)):
+                if isinstance(rv, (ResultVar, ResultVideo,ResultImage)):
                     set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
