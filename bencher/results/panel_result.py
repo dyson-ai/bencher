@@ -4,8 +4,8 @@ import panel as pn
 
 
 class PanelResult(BenchResultBase):
-    def __init__(self, xr_dataset):
-        super().__init__(xr_dataset)
+    # def __init__(self, xr_dataset) -> None:
+        # super().__init__(xr_dataset)
 
     def to_video(self):
         xr_dataarray = self.xr_dataset["vid"]
@@ -26,15 +26,15 @@ class PanelResult(BenchResultBase):
             vid_p.append(vid)
             row.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), vid))
 
-        def play_vid(event):
+        def play_vid():
             for r in vid_p:
                 r.paused = False
 
-        def pause_vid(event):
+        def pause_vid():
             for r in vid_p:
                 r.paused = True
 
-        def reset_vid(event):
+        def reset_vid():
             for r in vid_p:
                 r.paused = False
                 r.time = 0
@@ -47,9 +47,7 @@ class PanelResult(BenchResultBase):
     # def map_to_type(self,)
 
     def get_var(self, da):
-        coords = [v for v in da.coords]
-        var = coords[0]
-        return var
+        return da.coords[0]
 
     def to_image(self):
         xr_dataarray = self.xr_dataset["img"]

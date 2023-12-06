@@ -37,7 +37,7 @@ def describe_variable(
 
     if value is not None:
         sampling_str.append(f"{indent}value: {value}")
-    if hasattr(v,"units"):
+    if hasattr(v, "units"):
         if v.units != "ul" and len(v.units) > 0:
             sampling_str.append(f"{indent}units: [{v.units}]")
     if v.doc is not None:
