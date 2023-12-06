@@ -1,6 +1,6 @@
 import bencher as bch
 import unittest
-from bencher.utils import get_nearest_coords
+from bencher.utils import get_nearest_coords, capitalise_words, int_to_col
 
 import xarray as xr
 
@@ -74,3 +74,10 @@ class TestBencherUtils(unittest.TestCase):
         ds = xr.Dataset({"x": [1, 2, 3], "y": [4, 5, 6]})
         result = get_nearest_coords(ds, x=2.5, y=5.5)
         self.assertEqual(result, {"x": 3, "y": 6})
+
+    def test_capitalise_words(self):
+        self.assertEqual("Camel Case", capitalise_words("camel case"))
+
+    def test_int_to_col(self):
+        self.assertEqual(int_to_col(0), (0.95, 0.475, 0.475))
+        self.assertEqual(int_to_col(0, alpha=1), (0.95, 0.475, 0.475, 1))
