@@ -633,7 +633,7 @@ class Bench(BenchPlotServer):
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
 
-                if isinstance(rv, (ResultVar, ResultVideo,ResultImage)):
+                if isinstance(rv, (ResultVar, ResultVideo, ResultImage)):
                     set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):

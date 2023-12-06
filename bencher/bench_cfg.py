@@ -698,13 +698,13 @@ class BenchCfg(BenchRunCfg):
             describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
-    def to_title(self,panel_name=None) -> pn.pane.Markdown:
+    def to_title(self, panel_name=None) -> pn.pane.Markdown:
         if panel_name is None:
             panel_name = self.title
-        return pn.pane.Markdown(f"# {self.title}",name=panel_name)
+        return pn.pane.Markdown(f"# {self.title}", name=panel_name)
 
     def to_description(self) -> pn.pane.Markdown:
-        return pn.pane.Markdown(f"{self.description}",width=800)
+        return pn.pane.Markdown(f"{self.description}", width=800)
 
     def summarise_sweep(
         self, name=None, describe=True, results_suffix=True, title: bool = True
