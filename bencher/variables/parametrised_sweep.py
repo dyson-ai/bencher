@@ -3,9 +3,10 @@ from typing import List, Tuple, Any
 from param import Parameter, Parameterized
 import holoviews as hv
 import panel as pn
+from pathlib import Path
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap
+from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo
 
 
 class ParametrizedSweep(Parameterized):
@@ -66,7 +67,7 @@ class ParametrizedSweep(Parameterized):
         inputs = {}
         results = {}
         for k, v in cls.param.objects().items():
-            if isinstance(v, (ResultVar, ResultVec, ResultHmap)):
+            if isinstance(v, (ResultVar, ResultVec, ResultHmap, ResultVideo)):
                 results[k] = v
             else:
                 inputs[k] = v
@@ -172,3 +173,8 @@ class ParametrizedSweep(Parameterized):
 
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
+
+    def get_cachedir(self, path: str) -> str:
+        """Returns a path relative to the cache directory"""
+
+        return (Path("cachedir") / Path(path)).absolute().as_posix()

@@ -89,6 +89,12 @@ def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
 
 
+class ResultVideo(param.Filename):
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 # class ResultCurve(ResultHmap):
 #     __slots__ = ["kdim", "vdim", "data"]
 
