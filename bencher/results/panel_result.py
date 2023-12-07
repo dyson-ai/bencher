@@ -27,6 +27,7 @@ class PanelResult(BenchResultBase):
 
         for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
             vid = pn.pane.Video(v1[0], autoplay=True)
+            vid.loop = True
             vid_p.append(vid)
             row.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), vid))
 

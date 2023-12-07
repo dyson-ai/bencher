@@ -90,12 +90,24 @@ def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **
 
 
 class ResultVideo(param.Filename):
+    __slots__ = ["units"]
+
+    def __init__(self, units="video", **params):
+        super().__init__(self, **params)
+        self.units = units
+
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)
 
 
 class ResultImage(param.Filename):
+    __slots__ = ["units"]
+
+    def __init__(self, units="image", **params):
+        super().__init__(self, **params)
+        self.units = units
+
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)
