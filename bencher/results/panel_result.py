@@ -86,3 +86,60 @@ class PanelResult(BenchResultBase):
 #             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
 
 #     return print_recursively(arr, 0, "Array Contents")
+
+
+# import numpy as np
+# import panel as pn
+# import xarray as xr
+
+
+# def print_xarray_dataarray(da):
+#     def print_recursively(sub_arr, depth, index_str):
+#         if isinstance(sub_arr, xr.DataArray):
+#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
+#             for coord in sub_arr.coords:
+#                 if sub_arr[coord].ndim == 0:
+#                     # Handle 0-dimensional arrays
+#                     accordion.append(
+#                         (
+#                             f"{coord}:",
+#                             pn.pane.Str(f"{' ' * (depth + 20)}{coord} = {sub_arr[coord].values}"),
+#                         )
+#                     )
+#                 else:
+#                     accordion.append(
+#                         (
+#                             f"{coord}:",
+#                             pn.Column(
+#                                 *[
+#                                     print_recursively(
+#                                         sub_arr.loc[{coord: val}],
+#                                         depth + 20,
+#                                         f"{coord}={val}",
+#                                     )
+#                                     for val in sub_arr[coord].values
+#                                 ]
+#                             ),
+#                         )
+#                     )
+#             accordion.active = list(range(len(accordion)))
+#             return accordion
+#         else:
+#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
+
+#     return print_recursively(da, 0, "DataArray Contents")
+
+
+# # Example usage:
+# data = np.random.rand(2, 3, 4)
+# coords = {
+#     "x": np.linspace(0, 1, 2),
+#     "y": np.linspace(10, 20, 3),
+#     "z": np.linspace(100, 110, 4),
+# }
+# da = xr.DataArray(data, coords=coords, dims=["x", "y", "z"])
+# output = print_xarray_dataarray(da)
+# pn.Column(output).show()
+
+
+# exit()
