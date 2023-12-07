@@ -5,7 +5,7 @@ import panel as pn
 
 class PanelResult(BenchResultBase):
     # def __init__(self, xr_dataset) -> None:
-        # super().__init__(xr_dataset)
+    # super().__init__(xr_dataset)
 
     def to_video(self):
         xr_dataarray = self.xr_dataset["vid"]
@@ -47,7 +47,9 @@ class PanelResult(BenchResultBase):
     # def map_to_type(self,)
 
     def get_var(self, da):
-        return da.coords[0]
+        coords = list(da.coords)
+        var = coords[0]
+        return var
 
     def to_image(self):
         xr_dataarray = self.xr_dataset["img"]
@@ -56,3 +58,31 @@ class PanelResult(BenchResultBase):
             img = pn.pane.PNG(v1[0])
             container.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), img))
         return container
+
+
+# import numpy as np
+# import panel as pn
+
+
+# def print_n_dimensional_array(arr):
+#     def print_recursively(sub_arr, depth, index_str):
+#         if isinstance(sub_arr, np.ndarray):
+#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
+#             accordion.append(
+#                 (
+#                     f"{index_str}:",
+#                     pn.Column(
+#                         *[
+#                             print_recursively(sub_elem, depth + 20, f"[{i}]")
+#                             for i, sub_elem in enumerate(sub_arr)
+#                         ]
+#                     ),
+#                 )
+#             )
+#             accordion.active=[0]
+
+#             return accordion
+#         else:
+#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
+
+#     return print_recursively(arr, 0, "Array Contents")
