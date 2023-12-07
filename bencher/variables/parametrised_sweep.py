@@ -179,7 +179,15 @@ class ParametrizedSweep(Parameterized):
         """Returns a path relative to the cache directory"""
         return (Path("cachedir") / Path(path)).absolute().as_posix()
     
-    def gen_video_path(self,video_name:str)->str:
-        return (Path("cachedir/vids") / Path(video_name)).absolute().as_posix()+uuid4+".webm"
+    def gen_path(self,filename,folder,suffix):
+        path = (Path(f"cachedir/{folder}") / Path(filename)).absolute().as_posix()
+        return f"{path}{uuid4()}{suffix}"
 
+    def gen_video_path(self,video_name:str)->str:
+        return self.gen_path(video_name,"vid",".webm")
+
+    def gen_image_path(self,image_name:str,filetype=".png")->str:
+        return self.gen_path(image_name,"img",filetype)
+
+    
 
