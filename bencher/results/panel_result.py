@@ -7,8 +7,12 @@ class PanelResult(BenchResultBase):
     # def __init__(self, xr_dataset) -> None:
     # super().__init__(xr_dataset)
 
-    def to_video(self):
-        xr_dataarray = self.xr_dataset["vid"]
+    def to_video(self,var="vid"):
+
+        # for self.bench_cfg.input_vars:
+
+
+        xr_dataarray = self.xr_dataset[var]
 
         row = pn.Row()
         play = pn.widgets.Button(name="Play Videos")
@@ -51,8 +55,8 @@ class PanelResult(BenchResultBase):
         var = coords[0]
         return var
 
-    def to_image(self):
-        xr_dataarray = self.xr_dataset["img"]
+    def to_image(self,var="img"):
+        xr_dataarray = self.xr_dataset[var]
         container = pn.Row()
         for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
             img = pn.pane.PNG(v1[0])

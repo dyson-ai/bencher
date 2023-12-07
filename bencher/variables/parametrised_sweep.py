@@ -7,6 +7,7 @@ from pathlib import Path
 
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage
+from uuid import uuid4
 
 
 class ParametrizedSweep(Parameterized):
@@ -176,5 +177,9 @@ class ParametrizedSweep(Parameterized):
 
     def get_cachedir(self, path: str) -> str:
         """Returns a path relative to the cache directory"""
-
         return (Path("cachedir") / Path(path)).absolute().as_posix()
+    
+    def gen_video_path(self,video_name:str)->str:
+        return (Path("cachedir/vids") / Path(video_name)).absolute().as_posix()+uuid4+".webm"
+
+
