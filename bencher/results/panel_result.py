@@ -13,13 +13,15 @@ class PanelResult(BenchResultBase):
         xr_dataarray = self.xr_dataset[var]
 
         row = pn.Row()
-        play = pn.widgets.Button(name="Play Videos")
-        pause = pn.widgets.Button(name="Pause Videos")
-        reset = pn.widgets.Button(name="Reset Videos")
+
+        play_btn = pn.widgets.Button(name="Play Videos")
+        pause_bth = pn.widgets.Button(name="Pause Videos")
+        loop_btn = pn.widgets.Button(name="Loop Videos")
+        reset_btn = pn.widgets.Button(name="Reset Videos")
 
         vid_p = []
 
-        buttons = pn.Row(play, pause, reset)
+        buttons = pn.Row(play_btn, loop_btn, pause_bth, reset_btn)
 
         container = pn.Column(buttons, row)
 
@@ -31,6 +33,7 @@ class PanelResult(BenchResultBase):
         def play_vid(_):
             for r in vid_p:
                 r.paused = False
+                r.loop = False
 
         def pause_vid(_):
             for r in vid_p:
@@ -41,9 +44,17 @@ class PanelResult(BenchResultBase):
                 r.paused = False
                 r.time = 0
 
-        pn.bind(play_vid, play, watch=True)
-        pn.bind(pause_vid, pause, watch=True)
-        pn.bind(reset_vid, reset, watch=True)
+        def loop_vid(_):
+            for r in vid_p:
+                r.paused = False
+                r.time = 0
+                r.loop = True
+
+        pn.bind(play_vid, play_btn, watch=True)
+        pn.bind(loop_vid, loop_btn, watch=True)
+        pn.bind(pause_vid, pause_bth, watch=True)
+        pn.bind(reset_vid, reset_btn, watch=True)
+
         return container
 
     # def map_to_type(self,)
