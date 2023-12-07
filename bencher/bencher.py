@@ -247,6 +247,7 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
+
         if self.worker_class_instance is not None:
             if input_vars is None:
                 logging.info(
@@ -281,6 +282,9 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = deepcopy(self.run_cfg)
                 logging.info("Copy run cfg from bench class")
+
+        # run_cfg.auto_plot = auto_plot
+        
         if run_cfg.only_plot:
             run_cfg.use_cache = True
 

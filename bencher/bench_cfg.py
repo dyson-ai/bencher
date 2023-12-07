@@ -712,14 +712,17 @@ class BenchCfg(BenchRunCfg):
     ) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
         if name is None:
-            name = self.title
+            if title:
+                name = self.title
+            else:
+                name = "Data Collection Parameters"
         col = pn.Column(name=name)
         if title:
             col.append(self.to_title())
         if self.description is not None and description:
             col.append(self.to_description())
         if describe_sweep:
-            col.append(pn.pane.Markdown("## Data Collection Configuration:"))
+            col.append(pn.pane.Markdown("## Data Collection Parameters:"))
             col.append(self.describe_sweep())
         if results_suffix:
             col.append(pn.pane.Markdown("## Results:"))
