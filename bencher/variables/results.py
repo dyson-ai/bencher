@@ -89,11 +89,11 @@ def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
 
 
-class ResultVideo(param.Filename):
+class PathResult(param.Filename):
     __slots__ = ["units"]
 
-    def __init__(self, units="video", **params):
-        super().__init__(self, **params)
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
         self.units = units
 
     def hash_persistent(self) -> str:
@@ -101,11 +101,21 @@ class ResultVideo(param.Filename):
         return hash_sha1(self)
 
 
-class ResultImage(param.Filename):
+class ResultVideo(param.Filename):
+    def __init__(self, default=None, units="video", **params):
+        super().__init__(units=units, **params)
+
+
+class ResultImage(PathResult):
+    def __init__(self, default=None, units="image", **params):
+        super().__init__(default=default, units=units, **params)
+
+
+class ResultString(param.String):
     __slots__ = ["units"]
 
-    def __init__(self, units="image", **params):
-        super().__init__(self, **params)
+    def __init__(self, default=None, units="str", **params):
+        super().__init__(default=default, **params)
         self.units = units
 
     def hash_persistent(self) -> str:

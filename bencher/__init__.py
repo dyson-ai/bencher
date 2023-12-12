@@ -12,6 +12,7 @@ from .variables.results import (
     ResultHmap,
     ResultVideo,
     ResultImage,
+    ResultString,
     OptDir,
     curve,
 )
