@@ -3,9 +3,10 @@ from bencher.results.bench_result_base import BenchResultBase
 import panel as pn
 import xarray as xr
 import param
+from collections.abc import Iterable
 
 
-from bencher.results.DividerVertical import DividerVertical
+# from bencher.results.DividerVertical import DividerVertical
 
 # class DividerV(Reactive):
 #     """
@@ -59,7 +60,7 @@ class PanelResult(BenchResultBase):
 
         buttons = pn.Row(play_btn, loop_btn, pause_bth, reset_btn)
 
-        container = pn.Column(buttons, row)
+        outer_container = pn.Column(buttons, row)
 
         for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
             vid = pn.pane.Video(v1[0], autoplay=True)
@@ -92,30 +93,24 @@ class PanelResult(BenchResultBase):
         pn.bind(pause_vid, pause_bth, watch=True)
         pn.bind(reset_vid, reset_btn, watch=True)
 
-        return container
+        return outer_container
 
-    def to_panes(self, item_container=pn.pane.panel):
-        from collections.abc import Iterable
+    def to_image(self, container=pn.pane.PNG):
+        return self.to_panes(container=container)
 
+    def to_panes(self, container=pn.pane.panel):
         var = self.bench_cfg.result_vars[0].name
 
         xr_dataarray = self.xr_dataset[var]
         xr_dataarray = xr_dataarray.squeeze()
-        # print(xr_dataarray["radius"].values)
         if not isinstance(xr_dataarray["repeat"].values, Iterable):
             xr_dataarray = xr_dataarray.drop_indexes("repeat")
 
-        panes = self._to_panes(
-            xr_dataarray, len(xr_dataarray.dims) == 1, item_container=item_container
-        )
+        panes = self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
         return panes
 
-    def to_image(self, item_container=pn.pane.PNG):
-        return self.to_panes(item_container=pn.pane.PNG)
-
-    # def _to_panes(self, da: xr.DataArray, container=pn.Row()):
     def _to_panes(
-        self, da: xr.DataArray, last_item=False, row_end=None, item_container=pn.pane.panel
+        self, da: xr.DataArray, last_item=False, row_end=None, container=pn.pane.panel
     ) -> pn.panel:
         num_dims = len(da.dims)
         print("num dims", num_dims)
@@ -128,7 +123,8 @@ class PanelResult(BenchResultBase):
             dim_sel = da.dims[-1]
             print("iloc0", da.isel({dim_sel: 0}).values)
 
-            container = pn.Card()
+            name = " vs ".join(da.dims)
+            outer_container = pn.Card(title=name, name=name)
             for i in range(da.sizes[dim_sel]):
                 sliced = da.isel({dim_sel: i})
 
@@ -136,23 +132,6 @@ class PanelResult(BenchResultBase):
                 print("sliced dims", len(sliced.dims))
 
                 end = None
-
-                stylesheet = """:host {
-    height: 100%;
-}
-
-div.bk-clearfix {
-    height: 100%;
-}
-
-hr{
-      height: 35vh;
-      width:.5vw;
-      border-width:0;
-      background-color:blue;
-    }
-    
-                """
 
                 end = pn.pane.Markdown(
                     f"{sliced.coords[dim_sel].values}",
@@ -163,7 +142,7 @@ hr{
                     # height=panes[-1].height
                 )
 
-                panes = self._to_panes(sliced, i == da.sizes[dim_sel] - 1, end)
+                panes = self._to_panes(sliced, i == da.sizes[dim_sel] - 1,row_end= end)
                 # panes = self._to_panes(sliced)
 
                 print("dim val", sliced.coords[dim_sel].values)
@@ -195,7 +174,7 @@ hr{
 
                 # container.append(pn.layout.Divider(stylesheets=[stylesheet]))
 
-                container.append(panes)
+                outer_container.append(panes)
 
                 # if i == da.sizes[dim_sel] - 1:
                 #     labels = pn.Row()
@@ -215,40 +194,14 @@ hr{
 
         else:
             print("no more dims, adding")
-            container = pn.Column()
+            name = f"{da.dims[0]} vs {da.name}"
+            print(da)
+            print(da.name)
+            outer_container = pn.Card(title=name, name=name)
+            outer_container = pn.Column(name=name)
             inner = pn.Row()
 
-            #                         stylesheet = """:host {
-            #     height: 100%;
-            # }
-
-            # div.bk-clearfix {
-            #     height: 100%;
-            # }
-
-            # hr{
-            #       height: 100vh;
-            #       width:.5vw;
-            #       border-width:0;
-            #       background-color:blue;
-            #     }
-
-            #                 """
-
-            stylesheet = """
-.content .line {
-  height: 100%;
-  width: 2px;
-  background: #000;
-  margin-right: 0.5rem;
-}"""
-
-            stylesheet = """
-    hr{
-      height: 40vh;
-      background-color:grey;
-    }    
-                """
+            
 
             if row_end is not None:
                 inner.append(row_end)
@@ -265,7 +218,7 @@ hr{
                 align = ("center", "start")
                 for val, label in zip(da.values, da.coords[dim_id].values):
                     col = pn.Column()
-                    col.append(item_container(val))
+                    col.append(container(val))
                     col.append(pn.layout.Divider())
                     # col.append(label)
 
@@ -285,19 +238,51 @@ hr{
                 # if row_end is not None:
                 # inner.append(row_end)
                 # container.append("Axes")
-                container.append(inner)
-                container.append(pn.pane.Markdown(f"{da.dims[0]}", align=("center", "start")))
+                outer_container.append(inner)
+                outer_container.append(pn.pane.Markdown(f"{da.dims[0]}", align=("center", "start")))
 
             else:
                 for val in da.values:
-                    inner.append(item_container(val))
+                    inner.append(container(val))
 
-                container.append(inner)
+                outer_container.append(inner)
             # if last_item:
 
-        return container
+        return outer_container
 
     # def map_to_type(self,)
+
+    def gen_stylesheet(self):
+        stylesheet = """:host {
+    height: 100%;
+}
+
+div.bk-clearfix {
+    height: 100%;
+}
+
+hr{
+      height: 35vh;
+      width:.5vw;
+      border-width:0;
+      background-color:blue;
+    }    
+                """
+        
+        stylesheet = """
+.content .line {
+  height: 100%;
+  width: 2px;
+  background: #000;
+  margin-right: 0.5rem;
+}"""
+
+        stylesheet = """
+    hr{
+      height: 40vh;
+      background-color:grey;
+    }    
+                """
 
     def get_var(self, da):
         coords = list(da.coords)
@@ -407,88 +392,3 @@ hr{
         # gs2[1,0] = grid_stack[1,0]
 
         return grid_stack
-
-
-# import numpy as np
-# import panel as pn
-
-
-# def print_n_dimensional_array(arr):
-#     def print_recursively(sub_arr, depth, index_str):
-#         if isinstance(sub_arr, np.ndarray):
-#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
-#             accordion.append(
-#                 (
-#                     f"{index_str}:",
-#                     pn.Column(
-#                         *[
-#                             print_recursively(sub_elem, depth + 20, f"[{i}]")
-#                             for i, sub_elem in enumerate(sub_arr)
-#                         ]
-#                     ),
-#                 )
-#             )
-#             accordion.active=[0]
-
-#             return accordion
-#         else:
-#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
-
-#     return print_recursively(arr, 0, "Array Contents")
-
-
-# import numpy as np
-# import panel as pn
-# import xarray as xr
-
-
-# def print_xarray_dataarray(da):
-#     def print_recursively(sub_arr, depth, index_str):
-#         if isinstance(sub_arr, xr.DataArray):
-#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
-#             for coord in sub_arr.coords:
-#                 if sub_arr[coord].ndim == 0:
-#                     # Handle 0-dimensional arrays
-#                     accordion.append(
-#                         (
-#                             f"{coord}:",
-#                             pn.pane.Str(f"{' ' * (depth + 20)}{coord} = {sub_arr[coord].values}"),
-#                         )
-#                     )
-#                 else:
-#                     accordion.append(
-#                         (
-#                             f"{coord}:",
-#                             pn.Column(
-#                                 *[
-#                                     print_recursively(
-#                                         sub_arr.loc[{coord: val}],
-#                                         depth + 20,
-#                                         f"{coord}={val}",
-#                                     )
-#                                     for val in sub_arr[coord].values
-#                                 ]
-#                             ),
-#                         )
-#                     )
-#             accordion.active = list(range(len(accordion)))
-#             return accordion
-#         else:
-#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
-
-#     return print_recursively(da, 0, "DataArray Contents")
-
-
-# # Example usage:
-# data = np.random.rand(2, 3, 4)
-# coords = {
-#     "x": np.linspace(0, 1, 2),
-#     "y": np.linspace(10, 20, 3),
-#     "z": np.linspace(100, 110, 4),
-# }
-# da = xr.DataArray(data, coords=coords, dims=["x", "y", "z"])
-# output = print_xarray_dataarray(da)
-# pn.Column(output,da).show()
-
-
-# exit()
