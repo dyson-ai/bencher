@@ -114,7 +114,6 @@ class PanelResult(BenchResultBase):
         self,
         da: xr.DataArray,
         last_item=False,
-        row_end=None,
         container=pn.pane.panel,
         in_card=True,
         as_column=True,
@@ -122,15 +121,10 @@ class PanelResult(BenchResultBase):
         num_dims = len(da.dims)
         # print("num dims", num_dims)
         if num_dims > 1:
-            # print("all", da.values)
-            # print("slice zero", da[:, 0].values)
-            # print("slice 1", da[:, 1].values)
-            # print(da.dims)
             dim_sel = da.dims[-1]
-            # print("iloc0", da.isel({dim_sel: 0}).values)
 
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
-            # background_col = dim_color if num_dims > 2 else "white"
+
             background_col = dim_color
             name = " vs ".join(da.dims)
             outer_container = pn.Card(
@@ -139,201 +133,55 @@ class PanelResult(BenchResultBase):
                 styles={"background": background_col},
                 header_background=dim_color,
             )
-            # else:
-            # outer_container = pn.Card(title=name, name=name,header_background=dim_color)
-            # outer_container = pn.Accordion( name=name)
 
-            # styles = {"border": "1px solid grey"}
-
-            # if as_column:
-            #     row_col_container = pn.Column(name=name, styles=styles)
-            #     # outer_container.append("name")
-            # else:
-            #     row_col_container = pn.Row(name=name, styles=styles)
-            #     # outer_container.append("name")
-
+            padded_labels = []
+            sliced_da = []
+            max_label_size = 0
             for i in range(da.sizes[dim_sel]):
                 sliced = da.isel({dim_sel: i})
-
-                # print(sliced)
-                # print("sliced dims", len(sliced.dims))
-
-                end = None
-
-                end = pn.pane.Markdown(
-                    f"{da.dims[-1]}={sliced.coords[dim_sel].values}",
-                    align=("center", "center"),
-                    # styles={ "border-right": "1px solid grey"},
-                    # styles{}
-                    # sizing_mode="stretch_height"
-                    # stylesheets=[stylesheet]
-                    # height=panes[-1].height
+                padded_labels.append(
+                    f"{dim_sel}={sliced.coords[dim_sel].values}",
                 )
+                label_size = len(padded_labels[-1])
+                if label_size > max_label_size:
+                    max_label_size = label_size
+                sliced_da.append(sliced)
+
+            for i in range(da.sizes[dim_sel]):
+                sliced = sliced_da[i]
 
                 panes = self._to_panes(
                     sliced,
                     i == da.sizes[dim_sel] - 1,
-                    row_end=end,
                     container=container,
                     in_card=False,
-                    # as_column=len(da.dims) % 2,
-                    as_column=True
-                    # as_column=row_col_map[len(da.dims)],
-                    # title=
+                    as_column=True,
                 )
-                # panes = self._to_panes(sliced)
+                label = padded_labels[i].rjust(max_label_size, " ")
+                side = pn.pane.Markdown(f"{label}", align=("end", "center"),width=max_label_size*7)
 
-                # print("dim val", sliced.coords[dim_sel].values)
-                # print("dim val", type(sliced.coords[dim_sel].values))
-
-                panes.title = f"{panes.name} ({dim_sel} = { sliced.coords[dim_sel].values})"
-                # panes.title = f"{panes.name}"
-
-                # print(dim_sel)
-                # print(num_dims)
-
-                # if num_dims==3:
-                #     for dim_ind in range(num_dims-1 ,0, -1):
-                #         dim_print = da.dims[dim_ind]
-                #         panes.title += f" ({dim_print} =  { sliced.coords[dim_print].values})"
-
-                # if isinstance(panes, pn.Column):
-                #     align = ("center", "start")
-                #     panes.append(
-                #         pn.pane.Markdown(
-                #             f"{sliced.coords[dim_sel].values}",
-                #             align=align,
-                #             styles={"background": "whitesmoke"},
-                #         )
-                #     )
-                # else:
-                #     align = ("start", "center")
-                #     # panes.append(pn.Row(sliced.coords))
-                #     panes.append(
-                #         pn.pane.Markdown(
-                #             f"{sliced.coords[dim_sel].values}",
-                #             align=align,
-                #             styles={"background": "whitesmoke", "border-left": "1px solid grey"},
-                #             # height=panes[-1].height
-                #         )
-                #     )
-
-                # panes.append(pn.layout.Divider())
-                # container.append(DividerVertical())
-
-                # container.append(pn.layout.Divider(stylesheets=[stylesheet]))
-
-                # outer_container.append( pn.Card(panes,title=name))
-
-                side = pn.pane.Markdown(
-                    f"{dim_sel}={ sliced.coords[dim_sel].values}",
-                    align=("end", "center"),
-                    # styles={"background-color": background_col},
-                    # style={'background-color': background_col}
-                    # style={'background-color': "blue"}
-                
-                )
                 outer_container.append(pn.Row(side, panes))
-
-                # row_col_container.append(pn.Row(pn.Spacer(width=20), panes))
-                # row_col_container.append( panes)
-
-            # outer_container.append(row_col_container)
-
-            # outer_container = pn.Card(outer_container,title=name)
-
-            # if i == da.sizes[dim_sel] - 1:
-            #     labels = pn.Row()
-            #     dim_id = sliced.dims[0]
-            #     print("LABLES", sliced.coords[dim_id][dim_id].values)
-            #     print("LABLES", sliced.coords[dim_id][dim_id].values)
-            #     for i, a in enumerate(sliced.coords[dim_id][dim_id].values):
-            #         labels.append(a)
-            #         # labels[-1].width= panes[i].width
-            #     # print("LABLES",da.coords[dim_sel])
-            #     # for i in sliced.coords[dim_sel].values:
-            #     # labels.append(i)
-            #     labels.append(pn.layout.HSpacer())
-            #     # for c in sliced.coords
-            #     container.append(labels)
-            # pn.layout.Divider()
-
         else:
-            # print("no more dims, adding")
             name = f"{da.dims[0]} vs {da.name}"
-            # print(da)
-            # print(da.name)
-            # print("name:::", name)
-            # if as_row:
-            #     outer_container = pn.Row(name=name)
-            # else:
-            #     outer_container = pn.Column(name=name)
-
             if in_card:
                 outer_container = pn.Card(title=name, name=name)
             else:
                 outer_container = pn.Column(name=name)
-            # inner = pn.Row(styles={"border": "1px solid grey"})
-            inner = pn.Row(styles={"background":"white"})
 
-            if row_end is not None and False:
-                # row_label = da.name
-                # if len (da.dims)>1:
-                # row_label = da.dims[-2]
-                # inner.append(pn.panel(row_label, align=("end", "center")))
-
-                # inner
-                inner.append(row_end)
-                # inner.append(da.name)
-
-                # inner.append(pn.layout.Divider())
-                # inner.append(pn.layout.Divider())
-
-                # inner.append(pn.pane.PNG("/workspaces/bencher/pixel.png",sizing_mode="stretch_height",fixed_aspect=False))
-
-                # inner.append(pn.pane.Markdown(pn.layout.Divider()))
-
-                # inner.append(pn.layout.Divider(stylesheets=[stylesheet]))
-                # inner.append(
-                #     pn.layout.Divider(stylesheets=["hr{height: 40vh;background-color:grey;}"])
-                # )
-                # inner.append(pn.layout.Divider(styles={"verticalLine":"100%","height":"40vh%"}))
+            inner = pn.Row(styles={"background": "white"})
+            align = ("center", "start")
 
             if last_item:
                 dim_id = da.dims[0]
-                align = ("center", "start")
                 for val, label in zip(da.values, da.coords[dim_id].values):
-                    # col = pn.Column( styles={ "border-bottom": "1px solid grey"})
                     col = pn.Column()
                     col.append(container(val))
-                    # col.append(pn.layout.Divider())
-                    # col.append(label)
-
-                    # print(label)
-                    col.append(
-                        pn.pane.Markdown(
-                            f"{da.dims[0]}={label}",
-                            align=align,
-                            # styles={"background": "whitesmoke", "border-top": "1px solid grey"},
-                            # sizing_mode="scale_width",
-                            # sizing_mode ="fixed",
-                            # width=col[-1].width*2
-                        )
-                    )
-
+                    col.append(pn.pane.Markdown(f"{da.dims[0]}={label}", align=align))
                     inner.append(col)
-                # if row_end is not None:
-                # inner.append(row_end)
-                # container.append("Axes")
-                outer_container.append(inner)
-                # outer_container.append(pn.pane.Markdown(f"{da.dims[0]}", align=("center", "start")))
-
             else:
                 for val in da.values:
                     inner.append(container(val))
-
-                outer_container.append(inner)
-            # if last_item:
+            outer_container.append(inner)
 
         return outer_container
 
