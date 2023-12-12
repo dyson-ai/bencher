@@ -119,7 +119,6 @@ class PanelResult(BenchResultBase):
         as_column=True,
     ) -> pn.panel:
         num_dims = len(da.dims)
-        # print("num dims", num_dims)
         if num_dims > 1:
             dim_sel = da.dims[-1]
 
@@ -134,6 +133,8 @@ class PanelResult(BenchResultBase):
                 header_background=dim_color,
             )
 
+
+            #todo remove this pre calculation and let panel work out the right sizes
             padded_labels = []
             sliced_da = []
             max_label_size = 0
@@ -158,7 +159,9 @@ class PanelResult(BenchResultBase):
                     as_column=True,
                 )
                 label = padded_labels[i].rjust(max_label_size, " ")
-                side = pn.pane.Markdown(f"{label}", align=("end", "center"),width=max_label_size*7)
+                side = pn.pane.Markdown(
+                    f"{label}", align=("end", "center"), width=max_label_size * 8
+                )
 
                 outer_container.append(pn.Row(side, panes))
         else:
@@ -177,6 +180,7 @@ class PanelResult(BenchResultBase):
                     col = pn.Column()
                     col.append(container(val))
                     col.append(pn.pane.Markdown(f"{da.dims[0]}={label}", align=align))
+                    # styles={"border-top": "1px solid grey"},sizing_mode="stretch_width"
                     inner.append(col)
             else:
                 for val in da.values:

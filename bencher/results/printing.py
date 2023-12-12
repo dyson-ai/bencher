@@ -55,9 +55,9 @@ bench = bch.Bench("tp", TestPrinting(), run_cfg=run_cfg)
 
 for s in [
     [TestPrinting.param.a],
-    # [TestPrinting.param.a, TestPrinting.param.b],
-    # [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
-    # [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
+    [TestPrinting.param.a, TestPrinting.param.b],
+    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
+    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
 
 ]:
     res1 = bench.plot_sweep("t1", input_vars=s)
