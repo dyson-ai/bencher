@@ -33,18 +33,18 @@ class TestPrinting(bch.ParametrizedSweep):
     d = bch.StringSweep(default=None, string_list=["d1", "d2"], allow_None=True)
 
     # RESULTS
-    res = bch.ResultString()
+    result = bch.ResultString()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
-        self.res = self.a
+        self.result = self.a
         if self.b is not None:
-            self.res += f",{self.b}"
+            self.result += f",{self.b}"
         if self.c is not None:
-            self.res += f",{self.c}"
+            self.result += f",{self.c}"
         if self.d is not None:
-            self.res += f",{self.d}"
+            self.result += f",{self.d}"
         return super().__call__()
 
 
@@ -55,9 +55,9 @@ bench = bch.Bench("tp", TestPrinting(), run_cfg=run_cfg)
 
 for s in [
     [TestPrinting.param.a],
-    [TestPrinting.param.a, TestPrinting.param.b],
-    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
-    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
+    # [TestPrinting.param.a, TestPrinting.param.b],
+    # [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
+    # [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
 
 ]:
     res1 = bench.plot_sweep("t1", input_vars=s)
