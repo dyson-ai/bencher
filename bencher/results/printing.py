@@ -1,8 +1,3 @@
-import numpy as np
-import panel as pn
-import xarray as xr
-
-
 # data = np.random.rand(2, 3, 4)
 
 # for i,x in enumerate(range(1,2)):
@@ -58,7 +53,6 @@ for s in [
     [TestPrinting.param.a, TestPrinting.param.b],
     [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
     [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
-
 ]:
     res1 = bench.plot_sweep("t1", input_vars=s)
     resA = bch.PanelResult(res1.ds, res1)

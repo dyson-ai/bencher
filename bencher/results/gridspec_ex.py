@@ -16,7 +16,7 @@ gspec = pn.GridSpec()
 # Adding images to the grid
 for i in range(2):
     for j in range(2):
-        plot = plt.figure(figsize=(2,2))
+        plot = plt.figure(figsize=(2, 2))
         plt.imshow(images[i * 2 + j], cmap="viridis", aspect="equal")
         plt.axis("off")  # Turn off axis
         gspec[i, j] = pn.pane.Matplotlib(plot)
@@ -61,7 +61,7 @@ outer.append(gspec)
 outer_outer.append(outer)
 label_row._update_manual()
 print(label_row.width)
-label_col.insert(0,pn.layout.Spacer(width=100))
+label_col.insert(0, pn.layout.Spacer(width=100))
 outer_outer.append(label_col)
 
 outer_outer.show()

@@ -6,7 +6,14 @@ import panel as pn
 from pathlib import Path
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage,ResultString
+from bencher.variables.results import (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+)
 from uuid import uuid4
 
 
@@ -68,7 +75,9 @@ class ParametrizedSweep(Parameterized):
         inputs = {}
         results = {}
         for k, v in cls.param.objects().items():
-            if isinstance(v, (ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage,ResultString)):
+            if isinstance(
+                v, (ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage, ResultString)
+            ):
                 results[k] = v
             else:
                 inputs[k] = v

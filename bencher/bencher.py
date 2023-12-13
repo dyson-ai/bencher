@@ -19,7 +19,14 @@ from bencher.bench_report import BenchReport
 
 from bencher.variables.inputs import IntSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage,ResultString
+from bencher.variables.results import (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+)
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -141,7 +148,7 @@ class Bench(BenchPlotServer):
             worker_input_config (ParametrizedSweep): A class defining the parameters of the function.
             plot_lib: (PlotCollection):  A dictionary of plot names:method pairs that are selected for plotting based on the type of data they can plot.
         """
-        assert isinstance(bench_name,str)
+        assert isinstance(bench_name, str)
         self.bench_name = bench_name
         self.worker = None
         self.worker_class_instance = None
@@ -248,7 +255,6 @@ class Bench(BenchPlotServer):
             BenchCfg: A class with all the data used to generate the results and the results
         """
 
-
         if self.worker_class_instance is not None:
             if input_vars is None:
                 logging.info(
@@ -285,7 +291,7 @@ class Bench(BenchPlotServer):
                 logging.info("Copy run cfg from bench class")
 
         # run_cfg.auto_plot = auto_plot
-        
+
         if run_cfg.only_plot:
             run_cfg.use_cache = True
 
@@ -504,7 +510,7 @@ class Bench(BenchPlotServer):
                 result_data = np.empty(dims_cfg.dims_size)
                 result_data.fill(np.nan)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if isinstance(rv, (ResultVideo, ResultImage,ResultString)):
+            if isinstance(rv, (ResultVideo, ResultImage, ResultString)):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
@@ -638,7 +644,7 @@ class Bench(BenchPlotServer):
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
 
-                if isinstance(rv, (ResultVar, ResultVideo, ResultImage,ResultString)):
+                if isinstance(rv, (ResultVar, ResultVideo, ResultImage, ResultString)):
                     set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):

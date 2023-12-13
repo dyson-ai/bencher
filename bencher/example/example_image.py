@@ -2,7 +2,6 @@ import bencher as bch
 import numpy as np
 import math
 import holoviews as hv
-import param
 import matplotlib.pyplot as plt
 
 
@@ -68,7 +67,7 @@ def example_image(
             BenchPolygons.param.linestyle,
             BenchPolygons.param.color,
         ],
-          [
+        [
             BenchPolygons.param.sides,
             BenchPolygons.param.linewidth,
             BenchPolygons.param.linestyle,
@@ -87,7 +86,7 @@ def example_image(
     #     # result_vars=[BenchPolygons.param.hmap, BenchPolygons.param.polygon],
     #     result_vars=[ BenchPolygons.param.polygon],
 
-    # ) 
+    # )
 
     # # bench.report.append(res.to_holomap())
     # # bench.report.append(res.to_holomap().grid())

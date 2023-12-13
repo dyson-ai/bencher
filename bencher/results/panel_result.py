@@ -2,7 +2,6 @@ from bencher.results.bench_result_base import BenchResultBase
 
 import panel as pn
 import xarray as xr
-import param
 from collections.abc import Iterable
 from bencher.utils import int_to_col, color_tuple_to_css
 
@@ -133,8 +132,7 @@ class PanelResult(BenchResultBase):
                 header_background=dim_color,
             )
 
-
-            #todo remove this pre calculation and let panel work out the right sizes
+            # todo remove this pre calculation and let panel work out the right sizes
             padded_labels = []
             sliced_da = []
             max_label_size = 0
