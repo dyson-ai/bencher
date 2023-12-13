@@ -458,82 +458,10 @@ class BenchCfg(BenchRunCfg, BenchResult):
 
         return hash_val
 
-    def get_optimal_value_indices(self, result_var: bch.ParametrizedSweep) -> xr.DataArray:
-        """Get an xarray mask of the values with the best values found during a parameter sweep
 
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal value of this result variable
 
-        Returns:
-            xr.DataArray: xarray mask of optimal values
-        """
-        result_da = self.ds[result_var.name]
-        if result_var.direction == OptDir.maximize:
-            opt_val = result_da.max()
-        else:
-            opt_val = result_da.min()
-        indicies = result_da.where(result_da == opt_val, drop=True).squeeze()
-        logging.info(f"optimal value of {result_var.name}: {opt_val.values}")
-        return indicies
 
-    def get_optimal_inputs(
-        self, result_var: bch.ParametrizedSweep, keep_existing_consts: bool = True
-    ) -> Tuple[bch.ParametrizedSweep, Any]:
-        """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
 
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal values of this result variable
-            keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
-
-        Returns:
-            Tuple[bch.ParametrizedSweep, Any]: Tuples of variable name and optimal values
-        """
-        da = self.get_optimal_value_indices(result_var)
-        if keep_existing_consts:
-            output = copy.deepcopy(self.const_vars)
-        else:
-            output = []
-
-        for iv in self.input_vars:
-            # assert da.coords[iv.name].values.size == (1,)
-            if da.coords[iv.name].values.size == 1:
-                # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
-                # use [()] to convert from a 0d numpy array to a scalar
-                output.append((iv, da.coords[iv.name].values[()]))
-            else:
-                logging.warning(f"values size: {da.coords[iv.name].values.size}")
-                output.append((iv, max(da.coords[iv.name].values[()])))
-
-            logging.info(f"Maximum value of {iv.name}: {output[-1][1]}")
-        return output
-
-    def get_optimal_vec(
-        self,
-        result_var: bch.ParametrizedSweep,
-        input_vars: List[bch.ParametrizedSweep],
-    ) -> List[Any]:
-        """Get the optimal values from the sweep as a vector.
-
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal values of this result variable
-            input_vars (List[bch.ParametrizedSweep]): Define which input vars values are returned in the vector
-
-        Returns:
-            List[Any]: A vector of optimal values for the desired input vector
-        """
-
-        da = self.get_optimal_value_indices(result_var)
-        output = []
-        for iv in input_vars:
-            if da.coords[iv.name].values.size == 1:
-                # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
-                # use [()] to convert from a 0d numpy array to a scalar
-                output.append(da.coords[iv.name].values[()])
-            else:
-                logging.warning(f"values size: {da.coords[iv.name].values.size}")
-                output.append(max(da.coords[iv.name].values[()]))
-            logging.info(f"Maximum value of {iv.name}: {output[-1]}")
-        return output
 
     def get_dataframe(self, reset_index=True) -> DataFrame:
         """Get the xarray results as a pandas dataframe
