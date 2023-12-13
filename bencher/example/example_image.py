@@ -76,7 +76,7 @@ def example_image(
         ],
     ]:
         res1 = bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
-        resA = bch.PanelResult(res1.ds, res1)
+        resA = bch.PanelResult(res1)
         bench.report.append_tab(resA.to_image())
 
     # res = bench.plot_sweep(

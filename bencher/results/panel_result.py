@@ -115,7 +115,6 @@ class PanelResult(BenchResultBase):
         last_item=False,
         container=pn.pane.panel,
         in_card=True,
-        as_column=True,
     ) -> pn.panel:
         num_dims = len(da.dims)
         if num_dims > 1:
@@ -154,7 +153,6 @@ class PanelResult(BenchResultBase):
                     i == da.sizes[dim_sel] - 1,
                     container=container,
                     in_card=False,
-                    as_column=True,
                 )
                 label = padded_labels[i].rjust(max_label_size, " ")
                 side = pn.pane.Markdown(
@@ -187,113 +185,7 @@ class PanelResult(BenchResultBase):
 
         return outer_container
 
-    
-
     def get_var(self, da):
         coords = list(da.coords)
         var = coords[0]
         return var
-
-    def add_labels(self, xr_dataarray: xr.DataArray, grid_stack, row_dim_id, row=True):
-        if row:
-            grid_index = grid_stack.nrows
-            align = ("start", "center")
-
-        else:
-            grid_index = grid_stack.ncols
-            align = ("center", "start")
-
-        row_dim_name = xr_dataarray.dims[row_dim_id]
-        row_labels = xr_dataarray.coords[row_dim_name]
-        for i, r in enumerate(row_labels):
-            if row:
-                idx = (i, grid_index)
-            else:
-                idx = (grid_index, i)
-            # container.append( pn.pane.Markdown(f"{r.long_name}= {r.values}", align="center"))
-            # container.append( pn.layout.Spacer())
-            grid_stack[idx] = pn.pane.Markdown(
-                f"{r.long_name}={r.values}[{r.units}]", align=align, margin=0
-            )
-            # grid_stack[idx].height=1
-
-        return grid_stack
-
-    # def display_recursive(self,xr_data_array):
-
-    def to_image_old(self, var="img"):
-        from collections.abc import Iterable
-
-        xr_dataarray = self.xr_dataset[var]
-        xr_dataarray = xr_dataarray.squeeze()
-        # print(xr_dataarray["radius"].values)
-        if not isinstance(xr_dataarray["repeat"].values, Iterable):
-            xr_dataarray = xr_dataarray.drop_indexes("repeat")
-        print("coords", xr_dataarray.coords)
-        # grid_stack = pn.GridSpec(width=1500,sizing_mode="scale_both")
-        # grid_stack = pn.GridSpec(sizing_mode="scale_both")
-        grid_stack = pn.GridSpec()
-
-        print("sz,mode", grid_stack.sizing_mode)
-        # grid_stack = pn.GridSpec()
-
-        # container = pn.Row()
-        print(xr_dataarray.values)
-        import numpy as np
-
-        # for x in np.nditer(xr_dataarray.values)
-        for idx, x in np.ndenumerate(xr_dataarray.values):
-            img = pn.pane.PNG(x, align="center")
-            # md = pn.pane.Markdown(f"## {v.name} = {v.values}", align="center")
-            # grid_stack[idx] = pn.Column(md, img)
-            # print(idx, x)
-            index = (idx[0] + 1, idx[1] + 1)
-            index = idx
-            # grid_stack[index] = pn.Column(img,height_policy="fit",width_policy="fit")
-            grid_stack[index] = img
-
-        self.add_labels(xr_dataarray, grid_stack, 0, row=True)
-        self.add_labels(xr_dataarray, grid_stack, 1, row=False)
-
-        # grid_stack[2]
-
-        # rows = grid_stack.nrows
-        # cols = grid_stack.ncols
-        # row_dim_id = 0
-        # row_dim_name = xr_dataarray.dims[row_dim_id]
-        # row_labels = xr_dataarray.coords[row_dim_name]
-        # for i, r in enumerate(row_labels):
-        #     grid_stack[i, cols] = pn.Row(
-        #         pn.pane.Markdown(f"{r.long_name}= {r.values}", align="center"), pn.layout.HSpacer()
-        #     )
-
-        # print(xr_dataarray.dims)
-        # print(xr_dataarray.coords["sides"])
-
-        # grid_stack[1, 0] = pn.pane.Markdown("ax1", align="end", width=30)
-        # grid_stack[2, 0] = pn.pane.Markdown("ax2", align="end", width=30)
-        # from holoviews import opts
-
-        # grid_stack.opts(opts.GridSpec(width_ratios=[1, 0.5]))
-        # grid_sti
-
-        # exit()
-        print(grid_stack.grid)
-        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
-            # print(v,v1)
-            # print("v",v)
-            # print()
-            # print(v.values)
-            # print("v1",v1)
-
-            # print(v.values)
-            img = pn.pane.PNG(v1[0], align="center")
-            md = pn.pane.Markdown(f"## {v.name} = {v.values}", align="center")
-            # container.append(pn.Column(md, img))
-        # return container
-
-        # gs2 = pn.GridSpec()
-        # gs2[0,0] = grid_stack[0,0]
-        # gs2[1,0] = grid_stack[1,0]
-
-        return grid_stack

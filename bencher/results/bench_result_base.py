@@ -1,5 +1,3 @@
-import xarray as xr
-
 from bencher.bench_cfg import BenchCfg
 
 
