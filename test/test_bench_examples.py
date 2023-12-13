@@ -118,7 +118,7 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_image(self) -> None:
         self.examples_asserts(example_image(self.create_run_cfg()))
-    
+
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))
 

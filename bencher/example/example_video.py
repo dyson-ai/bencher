@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
-import holoviews as hv
 from matplotlib.animation import ArtistAnimation
 
 
@@ -64,7 +63,7 @@ class TuringPattern(bch.ParametrizedSweep):
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
-                artists.append([ax.imshow(U, cmap=plt.cm.viridis)])
+                artists.append([ax.imshow(U)])
 
         ani = ArtistAnimation(fig=fig, artists=artists, interval=60, blit=True)
         # path = self.gen_path("turing", "vid", ".mp4")
@@ -96,9 +95,9 @@ def example_video(
 
 
 if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg()
-    run_cfg.level = 2
+    run_cfg_ex = bch.BenchRunCfg()
+    run_cfg_ex.level = 2
     # run_cfg.only_hash_tag = True
     # run_cfg.use_sample_cache = True
 
-    example_video(run_cfg).report.show()
+    example_video(run_cfg_ex).report.show()
