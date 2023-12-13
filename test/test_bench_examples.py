@@ -19,6 +19,9 @@ from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_levels import run_levels
+from bencher.example.example_strings import example_strings
+from bencher.example.example_image import example_image
+
 
 import os
 
@@ -108,6 +111,12 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_sample_cache(self) -> None:
         self.examples_asserts(example_sample_cache(self.create_run_cfg(), trigger_crash=False))
+
+    def test_example_strings(self) -> None:
+        self.examples_asserts(example_strings(self.create_run_cfg()))
+
+    def test_example_image(self) -> None:
+        self.examples_asserts(example_image(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:

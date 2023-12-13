@@ -79,20 +79,6 @@ def example_image(
         resA = bch.PanelResult(res1)
         bench.report.append_tab(resA.to_image())
 
-    # res = bench.plot_sweep(
-    #     "Polygons",
-    #     # input_vars=[BenchPolygons.param.sides, BenchPolygons.param.linewidth, BenchPolygons.param.linestyle],
-    #     input_vars=[BenchPolygons.param.sides, BenchPolygons.param.linewidth],
-    #     # result_vars=[BenchPolygons.param.hmap, BenchPolygons.param.polygon],
-    #     result_vars=[ BenchPolygons.param.polygon],
-
-    # )
-
-    # # bench.report.append(res.to_holomap())
-    # # bench.report.append(res.to_holomap().grid())
-
-    # bench.report.append(bch.PanelResult(res.ds, res).to_image())
-
     return bench
 
 
