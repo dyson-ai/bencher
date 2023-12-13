@@ -36,7 +36,7 @@ class TestBenchRunner(unittest.TestCase):
         bench_runner.add_bench(SimpleBenchClass())
         results = bench_runner.run(run_cfg=bch.BenchRunCfg(run_tag="1"))
 
-        self.assertEqual(results[0].run_tag, "1")
+        self.assertEqual(results[0].bench_cfg.run_tag, "1")
 
     def test_benchrunner_cache(self):
         from datetime import datetime
@@ -82,17 +82,17 @@ class TestBenchRunner(unittest.TestCase):
         bench_runner = bch.BenchRunner("bench_runner_test", run_cfg=bch.BenchRunCfg(run_tag="1"))
         bench_runner.add_bench(SimpleBenchClass())
         results = bench_runner.run()
-        self.assertEqual(results[0].run_tag, "1")
+        self.assertEqual(results[0].bench_cfg.run_tag, "1")
 
     def test_benchrunner_level_1(self):
         results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(min_level=1)
-        ds = results[0].ds.to_dataframe()
-        self.assertEqual(ds.shape[0], 1)
+        # ds = results[0].result_count()
+        # self.assertEqual(ds.shape[0], 1)
+        self.assertEqual(results[0].result_samples(), 1)
 
     def test_benchrunner_level_1_only(self):
         results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(level=1)
-        ds = results[0].ds.to_dataframe()
-        self.assertEqual(ds.shape[0], 1)
+        self.assertEqual(results[0].result_samples(), 1)
 
     def test_benchrunner_repeats(self):
         res = bch.Bench(
@@ -193,6 +193,6 @@ class TestBenchRunner(unittest.TestCase):
 
     #     results = bench_runner.run(run_cfg=bch.BenchRunCfg(run_tag="1"))
 
-    #     self.assertEqual(results[0].run_tag, "1")
+    #     self.assertEqual(results[0].bench_cfg.run_tag, "1")
 
     # Tests that bch.BenchRunner can handle empty list of Benchable functions

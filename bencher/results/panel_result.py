@@ -139,8 +139,3 @@ class PanelResult(BenchResultBase):
             outer_container.append(inner)
 
         return outer_container
-
-    def get_var(self, da):
-        coords = list(da.coords)
-        var = coords[0]
-        return var

@@ -28,7 +28,7 @@ from bencher.variables.results import (
     ResultString,
     ResultContainer,
 )
-
+from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.plotting.plot_collection import PlotCollection
@@ -232,7 +232,7 @@ class Bench(BenchPlotServer):
         tag: str = "",
         run_cfg: BenchRunCfg = None,
         plot_lib=None,
-    ) -> BenchCfg:
+    ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
         Args:
@@ -253,7 +253,7 @@ class Bench(BenchPlotServer):
             ValueError: If a result variable is not set
 
         Returns:
-            BenchCfg: A class with all the data used to generate the results and the results
+            BenchResult: A class with all the data used to generate the results and the results
         """
 
         if self.worker_class_instance is not None:
@@ -403,7 +403,7 @@ class Bench(BenchPlotServer):
         if bench_cfg.auto_plot:
             self.report.append_result(bench_cfg)
 
-        return bench_cfg
+        return BenchResult(bench_cfg)
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
         """check that a variable is a subclass of param

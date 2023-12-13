@@ -24,6 +24,7 @@ from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
+from bencher.results.bench_result import BenchResult
 
 
 class ReduceType(Enum):
@@ -305,7 +306,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         return BenchRunCfg(**vars(parser.parse_args()))
 
 
-class BenchCfg(BenchRunCfg):
+class BenchCfg(BenchRunCfg,BenchResult):
     """A class for storing the arguments to configure a benchmark protocol  If the inputs variables are the same the class should return the same hash and same filename.  This is so that historical data can be referenced and ensures that the generated plots are unique per benchmark"""
 
     input_vars = param.List(
