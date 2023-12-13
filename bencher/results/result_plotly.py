@@ -1,16 +1,8 @@
-from bencher.results.bench_result_base import BenchResultBase
-
-import panel as pn
-
-# from bencher.plt_cfg import BenchPlotter
-# from bencher.plotting.plots.volume import VolumePlot
-
-
 import panel as pn
 import plotly.graph_objs as go
 
 from bencher.plotting.plot_types import PlotTypes
-
+from bencher.results.bench_result_base import BenchResultBase
 
 
 class ResultPlotly(BenchResultBase):
@@ -22,8 +14,6 @@ class ResultPlotly(BenchResultBase):
 
         da = self.to_dataarray(squeeze=False)
         rv = self.result_vars[0]
-
-        # xr_cfg = plot_float_cnt_3(PltCntCfg())
 
         x = self.input_vars[0]
         y = self.input_vars[1]

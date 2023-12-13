@@ -685,7 +685,6 @@ class BenchCfg(BenchRunCfg, BenchResult):
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
         return self.get_hmap(name)[canonical_inp].opts(framewise=True)
-   
 
     def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""

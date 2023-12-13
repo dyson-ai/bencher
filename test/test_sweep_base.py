@@ -179,9 +179,7 @@ class TestSweepBase(unittest.TestCase):
             ],
             run_cfg=run_cfg,
         )
-        self.assertEqual(
-            res.result_samples(), 3, "the number of samples should be limited to 3"
-        )
+        self.assertEqual(res.result_samples(), 3, "the number of samples should be limited to 3")
 
     # @given(st.integers(min_value=0), st.integers(min_value=1,max_value=10))
     # def test_levels_int(self, start, var_range):
