@@ -506,7 +506,7 @@ class Bench(BenchPlotServer):
                 result_data = np.empty(dims_cfg.dims_size)
                 result_data.fill(np.nan)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if isinstance(rv, (ResultVideo, ResultImage, ResultString,ResultContainer)):
+            if isinstance(rv, (ResultVideo, ResultImage, ResultString, ResultContainer)):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
@@ -642,7 +642,9 @@ class Bench(BenchPlotServer):
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
 
-                if isinstance(rv, (ResultVar, ResultVideo, ResultImage, ResultString,ResultContainer)):
+                if isinstance(
+                    rv, (ResultVar, ResultVideo, ResultImage, ResultString, ResultContainer)
+                ):
                     set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):

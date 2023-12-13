@@ -1,4 +1,3 @@
-from bencher.bench_cfg import BenchCfg
 from bencher.results.bench_result_base import BenchResultBase
 
 import panel as pn
@@ -8,9 +7,6 @@ from bencher.utils import int_to_col, color_tuple_to_css
 
 
 class PanelResult(BenchResultBase):
-    def __init__(self, bench_cfg: BenchCfg) -> None:
-        super().__init__(bench_cfg)
-
     def to_video(self):
         vid_p = []
 
