@@ -252,7 +252,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     @staticmethod
-    def from_cmd_line() -> BenchRunCfg:
+    def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
         """create a BenchRunCfg by parsing command line arguments
 
         Returns:
