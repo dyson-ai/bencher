@@ -13,6 +13,7 @@ from .variables.results import (
     ResultVideo,
     ResultImage,
     ResultString,
+    ResultContainer,
     OptDir,
     curve,
 )
