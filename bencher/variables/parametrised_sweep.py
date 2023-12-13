@@ -174,7 +174,7 @@ class ParametrizedSweep(Parameterized):
             name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
-    def to_gui(self):
+    def to_gui(self):  # pragma: no cover
         main = pn.Row(
             self.to_dynamic_map(),
         )
