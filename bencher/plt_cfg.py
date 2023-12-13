@@ -112,7 +112,7 @@ class BenchPlotter:
         # todo remove the scroll and make it resize dynamically
         plot_rows = pn.Row(name=bench_cfg.bench_name)
 
-        plt_cnt_cfg = BenchPlotter.generate_plt_cnt_cfg(bench_cfg)
+        plt_cnt_cfg = PltCntCfg(bench_cfg)
 
         for rv in bench_cfg.result_vars:
             plt_cnt_cfg.result_vars = 1
@@ -133,43 +133,6 @@ class BenchPlotter:
             )
 
         return plot_rows
-
-    @staticmethod
-    def generate_plt_cnt_cfg(
-        bench_cfg: BenchCfg,
-    ) -> PltCntCfg:
-        """Given a BenchCfg work out how many float and cat variables there are and store in a PltCntCfg class
-
-        Args:
-            bench_cfg (BenchCfg): See BenchCfg definition
-
-        Raises:
-            ValueError: If no plotting procedure could be automatically detected
-
-        Returns:
-            PltCntCfg: see PltCntCfg definition
-        """
-        plt_cnt_cfg = PltCntCfg()
-        plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
-        plt_cnt_cfg.cat_vars = []
-
-        for iv in bench_cfg.input_vars:
-            type_allocated = False
-            typestr = str(type(iv))
-
-            if "IntSweep" in typestr or "FloatSweep" in typestr:
-                plt_cnt_cfg.float_vars.append(iv)
-                type_allocated = True
-            if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
-                plt_cnt_cfg.cat_vars.append(iv)
-                type_allocated = True
-
-            if not type_allocated:
-                raise ValueError(f"No rule for type {typestr}")
-
-        plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
-        plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
-        return plt_cnt_cfg
 
     @staticmethod
     def plot_result_variable(

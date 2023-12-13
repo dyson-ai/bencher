@@ -1,4 +1,3 @@
-from typing import Any
 import bencher as bch
 import numpy as np
 import math

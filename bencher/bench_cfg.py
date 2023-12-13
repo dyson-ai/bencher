@@ -25,6 +25,7 @@ from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
 from bencher.results.bench_result import BenchResult
+from copy import deepcopy
 
 
 class ReduceType(Enum):
@@ -105,6 +106,39 @@ class PltCntCfg(param.Parameterized):
     cat_cnt = param.Integer(0, doc="The number of cat variables")
     vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
     result_vars = param.Integer(1, doc="The number result variables to plot")
+
+    def __init__(self, bench_cfg, **params) -> PltCntCfg:
+        """Given a BenchCfg work out how many float and cat variables there are and store in a PltCntCfg class
+
+        Args:
+            bench_cfg (BenchCfg): See BenchCfg definition
+
+        Raises:
+            ValueError: If no plotting procedure could be automatically detected
+
+        Returns:
+            PltCntCfg: see PltCntCfg definition
+        """
+        super().__init__(**params)
+        self.float_vars = deepcopy(bench_cfg.iv_time)
+        self.cat_vars = []
+
+        for iv in bench_cfg.input_vars:
+            type_allocated = False
+            typestr = str(type(iv))
+
+            if "IntSweep" in typestr or "FloatSweep" in typestr:
+                self.float_vars.append(iv)
+                type_allocated = True
+            if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
+                self.cat_vars.append(iv)
+                type_allocated = True
+
+            if not type_allocated:
+                raise ValueError(f"No rule for type {typestr}")
+
+        self.float_cnt = len(self.float_vars)
+        self.cat_cnt = len(self.cat_vars)
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -306,7 +340,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         return BenchRunCfg(**vars(parser.parse_args()))
 
 
-class BenchCfg(BenchRunCfg,BenchResult):
+class BenchCfg(BenchRunCfg, BenchResult):
     """A class for storing the arguments to configure a benchmark protocol  If the inputs variables are the same the class should return the same hash and same filename.  This is so that historical data can be referenced and ensures that the generated plots are unique per benchmark"""
 
     input_vars = param.List(
@@ -651,17 +685,7 @@ class BenchCfg(BenchRunCfg,BenchResult):
             get_nearest_coords(self.ds, collapse_list=True, **kwargs)
         )
         return self.get_hmap(name)[canonical_inp].opts(framewise=True)
-
-    def to_volume(self, **opts) -> pn.panel:
-        from bencher.plt_cfg import BenchPlotter
-        from bencher.plotting.plots.volume import VolumePlot
-        from bencher.plotting.plot_collection import PlotInput
-
-        # BenchPlotter.plot_result_variable()
-        # return BenchPlotter.plot_results_row(self)
-        return VolumePlot().volume_plotly(
-            PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
-        )
+   
 
     def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
         """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""

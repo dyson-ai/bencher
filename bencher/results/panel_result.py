@@ -2,7 +2,6 @@ from bencher.results.bench_result_base import BenchResultBase
 
 import panel as pn
 import xarray as xr
-from collections.abc import Iterable
 from bencher.utils import int_to_col, color_tuple_to_css
 
 
@@ -53,16 +52,8 @@ class PanelResult(BenchResultBase):
         return self.to_panes(container=container)
 
     def to_panes(self, container=pn.pane.panel):
-        print(self.bench_cfg.result_vars)
-        var = self.bench_cfg.result_vars[0].name
-
-        xr_dataarray = self.xr_dataset[var]
-        xr_dataarray = xr_dataarray.squeeze()
-        if not isinstance(xr_dataarray["repeat"].values, Iterable):
-            xr_dataarray = xr_dataarray.drop_indexes("repeat")
-
-        panes = self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
-        return panes
+        xr_dataarray = self.to_dataarray()
+        return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
 
     def _to_panes(
         self,
