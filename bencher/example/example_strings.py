@@ -36,7 +36,7 @@ for s in [
     [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
 ]:
     res1 = bench.plot_sweep("t1", input_vars=s)
-    resA = bch.PanelResult(res1.ds, res1)
+    resA = bch.PanelResult(res1)
     bench.report.append_tab(resA.to_panes())
 
 
