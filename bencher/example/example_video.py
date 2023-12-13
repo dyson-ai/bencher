@@ -1,75 +1,104 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
+import holoviews as hv
+from matplotlib.animation import ArtistAnimation
 
 
-# from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
+# code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
 class TuringPattern(bch.ParametrizedSweep):
-    pass
+    alpha = bch.FloatSweep(default=2.8e-4, bounds=(2e-4, 5e-3))
+    beta = bch.FloatSweep(default=5e-3, bounds=(1e-3, 9e-3))
+    tau = bch.FloatSweep(default=0.1, bounds=(0.01, 0.5))
+    k = bch.FloatSweep(default=-0.005, bounds=(-0.01, 0.01))
 
-    a = 2.8e-4
-    b = 5e-3
-    tau = 0.1
-    k = -0.005
+    size = bch.IntSweep(default=50, bounds=(30, 200), doc="size of the 2D grid")
+    time = bch.FloatSweep(default=20.0, bounds=(1, 100), doc="total time of simulation")
+    dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
-    size = 100  # size of the 2D grid
-    dx = 2.0 / size  # space step
-    T = 9.0  # total time
-    dt = 0.001  # time step
-    n = int(T / dt)  # number of iterations
+    video = bch.ResultContainer()
+
+    def laplacian(self, Z, dx):
+        Ztop = Z[0:-2, 1:-1]
+        Zleft = Z[1:-1, 0:-2]
+        Zbottom = Z[2:, 1:-1]
+        Zright = Z[1:-1, 2:]
+        Zcenter = Z[1:-1, 1:-1]
+        return (Ztop + Zleft + Zbottom + Zright - 4 * Zcenter) / dx**2
+
+    def update(self, U, V, dx):
+        # We compute the Laplacian of u and v.
+        deltaU = self.laplacian(U, dx)
+        deltaV = self.laplacian(V, dx)
+        # We take the values of u and v inside the grid.
+        Uc = U[1:-1, 1:-1]
+        Vc = V[1:-1, 1:-1]
+        # We update the variables.
+        U[1:-1, 1:-1], V[1:-1, 1:-1] = (
+            Uc + self.dt * (self.alpha * deltaU + Uc - Uc**3 - Vc + self.k),
+            Vc + self.dt * (self.beta * deltaV + Uc - Vc) / self.tau,
+        )
+        # Neumann conditions: derivatives at the edges
+        # are null.
+        for Z in (U, V):
+            Z[0, :] = Z[1, :]
+            Z[-1, :] = Z[-2, :]
+            Z[:, 0] = Z[:, 1]
+            Z[:, -1] = Z[:, -2]
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
+        n = int(self.time / self.dt)  # number of iterations
+        dx = 2.0 / self.size  # space step
+
         U = np.random.rand(self.size, self.size)
         V = np.random.rand(self.size, self.size)
 
-        fig, axes = plt.subplots(3, 3, figsize=(8, 8))
-        step_plot = n // 9
-        # We simulate the PDE with the finite difference
-        # method.
+        fig, ax = plt.subplots(frameon=False, figsize=(2, 2))
+        fig.set_tight_layout(True)
+        ax.set_axis_off()
+
+        artists = []
+
         for i in range(n):
-            # We compute the Laplacian of u and v.
-            deltaU = laplacian(U)
-            deltaV = laplacian(V)
-            # We take the values of u and v inside the grid.
-            Uc = U[1:-1, 1:-1]
-            Vc = V[1:-1, 1:-1]
-            # We update the variables.
-            U[1:-1, 1:-1], V[1:-1, 1:-1] = (
-                Uc + dt * (a * deltaU + Uc - Uc**3 - Vc + k),
-                Vc + dt * (b * deltaV + Uc - Vc) / tau,
-            )
-            # Neumann conditions: derivatives at the edges
-            # are null.
-            for Z in (U, V):
-                Z[0, :] = Z[1, :]
-                Z[-1, :] = Z[-2, :]
-                Z[:, 0] = Z[:, 1]
-                Z[:, -1] = Z[:, -2]
+            self.update(U, V, dx)
+            if i % 500 == 0:
+                artists.append([ax.imshow(U, cmap=plt.cm.viridis)])
 
-            # We plot the state of the system at
-            # 9 different times.
-            if i % step_plot == 0 and i < 9 * step_plot:
-                ax = axes.flat[i // step_plot]
-                show_patterns(U, ax=ax)
-                ax.set_title(f"$t={i * dt:.2f}$")
-
+        ani = ArtistAnimation(fig=fig, artists=artists, interval=60, blit=True)
+        # path = self.gen_path("turing", "vid", ".mp4")
+        path = self.gen_path("turing", "vid", ".gif")
+        print(f"saving {len(artists)} frames")
+        ani.save(path)
+        self.video = path
         return super().__call__()
 
 
-def laplacian(Z):
-    Ztop = Z[0:-2, 1:-1]
-    Zleft = Z[1:-1, 0:-2]
-    Zbottom = Z[2:, 1:-1]
-    Zright = Z[1:-1, 2:]
-    Zcenter = Z[1:-1, 1:-1]
-    return (Ztop + Zleft + Zbottom + Zright - 4 * Zcenter) / dx**2
+def example_video(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    run_cfg.auto_plot = False
+    bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
+
+    res = bench.plot_sweep(
+        "Turing patterns with different parameters",
+        # input_vars=[TuringPattern.param.a, TuringPattern.param.b],
+        input_vars=[TuringPattern.param.alpha],
+        result_vars=[TuringPattern.param.video],
+    )
+
+    # bench.report.append(bch.PanelResult(res).to_video())
+    bench.report.append(res.summarise_sweep())
+    bench.report.append(bch.PanelResult(res).to_panes())
+
+    return bench
 
 
-def show_patterns(U, ax=None):
-    ax.imshow(U, cmap=plt.cm.copper, interpolation="bilinear", extent=[-1, 1, -1, 1])
-    ax.set_axis_off()
+if __name__ == "__main__":
+    run_cfg = bch.BenchRunCfg()
+    run_cfg.level = 2
+    # run_cfg.only_hash_tag = True
+    # run_cfg.use_sample_cache = True
 
-
-plt.show()
+    example_video(run_cfg).report.show()

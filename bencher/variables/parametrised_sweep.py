@@ -13,6 +13,7 @@ from bencher.variables.results import (
     ResultVideo,
     ResultImage,
     ResultString,
+    ResultContainer
 )
 from uuid import uuid4
 
@@ -76,7 +77,7 @@ class ParametrizedSweep(Parameterized):
         results = {}
         for k, v in cls.param.objects().items():
             if isinstance(
-                v, (ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage, ResultString)
+                v, (ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage, ResultString,ResultContainer)
             ):
                 results[k] = v
             else:

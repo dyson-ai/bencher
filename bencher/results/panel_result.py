@@ -1,3 +1,4 @@
+from bencher.bench_cfg import BenchCfg
 from bencher.results.bench_result_base import BenchResultBase
 
 import panel as pn
@@ -7,57 +8,56 @@ from bencher.utils import int_to_col, color_tuple_to_css
 
 
 class PanelResult(BenchResultBase):
-    def to_video(self, var="vid"):
-        xr_dataarray = self.xr_dataset[var]
-        row = pn.Row()
-        play_btn = pn.widgets.Button(name="Play Videos")
-        pause_bth = pn.widgets.Button(name="Pause Videos")
-        loop_btn = pn.widgets.Button(name="Loop Videos")
-        reset_btn = pn.widgets.Button(name="Reset Videos")
+    def __init__(self, bench_cfg: BenchCfg) -> None:
+        super().__init__(bench_cfg)
 
+    def to_video(self):
         vid_p = []
 
-        buttons = pn.Row(play_btn, loop_btn, pause_bth, reset_btn)
-
-        outer_container = pn.Column(buttons, row)
-
-        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
-            vid = pn.pane.Video(v1[0], autoplay=True)
+        def create_video(vid):
+            vid = pn.pane.Video(vid, autoplay=True)
             vid.loop = True
             vid_p.append(vid)
-            row.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), vid))
+            return vid
 
-        def play_vid(_):
+        panes = self.to_panes(create_video)
+
+        def play_vid(_):  # pragma: no cover
             for r in vid_p:
                 r.paused = False
                 r.loop = False
 
-        def pause_vid(_):
+        def pause_vid(_):  # pragma: no cover
             for r in vid_p:
                 r.paused = True
 
-        def reset_vid(_):
+        def reset_vid(_):  # pragma: no cover
             for r in vid_p:
                 r.paused = False
                 r.time = 0
 
-        def loop_vid(_):
+        def loop_vid(_):  # pragma: no cover
             for r in vid_p:
                 r.paused = False
                 r.time = 0
                 r.loop = True
 
-        pn.bind(play_vid, play_btn, watch=True)
-        pn.bind(loop_vid, loop_btn, watch=True)
-        pn.bind(pause_vid, pause_bth, watch=True)
-        pn.bind(reset_vid, reset_btn, watch=True)
+        button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
+        buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
+        buttons = pn.Row()
 
-        return outer_container
+        for name, cb in zip(button_names, buttom_cb):
+            button = pn.widgets.Button(name=name)
+            pn.bind(cb, button, watch=True)
+            buttons.append(button)
+
+        return pn.Column(buttons, panes)
 
     def to_image(self, container=pn.pane.PNG):
         return self.to_panes(container=container)
 
     def to_panes(self, container=pn.pane.panel):
+        print(self.bench_cfg.result_vars)
         var = self.bench_cfg.result_vars[0].name
 
         xr_dataarray = self.xr_dataset[var]

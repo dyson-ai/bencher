@@ -101,9 +101,9 @@ class PathResult(param.Filename):
         return hash_sha1(self)
 
 
-class ResultVideo(param.Filename):
+class ResultVideo(PathResult):
     def __init__(self, default=None, units="video", **params):
-        super().__init__(units=units, **params)
+        super().__init__(default=default, units=units, **params)
 
 
 class ResultImage(PathResult):
@@ -117,6 +117,15 @@ class ResultString(param.String):
     def __init__(self, default=None, units="str", **params):
         super().__init__(default=default, **params)
         self.units = units
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
+class ResultContainer(param.Parameter):
+    # def __init__(self, **params):
+    # super().__init__(**params)
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
