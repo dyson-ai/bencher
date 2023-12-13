@@ -1,4 +1,4 @@
-# from bencher.bench_cfg import BenchCfg #todo enable at very end
+from bencher.bench_cfg import BenchCfg #todo enable at very end
 import logging
 from typing import List, Any, Tuple
 from textwrap import wrap
@@ -12,7 +12,7 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
 from copy import deepcopy
 
-class BenchResultBase:
+class BenchResultBase(BenchCfg):
     def __init__(self, bench_cfg) -> None:
         self.bench_cfg = self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = bench_cfg.ds

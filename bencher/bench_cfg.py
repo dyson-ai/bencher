@@ -24,7 +24,7 @@ from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
-from bencher.results.bench_result import BenchResult
+# from bencher.results.bench_result import BenchResult
 from copy import deepcopy
 
 
@@ -340,7 +340,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         return BenchRunCfg(**vars(parser.parse_args()))
 
 
-class BenchCfg(BenchRunCfg, BenchResult):
+class BenchCfg(BenchRunCfg ):
     """A class for storing the arguments to configure a benchmark protocol  If the inputs variables are the same the class should return the same hash and same filename.  This is so that historical data can be referenced and ensures that the generated plots are unique per benchmark"""
 
     input_vars = param.List(
@@ -685,16 +685,7 @@ class BenchCfg(BenchRunCfg, BenchResult):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def to_optuna(self) -> List[pn.pane.panel]:
-        """Create an optuna summary from the benchmark results
-
-        Returns:
-            List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
-        """
-
-        from bencher.optuna_conversions import collect_optuna_plots
-
-        return collect_optuna_plots(self)
+   
 
     def optuna_targets(self) -> List[str]:
         target_names = []

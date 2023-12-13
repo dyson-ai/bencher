@@ -208,13 +208,7 @@ class Bench(BenchPlotServer):
             result_vars=result_vars,
             bench_name=self.bench_name,
         )
-        return self.to_optuna_from_sweep(bench_cfg, n_trials)
-
-    def to_optuna_from_sweep(
-        self,
-        bench_cfg: BenchCfg,
-        n_trials: int = 100,
-    ) -> Study:
+        # OptunaResult()    
         optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
         self.report.append(summarise_study(optu))
         return optu

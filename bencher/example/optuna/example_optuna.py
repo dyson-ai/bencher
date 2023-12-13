@@ -52,7 +52,7 @@ def optuna_rastrigin(
 
     bench = bch.Bench("Rastrigin", explorer.rastrigin, run_cfg=run_cfg, report=report)
 
-    bench.to_optuna(
+    res = bench.to_optuna(
         input_vars=[explorer.param.input1, explorer.param.input2],
         result_vars=[explorer.param.output],
     )
@@ -69,7 +69,8 @@ def optuna_rastrigin(
         run_cfg=run_cfg,
     )
 
-    bench.to_optuna_from_sweep(res, 10)
+    # bench.report.append(res.to_optuna_from_sweep(10))
+    # bench.to_optuna_from_sweep(res, 10)
 
     return bench
 

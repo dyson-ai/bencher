@@ -58,8 +58,8 @@ class BenchPlotter:
 
             plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
-        if bench_cfg.use_optuna:
-            plot_cols.extend(bench_cfg.to_optuna())
+        # if bench_cfg.use_optuna:
+            # plot_cols.extend(bench_cfg.to_optuna())
 
         plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
         return plot_cols

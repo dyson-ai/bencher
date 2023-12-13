@@ -45,7 +45,6 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
     return study
 
 
-# def bench_results_to_optuna(bench_cfg: BenchCfg):
 
 
 def to_optuna(worker, bench_cfg: BenchCfg, n_trials=100, sampler=optuna.samplers.TPESampler()):
