@@ -187,37 +187,7 @@ class PanelResult(BenchResultBase):
 
         return outer_container
 
-    def gen_stylesheet(self):
-        stylesheet = """:host {
-    height: 100%;
-}
-
-div.bk-clearfix {
-    height: 100%;
-}
-
-hr{
-      height: 35vh;
-      width:.5vw;
-      border-width:0;
-      background-color:blue;
-    }    
-                """
-
-        stylesheet = """
-.content .line {
-  height: 100%;
-  width: 2px;
-  background: #000;
-  margin-right: 0.5rem;
-}"""
-
-        stylesheet = """
-    hr{
-      height: 40vh;
-      background-color:grey;
-    }    
-                """
+    
 
     def get_var(self, da):
         coords = list(da.coords)
