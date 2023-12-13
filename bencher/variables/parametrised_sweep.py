@@ -184,10 +184,6 @@ class ParametrizedSweep(Parameterized):
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
 
-    def get_cachedir(self, path: str) -> str:
-        """Returns a path relative to the cache directory"""
-        return (Path("cachedir") / Path(path)).absolute().as_posix()
-
     def gen_path(self, filename, folder, suffix):
         path = Path(f"cachedir/{folder}") / Path(filename)
         path.mkdir(parents=True, exist_ok=True)
