@@ -10,7 +10,7 @@ class PanelResult(BenchResultBase):
     def to_video(self):
         vid_p = []
 
-        def create_video(vid):
+        def create_video(vid):  # pragma: no cover
             vid = pn.pane.Video(vid, autoplay=True)
             vid.loop = True
             vid_p.append(vid)
