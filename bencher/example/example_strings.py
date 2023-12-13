@@ -24,20 +24,24 @@ class TestPrinting(bch.ParametrizedSweep):
         return super().__call__()
 
 
-run_cfg = bch.BenchRunCfg()
-run_cfg.auto_plot = False
+def example_strings(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    run_cfg.auto_plot = False
 
-bench = bch.Bench("tp", TestPrinting(), run_cfg=run_cfg)
+    bench = bch.Bench("strings", TestPrinting(), run_cfg=run_cfg, report=report)
 
-for s in [
-    [TestPrinting.param.a],
-    [TestPrinting.param.a, TestPrinting.param.b],
-    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
-    [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
-]:
-    res1 = bench.plot_sweep("t1", input_vars=s)
-    resA = bch.PanelResult(res1)
-    bench.report.append_tab(resA.to_panes())
+    for s in [
+        [TestPrinting.param.a],
+        [TestPrinting.param.a, TestPrinting.param.b],
+        [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
+        [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
+    ]:
+        res1 = bench.plot_sweep("t1", input_vars=s)
+        resA = bch.PanelResult(res1)
+        bench.report.append_tab(resA.to_panes())
+    return bench
 
 
-bench.report.show()
+if __name__ == "__main__":
+    example_strings().report.show()
