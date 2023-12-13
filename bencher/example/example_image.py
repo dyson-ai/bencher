@@ -53,7 +53,7 @@ def example_image(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     run_cfg.auto_plot = False
-    bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg)
+    bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
     # bench.plot_sweep("Polygons", input_vars=[BenchPolygons.param.sides])
 
