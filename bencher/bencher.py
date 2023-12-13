@@ -290,8 +290,6 @@ class Bench(BenchPlotServer):
                 run_cfg = deepcopy(self.run_cfg)
                 logging.info("Copy run cfg from bench class")
 
-        # run_cfg.auto_plot = auto_plot
-
         if run_cfg.only_plot:
             run_cfg.use_cache = True
 
@@ -327,9 +325,6 @@ class Bench(BenchPlotServer):
                 result_hmaps.append(i)
             else:
                 result_vars_only.append(i)
-
-        # print(result_vars_only)
-        # exit()
 
         if post_description is None:
             post_description = (

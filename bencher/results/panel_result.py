@@ -6,51 +6,10 @@ from collections.abc import Iterable
 from bencher.utils import int_to_col, color_tuple_to_css
 
 
-# from bencher.results.DividerVertical import DividerVertical
-
-# class DividerV(Reactive):
-#     """
-#     A `Divider` draws a horizontal rule (a `<hr>` tag in HTML) to separate
-#     multiple components in a layout. It automatically spans the full width of
-#     the container.
-
-#     Reference: https://panel.holoviz.org/reference/layouts/Divider.html
-
-#     :Example:
-
-#     >>> pn.Column(
-#     ...     '# Lorem Ipsum',
-#     ...     pn.layout.Divider(),
-#     ...     'A very long text... '
-#     >>> )
-#     """
-
-#     width_policy = param.ObjectSelector(default="fit", readonly=True)
-
-#     _bokeh_model = BkDiv
-
-#     _stylesheets: ClassVar[List[str]] = [f"{CDN_DIST}css/divider.css"]
-
-#     def _get_model(self, doc, root=None, parent=None, comm=None):
-#         properties = self._process_param_change(self._init_params())
-#         model = self._bokeh_model(text="<hr>", **properties)
-#         if root is None:
-#             root = model
-#         self._models[root.ref["id"]] = (model, parent)
-#         return model
-
-
 class PanelResult(BenchResultBase):
-    # def __init__(self, xr_dataset) -> None:
-    # super().__init__(xr_dataset)
-
     def to_video(self, var="vid"):
-        # for self.bench_cfg.input_vars:
-
         xr_dataarray = self.xr_dataset[var]
-
         row = pn.Row()
-
         play_btn = pn.widgets.Button(name="Play Videos")
         pause_bth = pn.widgets.Button(name="Pause Videos")
         loop_btn = pn.widgets.Button(name="Loop Videos")
