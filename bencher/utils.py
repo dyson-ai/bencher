@@ -102,3 +102,7 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
     if alpha >= 0:
         return (*rgb, alpha)
     return rgb
+
+
+def color_tuple_to_css(color: tuple[float, float, float]) -> str:
+    return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"

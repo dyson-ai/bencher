@@ -89,6 +89,49 @@ def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
 
 
+class PathResult(param.Filename):
+    __slots__ = ["units"]
+
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
+        self.units = units
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
+class ResultVideo(PathResult):
+    def __init__(self, default=None, units="video", **params):
+        super().__init__(default=default, units=units, **params)
+
+
+class ResultImage(PathResult):
+    def __init__(self, default=None, units="image", **params):
+        super().__init__(default=default, units=units, **params)
+
+
+class ResultString(param.String):
+    __slots__ = ["units"]
+
+    def __init__(self, default=None, units="str", **params):
+        super().__init__(default=default, **params)
+        self.units = units
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
+class ResultContainer(param.Parameter):
+    # def __init__(self, **params):
+    # super().__init__(**params)
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 # class ResultCurve(ResultHmap):
 #     __slots__ = ["kdim", "vdim", "data"]
 

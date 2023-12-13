@@ -252,7 +252,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     @staticmethod
-    def from_cmd_line() -> BenchRunCfg:
+    def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
         """create a BenchRunCfg by parsing command line arguments
 
         Returns:
@@ -572,8 +572,9 @@ class BenchCfg(BenchRunCfg):
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
+        title = f"{self.result_vars[0].name} vs {self.input_vars[0].name}"
         ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Curve)
+        pt = ds.to(hv.Curve).opts(title=title)
         if self.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
@@ -698,16 +699,35 @@ class BenchCfg(BenchRunCfg):
             describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
         )
 
-    def summarise_sweep(self, name=None, describe=True, results_suffix=True) -> pn.pane.Markdown:
+    def to_title(self, panel_name=None) -> pn.pane.Markdown:
+        if panel_name is None:
+            panel_name = self.title
+        return pn.pane.Markdown(f"# {self.title}", name=panel_name)
+
+    def to_description(self) -> pn.pane.Markdown:
+        return pn.pane.Markdown(f"{self.description}", width=800)
+
+    def summarise_sweep(
+        self,
+        name=None,
+        description=True,
+        describe_sweep=True,
+        results_suffix=True,
+        title: bool = True,
+    ) -> pn.pane.Markdown:
         """Produce panel output summarising the title, description and sweep setting"""
         if name is None:
-            name = self.title
+            if title:
+                name = self.title
+            else:
+                name = "Data Collection Parameters"
         col = pn.Column(name=name)
-        col.append(pn.pane.Markdown(f"# {self.title}"))
-        if self.description is not None:
-            col.append(pn.pane.Markdown(self.description, width=800))
-        if describe:
-            col.append(pn.pane.Markdown("## Data Collection Configuration:"))
+        if title:
+            col.append(self.to_title())
+        if self.description is not None and description:
+            col.append(self.to_description())
+        if describe_sweep:
+            col.append(pn.pane.Markdown("## Data Collection Parameters:"))
             col.append(self.describe_sweep())
         if results_suffix:
             col.append(pn.pane.Markdown("## Results:"))

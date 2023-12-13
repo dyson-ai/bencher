@@ -3,9 +3,19 @@ from typing import List, Tuple, Any
 from param import Parameter, Parameterized
 import holoviews as hv
 import panel as pn
+from pathlib import Path
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap
+from bencher.variables.results import (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+    ResultContainer,
+)
+from uuid import uuid4
 
 
 class ParametrizedSweep(Parameterized):
@@ -66,7 +76,18 @@ class ParametrizedSweep(Parameterized):
         inputs = {}
         results = {}
         for k, v in cls.param.objects().items():
-            if isinstance(v, (ResultVar, ResultVec, ResultHmap)):
+            if isinstance(
+                v,
+                (
+                    ResultVar,
+                    ResultVec,
+                    ResultHmap,
+                    ResultVideo,
+                    ResultImage,
+                    ResultString,
+                    ResultContainer,
+                ),
+            ):
                 results[k] = v
             else:
                 inputs[k] = v
@@ -153,7 +174,7 @@ class ParametrizedSweep(Parameterized):
             name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
-    def to_gui(self):
+    def to_gui(self):  # pragma: no cover
         main = pn.Row(
             self.to_dynamic_map(),
         )
@@ -168,7 +189,18 @@ class ParametrizedSweep(Parameterized):
         )
 
     def __call__(self):
-        pass
+        return self.get_results_values_as_dict()
 
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
+
+    def gen_path(self, filename, folder, suffix):
+        path = Path(f"cachedir/{folder}") / Path(filename)
+        path.mkdir(parents=True, exist_ok=True)
+        return f"{path.absolute().as_posix()}_{uuid4()}{suffix}"
+
+    def gen_video_path(self, video_name: str) -> str:
+        return self.gen_path(video_name, "vid", ".webm")
+
+    def gen_image_path(self, image_name: str, filetype=".png") -> str:
+        return self.gen_path(image_name, "img", filetype)
