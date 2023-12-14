@@ -16,8 +16,7 @@ from bencher.optuna_conversions import (
     param_importance,
     optuna_grid_search,
     summarise_optuna_study,
-    to_optuna,
-    sweep_var_to_suggest
+    sweep_var_to_suggest,
 )
 
 
@@ -35,7 +34,7 @@ class OptunaResult(BenchResultBase):
         optu = self.to_optuna_from_results(worker, n_trials=n_trials)
         return summarise_optuna_study(optu)
 
-    def to_optuna_from_results(self,worker, n_trials=100, sampler=optuna.samplers.TPESampler()):
+    def to_optuna_from_results(self, worker, n_trials=100, sampler=optuna.samplers.TPESampler()):
         directions = []
         for rv in self.bench_cfg.result_vars:
             if rv.direction != OptDir.none:
@@ -47,7 +46,7 @@ class OptunaResult(BenchResultBase):
 
         # add already calculated results
         if len(self.ds.sizes) > 0:
-            study.add_trials(self.bench_results_to_optuna_trials( True))
+            study.add_trials(self.bench_results_to_optuna_trials(True))
 
         def wrapped(trial):
             kwargs = {}
