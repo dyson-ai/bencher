@@ -125,7 +125,7 @@ def example_holosweep_tap_slider(
     def tap_plot(x, y):
         print(x, y)
         selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=sld1.value, repeat=1)
-        return res.hmap[bch.hmap_canonical_input(selres)]
+        return res.hmaps[bch.hmap_canonical_input(selres)]
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 

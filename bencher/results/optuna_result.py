@@ -1,5 +1,4 @@
 from typing import List
-
 import numpy as np
 import optuna
 import panel as pn
@@ -7,15 +6,9 @@ from optuna.visualization import (
     plot_param_importances,
     plot_pareto_front,
 )
-
-# from bencher.bench_cfg import BenchCfg
 from bencher.utils import hmap_canonical_input
-
-
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
-
-
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.optuna_conversions import (
     sweep_var_to_optuna_dist,

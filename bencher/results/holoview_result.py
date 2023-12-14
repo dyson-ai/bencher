@@ -1,22 +1,12 @@
 from __future__ import annotations
-
-
-from bencher.results.bench_result_base import BenchResultBase
-
+from enum import Enum, auto
+from typing import List
 import panel as pn
 import xarray as xr
-
-
-from typing import List
-
 import holoviews as hv
 import numpy as np
-
-
 from bencher.utils import hmap_canonical_input, get_nearest_coords
-from enum import Enum, auto
-
-# from bencher.results.bench_result import BenchResult
+from bencher.results.bench_result_base import BenchResultBase
 
 
 class ReduceType(Enum):
