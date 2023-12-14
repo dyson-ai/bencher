@@ -25,7 +25,7 @@ from .caching import CachedParams
 from .results.bench_result import BenchResult
 from .results.panel_result import PanelResult
 
-from .optuna_conversions import to_optuna, summarise_optuna_study
+# from .optuna_conversions import to_optuna, summarise_optuna_study
 
 # from .bench_cfg import ReduceType
 from .bench_report import BenchReport

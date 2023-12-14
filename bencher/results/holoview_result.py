@@ -133,14 +133,14 @@ class HoloviewResult(BenchResultBase):
             )
 
         kdims = []
-        for i in self.input_vars + [self.iv_repeat]:
-            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
+        for i in self.input_vars + [self.bench_cfg.iv_repeat]:
+            kdims.append(i.as_dim(compute_values=True, debug=self.bench_cfg.debug))
 
         return hv.DynamicMap(cb, kdims=kdims)
 
     def to_grid(self, inputs=None):
         if inputs is None:
-            inputs = self.inputs_as_str()
+            inputs = self.bench_cfg.inputs_as_str()
         if len(inputs) > 2:
             inputs = inputs[:2]
         return self.to_holomap().grid(inputs)

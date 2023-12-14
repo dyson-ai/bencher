@@ -350,20 +350,6 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-    # def result_samples(self) -> int:
-    #     """The number of samples in the results dataframe"""
-    #     return len(self.get_dataframe().index)
-
-    # def get_best_trial_params(self, canonical=False):
-    #     if len(self.studies) == 0:
-    #         # from bencher.optuna_conversions import bench_cfg_to_study
-
-    #         self.studies = [bench_cfg_to_study(self, True)]
-    #     out = self.studies[0].best_trials[0].params
-    #     if canonical:
-    #         return hmap_canonical_input(out)
-    #     return out
-
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 

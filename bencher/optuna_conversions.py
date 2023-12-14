@@ -46,35 +46,6 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
 
 
 # BENCH_CFG
-
-
-def to_optuna(worker, bench_cfg: BenchCfg, n_trials=100, sampler=optuna.samplers.TPESampler()):
-    directions = []
-    for rv in bench_cfg.result_vars:
-        if rv.direction != OptDir.none:
-            directions.append(rv.direction)
-
-    study = optuna.create_study(sampler=sampler, directions=directions, study_name=bench_cfg.title)
-
-    # add already calculated results
-    # if len(bench_cfg.ds.sizes) > 0:
-    # study.add_trials(bench_results_to_optuna_trials(bench_cfg, True))
-
-    def wrapped(trial):
-        kwargs = {}
-        for iv in bench_cfg.input_vars:
-            kwargs[iv.name] = sweep_var_to_suggest(iv, trial)
-        result = worker(**kwargs)
-        output = []
-        for rv in bench_cfg.result_vars:
-            output.append(result[rv.name])
-        return tuple(output)
-
-    study.optimize(wrapped, n_trials=n_trials)
-    return study
-
-
-# BENCH_CFG
 def param_importance(bench_cfg: BenchCfg, study: optuna.Study) -> pn.Row:
     col_importance = pn.Column()
     for tgt in bench_cfg.optuna_targets():

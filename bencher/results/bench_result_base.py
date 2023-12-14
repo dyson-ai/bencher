@@ -1,46 +1,16 @@
 import logging
 from typing import List, Any, Tuple
-from textwrap import wrap
 from collections.abc import Iterable
 
-import pandas as pd
 import xarray as xr
-import numpy as np
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
 from copy import deepcopy
+from bencher.results.optuna_result import OptunaResult
 
 
-class BenchResultBase:
-    def __init__(self, bench_cfg) -> None:
-        self.bench_cfg = self.wrap_long_time_labels(bench_cfg)  # todo remove
-        self.ds = bench_cfg.ds
-        self.input_vars = bench_cfg.input_vars
-        self.result_vars = bench_cfg.result_vars
-        self.const_vars = bench_cfg.const_vars
-        self.meta_vars = bench_cfg.meta_vars
-        self.hmaps = bench_cfg.hmaps
-        self.result_hmaps = bench_cfg.result_hmaps
-        self.repeats = bench_cfg.repeats
-        self.hmap_kdims = bench_cfg.hmap_kdims
-        self.title = bench_cfg.title
-        self.studies = []
-
-    def to_xarray(self) -> xr.Dataset:
-        return self.ds
-
-    def get_pandas(self, reset_index=True) -> pd.DataFrame:
-        """Get the xarray results as a pandas dataframe
-
-        Returns:
-            pd.DataFrame: The xarray results array as a pandas dataframe
-        """
-        ds = self.to_xarray().to_dataframe()
-        if reset_index:
-            return ds.reset_index()
-        return ds
-
+class BenchResultBase(OptunaResult):
     def to_dataarray(self, squeeze: bool = True) -> xr.DataArray:
         var = self.bench_cfg.result_vars[0].name
         xr_dataarray = self.ds[var]
@@ -53,29 +23,6 @@ class BenchResultBase:
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
         return self.ds.count()
-
-    def wrap_long_time_labels(self, bench_cfg):
-        """Takes a benchCfg and wraps any index labels that are too long to be plotted easily
-
-        Args:
-            bench_cfg (BenchCfg):
-
-        Returns:
-            BenchCfg: updated config with wrapped labels
-        """
-        if bench_cfg.over_time:
-            if bench_cfg.ds.coords["over_time"].dtype == np.datetime64:
-                # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
-                bench_cfg.ds.coords["over_time"] = [
-                    pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
-                    for t in bench_cfg.ds.coords.coords["over_time"].values
-                ]
-                # wrap very long time event labels because otherwise the graphs are unreadable
-            if bench_cfg.time_event is not None:
-                bench_cfg.ds.coords["over_time"] = [
-                    "\n".join(wrap(t, 20)) for t in bench_cfg.ds.coords["over_time"].values
-                ]
-        return bench_cfg
 
     def get_optimal_vec(
         self,

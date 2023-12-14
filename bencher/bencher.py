@@ -195,21 +195,6 @@ class Bench(BenchPlotServer):
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
-    # def to_optuna(
-    #     self,
-    #     input_vars: List[ParametrizedSweep],
-    #     result_vars: List[ParametrizedSweep],
-    #     n_trials: int = 100,
-    # ) -> Study:
-    #     bench_cfg = BenchCfg(
-    #         input_vars=input_vars,
-    #         result_vars=result_vars,
-    #         bench_name=self.bench_name,
-    #     )
-    #     optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
-    #     self.report.append(summarise_optuna_study(optu))
-    #     return optu
-
     def plot_sweep(
         self,
         title: str,
