@@ -6,7 +6,6 @@ import logging
 from typing import List
 
 import param
-from pandas import DataFrame
 from str2bool import str2bool
 import panel as pn
 
@@ -332,17 +331,6 @@ class BenchCfg(BenchRunCfg):
             hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
 
         return hash_val
-
-    def get_dataframe(self, reset_index=True) -> DataFrame:
-        """Get the xarray results as a pandas dataframe
-
-        Returns:
-            pd.DataFrame: The xarray results array as a pandas dataframe
-        """
-        ds = self.ds.to_dataframe()
-        if reset_index:
-            return ds.reset_index()
-        return ds
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
