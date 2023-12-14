@@ -2,12 +2,10 @@ from __future__ import annotations
 
 import argparse
 import logging
-from collections import defaultdict
 
 from typing import List
 
 import param
-import xarray as xr
 from pandas import DataFrame
 from str2bool import str2bool
 import panel as pn
@@ -300,7 +298,6 @@ class BenchCfg(BenchRunCfg):
     def __init__(self, **params):
         super().__init__(**params)
         self.plot_lib = None
-        self.hmaps = defaultdict(dict)
         self.hmap_kdims = None
         self.iv_repeat = None
 
@@ -346,8 +343,6 @@ class BenchCfg(BenchRunCfg):
         if reset_index:
             return ds.reset_index()
         return ds
-
-    
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]

@@ -2,6 +2,13 @@ from typing import List
 import numpy as np
 import optuna
 import panel as pn
+from collections import defaultdict
+from textwrap import wrap
+
+import pandas as pd
+import xarray as xr
+
+
 from optuna.visualization import (
     plot_param_importances,
     plot_pareto_front,
@@ -9,11 +16,6 @@ from optuna.visualization import (
 from bencher.utils import hmap_canonical_input
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
-
-from textwrap import wrap
-
-import pandas as pd
-import xarray as xr
 
 
 # from bencher.results.bench_result_base import BenchResultBase
@@ -32,7 +34,7 @@ class OptunaResult:
         self.bench_cfg = bench_cfg
         # self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = None
-        self.hmaps = bench_cfg.hmaps
+        self.hmaps = defaultdict(dict)
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []
 
@@ -190,7 +192,7 @@ class OptunaResult:
         if canonical:
             return hmap_canonical_input(out)
         return out
-    
+
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
