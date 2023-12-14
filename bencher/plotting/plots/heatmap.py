@@ -70,8 +70,8 @@ class Heatmap:
             da = pl_in.bench_res.ds[pl_in.rv.name]
             mean = da.mean("repeat")
 
-            x = pl_in.bench_res.input_vars[0]
-            y = pl_in.bench_res.input_vars[1]
+            x = pl_in.bench_res.bench_cfg.input_vars[0]
+            y = pl_in.bench_res.bench_cfg.input_vars[1]
             z = pl_in.rv
 
             title = f"{z.name} vs ({x.name} vs {y.name})"

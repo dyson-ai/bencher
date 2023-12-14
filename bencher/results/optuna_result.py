@@ -39,7 +39,7 @@ class OptunaResult:
     def to_xarray(self) -> xr.Dataset:
         return self.ds
 
-    def get_pandas(self, reset_index=True) -> pd.DataFrame:
+    def to_pandas(self, reset_index=True) -> pd.DataFrame:
         """Get the xarray results as a pandas dataframe
 
         Returns:
@@ -123,7 +123,7 @@ class OptunaResult:
             optuna.Study: optuna description of the study
         """
         if include_meta:
-            df = self.get_pandas()
+            df = self.to_pandas()
             all_vars = []
             for v in self.bench_cfg.all_vars:
                 if type(v) != TimeEvent:
@@ -132,7 +132,12 @@ class OptunaResult:
             print("All vars", all_vars)
         else:
             all_vars = self.bench_cfg.input_vars
-            df = self.bench_cfg.ds.mean("repeat").to_dataframe().reset_index()
+            # df = self.ds.
+            # if "repeat" in self.
+            # if self.bench_cfg.repeats>1:
+            # df = self.bench_cfg.ds.mean("repeat").to_dataframe().reset_index()
+            # else:
+            df = self.to_pandas().reset_index()
         # df = self.bench_cfg.ds.mean("repeat").to_dataframe.reset_index()
         # self.bench_cfg.all_vars
         # del self.bench_cfg.meta_vars[1]

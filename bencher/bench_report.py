@@ -6,8 +6,9 @@ from pathlib import Path
 import shutil
 from threading import Thread
 
-from bencher.bench_cfg import BenchRunCfg, BenchCfg
+from bencher.results.bench_result import BenchResult
 from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
+from bencher.bench_cfg import BenchRunCfg
 
 
 class BenchReport(BenchPlotServer):
@@ -45,8 +46,8 @@ class BenchReport(BenchPlotServer):
             col = pn.Column(pane, name=pane.name)
         self.pane.append(col)
 
-    def append_result(self, res: BenchCfg) -> None:
-        self.append_tab(BenchPlotter.plot(res), res.bench_cfg.title)
+    def append_result(self, bench_res: BenchResult) -> None:
+        self.append_tab(BenchPlotter.plot(bench_res), bench_res.bench_cfg.title)
 
     def append_tab(self, pane: pn.panel, name: str = None) -> None:
         if name is None:
