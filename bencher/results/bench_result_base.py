@@ -84,11 +84,11 @@ class BenchResultBase(OptunaResult):
         """
         da = self.get_optimal_value_indices(result_var)
         if keep_existing_consts:
-            output = deepcopy(self.const_vars)
+            output = deepcopy(self.bench_cfg.const_vars)
         else:
             output = []
 
-        for iv in self.input_vars:
+        for iv in self.bench_cfg.input_vars:
             # assert da.coords[iv.name].values.size == (1,)
             if da.coords[iv.name].values.size == 1:
                 # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar

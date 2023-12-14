@@ -29,10 +29,10 @@ class HoloviewResult(BenchResultBase):
         ds = convert_dataset_bool_dims_to_str(self.ds)
 
         if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
+            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        result_vars_str = [r.name for r in self.result_vars]
-        kdims = [i.name for i in self.input_vars]
+        result_vars_str = [r.name for r in self.bench_cfg.result_vars]
+        kdims = [i.name for i in self.bench_cfg.input_vars]
         kdims.append("repeat")  # repeat is always used
         hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
         if reduce == ReduceType.REDUCE:
@@ -45,10 +45,10 @@ class HoloviewResult(BenchResultBase):
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        title = f"{self.result_vars[0].name} vs {self.input_vars[0].name}"
+        title = f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Curve).opts(title=title)
-        if self.repeats > 1:
+        if self.bench_cfg.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
         return pt
 
@@ -78,10 +78,10 @@ class HoloviewResult(BenchResultBase):
         return pt
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        z = self.result_vars[0]
-        title = f"{z.name} vs ({self.input_vars[0].name}"
+        z = self.bench_cfg.result_vars[0]
+        title = f"{z.name} vs ({self.bench_cfg.input_vars[0].name}"
 
-        for iv in self.input_vars[1:]:
+        for iv in self.bench_cfg.input_vars[1:]:
             title += f" vs {iv.name}"
         title += ")"
 
@@ -94,16 +94,16 @@ class HoloviewResult(BenchResultBase):
         htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
 
         def tap_plot(x, y):
-            kwargs[self.input_vars[0].name] = x
-            kwargs[self.input_vars[1].name] = y
+            kwargs[self.bench_cfg.input_vars[0].name] = x
+            kwargs[self.bench_cfg.input_vars[1].name] = y
             return self.get_nearest_holomap(**kwargs).opts(width=width, height=height)
 
         tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
         return htmap + tap_htmap
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
-        print(self.hmap_kdims)
-        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.hmap_kdims).opts(
+        print(self.bench_cfg.hmap_kdims)
+        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
 
@@ -133,7 +133,7 @@ class HoloviewResult(BenchResultBase):
             )
 
         kdims = []
-        for i in self.input_vars + [self.bench_cfg.iv_repeat]:
+        for i in self.bench_cfg.input_vars + [self.bench_cfg.iv_repeat]:
             kdims.append(i.as_dim(compute_values=True, debug=self.bench_cfg.debug))
 
         return hv.DynamicMap(cb, kdims=kdims)

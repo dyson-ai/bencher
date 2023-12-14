@@ -13,11 +13,11 @@ class ResultPlotly(BenchResultBase):
         """
 
         da = self.to_dataarray(squeeze=False)
-        rv = self.result_vars[0]
+        rv = self.bench_cfg.result_vars[0]
 
-        x = self.input_vars[0]
-        y = self.input_vars[1]
-        z = self.input_vars[2]
+        x = self.bench_cfg.input_vars[0]
+        y = self.bench_cfg.input_vars[1]
+        z = self.bench_cfg.input_vars[2]
         width = 800
         height = 800
 

@@ -31,15 +31,8 @@ class OptunaResult:
     def __init__(self, bench_cfg) -> None:
         self.bench_cfg = self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = bench_cfg.ds
-        self.input_vars = bench_cfg.input_vars
-        self.result_vars = bench_cfg.result_vars
-        self.const_vars = bench_cfg.const_vars
-        self.meta_vars = bench_cfg.meta_vars
         self.hmaps = bench_cfg.hmaps
         self.result_hmaps = bench_cfg.result_hmaps
-        self.repeats = bench_cfg.repeats
-        self.hmap_kdims = bench_cfg.hmap_kdims
-        self.title = bench_cfg.title
         self.studies = []
 
     def to_xarray(self) -> xr.Dataset:
