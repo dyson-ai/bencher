@@ -97,7 +97,7 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
         combined_curve *= crv
         row.append(pts)
         row.append(crv)
-        bench.report.append_markdown(f"## {r.title}")
+        bench.report.append_markdown(f"## {r.bench_cfg.title}")
         bench.report.append(row)
 
     bench.report.append_markdown(
@@ -126,7 +126,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     for it, r in enumerate(results):
         lvl = it + 1
         row = pn.Row()
-        bench.report.append_markdown(f"## {r.title}")
+        bench.report.append_markdown(f"## {r.bench_cfg.title}")
         row.append(
             r.to_holomap()
             .overlay()

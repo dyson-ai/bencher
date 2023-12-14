@@ -349,7 +349,7 @@ class Bench(BenchPlotServer):
                 )
                 if bench_cfg_hash in c:
                     logging.info(f"loading cached results from key: {bench_cfg_hash}")
-                    bench_cfg = c[bench_cfg_hash]
+                    bench_res = c[bench_cfg_hash]
                     # if not over_time:  # if over time we always want to calculate results
                     calculate_results = False
                 else:
@@ -376,7 +376,7 @@ class Bench(BenchPlotServer):
         logging.info(self.sample_cache.stats())
         self.sample_cache.close()
 
-        if bench_cfg.auto_plot:
+        if bench_res.bench_cfg.auto_plot:
             self.report.append_result(bench_res)
 
         return bench_res

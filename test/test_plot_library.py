@@ -6,13 +6,6 @@ from bencher.plotting.plot_types import PlotTypes
 
 
 class TestPlotLibrary(unittest.TestCase):
-    # Tests that the tables PlotCollection only contains table plots
-    def test_tables_plot_collection(self) -> None:
-        tables_plots = PlotLibrary.tables()
-        self.assertIn(PlotTypes.dataframe_multi_index, tables_plots.plotters)
-        self.assertIn(PlotTypes.dataframe_mean, tables_plots.plotters)
-        self.assertEqual(len(tables_plots.plotters), 2)
-
     # Tests that the all PlotCollection contains all possible plots
     def test_all_plot_collection(self) -> None:
         all_plots = PlotLibrary.all()
@@ -35,11 +28,3 @@ class TestPlotLibrary(unittest.TestCase):
         plt_col = PlotLibrary.none()
         with self.assertRaises(ValueError):
             plt_col.add("invalid_plot")
-
-    # Test that removing a plot that is not in the list of active plots raises an Keyerror
-    def test_removing_plot_not_in_active_plots(self) -> None:
-        plt_col = PlotLibrary.tables()
-        plt_col.remove(PlotTypes.dataframe_multi_index)
-        self.assertEqual(len(plt_col.plotters), 1)  # 2 plots in tables by default and 1 removed
-        with self.assertRaises(KeyError):
-            plt_col.remove(PlotTypes.swarmplot)

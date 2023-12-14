@@ -7,10 +7,6 @@ from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
 from bencher.plotting.plots.volume import VolumePlot
 from bencher.plotting.plots.surface import SurfacePlot
-
-# from bencher.plotting.plots.scatterplot import Scatter
-
-
 from bencher.plotting.plots.hv_interactive import HvInteractive
 
 
@@ -69,18 +65,6 @@ class PlotLibrary:
         """
         defaults = PlotLibrary.default()
         return defaults.add(PlotTypes.surface_hv).add(PlotTypes.volume_plotly)
-
-    @staticmethod
-    def tables() -> PlotCollection:
-        """Display only table summaries of the data
-
-        Returns:
-            PlotCollection: Only table plots
-        """
-        plt_col = PlotLibrary.setup_sources()
-        plt_col.add(PlotTypes.dataframe_multi_index)
-        plt_col.add(PlotTypes.dataframe_mean)
-        return plt_col
 
     @staticmethod
     def all() -> PlotCollection:

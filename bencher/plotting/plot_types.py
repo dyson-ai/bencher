@@ -13,12 +13,6 @@ class PlotTypes(StrEnum):
     boxenplot = auto()
     boxplot = auto()
 
-    # table enums
-    dataframe_multi_index = auto()
-    dataframe_flat = auto()
-    dataframe_mean = auto()
-    xarray = auto()
-
     heatmap_2D = auto()
     heatmap_1D = auto()
 

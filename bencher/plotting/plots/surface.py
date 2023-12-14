@@ -62,7 +62,7 @@ class SurfacePlot:
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
         ).matches(pl_in.plt_cnt_cfg):
-            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_res.debug)
+            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_res.bench_cfg.debug)
             bench_cfg = pl_in.bench_res
             rv = pl_in.rv
 
@@ -93,7 +93,7 @@ class SurfacePlot:
             except Exception as e:
                 logging.warning(e)
 
-            if bench_cfg.repeats > 1:
+            if bench_cfg.bench_cfg.repeats > 1:
                 std_dev = da.std("repeat")
                 surface *= (
                     hv.Dataset(mean + std_dev)
@@ -114,7 +114,7 @@ class SurfacePlot:
                 backend="plotly",
             )
 
-            if bench_cfg.render_plotly:
+            if bench_cfg.bench_cfg.render_plotly:
                 hv.extension("plotly")
                 out = surface
             else:
