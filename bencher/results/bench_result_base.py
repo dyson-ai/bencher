@@ -1,4 +1,4 @@
-from bencher.bench_cfg import BenchCfg #todo enable at very end
+from bencher.bench_cfg import BenchCfg  # todo enable at very end
 import logging
 from typing import List, Any, Tuple
 from textwrap import wrap
@@ -12,13 +12,15 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
 from copy import deepcopy
 
-class BenchResultBase(BenchCfg):
+
+class BenchResultBase:
     def __init__(self, bench_cfg) -> None:
         self.bench_cfg = self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = bench_cfg.ds
         self.input_vars = bench_cfg.input_vars
         self.result_vars = bench_cfg.result_vars
         self.const_vars = bench_cfg.const_vars
+        self.meta_vars = bench_cfg.meta_vars
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
@@ -146,3 +148,6 @@ class BenchResultBase(BenchCfg):
 
             logging.info(f"Maximum value of {iv.name}: {output[-1][1]}")
         return output
+
+    def describe_sweep(self):
+        return self.bench_cfg.describe_sweep()

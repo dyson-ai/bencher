@@ -94,7 +94,7 @@ def example_holosweep_tap(
         run_cfg=run_cfg,
     )
 
-    bench.report.append(res.summarise_sweep())
+    bench.report.append(res.describe_sweep())
     bench.report.append(res.to_heatmap_tap())
 
     return bench

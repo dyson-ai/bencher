@@ -643,11 +643,9 @@ class BenchCfg(BenchRunCfg):
         Returns:
             pn.pane.Markdown: _description_
         """
-        return pn.pane.Markdown(
-            self.describe_benchmark(self.summarise_constant_inputs), name=self.bench_name
-        )
+        return pn.pane.Markdown(self.describe_benchmark())
 
-    def describe_benchmark(self,  summarise_constant_inputs) -> str:
+    def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
 
         Args:
@@ -663,9 +661,7 @@ class BenchCfg(BenchRunCfg):
         for iv in self.input_vars:
             benchmark_sampling_str.extend(describe_variable(iv, self.debug, True))
 
-        if self.const_vars and (
-            self.summarise_constant_inputs or summarise_constant_inputs
-        ):
+        if self.const_vars and (self.summarise_constant_inputs or summarise_constant_inputs):
             benchmark_sampling_str.append("\nConstants:")
             for cv in self.const_vars:
                 benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
@@ -675,10 +671,10 @@ class BenchCfg(BenchRunCfg):
             benchmark_sampling_str.extend(describe_variable(rv, self.debug, False))
 
         print_meta = True
-        if len(self.meta_vars) == 1:
-            mv = self.meta_vars[0]
-            if mv.name == "repeat" and mv.samples == 1:
-                print_meta = False
+        # if len(self.meta_vars) == 1:
+        #     mv = self.meta_vars[0]
+        #     if mv.name == "repeat" and mv.samples == 1:
+        #         print_meta = False
 
         if print_meta:
             benchmark_sampling_str.append("\nMeta Variables:")

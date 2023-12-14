@@ -396,7 +396,7 @@ class Bench(BenchPlotServer):
 
         if bench_cfg.auto_plot:
             self.report.append_result(bench_cfg)
-
+        
         return BenchResult(bench_cfg)
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
@@ -483,6 +483,7 @@ class Bench(BenchPlotServer):
             time_src = datetime.now()
         bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
 
+
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
 
         for i in bench_cfg.all_vars:
@@ -510,6 +511,8 @@ class Bench(BenchPlotServer):
 
         bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_cfg.ds_dynamic = self.ds_dynamic
+
+        
 
         return bench_cfg, function_inputs, dims_cfg.dims_name
 
@@ -611,6 +614,8 @@ class Bench(BenchPlotServer):
 
         for inp in bench_cfg.all_vars:
             self.add_metadata_to_dataset(bench_cfg, inp)
+
+      
         return bench_cfg
 
     def store_results(
