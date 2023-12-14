@@ -208,7 +208,6 @@ class Bench(BenchPlotServer):
             result_vars=result_vars,
             bench_name=self.bench_name,
         )
-        # OptunaResult()    
         optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
         self.report.append(summarise_study(optu))
         return optu

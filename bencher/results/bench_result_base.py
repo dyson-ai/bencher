@@ -26,6 +26,7 @@ class BenchResultBase:
         self.repeats = bench_cfg.repeats
         self.hmap_kdims = bench_cfg.hmap_kdims
         self.title=bench_cfg.title
+        self.studies=[]
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
@@ -173,12 +174,4 @@ class BenchResultBase:
             ) from e
         return None
 
-    def get_best_trial_params(self, canonical=False):
-        from bencher.optuna_conversions import bench_cfg_to_study 
-        from bencher.utils import hmap_canonical_input
-
-        studies = bench_cfg_to_study(self.bench_cfg, True)
-        out = studies.best_trials[0].params
-        if canonical:
-            return hmap_canonical_input(out)
-        return out
+ 
