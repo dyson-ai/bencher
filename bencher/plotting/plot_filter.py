@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from bencher.bench_cfg import BenchCfg
+# from bencher.bench_cfg import BenchCfg
+from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
@@ -101,7 +102,7 @@ class PlotInput:
         plt_cnt_cfg (PltCntCfg): The number and types of variable to plot
     """
 
-    bench_cfg: BenchCfg
+    bench_res: BenchResult
     rv: ParametrizedSweep
     plt_cnt_cfg: PltCntCfg
 

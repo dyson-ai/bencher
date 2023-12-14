@@ -66,12 +66,12 @@ class Heatmap:
         Returns:
             pn.panel: A panel with a image representation of the data
         """
-        if len(pl_in.bench_cfg.input_vars) == 2:
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+        if len(pl_in.bench_res.bench_cfg.input_vars) == 2:
+            da = pl_in.bench_res.ds[pl_in.rv.name]
             mean = da.mean("repeat")
 
-            x = pl_in.bench_cfg.input_vars[0]
-            y = pl_in.bench_cfg.input_vars[1]
+            x = pl_in.bench_res.input_vars[0]
+            y = pl_in.bench_res.input_vars[1]
             z = pl_in.rv
 
             title = f"{z.name} vs ({x.name} vs {y.name})"
@@ -101,22 +101,22 @@ class Heatmap:
         Returns:
             Optional[pn.panel]: A panel with a image representation of the data
         """
-        if len(pl_in.bench_cfg.input_vars) == 1:
-            da = pl_in.bench_cfg.ds[pl_in.rv.name]
+        if len(pl_in.bench_res.input_vars) == 1:
+            da = pl_in.bench_res.ds[pl_in.rv.name]
             mean = da.mean("repeat", keepdims=True, keep_attrs=True)
 
             return [
                 self.imshow_wrapper(
                     da,
-                    pl_in.bench_cfg.iv_repeat,
-                    pl_in.bench_cfg.input_vars[0],
+                    pl_in.bench_res.iv_repeat,
+                    pl_in.bench_res.input_vars[0],
                     pl_in.rv,
                     PlotTypes.heatmap_2D,
                 ),
                 self.imshow_wrapper(
                     mean,
-                    pl_in.bench_cfg.iv_repeat,
-                    pl_in.bench_cfg.input_vars[0],
+                    pl_in.bench_res.iv_repeat,
+                    pl_in.bench_res.input_vars[0],
                     pl_in.rv,
                     PlotTypes.heatmap_1D,
                 ),

@@ -5,7 +5,6 @@ import holoviews as hv  # noqa pylint: disable=unused-import
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
-from bencher.results.bench_result import BenchResult
 
 
 class HvInteractive:
@@ -40,15 +39,14 @@ class HvInteractive:
 
     def bar_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            pt = BenchResult(pl_in.bench_cfg).to_bar()
-            return pn.Column(pt, name=PlotTypes.bar_hv)
+            return pn.Column(pl_in.bench_res.to_bar(), name=PlotTypes.bar_hv)
 
         return None
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            pt = BenchResult(pl_in.bench_cfg).to_scatter_jitter()
-            return pn.Column(pt, name=PlotTypes.scatter_hv)
+            # pt = BenchResult(pl_in.bench_res).to_scatter_jitter()
+            return pn.Column(pl_in.bench_res.to_scatter_jitter(), name=PlotTypes.scatter_hv)
 
         return None
 
@@ -81,13 +79,13 @@ class HvInteractive:
             # print(pl_in.bench_cfg.get_hv_dataset())
             # print(pl_in.bench_cfg.get_dataframe(False))
             # return pn.Column(pl_in.bench_cfg.get_hv_dataset().to(hv.Table))
-            return pn.Column(pl_in.bench_cfg.to_curve(), name=PlotTypes.lineplot_hv)
+            return pn.Column(pl_in.bench_res.to_curve(), name=PlotTypes.lineplot_hv)
         return None
 
     def lineplot_hv_overlay(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if False & self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
-                pl_in.bench_cfg.to_curve().overlay(pl_in.bench_cfg.input_vars[-1].name),
+                pl_in.bench_res.to_curve().overlay(pl_in.bench_res.input_vars[-1].name),
                 name=PlotTypes.lineplot_hv_overlay,
             )
         return None
@@ -95,7 +93,7 @@ class HvInteractive:
     def lineplot_hv_layout(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if False & self.lineplot_multi_filter.matches(pl_in.plt_cnt_cfg):
             return pn.Column(
-                pl_in.bench_cfg.to_curve().layout(),
+                pl_in.bench_res.to_curve().layout(),
                 name=PlotTypes.lineplot_hv_layout,
             )
         return None

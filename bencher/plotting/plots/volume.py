@@ -12,7 +12,7 @@ from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCnt
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
 
-from bencher.plotting_functions import wrap_long_time_labels
+# from bencher.plotting_functions import wrap_long_time_labels
 
 
 def plot_float_cnt_3(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg, debug: bool) -> PltCfgBase:
@@ -62,7 +62,7 @@ def plot_volume_plotly(
         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
     """
 
-    bench_cfg = wrap_long_time_labels(bench_cfg)
+    # bench_cfg = wrap_long_time_labels(bench_cfg)
 
     da = bench_cfg.ds[rv.name]
 
@@ -173,9 +173,9 @@ class VolumePlot:
         ).matches(pl_in.plt_cnt_cfg):
             sns_cfg = PltCfgBase()
             sns_cfg.y = pl_in.rv.name
-            xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_cfg.debug)
+            xr_cfg = plot_float_cnt_3(sns_cfg, pl_in.plt_cnt_cfg, pl_in.bench_res.debug)
             xr_cfg.param.update(**opts)
-            return plot_volume_plotly(pl_in.bench_cfg, pl_in.rv, xr_cfg)
+            return plot_volume_plotly(pl_in.bench_res, pl_in.rv, xr_cfg)
         return None
 
     # def cone_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:

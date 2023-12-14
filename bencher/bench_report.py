@@ -46,7 +46,7 @@ class BenchReport(BenchPlotServer):
         self.pane.append(col)
 
     def append_result(self, res: BenchCfg) -> None:
-        self.append_tab(BenchPlotter.plot(res), res.title)
+        self.append_tab(BenchPlotter.plot(res), res.bench_cfg.title)
 
     def append_tab(self, pane: pn.panel, name: str = None) -> None:
         if name is None:

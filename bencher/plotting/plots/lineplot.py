@@ -34,7 +34,7 @@ class Lineplot(PlotBase):
         if self.plot_filter.matches(pl_in.plt_cnt_cfg):
             matplotlib.use("agg")
 
-            df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
+            df = pl_in.bench_res.ds[pl_in.rv.name].to_dataframe().reset_index()
             sns_cfg = PltCfgBase()
 
             x = pl_in.plt_cnt_cfg.float_vars[0]

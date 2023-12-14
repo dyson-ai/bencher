@@ -5,7 +5,9 @@ import panel as pn
 import seaborn as sns
 
 import bencher.plotting_functions as plt_func
-from bencher.bench_cfg import BenchCfg
+
+# from bencher.bench_cfg import BenchCfg
+from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 
@@ -18,7 +20,7 @@ class BenchPlotter:
     """A deprecated class for handling benchmark plotting logic. Deprecation is still a work in progress"""
 
     @staticmethod
-    def plot(bench_cfg: BenchCfg) -> List[pn.panel]:
+    def plot(bench_res: BenchResult) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
 
         Args:
@@ -28,21 +30,21 @@ class BenchPlotter:
             pn.pane: A panel containing plot results
         """
         plot_cols = pn.Column()
-        plot_cols.append(bench_cfg.summarise_sweep(name="Plots View"))
+        plot_cols.append(bench_res.bench_cfg.summarise_sweep(name="Plots View"))
 
-        if bench_cfg.over_time:
-            if len(bench_cfg.ds.coords["over_time"]) > 1:
+        if bench_res.bench_cfg.over_time:
+            if len(bench_res.ds.coords["over_time"]) > 1:
                 plot_cols.append(pn.pane.Markdown("## Results Over Time"))
-                plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
+                plot_cols.append(BenchPlotter.plot_results_row(bench_res))
             else:
                 plot_cols.append(
                     pn.pane.Markdown("Results over time needs at least 2 time snapshots to plot")
                 )
 
-        if bench_cfg.over_time:
+        if bench_res.bench_cfg.over_time:
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
 
-            bench_deep = deepcopy(bench_cfg)  # TODO do this in the future without copying
+            bench_deep = deepcopy(bench_res)  # TODO do this in the future without copying
             bench_deep.over_time = False
             bench_deep.iv_time = []
             last_time = bench_deep.ds.coords["over_time"][-1]
@@ -57,12 +59,12 @@ class BenchPlotter:
         else:
             plot_cols.append(pn.pane.Markdown("## Results"))
 
-            plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
+            plot_cols.append(BenchPlotter.plot_results_row(bench_res))
 
         # if bench_cfg.use_optuna:
         # plot_cols.extend(bench_cfg.to_optuna())
 
-        plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
+        plot_cols.append(pn.pane.Markdown(f"{bench_res.bench_cfg.post_description}"))
         return plot_cols
 
         # tabs = pn.Tabs(name=bench_cfg.title)
@@ -101,43 +103,42 @@ class BenchPlotter:
         # return tabs
 
     @staticmethod
-    def plot_results_row(bench_cfg: BenchCfg) -> pn.Row:
+    def plot_results_row(bench_res: BenchResult) -> pn.Row:
         """Given a BenchCfg, plot each result variable and add to a panel row
-
-        Args:
-            bench_cfg (BenchCfg): The BenchCfg to plot
 
         Returns:
             pn.Row: A panel row with plots in it
         """
         # todo remove the scroll and make it resize dynamically
-        plot_rows = pn.Row(name=bench_cfg.bench_name)
+        plot_rows = pn.Row(name=bench_res.bench_cfg.bench_name)
 
-        plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(bench_cfg)
+        plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(bench_res.bench_cfg)
 
-        for rv in bench_cfg.result_vars:
+        for rv in bench_res.bench_cfg.result_vars:
             plt_cnt_cfg.result_vars = 1
             if type(rv) == ResultVec:
                 plt_cnt_cfg.vector_len = rv.size
             else:
                 plt_cnt_cfg.vector_len = 1
 
-            if bench_cfg.plot_lib is not None:
+            if bench_res.bench_cfg.plot_lib is not None:
                 print(f"float {plt_cnt_cfg.float_cnt}")
                 print(f"cat {plt_cnt_cfg.cat_cnt}")
                 print(f"vec {plt_cnt_cfg.vector_len}")
-                plot_rows.append(bench_cfg.plot_lib.gather_plots(bench_cfg, rv, plt_cnt_cfg))
+                plot_rows.append(
+                    bench_res.bench_cfg.plot_lib.gather_plots(bench_res, rv, plt_cnt_cfg)
+                )
             # todo enable this check in future pr
             # if len(plot_rows) == 0:  # use the old plotting method as a backup
             plot_rows.append(
-                pn.panel(BenchPlotter.plot_result_variable(bench_cfg, rv, plt_cnt_cfg))
+                pn.panel(BenchPlotter.plot_result_variable(bench_res, rv, plt_cnt_cfg))
             )
 
         return plot_rows
 
     @staticmethod
     def plot_result_variable(
-        bench_cfg: BenchCfg, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
+        bench_res: BenchResult, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg
     ) -> pn.Column:
         """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
 
@@ -159,14 +160,14 @@ class BenchPlotter:
 
         if plt_cnt_cfg.float_cnt < 2:
             # set a marker for time series to its easy to see the measurment points
-            if bench_cfg.over_time:
+            if bench_res.bench_cfg.over_time:
                 sns_cfg.marker = "."
             if plt_cnt_cfg.float_cnt == 0:
                 sns_cfg = BenchPlotter.plot_float_cnt_0(sns_cfg, plt_cnt_cfg)
             elif plt_cnt_cfg.float_cnt == 1:
                 sns_cfg = BenchPlotter.plot_float_cnt_1(sns_cfg, plt_cnt_cfg)
             sns_cfg = BenchPlotter.get_axes_and_title(rv, sns_cfg, plt_cnt_cfg)
-            surf_col.append(plt_func.plot_sns(bench_cfg, rv, sns_cfg))
+            surf_col.append(plt_func.plot_sns(bench_res, rv, sns_cfg))
 
         return surf_col
 

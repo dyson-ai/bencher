@@ -8,7 +8,8 @@ from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCnt
 from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plot_types import PlotTypes
 from bencher.variables.results import ResultVar
-from bencher.plotting_functions import wrap_long_time_labels
+
+# from bencher.plotting_functions import wrap_long_time_labels
 
 
 def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
@@ -61,11 +62,11 @@ class SurfacePlot:
             vector_len=VarRange(1, 1),
             result_vars=VarRange(1, 1),
         ).matches(pl_in.plt_cnt_cfg):
-            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_cfg.debug)
-            bench_cfg = pl_in.bench_cfg
+            xr_cfg = plot_float_cnt_2(pl_in.plt_cnt_cfg, pl_in.rv, pl_in.bench_res.debug)
+            bench_cfg = pl_in.bench_res
             rv = pl_in.rv
 
-            bench_cfg = wrap_long_time_labels(bench_cfg)
+            # bench_cfg = wrap_long_time_labels(bench_cfg)
 
             alpha = 0.3
 

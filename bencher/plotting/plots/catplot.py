@@ -26,10 +26,10 @@ class Catplot:
         matplotlib.use("agg")
 
         plt.figure(figsize=(4, 4))
-        df = pl_in.bench_cfg.ds[pl_in.rv.name].to_dataframe().reset_index()
+        df = pl_in.bench_res.ds[pl_in.rv.name].to_dataframe().reset_index()
         sns_cfg = PltCfgBase()
-        sns_cfg.x = pl_in.bench_cfg.input_vars[0].name
-        x_units = pl_in.bench_cfg.input_vars[0].units
+        sns_cfg.x = pl_in.bench_res.bench_cfg.input_vars[0].name
+        x_units = pl_in.bench_res.bench_cfg.input_vars[0].units
         sns_cfg.y = pl_in.rv.name
         sns_cfg.xlabel = f"{sns_cfg.x} [{x_units}]"
         sns_cfg.ylabel = f"{sns_cfg.y} [{pl_in.rv.units}]"

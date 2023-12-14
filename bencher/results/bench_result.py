@@ -13,5 +13,4 @@ class BenchResult(PanelResult, ResultPlotly, HoloviewResult):
     def __init__(self, bench_cfg) -> None:
         PanelResult.__init__(self, bench_cfg)
         ResultPlotly.__init__(self, bench_cfg)
-        # OptunaResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)

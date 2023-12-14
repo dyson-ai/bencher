@@ -29,7 +29,8 @@ from bencher.optuna_conversions import (
 
 class OptunaResult:
     def __init__(self, bench_cfg) -> None:
-        self.bench_cfg = self.wrap_long_time_labels(bench_cfg)  # todo remove
+        self.bench_cfg = bench_cfg
+        self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = bench_cfg.ds
         self.hmaps = bench_cfg.hmaps
         self.result_hmaps = bench_cfg.result_hmaps
@@ -59,18 +60,18 @@ class OptunaResult:
             BenchCfg: updated config with wrapped labels
         """
         if bench_cfg.over_time:
-            if bench_cfg.ds.coords["over_time"].dtype == np.datetime64:
+            if self.ds.coords["over_time"].dtype == np.datetime64:
                 # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
-                bench_cfg.ds.coords["over_time"] = [
+                self.ds.coords["over_time"] = [
                     pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
-                    for t in bench_cfg.ds.coords.coords["over_time"].values
+                    for t in self.ds.coords.coords["over_time"].values
                 ]
                 # wrap very long time event labels because otherwise the graphs are unreadable
             if bench_cfg.time_event is not None:
-                bench_cfg.ds.coords["over_time"] = [
-                    "\n".join(wrap(t, 20)) for t in bench_cfg.ds.coords["over_time"].values
+                self.ds.coords["over_time"] = [
+                    "\n".join(wrap(t, 20)) for t in self.ds.coords["over_time"].values
                 ]
-        return bench_cfg
+        # return bench_cfg
 
     def to_optuna_plots(self) -> List[pn.pane.panel]:
         """Create an optuna summary from the benchmark results

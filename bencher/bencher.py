@@ -117,7 +117,7 @@ def worker_cfg_wrapper(worker, worker_input_cfg: ParametrizedSweep, **kwargs) ->
     return worker(input_cfg)
 
 
-def worker_kwargs_wrapper(worker, bench_cfg, **kwargs) -> dict:
+def worker_kwargs_wrapper(worker: Callable, bench_cfg: BenchCfg, **kwargs) -> dict:
     function_input_deep = deepcopy(kwargs)
     if not bench_cfg.pass_repeat:
         function_input_deep.pop("repeat")
@@ -360,26 +360,26 @@ class Bench(BenchPlotServer):
         if calculate_results:
             if run_cfg.time_event is not None:
                 time_src = run_cfg.time_event
-            bench_cfg = self.calculate_benchmark_results(
+            bench_res = self.calculate_benchmark_results(
                 bench_cfg, time_src, bench_cfg_sample_hash, run_cfg
             )
 
             # use the hash of the inputs to look up historical values in the cache
             if run_cfg.over_time:
-                bench_cfg.ds = self.load_history_cache(
-                    bench_cfg.ds, bench_cfg_hash, run_cfg.clear_history
+                bench_res.ds = self.load_history_cache(
+                    bench_res.ds, bench_cfg_hash, run_cfg.clear_history
                 )
 
-            self.report_results(bench_cfg, run_cfg.print_xarray, run_cfg.print_pandas)
-            self.cache_results(bench_cfg, bench_cfg_hash)
+            self.report_results(bench_res, run_cfg.print_xarray, run_cfg.print_pandas)
+            self.cache_results(bench_res, bench_cfg_hash)
 
         logging.info(self.sample_cache.stats())
         self.sample_cache.close()
 
         if bench_cfg.auto_plot:
-            self.report.append_result(bench_cfg)
+            self.report.append_result(bench_res)
 
-        return BenchResult(bench_cfg)
+        return bench_res
 
     def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
         """check that a variable is a subclass of param
@@ -450,7 +450,7 @@ class Bench(BenchPlotServer):
 
     def setup_dataset(
         self, bench_cfg: BenchCfg, time_src: datetime | str
-    ) -> tuple[BenchCfg, List, List]:
+    ) -> tuple[BenchResult, List, List]:
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
         Args:
@@ -490,10 +490,11 @@ class Bench(BenchPlotServer):
                     result_data = np.full(dims_cfg.dims_size, np.nan)
                     data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
 
-        bench_cfg.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
-        bench_cfg.ds_dynamic = self.ds_dynamic
+        bench_res = BenchResult(bench_cfg)
+        bench_res.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
+        bench_res.ds_dynamic = self.ds_dynamic
 
-        return bench_cfg, function_inputs, dims_cfg.dims_name
+        return bench_res, function_inputs, dims_cfg.dims_name
 
     def define_const_inputs(self, const_vars) -> dict:
         constant_inputs = None
@@ -540,7 +541,7 @@ class Bench(BenchPlotServer):
 
     def calculate_benchmark_results(
         self, bench_cfg, time_src: datetime | str, bench_cfg_sample_hash, bench_run_cfg
-    ) -> BenchCfg:
+    ) -> BenchResult:
         """A function for generating an n-d xarray from a set of input variables in the BenchCfg
 
         Args:
@@ -550,10 +551,9 @@ class Bench(BenchPlotServer):
         Returns:
             bench_cfg (BenchCfg): description of the benchmark parameters
         """
-        bench_cfg, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
-        constant_inputs = self.define_const_inputs(bench_cfg.const_vars)
-        bench_cfg.hmap_kdims = sorted(dims_name)
-
+        bench_res, func_inputs, dims_name = self.setup_dataset(bench_cfg, time_src)
+        bench_res.bench_cfg.hmap_kdims = sorted(dims_name)
+        constant_inputs = self.define_const_inputs(bench_res.bench_cfg.const_vars)
         callcount = 1
 
         results_list = []
@@ -566,13 +566,13 @@ class Bench(BenchPlotServer):
                 dims_name,
                 constant_inputs,
                 bench_cfg_sample_hash,
-                bench_cfg.tag,
+                bench_res.bench_cfg.tag,
             )
             job.setup_hashes()
             jobs.append(job)
 
-            jid = f"{bench_cfg.title}:call {callcount}/{len(func_inputs)}"
-            worker = partial(worker_kwargs_wrapper, self.worker, bench_cfg)
+            jid = f"{bench_res.bench_cfg.title}:call {callcount}/{len(func_inputs)}"
+            worker = partial(worker_kwargs_wrapper, self.worker, bench_res.bench_cfg)
             cache_job = Job(
                 job_id=jid,
                 function=worker,
@@ -585,28 +585,28 @@ class Bench(BenchPlotServer):
             callcount += 1
 
             if bench_run_cfg.executor == Executors.SERIAL:
-                self.store_results(result, bench_cfg, job, bench_run_cfg)
+                self.store_results(result, bench_res, job, bench_run_cfg)
 
         if bench_run_cfg.executor != Executors.SERIAL:
             for job, res in zip(jobs, results_list):
-                self.store_results(res, bench_cfg, job, bench_run_cfg)
+                self.store_results(res, bench_res, job, bench_run_cfg)
 
-        for inp in bench_cfg.all_vars:
-            self.add_metadata_to_dataset(bench_cfg, inp)
+        for inp in bench_res.bench_cfg.all_vars:
+            self.add_metadata_to_dataset(bench_res, inp)
 
-        return bench_cfg
+        return bench_res
 
     def store_results(
         self,
         job_result: JobFuture,
-        bench_cfg: BenchCfg,
+        bench_res: BenchResult,
         worker_job: WorkerJob,
         bench_run_cfg: BenchRunCfg,
     ) -> None:
         result = job_result.result()
         if result is not None:
             logging.info(f"{job_result.job.job_id}:")
-            if bench_cfg.print_bench_inputs:
+            if bench_res.bench_cfg.print_bench_inputs:
                 for k, v in worker_job.function_input.items():
                     logging.info(f"\t {k}:{v}")
 
@@ -614,7 +614,7 @@ class Bench(BenchPlotServer):
 
             print(result_dict)
 
-            for rv in bench_cfg.result_vars:
+            for rv in bench_res.bench_cfg.result_vars:
                 result_value = result_dict[rv.name]
                 if bench_run_cfg.print_bench_results:
                     logging.info(f"{rv.name}: {result_value}")
@@ -622,21 +622,21 @@ class Bench(BenchPlotServer):
                 if isinstance(
                     rv, (ResultVar, ResultVideo, ResultImage, ResultString, ResultContainer)
                 ):
-                    set_xarray_multidim(bench_cfg.ds[rv.name], worker_job.index_tuple, result_value)
+                    set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:
                             for i in range(rv.size):
                                 set_xarray_multidim(
-                                    bench_cfg.ds[rv.index_name(i)],
+                                    bench_res.ds[rv.index_name(i)],
                                     worker_job.index_tuple,
                                     result_value[i],
                                 )
 
                 else:
                     raise RuntimeError("Unsupported result type")
-            for rv in bench_cfg.result_hmaps:
-                bench_cfg.hmaps[rv.name][worker_job.canonical_input] = result_dict[rv.name]
+            for rv in bench_res.result_hmaps:
+                bench_res.hmaps[rv.name][worker_job.canonical_input] = result_dict[rv.name]
 
             # bench_cfg.hmap = bench_cfg.hmaps[bench_cfg.result_hmaps[0].name]
 
@@ -659,7 +659,7 @@ class Bench(BenchPlotServer):
             self.sample_cache = self.init_sample_cache(run_cfg)
         self.sample_cache.clear_tag(tag)
 
-    def add_metadata_to_dataset(self, bench_cfg: BenchCfg, input_var: ParametrizedSweep) -> None:
+    def add_metadata_to_dataset(self, bench_res: BenchResult, input_var: ParametrizedSweep) -> None:
         """Adds variable metadata to the xrarry so that it can be used to automatically plot the dimension units etc.
 
         Args:
@@ -667,18 +667,18 @@ class Bench(BenchPlotServer):
             input_var (ParametrizedSweep): The varible to extract metadata from
         """
 
-        for rv in bench_cfg.result_vars:
+        for rv in bench_res.bench_cfg.result_vars:
             if type(rv) == ResultVar:
-                bench_cfg.ds[rv.name].attrs["units"] = rv.units
-                bench_cfg.ds[rv.name].attrs["long_name"] = rv.name
+                bench_res.ds[rv.name].attrs["units"] = rv.units
+                bench_res.ds[rv.name].attrs["long_name"] = rv.name
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
-                    bench_cfg.ds[rv.index_name(i)].attrs["units"] = rv.units
-                    bench_cfg.ds[rv.index_name(i)].attrs["long_name"] = rv.name
+                    bench_res.ds[rv.index_name(i)].attrs["units"] = rv.units
+                    bench_res.ds[rv.index_name(i)].attrs["long_name"] = rv.name
             else:
                 pass  # todo
 
-        dsvar = bench_cfg.ds[input_var.name]
+        dsvar = bench_res.ds[input_var.name]
         dsvar.attrs["long_name"] = input_var.name
         if input_var.units is not None:
             dsvar.attrs["units"] = input_var.units
