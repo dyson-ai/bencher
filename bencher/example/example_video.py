@@ -87,6 +87,8 @@ def example_video(
         result_vars=[TuringPattern.param.video],
     )
 
+    print(res.meta_vars)
+
     # bench.report.append(bch.PanelResult(res).to_video())
     bench.report.append(res.summarise_sweep())
     bench.report.append(bch.PanelResult(res).to_panes())

@@ -24,6 +24,7 @@ from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
 from enum import Enum, auto
 from datetime import datetime
+
 # from bencher.results.bench_result import BenchResult
 from copy import deepcopy
 
@@ -340,7 +341,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         return BenchRunCfg(**vars(parser.parse_args()))
 
 
-class BenchCfg(BenchRunCfg ):
+class BenchCfg(BenchRunCfg):
     """A class for storing the arguments to configure a benchmark protocol  If the inputs variables are the same the class should return the same hash and same filename.  This is so that historical data can be referenced and ensures that the generated plots are unique per benchmark"""
 
     input_vars = param.List(
@@ -457,11 +458,6 @@ class BenchCfg(BenchRunCfg ):
             hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
 
         return hash_val
-
-
-
-
-
 
     def get_dataframe(self, reset_index=True) -> DataFrame:
         """Get the xarray results as a pandas dataframe
@@ -648,8 +644,61 @@ class BenchCfg(BenchRunCfg ):
             pn.pane.Markdown: _description_
         """
         return pn.pane.Markdown(
-            describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
+            self.describe_benchmark(self.summarise_constant_inputs), name=self.bench_name
         )
+
+    def describe_benchmark(self,  summarise_constant_inputs) -> str:
+        """Generate a string summary of the inputs and results from a BenchCfg
+
+        Args:
+            bench_cfg (BenchCfg): BenchCfg to generate a summary of
+
+        Returns:
+            str: summary of BenchCfg
+        """
+        benchmark_sampling_str = ["```text"]
+        benchmark_sampling_str.append("")
+
+        benchmark_sampling_str.append("Input Variables:")
+        for iv in self.input_vars:
+            benchmark_sampling_str.extend(describe_variable(iv, self.debug, True))
+
+        if self.const_vars and (
+            self.summarise_constant_inputs or summarise_constant_inputs
+        ):
+            benchmark_sampling_str.append("\nConstants:")
+            for cv in self.const_vars:
+                benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
+
+        benchmark_sampling_str.append("\nResult Variables:")
+        for rv in self.result_vars:
+            benchmark_sampling_str.extend(describe_variable(rv, self.debug, False))
+
+        print_meta = True
+        if len(self.meta_vars) == 1:
+            mv = self.meta_vars[0]
+            if mv.name == "repeat" and mv.samples == 1:
+                print_meta = False
+
+        if print_meta:
+            benchmark_sampling_str.append("\nMeta Variables:")
+            benchmark_sampling_str.append(f"    run date: {self.run_date}")
+            if self.run_tag is not None and len(self.run_tag) > 0:
+                benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
+            if self.level is not None:
+                benchmark_sampling_str.append(f"    bench level: {self.level}")
+            benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
+            benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
+            benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
+            benchmark_sampling_str.append(f"    parallel: {self.executor}")
+
+            for mv in self.meta_vars:
+                benchmark_sampling_str.extend(describe_variable(mv, self.debug, True))
+
+        benchmark_sampling_str.append("```")
+
+        benchmark_sampling_str = "\n".join(benchmark_sampling_str)
+        return benchmark_sampling_str
 
     def to_title(self, panel_name=None) -> pn.pane.Markdown:
         if panel_name is None:
@@ -685,66 +734,12 @@ class BenchCfg(BenchRunCfg ):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-   
-
     def optuna_targets(self) -> List[str]:
         target_names = []
         for rv in self.result_vars:
             if rv.direction != OptDir.none:
                 target_names.append(rv.name)
         return target_names
-
-
-def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
-    """Generate a string summary of the inputs and results from a BenchCfg
-
-    Args:
-        bench_cfg (BenchCfg): BenchCfg to generate a summary of
-
-    Returns:
-        str: summary of BenchCfg
-    """
-    benchmark_sampling_str = ["```text"]
-    benchmark_sampling_str.append("")
-
-    benchmark_sampling_str.append("Input Variables:")
-    for iv in bench_cfg.input_vars:
-        benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
-
-    if bench_cfg.const_vars and (bench_cfg.summarise_constant_inputs or summarise_constant_inputs):
-        benchmark_sampling_str.append("\nConstants:")
-        for cv in bench_cfg.const_vars:
-            benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
-
-    benchmark_sampling_str.append("\nResult Variables:")
-    for rv in bench_cfg.result_vars:
-        benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
-
-    print_meta = True
-    # if len(bench_cfg.meta_vars) == 1:
-    #     mv = bench_cfg.meta_vars[0]
-    #     if mv.name == "repeat" and mv.samples == 1:
-    #         print_meta = False
-
-    if print_meta:
-        benchmark_sampling_str.append("\nMeta Variables:")
-        benchmark_sampling_str.append(f"    run date: {bench_cfg.run_date}")
-        if bench_cfg.run_tag is not None and len(bench_cfg.run_tag) > 0:
-            benchmark_sampling_str.append(f"    run tag: {bench_cfg.run_tag}")
-        if bench_cfg.level is not None:
-            benchmark_sampling_str.append(f"    bench level: {bench_cfg.level}")
-        benchmark_sampling_str.append(f"    use_cache: {bench_cfg.use_cache}")
-        benchmark_sampling_str.append(f"    use_sample_cache: {bench_cfg.use_sample_cache}")
-        benchmark_sampling_str.append(f"    only_hash_tag: {bench_cfg.only_hash_tag}")
-        benchmark_sampling_str.append(f"    parallel: {bench_cfg.executor}")
-
-        for mv in bench_cfg.meta_vars:
-            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
-
-    benchmark_sampling_str.append("```")
-
-    benchmark_sampling_str = "\n".join(benchmark_sampling_str)
-    return benchmark_sampling_str
 
 
 def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
