@@ -25,6 +25,7 @@ class BenchResultBase:
         self.result_hmaps = bench_cfg.result_hmaps
         self.repeats = bench_cfg.repeats
         self.hmap_kdims = bench_cfg.hmap_kdims
+        self.title=bench_cfg.title
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds

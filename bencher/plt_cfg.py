@@ -59,7 +59,7 @@ class BenchPlotter:
             plot_cols.append(BenchPlotter.plot_results_row(bench_cfg))
 
         # if bench_cfg.use_optuna:
-            # plot_cols.extend(bench_cfg.to_optuna())
+        # plot_cols.extend(bench_cfg.to_optuna())
 
         plot_cols.append(pn.pane.Markdown(f"{bench_cfg.post_description}"))
         return plot_cols
@@ -112,7 +112,7 @@ class BenchPlotter:
         # todo remove the scroll and make it resize dynamically
         plot_rows = pn.Row(name=bench_cfg.bench_name)
 
-        plt_cnt_cfg = PltCntCfg(bench_cfg)
+        plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(bench_cfg)
 
         for rv in bench_cfg.result_vars:
             plt_cnt_cfg.result_vars = 1

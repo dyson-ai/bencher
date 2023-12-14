@@ -29,8 +29,6 @@ from datetime import datetime
 from copy import deepcopy
 
 
-
-
 class PltCfgBase(param.Parameterized):
     """A base class that contains plotting parameters shared by seaborn and xarray"""
 
@@ -103,7 +101,10 @@ class PltCntCfg(param.Parameterized):
     vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
     result_vars = param.Integer(1, doc="The number result variables to plot")
 
-    def __init__(self, bench_cfg, **params) -> PltCntCfg:
+    @staticmethod
+    def generate_plt_cnt_cfg(
+        bench_cfg: BenchCfg,
+    ) -> PltCntCfg:
         """Given a BenchCfg work out how many float and cat variables there are and store in a PltCntCfg class
 
         Args:
@@ -115,26 +116,27 @@ class PltCntCfg(param.Parameterized):
         Returns:
             PltCntCfg: see PltCntCfg definition
         """
-        super().__init__(**params)
-        self.float_vars = deepcopy(bench_cfg.iv_time)
-        self.cat_vars = []
+        plt_cnt_cfg = PltCntCfg()
+        plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
+        plt_cnt_cfg.cat_vars = []
 
         for iv in bench_cfg.input_vars:
             type_allocated = False
             typestr = str(type(iv))
 
             if "IntSweep" in typestr or "FloatSweep" in typestr:
-                self.float_vars.append(iv)
+                plt_cnt_cfg.float_vars.append(iv)
                 type_allocated = True
             if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
-                self.cat_vars.append(iv)
+                plt_cnt_cfg.cat_vars.append(iv)
                 type_allocated = True
 
             if not type_allocated:
                 raise ValueError(f"No rule for type {typestr}")
 
-        self.float_cnt = len(self.float_vars)
-        self.cat_cnt = len(self.cat_vars)
+        plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
+        plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
+        return plt_cnt_cfg
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -482,8 +484,6 @@ class BenchCfg(BenchRunCfg):
     def get_pareto_front_params(self):
         return [p.params for p in self.studies[0].trials]
 
-   
-
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
@@ -586,7 +586,6 @@ class BenchCfg(BenchRunCfg):
             if rv.direction != OptDir.none:
                 target_names.append(rv.name)
         return target_names
-
 
 
 class DimsCfg:
