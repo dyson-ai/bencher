@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from bencher.bench_cfg import BenchCfg, PltCntCfg
+from bencher.bench_cfg import BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
+
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 
 
 class VarRange:

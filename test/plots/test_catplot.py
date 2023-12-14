@@ -1,10 +1,13 @@
 from bencher.plotting.plot_collection import PlotInput
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
-from bencher.bench_cfg import PltCntCfg
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+
 from hypothesis import given, settings, strategies as st
 
 from bencher.example.benchmark_data import ExampleBenchCfgOut
+
+
 
 
 from .test_plots_common import TestPlotsCommon

@@ -5,8 +5,9 @@ import panel as pn
 import seaborn as sns
 
 import bencher.plotting_functions as plt_func
-from bencher.bench_cfg import BenchCfg, PltCfgBase, PltCntCfg
+from bencher.bench_cfg import BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 
 from bencher.variables.results import ResultVar, ResultVec
 

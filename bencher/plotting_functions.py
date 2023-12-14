@@ -7,11 +7,12 @@ import panel as pn
 import plotly.express as px
 import seaborn as sns
 
-from bencher.bench_cfg import BenchCfg, PltCfgBase
+from bencher.bench_cfg import BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 from bencher.variables.results import ResultVar, ResultVec
 import matplotlib
+from bencher.plotting.plt_cnt_cfg import PltCfgBase
 
 
 # hv.extension("plotly", "bokeh")
