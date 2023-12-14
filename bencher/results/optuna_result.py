@@ -190,6 +190,9 @@ class OptunaResult:
         if canonical:
             return hmap_canonical_input(out)
         return out
+    
+    def get_pareto_front_params(self):
+        return [p.params for p in self.studies[0].trials]
 
     def collect_optuna_plots(self) -> List[pn.pane.panel]:
         """Use optuna to plot various summaries of the optimisation

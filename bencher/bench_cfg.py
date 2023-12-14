@@ -299,10 +299,7 @@ class BenchCfg(BenchRunCfg):
 
     def __init__(self, **params):
         super().__init__(**params)
-        self.studies = []
-        self.ds = xr.Dataset()
         self.plot_lib = None
-        # self.hmap = {}
         self.hmaps = defaultdict(dict)
         self.hmap_kdims = None
         self.iv_repeat = None
@@ -350,8 +347,7 @@ class BenchCfg(BenchRunCfg):
             return ds.reset_index()
         return ds
 
-    def get_pareto_front_params(self):
-        return [p.params for p in self.studies[0].trials]
+    
 
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
