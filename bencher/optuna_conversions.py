@@ -183,7 +183,7 @@ def cfg_from_optuna_trial(
     return cfg
 
 
-def summarise_study(study: optuna.study.Study) -> pn.pane.panel:
+def summarise_optuna_study(study: optuna.study.Study) -> pn.pane.panel:
     """Summarise an optuna study in a panel format"""
     row = pn.Column(name="Optimisation Results")
     row.append(plot_optimization_history(study))

@@ -8,7 +8,6 @@ import param
 import xarray as xr
 from diskcache import Cache
 from contextlib import suppress
-from optuna import Study
 from functools import partial
 
 from bencher.worker_job import WorkerJob
@@ -34,7 +33,6 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
 
-from bencher.optuna_conversions import to_optuna, summarise_study
 
 from bencher.job import Job, FutureCache, JobFuture, Executors
 
@@ -197,20 +195,20 @@ class Bench(BenchPlotServer):
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
-    def to_optuna(
-        self,
-        input_vars: List[ParametrizedSweep],
-        result_vars: List[ParametrizedSweep],
-        n_trials: int = 100,
-    ) -> Study:
-        bench_cfg = BenchCfg(
-            input_vars=input_vars,
-            result_vars=result_vars,
-            bench_name=self.bench_name,
-        )
-        optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
-        self.report.append(summarise_study(optu))
-        return optu
+    # def to_optuna(
+    #     self,
+    #     input_vars: List[ParametrizedSweep],
+    #     result_vars: List[ParametrizedSweep],
+    #     n_trials: int = 100,
+    # ) -> Study:
+    #     bench_cfg = BenchCfg(
+    #         input_vars=input_vars,
+    #         result_vars=result_vars,
+    #         bench_name=self.bench_name,
+    #     )
+    #     optu = to_optuna(self.worker, bench_cfg, n_trials=n_trials)
+    #     self.report.append(summarise_optuna_study(optu))
+    #     return optu
 
     def plot_sweep(
         self,
