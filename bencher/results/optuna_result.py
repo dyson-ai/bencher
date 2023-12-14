@@ -30,8 +30,8 @@ from bencher.optuna_conversions import (
 class OptunaResult:
     def __init__(self, bench_cfg) -> None:
         self.bench_cfg = bench_cfg
-        self.wrap_long_time_labels(bench_cfg)  # todo remove
-        self.ds = bench_cfg.ds
+        # self.wrap_long_time_labels(bench_cfg)  # todo remove
+        self.ds = None
         self.hmaps = bench_cfg.hmaps
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []

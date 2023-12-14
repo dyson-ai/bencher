@@ -5,7 +5,6 @@ from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
-from bencher.plotting.plots.tables import Tables
 from bencher.plotting.plots.volume import VolumePlot
 from bencher.plotting.plots.surface import SurfacePlot
 
@@ -27,7 +26,6 @@ class PlotLibrary:
         """
         plt_col = PlotCollection()
         plt_col.add_plotter_source(Catplot())
-        plt_col.add_plotter_source(Tables())
         plt_col.add_plotter_source(Heatmap())
         plt_col.add_plotter_source(Lineplot())
         # plt_col.add_plotter_source(Scatter())
