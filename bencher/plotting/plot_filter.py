@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
-from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
 
 class VarRange:

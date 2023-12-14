@@ -1,6 +1,5 @@
 from typing import List
 
-import numpy as np
 import optuna
 import panel as pn
 import param

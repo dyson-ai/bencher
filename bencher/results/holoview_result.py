@@ -5,36 +5,21 @@ from bencher.results.bench_result_base import BenchResultBase
 
 import panel as pn
 import xarray as xr
-from bencher.utils import int_to_col, color_tuple_to_css
 
 
-import argparse
-import copy
-import logging
-from collections import defaultdict
 
-from typing import Any, Callable, List, Tuple
+from typing import List
 
-import param
 import xarray as xr
-from pandas import DataFrame
-from str2bool import str2bool
 import holoviews as hv
 import numpy as np
 import panel as pn
 
 
-import bencher as bch
-from bencher.variables.sweep_base import hash_sha1, describe_variable
-from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import OptDir
 from bencher.utils import hmap_canonical_input, get_nearest_coords
-from bencher.job import Executors
 from enum import Enum, auto
-from datetime import datetime
 
 # from bencher.results.bench_result import BenchResult
-from copy import deepcopy
 
 
 class ReduceType(Enum):

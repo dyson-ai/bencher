@@ -1,4 +1,3 @@
-from bencher.bench_cfg import BenchCfg  # todo enable at very end
 import logging
 from typing import List, Any, Tuple
 from textwrap import wrap

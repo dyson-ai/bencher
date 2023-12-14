@@ -1,7 +1,7 @@
 from bencher.plotting.plot_collection import PlotInput
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
-from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
 from hypothesis import given, settings, strategies as st
 
