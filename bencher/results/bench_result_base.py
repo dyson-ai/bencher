@@ -21,6 +21,10 @@ class BenchResultBase:
         self.result_vars = bench_cfg.result_vars
         self.const_vars = bench_cfg.const_vars
         self.meta_vars = bench_cfg.meta_vars
+        self.hmaps = bench_cfg.hmaps
+        self.result_hmaps = bench_cfg.result_hmaps
+        self.repeats = bench_cfg.repeats
+        self.hmap_kdims = bench_cfg.hmap_kdims
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
@@ -151,3 +155,29 @@ class BenchResultBase:
 
     def describe_sweep(self):
         return self.bench_cfg.describe_sweep()
+
+    def get_best_holomap(self, name: str = None):
+        return self.get_hmap(name)[self.get_best_trial_params(True)]
+
+    def get_hmap(self, name: str = None):
+        try:
+            if name is None:
+                name = self.result_hmaps[0].name
+                print(name)
+            if name in self.hmaps:
+                return self.hmaps[name]
+        except Exception as e:
+            raise RuntimeError(
+                "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
+            ) from e
+        return None
+
+    def get_best_trial_params(self, canonical=False):
+        from bencher.optuna_conversions import bench_cfg_to_study 
+        from bencher.utils import hmap_canonical_input
+
+        studies = bench_cfg_to_study(self.bench_cfg, True)
+        out = studies.best_trials[0].params
+        if canonical:
+            return hmap_canonical_input(out)
+        return out

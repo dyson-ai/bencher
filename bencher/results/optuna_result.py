@@ -24,6 +24,9 @@ import plotly.graph_objs as go
 
 from bencher.plotting.plot_types import PlotTypes
 from bencher.results.bench_result_base import BenchResultBase
+from bencher.optuna_conversions import *
+from bencher.optuna_conversions import bench_cfg_to_study, collect_optuna_plots
+from bencher.utils import hmap_canonical_input
 
 
 class OptunaResult(BenchResultBase):
@@ -34,10 +37,9 @@ class OptunaResult(BenchResultBase):
             List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
         """
 
-        return collect_optuna_plots(self)
+        return collect_optuna_plots(self.bench_cfg)
+
+    # def to_optuna_from_sweep(self,worker)
+    #     return self.to_optuna_from_sweep(bench_cfg, n_trials)
+
     
-    def to_optuna_from_sweep(self,worker)
-        return self.to_optuna_from_sweep(bench_cfg, n_trials)
-
-
- 

@@ -5,6 +5,7 @@ import holoviews as hv  # noqa pylint: disable=unused-import
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
+from bencher.results.bench_result import BenchResult
 
 
 class HvInteractive:
@@ -39,15 +40,14 @@ class HvInteractive:
 
     def bar_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            pt = pl_in.bench_cfg.to_bar()
+            pt = BenchResult(pl_in.bench_cfg).to_bar()
             return pn.Column(pt, name=PlotTypes.bar_hv)
 
         return None
 
     def scatter_hv(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if self.scatter_filter.matches(pl_in.plt_cnt_cfg):
-            pt = pl_in.bench_cfg.to_scatter_jitter()
-            # pt *= pl_in.bench_cfg.get_hv_dataset(False).to(hv.Scatter).opts(color="k", jitter=0.5)
+            pt = BenchResult(pl_in.bench_cfg).to_scatter_jitter()
             return pn.Column(pt, name=PlotTypes.scatter_hv)
 
         return None
