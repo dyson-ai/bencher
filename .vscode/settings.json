@@ -16,8 +16,8 @@
 	},
 	"files.exclude": {
 		"**/__pycache__/**": true,
-		"/home/vscode/.local/lib/python3.10/site-packages/python_template/**": true
-	},
+		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true,
+	},	
 	"python.analysis.autoImportCompletions": false,
 	"workbench.colorCustomizations": {
 		"activityBar.background": "#113507",
