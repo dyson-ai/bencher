@@ -7,13 +7,10 @@ import panel as pn
 import xarray as xr
 
 
-
 from typing import List
 
-import xarray as xr
 import holoviews as hv
 import numpy as np
-import panel as pn
 
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords

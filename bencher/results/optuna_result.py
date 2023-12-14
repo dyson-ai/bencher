@@ -16,11 +16,13 @@ from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 
 
-import panel as pn
-
 from bencher.results.bench_result_base import BenchResultBase
-from bencher.optuna_conversions import *
-from bencher.utils import hmap_canonical_input
+from bencher.optuna_conversions import (
+    sweep_var_to_optuna_dist,
+    summarise_trial,
+    param_importance,
+    optuna_grid_search,
+)
 
 
 class OptunaResult(BenchResultBase):

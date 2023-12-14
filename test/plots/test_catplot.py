@@ -8,8 +8,6 @@ from hypothesis import given, settings, strategies as st
 from bencher.example.benchmark_data import ExampleBenchCfgOut
 
 
-
-
 from .test_plots_common import TestPlotsCommon
 
 

@@ -24,8 +24,8 @@ class BenchResultBase:
         self.result_hmaps = bench_cfg.result_hmaps
         self.repeats = bench_cfg.repeats
         self.hmap_kdims = bench_cfg.hmap_kdims
-        self.title=bench_cfg.title
-        self.studies=[]
+        self.title = bench_cfg.title
+        self.studies = []
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
@@ -172,5 +172,3 @@ class BenchResultBase:
                 "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
             ) from e
         return None
-
- 
