@@ -9,16 +9,9 @@ from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut
 def example_1D_float(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function
+    """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
-    Args:
-        run_cfg (BenchRunCfg): configuration of how to perform the param sweep
-
-    Returns:
-        Bench: results of the parameter sweep
-    """
-
-    bencher = bch.Bench(
+    bench = bch.Bench(
         "benchmarking_example_float1D",
         bench_function,
         ExampleBenchCfgIn,
@@ -27,18 +20,24 @@ def example_1D_float(
     )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
-    bencher.plot_sweep(
+    res =bench.plot_sweep(
         title="Example 1D Float",
         input_vars=[ExampleBenchCfgIn.param.theta],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description=example_1D_float.__doc__,
     )
-    return bencher
+
+    # bench.report.append(res.to_pandas())
+    # bench.report.append(res.to_xarray())
+
+    bench.report.append(res.to_curve())
+
+    return bench
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.repeats = 5
-    ex_run_cfg.over_time = True
+    ex_run_cfg.repeats = 1
+    # ex_run_cfg.over_time = True
 
     example_1D_float(ex_run_cfg).report.show()

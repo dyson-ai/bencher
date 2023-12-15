@@ -6,7 +6,6 @@ import seaborn as sns
 
 import bencher.plotting_functions as plt_func
 
-# from bencher.bench_cfg import BenchCfg
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
@@ -41,9 +40,7 @@ class BenchPlotter:
                     pn.pane.Markdown("Results over time needs at least 2 time snapshots to plot")
                 )
 
-        if bench_res.bench_cfg.over_time:
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
-
             bench_deep = deepcopy(bench_res)  # TODO do this in the future without copying
             bench_deep.over_time = False
             bench_deep.iv_time = []
@@ -58,49 +55,10 @@ class BenchPlotter:
 
         else:
             plot_cols.append(pn.pane.Markdown("## Results"))
-
             plot_cols.append(BenchPlotter.plot_results_row(bench_res))
-
-        # if bench_cfg.use_optuna:
-        # plot_cols.extend(bench_cfg.to_optuna())
 
         plot_cols.append(pn.pane.Markdown(f"{bench_res.bench_cfg.post_description}"))
         return plot_cols
-
-        # tabs = pn.Tabs(name=bench_cfg.title)
-        # tabs.append(plot_cols)
-
-        # if bench_cfg.serve_xarray:
-        #     tabs.append(
-        #         pn.Column(
-        #             pn.pane.Markdown(
-        #                 """This page shows the with the inputs of the parameter sweep and the results in its native N-D xarray dataset format."""
-        #             ),
-        #             bench_cfg.ds,
-        #             name="Xarray Dataset View",
-        #         )
-        #     )
-        # if bench_cfg.serve_pandas:
-        #     tabs.append(
-        #         pn.Column(
-        #             pn.pane.Markdown(
-        #                 """This page shows the with the inputs of the parameter sweep and the results as a pandas multiindex."""
-        #             ),
-        #             bench_cfg.ds.to_dataframe(),
-        #             name="Pandas Dataframe MultiIndex View",
-        #         )
-        #     )
-        # if bench_cfg.serve_pandas_flat:
-        #     tabs.append(
-        #         pn.Column(
-        #             pn.pane.Markdown(
-        #                 """This page shows the with the inputs of the parameter sweep and the results as a flattened padas dataframe."""
-        #             ),
-        #             bench_cfg.get_dataframe(),
-        #             name="Pandas Dataframe Flattened View",
-        #         )
-        #     )
-        # return tabs
 
     @staticmethod
     def plot_results_row(bench_res: BenchResult) -> pn.Row:

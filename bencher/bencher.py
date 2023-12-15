@@ -208,6 +208,7 @@ class Bench(BenchPlotServer):
         tag: str = "",
         run_cfg: BenchRunCfg = None,
         plot_lib=None,
+        plot: bool = True,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
@@ -376,7 +377,7 @@ class Bench(BenchPlotServer):
         logging.info(self.sample_cache.stats())
         self.sample_cache.close()
 
-        if bench_res.bench_cfg.auto_plot:
+        if plot and bench_res.bench_cfg.auto_plot:
             self.report.append_result(bench_res)
 
         return bench_res
