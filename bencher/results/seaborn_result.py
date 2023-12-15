@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import panel as pn
-import plotly.express as px
 import seaborn as sns
 import matplotlib
 
@@ -91,24 +90,4 @@ class SeabornResult(BenchResultBase):
         h.set_axis_labels(f"{names[0]} [{rv.units}]", f"{names[1]} [{rv.units}]")
         return h
 
-    def plot_scatter2D_hv(self, rv: ParametrizedSweep) -> pn.pane.Plotly:
-        """Given a benchCfg generate a 2D scatter plot
-
-        Args:
-            bench_cfg (BenchCfg): description of benchmark
-            rv (ParametrizedSweep): result variable to plot
-
-        Returns:
-            pn.pane.Plotly: A 3d volume plot as a holoview in a pane
-        """
-
-        # bench_cfg = wrap_long_time_labels(bench_cfg)
-        self.ds.drop_vars("repeat")
-
-        df = self.to_pandas()
-
-        names = rv.index_names()
-
-        return px.scatter(
-            df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
-        )
+  

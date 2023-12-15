@@ -38,7 +38,7 @@ class HoloviewResult(BenchResultBase):
         if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
-            return hv.Dataset(ds.squeeze("repeat",drop=True), vdims=result_vars_str)
+            return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
@@ -147,6 +147,30 @@ class HoloviewResult(BenchResultBase):
 
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
+
+    # def plot_scatter2D_hv(self, rv: ParametrizedSweep) -> pn.pane.Plotly:
+    # import plotly.express as px
+
+    #     """Given a benchCfg generate a 2D scatter plot
+
+    #     Args:
+    #         bench_cfg (BenchCfg): description of benchmark
+    #         rv (ParametrizedSweep): result variable to plot
+
+    #     Returns:
+    #         pn.pane.Plotly: A 3d volume plot as a holoview in a pane
+    #     """
+
+    #     # bench_cfg = wrap_long_time_labels(bench_cfg)
+    #     self.ds.drop_vars("repeat")
+
+    #     df = self.to_pandas()
+
+    #     names = rv.index_names()
+
+    #     return px.scatter(
+    #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
+    #     )
 
 
 def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
