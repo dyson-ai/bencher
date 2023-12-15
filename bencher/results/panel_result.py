@@ -3,6 +3,7 @@ from bencher.results.bench_result_base import BenchResultBase
 import panel as pn
 import xarray as xr
 from bencher.utils import int_to_col, color_tuple_to_css
+from bencher.variables.results import ResultVar
 
 
 class PanelResult(BenchResultBase):
@@ -51,8 +52,8 @@ class PanelResult(BenchResultBase):
     def to_image(self, container=pn.pane.PNG):
         return self.to_panes(container=container)
 
-    def to_panes(self, container=pn.pane.panel):
-        xr_dataarray = self.to_dataarray()
+    def to_panes(self, result_var: ResultVar, container=pn.pane.panel):
+        xr_dataarray = self.to_dataarray(result_var)
         return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
 
     def _to_panes(

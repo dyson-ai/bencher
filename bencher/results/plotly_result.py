@@ -1,12 +1,13 @@
 import panel as pn
 import plotly.graph_objs as go
-from typing import Optional, List
+from typing import Optional
 
 from bencher.plotting.plot_types import PlotTypes
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
-# from bencher.plotting.plot_filter import PlotFilter,  VarRange
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+
 # from bencher.plotting.plot_types import PlotTypes
 
 
@@ -20,11 +21,10 @@ class PlotlyResult(BenchResultBase):
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
-        # if PlotFilter(
-        #     float_range=VarRange(3, 3),
-        #     cat_range=VarRange(-1, 0),
-        # ).matches(self.plt_cnt_cfg):
-        if True:
+        if PlotFilter(
+            float_range=VarRange(3, 3),
+            cat_range=VarRange(-1, 0),
+        ).matches(self.plt_cnt_cfg):
             x = self.bench_cfg.input_vars[0]
             y = self.bench_cfg.input_vars[1]
             z = self.bench_cfg.input_vars[2]

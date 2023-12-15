@@ -5,7 +5,9 @@ import pandas as pd
 import panel as pn
 import seaborn as sns
 
-from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_input import PlotInput
+
 from bencher.plotting.plot_types import PlotTypes
 
 from bencher.plotting.plt_cnt_cfg import PltCfgBase

@@ -113,5 +113,5 @@ def example_floats3D(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.level=3
+    ex_run_cfg.level = 3
     example_floats3D(ex_run_cfg).report.show()

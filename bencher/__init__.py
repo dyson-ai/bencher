@@ -17,7 +17,8 @@ from .variables.results import (
     curve,
 )
 from .plotting.plot_library import PlotLibrary, PlotTypes
-from .plotting.plot_filter import PlotInput, VarRange, PlotFilter
+from .plotting.plot_filter import VarRange, PlotFilter
+from .plotting.plot_input import PlotInput
 from .utils import hmap_canonical_input, get_nearest_coords, make_namedtuple
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams

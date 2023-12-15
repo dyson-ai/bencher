@@ -3,7 +3,9 @@ import panel as pn
 import hvplot.xarray  # noqa pylint: disable=unused-import
 import holoviews as hv  # noqa pylint: disable=unused-import
 
-from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_input import PlotInput
+
 from bencher.plotting.plot_types import PlotTypes  # noqa pylint: disable=unused-import
 
 

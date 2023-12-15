@@ -7,7 +7,10 @@ from typing import Callable, List
 import panel as pn
 
 from bencher.bench_cfg import BenchCfg
-from bencher.plotting.plot_filter import PlotInput, PlotProvider
+from bencher.plotting.plot_filter import PlotProvider
+
+from bencher.plotting.plot_input import PlotInput
+
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 

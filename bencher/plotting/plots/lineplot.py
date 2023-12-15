@@ -4,7 +4,9 @@ import panel as pn
 import seaborn as sns
 import hvplot.xarray  # noqa pylint: disable=unused-import
 
-from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_input import PlotInput
+
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.plot_base import PlotBase

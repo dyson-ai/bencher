@@ -7,7 +7,9 @@ import xarray as xr
 import hvplot.xarray  # noqa pylint: disable=unused-import
 
 
-from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_input import PlotInput
+
 from bencher.plotting.plot_types import PlotTypes
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 

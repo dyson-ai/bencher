@@ -18,8 +18,6 @@ from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.bench_cfg import BenchCfg
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
-from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.variables.results import ResultVar, ResultVec
 
 
 # from bencher.results.bench_result_base import BenchResultBase
