@@ -3,18 +3,14 @@ import plotly.graph_objs as go
 from typing import Optional
 
 from bencher.plotting.plot_types import PlotTypes
+from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-
-from bencher.plotting.plot_filter import PlotFilter, VarRange
-
-# from bencher.plotting.plot_types import PlotTypes
 
 
 class PlotlyResult(BenchResultBase):
     def to_volume(self, result_var: ParametrizedSweep = None) -> pn.Row:
-        rvs = self.bench_cfg.result_vars if result_var is None else [result_var]
-        return pn.Row(*[self.to_volume_single(rv) for rv in rvs])
+        return self.map_plots(self.to_volume_single, result_var)
 
     def to_volume_single(self, result_var: ParametrizedSweep = None) -> Optional[pn.pane.Plotly]:
         """Given a benchCfg generate a 3D surface plot

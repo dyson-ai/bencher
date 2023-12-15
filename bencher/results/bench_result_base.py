@@ -9,6 +9,7 @@ from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
+import panel as pn
 
 
 class BenchResultBase(OptunaResult):
@@ -122,3 +123,15 @@ class BenchResultBase(OptunaResult):
         return None
 
     # def
+    def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
+        return self.bench_cfg.result_vars if result_var is None else [result_var]
+        # return pn.Row(*[self.to_volume_single(rv) for rv in rvs])
+
+    def map_plots(
+        self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
+    ):
+        if row is None:
+            row = pn.Row()
+        for rv in self.get_results_var_list(result_var):
+            row.append(plot_callback(rv))
+        return row

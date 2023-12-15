@@ -72,6 +72,13 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         plot_cols.append(pn.pane.Markdown(f"{self.bench_cfg.post_description}"))
         return plot_cols
 
+    def to_auto(self) -> List[pn.panel]:
+        plot_callback_list = [self.to_volume]
+        row = pn.Row()
+        for cb in plot_callback_list:
+            row = self.map_plots(cb, row=row)
+        return row
+
     def plot_results_row(self) -> pn.Row:
         """Given a BenchCfg, plot each result variable and add to a panel row
 
