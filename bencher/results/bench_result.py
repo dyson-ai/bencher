@@ -4,7 +4,7 @@ from typing import List
 import panel as pn
 
 from bencher.results.panel_result import PanelResult
-from bencher.results.result_plotly import ResultPlotly
+from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.results.seaborn_result import SeabornResult
 
@@ -21,13 +21,13 @@ from bencher.variables.results import ResultVar, ResultVec
 import xarray as xr
 
 
-class BenchResult(PanelResult, ResultPlotly, HoloviewResult, SeabornResult):
+class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
         PanelResult.__init__(self, bench_cfg)
-        ResultPlotly.__init__(self, bench_cfg)
+        PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
         SeabornResult.__init__(self, bench_cfg)
 

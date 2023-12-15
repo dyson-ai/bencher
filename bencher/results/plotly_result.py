@@ -6,7 +6,7 @@ from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
-class ResultPlotly(BenchResultBase):
+class PlotlyResult(BenchResultBase):
     def to_volume(self, result_var: ParametrizedSweep = None) -> pn.pane.Plotly:
         """Given a benchCfg generate a 3D surface plot
         Returns:

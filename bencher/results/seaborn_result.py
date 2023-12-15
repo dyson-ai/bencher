@@ -89,5 +89,3 @@ class SeabornResult(BenchResultBase):
 
         h.set_axis_labels(f"{names[0]} [{rv.units}]", f"{names[1]} [{rv.units}]")
         return h
-
-  
