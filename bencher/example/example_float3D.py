@@ -94,9 +94,9 @@ def example_floats3D(
     )
 
     # for rv in res.bench_cfg.result_vars:
-    # bench.report.append(res.to_volume(rv))
-
     bench.report.append(res.to_volume())
+
+    # bench.report.append(res.to_volume_single(res.bench_cfg.result_vars[0]))
 
     # bench.plot_sweep(
     #     title="Float 3D Cone Example",
@@ -113,4 +113,5 @@ def example_floats3D(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
+    ex_run_cfg.level=3
     example_floats3D(ex_run_cfg).report.show()

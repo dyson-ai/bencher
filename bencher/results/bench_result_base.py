@@ -8,11 +8,12 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
+from bencher.variables.results import ResultVar
 
 
 class BenchResultBase(OptunaResult):
-    def to_dataarray(self, squeeze: bool = True) -> xr.DataArray:
-        var = self.bench_cfg.result_vars[0].name
+    def to_dataarray(self, result_var: ResultVar, squeeze: bool = True) -> xr.DataArray:
+        var = result_var.name
         xr_dataarray = self.ds[var]
         if squeeze:
             xr_dataarray = xr_dataarray.squeeze()
@@ -119,3 +120,5 @@ class BenchResultBase(OptunaResult):
                 "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
             ) from e
         return None
+
+    # def

@@ -377,6 +377,8 @@ class Bench(BenchPlotServer):
         logging.info(self.sample_cache.stats())
         self.sample_cache.close()
 
+        bench_res.post_setup()
+
         if plot and bench_res.bench_cfg.auto_plot:
             self.report.append_result(bench_res)
 

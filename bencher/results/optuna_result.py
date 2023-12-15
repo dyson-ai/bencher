@@ -17,6 +17,9 @@ from bencher.utils import hmap_canonical_input
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.bench_cfg import BenchCfg
+from bencher.plotting.plt_cnt_cfg import PltCntCfg
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.variables.results import ResultVar, ResultVec
 
 
 # from bencher.results.bench_result_base import BenchResultBase
@@ -38,6 +41,13 @@ class OptunaResult:
         self.hmaps = defaultdict(dict)
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []
+        self.plt_cnt_cfg = None
+        self.plot_inputs = []
+
+    def post_setup(self):
+        self.plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
+        self.bench_cfg = self.wrap_long_time_labels(self.bench_cfg)
+        # self.plot_inputs = self.setup_plot_inputs()
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
@@ -74,7 +84,7 @@ class OptunaResult:
                 self.ds.coords["over_time"] = [
                     "\n".join(wrap(t, 20)) for t in self.ds.coords["over_time"].values
                 ]
-        # return bench_cfg
+        return bench_cfg
 
     def to_optuna_plots(self) -> List[pn.pane.panel]:
         """Create an optuna summary from the benchmark results

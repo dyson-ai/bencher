@@ -75,7 +75,7 @@ class PltCntCfg(param.Parameterized):
     cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
     cat_cnt = param.Integer(0, doc="The number of cat variables")
     vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
-    result_vars = param.Integer(1, doc="The number result variables to plot")
+    # result_vars = param.Integer(1, doc="The number result variables to plot")
 
     @staticmethod
     def generate_plt_cnt_cfg(
