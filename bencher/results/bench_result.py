@@ -41,7 +41,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             pn.pane: A panel containing plot results
         """
         plot_cols = pn.Column()
-        plot_cols.append(self.bench_cfg.summarise_sweep(name="Plots View"))
+        plot_cols.append(self.bench_cfg.to_sweep_summary(name="Plots View"))
 
         if self.bench_cfg.over_time:
             if len(self.ds.coords["over_time"]) > 1:

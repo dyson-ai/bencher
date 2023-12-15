@@ -335,19 +335,12 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self) -> pn.pane.Markdown:
-        """Produce a markdown summary of the sweep settings
-
-        Returns:
-            pn.pane.Markdown: _description_
-        """
-        return pn.pane.Markdown(self.describe_benchmark())
+    def describe_sweep(self, width: int = 800) -> pn.pane.Markdown:
+        """Produce a markdown summary of the sweep settings"""
+        return pn.pane.Markdown(self.describe_benchmark(), width=width)
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
-
-        Args:
-            bench_cfg (BenchCfg): BenchCfg to generate a summary of
 
         Returns:
             str: summary of BenchCfg
@@ -394,15 +387,15 @@ class BenchCfg(BenchRunCfg):
         benchmark_sampling_str = "\n".join(benchmark_sampling_str)
         return benchmark_sampling_str
 
-    def to_title(self, panel_name=None) -> pn.pane.Markdown:
+    def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
         if panel_name is None:
             panel_name = self.title
         return pn.pane.Markdown(f"# {self.title}", name=panel_name)
 
-    def to_description(self) -> pn.pane.Markdown:
-        return pn.pane.Markdown(f"{self.description}", width=800)
+    def to_description(self, width: int = 800) -> pn.pane.Markdown:
+        return pn.pane.Markdown(f"{self.description}", width=width)
 
-    def summarise_sweep(
+    def to_sweep_summary(
         self,
         name=None,
         description=True,

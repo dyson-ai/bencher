@@ -16,6 +16,7 @@ from optuna.visualization import (
 from bencher.utils import hmap_canonical_input
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
+from bencher.bench_cfg import BenchCfg
 
 
 # from bencher.results.bench_result_base import BenchResultBase
@@ -30,7 +31,7 @@ from bencher.optuna_conversions import (
 
 
 class OptunaResult:
-    def __init__(self, bench_cfg) -> None:
+    def __init__(self, bench_cfg: BenchCfg) -> None:
         self.bench_cfg = bench_cfg
         # self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = xr.Dataset()
