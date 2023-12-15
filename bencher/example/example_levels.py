@@ -32,7 +32,7 @@ class RunWithLevel(bch.ParametrizedSweep):
 
     level_samples = bch.ResultVar()
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> dict():
         self.update_params_from_kwargs(**kwargs)
 
         self.level_samples = int(
@@ -44,7 +44,7 @@ class RunWithLevel(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
+def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]) -> List[bch.BenchResult]:
     results = []
     for level in range(1, 6):
         print(level)

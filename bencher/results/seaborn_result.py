@@ -39,6 +39,7 @@ class SeabornResult(BenchResultBase):
             else:
                 return pn.pane.Markdown("Scatter plots of >3D result vectors not supported yet")
         elif type(rv) == ResultVar:
+            # self.to_pandas()
             df = self.ds[rv.name].to_dataframe().reset_index()
 
             try:

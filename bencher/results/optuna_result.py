@@ -33,7 +33,7 @@ class OptunaResult:
     def __init__(self, bench_cfg) -> None:
         self.bench_cfg = bench_cfg
         # self.wrap_long_time_labels(bench_cfg)  # todo remove
-        self.ds = None
+        self.ds = xr.Dataset()
         self.hmaps = defaultdict(dict)
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []
@@ -66,7 +66,7 @@ class OptunaResult:
                 # plotly catastrophically fails to plot anything with the default long string representation of time, so convert to a shorter time representation
                 self.ds.coords["over_time"] = [
                     pd.to_datetime(t).strftime("%d-%m-%y %H-%M-%S")
-                    for t in self.ds.coords.coords["over_time"].values
+                    for t in self.ds.coords["over_time"].values
                 ]
                 # wrap very long time event labels because otherwise the graphs are unreadable
             if bench_cfg.time_event is not None:

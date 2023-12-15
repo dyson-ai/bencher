@@ -54,12 +54,12 @@ class BenchResult(PanelResult, ResultPlotly, HoloviewResult, SeabornResult):
 
             plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
             bench_deep = deepcopy(self)  # TODO do this in the future without copying
-            bench_deep.over_time = False
-            bench_deep.iv_time = []
+            bench_deep.bench_cfg.over_time = False
+            bench_deep.bench_cfg.iv_time = []
             last_time = bench_deep.ds.coords["over_time"][-1]
             try:
                 bench_deep.ds = bench_deep.ds.sel(over_time=last_time)
-                plot_cols.append(BenchPlotter.plot_results_row(bench_deep))
+                plot_cols.append(bench_deep.plot_results_row())
             except ValueError as e:
                 warning = f"failed to load historical data: {e}"
                 plot_cols.append(pn.pane.Markdown(warning))
