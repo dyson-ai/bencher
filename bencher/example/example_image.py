@@ -71,7 +71,7 @@ def example_image(
         #     BenchPolygons.param.radius,
         # ],
     ]:
-        res1 = bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
+        bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
 
     return bench
 

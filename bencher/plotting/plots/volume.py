@@ -5,7 +5,7 @@ from bencher.plotting.plot_input import PlotInput
 
 
 class VolumePlot:
-    def volume_plotly(self, pl_in: PlotInput, **opts) -> Optional[pn.panel]:
+    def volume_plotly(self, pl_in: PlotInput) -> Optional[pn.panel]:
         if PlotFilter(
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),

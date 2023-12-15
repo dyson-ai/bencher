@@ -4,9 +4,8 @@ from typing import Optional
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase
-from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.variables.results import ResultImage, ResultVideo, ResultContainer
+from bencher.variables.results import ResultImage, ResultVideo
 from functools import partial
 
 
