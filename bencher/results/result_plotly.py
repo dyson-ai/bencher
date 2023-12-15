@@ -3,17 +3,18 @@ import plotly.graph_objs as go
 
 from bencher.plotting.plot_types import PlotTypes
 from bencher.results.bench_result_base import BenchResultBase
+from bencher.variables.parametrised_sweep import ParametrizedSweep
 
 
 class ResultPlotly(BenchResultBase):
-    def to_volume(self) -> pn.pane.Plotly:
+    def to_volume(self, result_var: ParametrizedSweep = None) -> pn.pane.Plotly:
         """Given a benchCfg generate a 3D surface plot
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
 
-        da = self.to_dataarray(squeeze=False)
-        rv = self.bench_cfg.result_vars[0]
+        if result_var is None:
+            result_var = self.bench_cfg.result_vars[0]
 
         x = self.bench_cfg.input_vars[0]
         y = self.bench_cfg.input_vars[1]
@@ -21,6 +22,7 @@ class ResultPlotly(BenchResultBase):
         width = 800
         height = 800
 
+        da = self.to_dataarray(squeeze=False)
         mean = da.mean("repeat")
 
         opacity = 0.1
@@ -32,16 +34,16 @@ class ResultPlotly(BenchResultBase):
                 x=meandf[x.name],
                 y=meandf[y.name],
                 z=meandf[z.name],
-                value=meandf[rv.name],
-                isomin=meandf[rv.name].min(),
-                isomax=meandf[rv.name].max(),
+                value=meandf[result_var.name],
+                isomin=meandf[result_var.name].min(),
+                isomax=meandf[result_var.name].max(),
                 opacity=opacity,
                 surface_count=20,
             )
         ]
 
         layout = go.Layout(
-            title=f"{rv.name} vs ({x.name} vs {y.name} vs {z.name})",
+            title=f"{result_var.name} vs ({x.name} vs {y.name} vs {z.name})",
             width=width,
             height=height,
             margin=dict(t=50, b=50, r=50, l=50),
