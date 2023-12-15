@@ -7,8 +7,9 @@ import hvplot.xarray  # noqa pylint: disable=unused-import
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
-from bencher.plt_cfg import PltCfgBase
 from bencher.plotting.plots.plot_base import PlotBase
+from bencher.plotting.plt_cnt_cfg import PltCfgBase
+
 
 import matplotlib
 

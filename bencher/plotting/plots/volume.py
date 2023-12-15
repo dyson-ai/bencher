@@ -8,9 +8,11 @@ import xarray as xr
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
-from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange, PltCntCfg
-from bencher.plt_cfg import PltCfgBase
+from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
+
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+
 
 # from bencher.plotting_functions import wrap_long_time_labels
 

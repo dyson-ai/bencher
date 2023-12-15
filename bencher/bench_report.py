@@ -7,7 +7,7 @@ import shutil
 from threading import Thread
 
 from bencher.results.bench_result import BenchResult
-from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
+from bencher.bench_plot_server import BenchPlotServer
 from bencher.bench_cfg import BenchRunCfg
 
 
@@ -47,7 +47,7 @@ class BenchReport(BenchPlotServer):
         self.pane.append(col)
 
     def append_result(self, bench_res: BenchResult) -> None:
-        self.append_tab(BenchPlotter.plot(bench_res), bench_res.bench_cfg.title)
+        self.append_tab(bench_res.to_auto_plots(), bench_res.bench_cfg.title)
 
     def append_tab(self, pane: pn.panel, name: str = None) -> None:
         if name is None:

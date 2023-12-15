@@ -7,7 +7,9 @@ import seaborn as sns
 
 from bencher.plotting.plot_filter import PlotFilter, PlotInput, VarRange
 from bencher.plotting.plot_types import PlotTypes
-from bencher.plt_cfg import PltCfgBase
+
+from bencher.plotting.plt_cnt_cfg import PltCfgBase
+
 
 import matplotlib
 

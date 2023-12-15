@@ -20,7 +20,7 @@ def example_1D_float(
     )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
-    res =bench.plot_sweep(
+    res = bench.plot_sweep(
         title="Example 1D Float",
         input_vars=[ExampleBenchCfgIn.param.theta],
         result_vars=[ExampleBenchCfgOut.param.out_sin],
