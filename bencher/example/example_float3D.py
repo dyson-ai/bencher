@@ -81,7 +81,7 @@ def example_floats3D(
         report=report,
     )
 
-    res = bench.plot_sweep(
+    bench.plot_sweep(
         title="Float 3D Example",
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[

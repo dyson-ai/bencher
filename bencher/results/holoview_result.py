@@ -8,9 +8,7 @@ import numpy as np
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
-
 from bencher.plotting.plot_filter import PlotFilter, VarRange
-from bencher.results.bench_result_base import BenchResultBase
 
 
 class ReduceType(Enum):
