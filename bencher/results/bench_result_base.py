@@ -121,12 +121,9 @@ class BenchResultBase(OptunaResult):
                 "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
             ) from e
         return None
-    
-    def to_plot_title(self):
-        title = f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
-        return title
 
-
+    def to_plot_title(self) -> str:
+        return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]

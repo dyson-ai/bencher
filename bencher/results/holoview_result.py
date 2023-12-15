@@ -1,11 +1,15 @@
 from __future__ import annotations
 from enum import Enum, auto
-from typing import List
+from typing import List, Optional
 import panel as pn
 import xarray as xr
 import holoviews as hv
 import numpy as np
+
 from bencher.utils import hmap_canonical_input, get_nearest_coords
+from bencher.results.bench_result_base import BenchResultBase
+
+from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase
 
 
@@ -44,13 +48,18 @@ class HoloviewResult(BenchResultBase):
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
-    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        title = self.to_plot_title()
-        ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Curve).opts(title=title)
-        if self.bench_cfg.repeats > 1:
-            pt *= ds.to(hv.Spread).opts(alpha=0.2)
-        return pt
+    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> Optional[hv.Curve]:
+        if PlotFilter(
+            float_range=VarRange(0, 1),
+            cat_range=VarRange(0, 0),
+        ).matches(self.plt_cnt_cfg):
+            title = self.to_plot_title()
+            ds = self.to_hv_dataset(reduce)
+            pt = ds.to(hv.Curve).opts(title=title)
+            if self.bench_cfg.repeats > 1:
+                pt *= ds.to(hv.Spread).opts(alpha=0.2)
+            return pt
+        return None
 
     def to_error_bar(self) -> hv.Bars:
         return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
@@ -65,22 +74,27 @@ class HoloviewResult(BenchResultBase):
     def to_scatter(self):
         return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
 
-    def to_scatter_jitter(self) -> hv.Scatter:
-        ds = self.to_hv_dataset(ReduceType.NONE)
-        pt = (
-            ds.to(hv.Scatter)
-            .opts(jitter=0.1)
-            .overlay("repeat")
-            .opts(show_legend=False, title=self.to_plot_title())
-        )
-        return pt
+    def to_scatter_jitter(self) -> Optional[hv.Scatter]:
+        if PlotFilter(
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, 1),
+        ).matches(self.plt_cnt_cfg):
+            ds = self.to_hv_dataset(ReduceType.NONE)
+            pt = (
+                ds.to(hv.Scatter)
+                .opts(jitter=0.1)
+                .overlay("repeat")
+                .opts(show_legend=False, title=self.to_plot_title())
+            )
+            return pt
+        return None
 
     def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
         ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Bars)
         if reduce:
             pt *= ds.to(hv.ErrorBars)
-        return pt
+        return pt.opts(title=self.to_plot_title())
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         z = self.bench_cfg.result_vars[0]

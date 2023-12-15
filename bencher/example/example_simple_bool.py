@@ -42,5 +42,4 @@ if __name__ == "__main__":
     ex_run_cfg.over_time = False
     # ex_run_cfg.auto_plot = False
 
-    b = example_1D_bool(ex_run_cfg)
-    b.save()
+    example_1D_bool(ex_run_cfg).report.show()
