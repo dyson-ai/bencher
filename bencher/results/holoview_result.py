@@ -38,7 +38,7 @@ class HoloviewResult(BenchResultBase):
         if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
-            return hv.Dataset(ds.squeeze(drop=True), vdims=result_vars_str)
+            return hv.Dataset(ds.squeeze("repeat",drop=True), vdims=result_vars_str)
         return hvds
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
