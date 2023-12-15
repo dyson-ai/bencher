@@ -31,6 +31,16 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         HoloviewResult.__init__(self, bench_cfg)
         SeabornResult.__init__(self, bench_cfg)
 
+    def to_auto(self) -> List[pn.panel]:
+        # plot_callback_list = [self.to_volume, self.to_curve]
+        plot_callback_list = [self.to_volume,self.to_scatter_jitter]
+
+        row = pn.Row()
+        for cb in plot_callback_list:
+            row.append(cb())
+            # row = self.map_plots(cb, row=row)
+        return row
+
     def to_auto_plots(self) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
 
@@ -70,14 +80,9 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             plot_cols.append(self.plot_results_row())
 
         plot_cols.append(pn.pane.Markdown(f"{self.bench_cfg.post_description}"))
-        return plot_cols
 
-    def to_auto(self) -> List[pn.panel]:
-        plot_callback_list = [self.to_volume]
-        row = pn.Row()
-        for cb in plot_callback_list:
-            row = self.map_plots(cb, row=row)
-        return row
+        plot_cols.append(self.to_auto())
+        return plot_cols
 
     def plot_results_row(self) -> pn.Row:
         """Given a BenchCfg, plot each result variable and add to a panel row

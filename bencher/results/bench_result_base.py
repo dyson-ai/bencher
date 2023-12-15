@@ -121,8 +121,13 @@ class BenchResultBase(OptunaResult):
                 "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
             ) from e
         return None
+    
+    def to_plot_title(self):
+        title = f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
+        return title
 
-    # def
+
+
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]
         # return pn.Row(*[self.to_volume_single(rv) for rv in rvs])
@@ -135,3 +140,13 @@ class BenchResultBase(OptunaResult):
         for rv in self.get_results_var_list(result_var):
             row.append(plot_callback(rv))
         return row
+
+    # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
+    def to_sweep_summary(self):
+        return self.bench_cfg.to_sweep_summary()
+
+    def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
+        return self.bench_cfg.to_title(panel_name)
+
+    def to_description(self, width: int = 800) -> pn.pane.Markdown:
+        return self.bench_cfg.to_description(width)

@@ -93,8 +93,6 @@ def example_floats3D(
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
     )
 
-    bench.report.append(res.to_auto())
-
     return bench
 
 

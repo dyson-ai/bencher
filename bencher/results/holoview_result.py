@@ -45,7 +45,7 @@ class HoloviewResult(BenchResultBase):
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        title = f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
+        title = self.to_plot_title()
         ds = self.to_hv_dataset(reduce)
         pt = ds.to(hv.Curve).opts(title=title)
         if self.bench_cfg.repeats > 1:
@@ -67,7 +67,12 @@ class HoloviewResult(BenchResultBase):
 
     def to_scatter_jitter(self) -> hv.Scatter:
         ds = self.to_hv_dataset(ReduceType.NONE)
-        pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
+        pt = (
+            ds.to(hv.Scatter)
+            .opts(jitter=0.1)
+            .overlay("repeat")
+            .opts(show_legend=False, title=self.to_plot_title())
+        )
         return pt
 
     def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
