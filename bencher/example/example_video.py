@@ -77,7 +77,7 @@ class TuringPattern(bch.ParametrizedSweep):
 def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    run_cfg.auto_plot = False
+    # run_cfg.auto_plot = False
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
@@ -86,9 +86,6 @@ def example_video(
         input_vars=[TuringPattern.param.alpha],
         result_vars=[TuringPattern.param.video],
     )
-
-    bench.report.append(res.describe_sweep())
-    bench.report.append(res.to_panes())
 
     return bench
 

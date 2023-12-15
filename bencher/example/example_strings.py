@@ -37,7 +37,7 @@ def example_strings(
         [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
         [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
     ]:
-        res = bench.plot_sweep("t1", input_vars=s)
+        res = bench.plot_sweep("String Panes", input_vars=s)
         bench.report.append_tab(res.to_panes())
     return bench
 

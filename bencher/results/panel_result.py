@@ -1,58 +1,77 @@
-from bencher.results.bench_result_base import BenchResultBase
-
 import panel as pn
 import xarray as xr
+from typing import Optional
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
+from bencher.results.bench_result_base import BenchResultBase
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.variables.results import ResultImage, ResultVideo, ResultContainer
+from functools import partial
 
 
 class PanelResult(BenchResultBase):
     def to_video(self):
-        vid_p = []
+        return self.map_plots(self.to_video_single)
 
-        def create_video(vid):  # pragma: no cover
-            vid = pn.pane.Video(vid, autoplay=True)
-            vid.loop = True
-            vid_p.append(vid)
-            return vid
+    def to_video_single(self, result_var: ParametrizedSweep) -> Optional[pn.pane.PNG]:
+        if isinstance(result_var, ResultVideo):
+            vid_p = []
 
-        panes = self.to_panes(create_video)
+            def create_video(vid):  # pragma: no cover
+                vid = pn.pane.Video(vid, autoplay=True)
+                vid.loop = True
+                vid_p.append(vid)
+                return vid
 
-        def play_vid(_):  # pragma: no cover
-            for r in vid_p:
-                r.paused = False
-                r.loop = False
+            panes = self.to_panes(create_video)
 
-        def pause_vid(_):  # pragma: no cover
-            for r in vid_p:
-                r.paused = True
+            def play_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.loop = False
 
-        def reset_vid(_):  # pragma: no cover
-            for r in vid_p:
-                r.paused = False
-                r.time = 0
+            def pause_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = True
 
-        def loop_vid(_):  # pragma: no cover
-            for r in vid_p:
-                r.paused = False
-                r.time = 0
-                r.loop = True
+            def reset_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.time = 0
 
-        button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
-        buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
-        buttons = pn.Row()
+            def loop_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.time = 0
+                    r.loop = True
 
-        for name, cb in zip(button_names, buttom_cb):
-            button = pn.widgets.Button(name=name)
-            pn.bind(cb, button, watch=True)
-            buttons.append(button)
+            button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
+            buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
+            buttons = pn.Row()
 
-        return pn.Column(buttons, panes)
+            for name, cb in zip(button_names, buttom_cb):
+                button = pn.widgets.Button(name=name)
+                pn.bind(cb, button, watch=True)
+                buttons.append(button)
 
-    def to_image(self, container=pn.pane.PNG):
-        return self.to_panes(container=container)
+            return pn.Column(buttons, panes)
+        return None
 
-    def to_panes(self, result_var: ResultVar, container=pn.pane.panel):
+    def to_image(self):
+        return self.map_plots(self.to_image_single)
+
+    def to_image_single(
+        self, result_var: ParametrizedSweep, container=pn.pane.PNG
+    ) -> Optional[pn.pane.PNG]:
+        if isinstance(result_var, ResultImage):
+            return self.to_panes_single(result_var, container=container)
+        return None
+
+    def to_panes(self, container=pn.pane.panel):
+        return self.map_plots(partial(self.to_panes_single, container=container))
+
+    def to_panes_single(self, result_var: ResultVar, container=pn.pane.panel):
         xr_dataarray = self.to_dataarray(result_var)
         return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
 

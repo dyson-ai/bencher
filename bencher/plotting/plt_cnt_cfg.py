@@ -3,6 +3,7 @@ from typing import Callable, List
 from copy import deepcopy
 import param
 from bencher.bench_cfg import BenchCfg
+from bencher.variables.results import ResultContainer, ResultImage, ResultVideo, ResultString
 
 
 class PltCfgBase(param.Parameterized):
@@ -76,6 +77,8 @@ class PltCntCfg(param.Parameterized):
     cat_cnt = param.Integer(0, doc="The number of cat variables")
     vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
     result_vars = param.Integer(1, doc="The number result variables to plot")  # todo remove
+    panel_vars = param.List(doc="A list of panel results")
+    panel_cnt = param.Integer(0, doc="Number of results reprented as panel panes")
 
     @staticmethod
     def generate_plt_cnt_cfg(
@@ -110,6 +113,11 @@ class PltCntCfg(param.Parameterized):
             if not type_allocated:
                 raise ValueError(f"No rule for type {typestr}")
 
+        for rv in bench_cfg.result_vars:
+            if isinstance(rv, (ResultImage, ResultVideo, ResultContainer, ResultString)):
+                plt_cnt_cfg.panel_vars.append(rv)
+
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
         plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
+        plt_cnt_cfg.panel_cnt = len(plt_cnt_cfg.panel_vars)
         return plt_cnt_cfg

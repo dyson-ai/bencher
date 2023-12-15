@@ -55,6 +55,8 @@ class SeabornResult(BenchResultBase):
 
             fg.set_xlabels(label=sns_cfg.xlabel, clear_inner=True)
             fg.set_ylabels(label=sns_cfg.ylabel, clear_inner=True)
+        else:
+            return None
 
         fg.fig.suptitle(sns_cfg.title)
         plt.tight_layout()

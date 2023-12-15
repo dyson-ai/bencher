@@ -33,7 +33,14 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
 
     def to_auto(self) -> List[pn.panel]:
         # plot_callback_list = [self.to_volume, self.to_curve]
-        plot_callback_list = [self.to_volume, self.to_scatter_jitter, self.to_curve]
+        plot_callback_list = [
+            self.to_volume,
+            self.to_scatter_jitter,
+            self.to_curve,
+            self.to_panes,
+            self.to_video,
+            # self.to_image,
+        ]
 
         row = pn.Row()
         for cb in plot_callback_list:

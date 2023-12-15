@@ -12,7 +12,7 @@ class PlotlyResult(BenchResultBase):
     def to_volume(self) -> pn.Row:
         return self.map_plots(self.to_volume_single)
 
-    def to_volume_single(self, result_var: ParametrizedSweep = None) -> Optional[pn.pane.Plotly]:
+    def to_volume_single(self, result_var: ParametrizedSweep) -> Optional[pn.pane.Plotly]:
         """Given a benchCfg generate a 3D surface plot
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane

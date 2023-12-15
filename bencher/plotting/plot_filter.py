@@ -55,6 +55,7 @@ class PlotFilter:
         cat_range: VarRange = VarRange(),
         vector_len: VarRange = VarRange(1, 1),
         result_vars: VarRange = VarRange(1, 1),
+        panes_vars: VarRange = VarRange(0, 0),
     ) -> None:
         """A class for representing the types of results a plot is able to represent.
 
@@ -69,6 +70,7 @@ class PlotFilter:
         self.cat_range = cat_range
         self.vector_len = vector_len
         self.result_vars = result_vars
+        self.panes_vars = panes_vars
 
     def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
         """Checks if the result data signature matches the type of data the plot is able to display.
@@ -84,7 +86,8 @@ class PlotFilter:
             self.float_range.matches(plt_cng_cfg.float_cnt)
             and self.cat_range.matches(plt_cng_cfg.cat_cnt)
             and self.vector_len.matches(plt_cng_cfg.vector_len)
-            # and self.result_vars.matches(plt_cng_cfg.result_vars)
+            and self.result_vars.matches(plt_cng_cfg.result_vars)
+            and self.panes_vars.matches(plt_cng_cfg.panel_cnt)
         )
 
 
