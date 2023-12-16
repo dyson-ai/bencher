@@ -74,6 +74,15 @@ class PlotFilter:
         panel_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
         repeats_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
 
+        overall = (
+            float_match
+            and cat_match
+            and vector_match
+            and result_var_match
+            and panel_match
+            and repeats_match
+        )
+
         if plt_cng_cfg.print_debug:
             logging.info(f"float {self.float_range}={plt_cng_cfg.float_cnt} {float_match}")
             logging.info(f"cat {self.cat_range}={plt_cng_cfg.cat_cnt} {cat_match}")
@@ -81,8 +90,9 @@ class PlotFilter:
             logging.info(f"result {self.result_vars}={plt_cng_cfg.result_vars} {result_var_match}")
             logging.info(f"panel {self.panel_range}={plt_cng_cfg.panel_cnt} {panel_match}")
             logging.info(f"repeats {self.repeats_range}={plt_cng_cfg.repeats} {repeats_match}")
+            logging.info(f"overall: {overall}")
 
-        return float_match and cat_match and vector_match and result_var_match and panel_match and repeats_match
+        return overall
 
     # def __repr__(self) -> str:
     # return f"{self.float_range}"

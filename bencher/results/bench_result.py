@@ -32,13 +32,12 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         SeabornResult.__init__(self, bench_cfg)
 
     def to_auto(self) -> List[pn.panel]:
-        # plot_callback_list = [self.to_volume, self.to_curve]
         self.plt_cnt_cfg.print_debug = True
         plot_callback_list = [
             self.to_volume,
             self.to_scatter_jitter,
             self.to_scatter,
-            # self.to_curve,
+            self.to_curve,
             self.to_panes,
             self.to_video,
         ]
@@ -46,7 +45,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         row = pn.Row()
         for cb in plot_callback_list:
             if self.plt_cnt_cfg.print_debug:
-                print(cb)
+                print(f"checking: {cb.__name__}")
             row.append(cb())
 
         self.plt_cnt_cfg.print_debug = False

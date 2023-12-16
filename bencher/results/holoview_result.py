@@ -50,7 +50,7 @@ class HoloviewResult(BenchResultBase):
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> Optional[hv.Curve]:
         if PlotFilter(
             float_range=VarRange(1, None),
-            cat_range=VarRange(0, 0),
+            cat_range=VarRange(0, None),
         ).matches(self.plt_cnt_cfg):
             title = self.to_plot_title()
             ds = self.to_hv_dataset(reduce)
