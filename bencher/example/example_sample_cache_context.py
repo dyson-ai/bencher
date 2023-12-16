@@ -99,7 +99,7 @@ def example_cache_context() -> bch.Bench:
 
     # run the same benchmark as before but use a different tag.  The previously cached values will not be used and fresh values will be calculated instead
     bencher.clear_call_counts()
-    res = bencher.plot_sweep(
+    bencher.plot_sweep(
         title="Benchmark enum=[value_1,value_2] with different tag",
         input_vars=[Cfg.param.enum1],
         result_vars=[Cfg.param.result],

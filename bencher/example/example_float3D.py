@@ -76,7 +76,6 @@ def example_floats3D(
         "Bencher_Example_Floats",
         bench_fn,
         VolumeSample,
-        plot_lib=bch.PlotLibrary.with_plotly(),
         run_cfg=run_cfg,
         report=report,
     )
