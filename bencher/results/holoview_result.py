@@ -13,6 +13,8 @@ from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
 
+hv.extension("bokeh", "plotly")
+
 
 class ReduceType(Enum):
     AUTO = auto()  # automatically determine the best way to reduce the dataset
