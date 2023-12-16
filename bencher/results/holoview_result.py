@@ -2,7 +2,6 @@ from __future__ import annotations
 from enum import Enum, auto
 from typing import List, Optional
 import panel as pn
-import xarray as xr
 import holoviews as hv
 import numpy as np
 
@@ -12,10 +11,10 @@ from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class ReduceType(Enum):
-    AUTO = auto()
-    SQUEEZE = auto()
-    REDUCE = auto()
-    NONE = auto()
+    AUTO = auto()  # automatically determine the best way to reduce the dataset
+    SQUEEZE = auto()  # remove any dimensions of length 1
+    REDUCE = auto()  # get the mean and std dev of the the "repeat" dimension
+    NONE = auto()  # don't reduce
 
 
 class HoloviewResult(BenchResultBase):
@@ -29,31 +28,20 @@ class HoloviewResult(BenchResultBase):
             hv.Dataset: results in the form of a holoviews dataset
         """
 
-        # print(self.ds)
-
-        # self.ds =self.ds.squeeze()
-        # self.ds.reduce()
-
-        # print(self.to_pandas())
-        # print(self.ds)
-
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        result_vars_str = [r.name for r in self.bench_cfg.result_vars]
+        vdims = [r.name for r in self.bench_cfg.result_vars]
         kdims = [i.name for i in self.bench_cfg.all_vars]
-        hvds = hv.Dataset(self.ds, kdims=kdims, vdims=result_vars_str)
-        if reduce == ReduceType.REDUCE:
-            print(hvds)
-            print(self.ds)
-            print(self.to_pandas())
-            print(hvds)
-            print(hvds.to(hv.Table))
-            return hvds.reduce(["repeat"], np.mean, np.std)
-        if reduce == ReduceType.SQUEEZE:
-            return hv.Dataset(self.ds.squeeze(drop=True), vdims=result_vars_str)
-            # return hv.Dataset(self.ds.squeeze("repeat", drop=True), vdims=result_vars_str)
-        return hvds
+        match (reduce):
+            case ReduceType.REDUCE:
+                return hv.Dataset(self.ds, kdims=kdims, vdims=vdims).reduce(
+                    ["repeat"], np.mean, np.std
+                )
+            case ReduceType.SQUEEZE:
+                return hv.Dataset(self.ds.squeeze(drop=True), vdims=vdims)
+            case _:
+                return hv.Dataset(self.ds, kdims=kdims, vdims=vdims)
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
@@ -98,8 +86,6 @@ class HoloviewResult(BenchResultBase):
             and len(self.bench_cfg.input_vars) > 0
         ):
             ds = self.to_hv_dataset(ReduceType.NONE)
-            # print(ds)
-            # print(self.to_pandas())
             pt = (
                 ds.to(hv.Scatter)
                 .opts(jitter=0.1)
@@ -117,16 +103,21 @@ class HoloviewResult(BenchResultBase):
         return pt.opts(title=self.to_plot_title())
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        z = self.bench_cfg.result_vars[0]
-        title = f"{z.name} vs ({self.bench_cfg.input_vars[0].name}"
+        if PlotFilter(
+            float_range=VarRange(2, None),
+            cat_range=VarRange(0, None),
+        ).matches(self.plt_cnt_cfg):
+            z = self.bench_cfg.result_vars[0]
+            title = f"{z.name} vs ({self.bench_cfg.input_vars[0].name}"
 
-        for iv in self.bench_cfg.input_vars[1:]:
-            title += f" vs {iv.name}"
-        title += ")"
+            for iv in self.bench_cfg.input_vars[1:]:
+                title += f" vs {iv.name}"
+            title += ")"
 
-        color_label = f"{z.name} [{z.units}]"
+            color_label = f"{z.name} [{z.units}]"
 
-        return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
+            return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
+        return None
 
     def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
         htmap = self.to_heatmap(reduce).opts(tools=["hover", "tap"], width=width, height=height)

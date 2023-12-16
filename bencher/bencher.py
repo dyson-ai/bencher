@@ -161,7 +161,7 @@ class Bench(BenchPlotServer):
             self.report = report
             if self.report.bench_name is None:
                 self.report.bench_name = self.bench_name
-        self.results=[]
+        self.results = []
 
         self.bench_cfg_hashes = []  # a list of hashes that point to benchmark results
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
@@ -706,5 +706,5 @@ class Bench(BenchPlotServer):
         """Clear the worker and cache call counts, to help debug and assert caching is happening properly"""
         self.sample_cache.clear_call_counts()
 
-    def get_result(self,index:int=-1)-> BenchResult:
+    def get_result(self, index: int = -1) -> BenchResult:
         return self.results[index]

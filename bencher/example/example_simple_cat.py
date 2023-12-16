@@ -37,7 +37,7 @@ def example_1D_cat(
         const_vars=explorer.get_input_defaults(),
     )
 
-    bench.report.append(res.to_auto())
+    # bench.report.append(res.to_auto())
 
     return bench
 

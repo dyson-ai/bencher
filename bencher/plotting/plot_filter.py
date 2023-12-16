@@ -42,6 +42,12 @@ class VarRange:
 
         return lower_match and upper_match
 
+    def matches_info(self, val, print_msg, msg: str):
+        match = self.matches(val)
+        if print_msg:
+            logging.info(f"{msg}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}")
+        return match
+
     def __str__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
 
@@ -67,12 +73,13 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        float_match = self.float_range.matches(plt_cng_cfg.float_cnt)
-        cat_match = self.cat_range.matches(plt_cng_cfg.cat_cnt)
-        vector_match = self.vector_len.matches(plt_cng_cfg.vector_len)
-        result_var_match = self.result_vars.matches(plt_cng_cfg.result_vars)
-        panel_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
-        repeats_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
+        deb = plt_cng_cfg.print_debug
+        float_match = self.float_range.matches_info(plt_cng_cfg.float_cnt, deb, "float")
+        cat_match = self.cat_range.matches_info(plt_cng_cfg.cat_cnt, deb, "cat")
+        vector_match = self.vector_len.matches_info(plt_cng_cfg.vector_len, deb, "vec")
+        result_var_match = self.result_vars.matches_info(plt_cng_cfg.result_vars, deb, "result")
+        panel_match = self.panel_range.matches_info(plt_cng_cfg.panel_cnt, deb, "panel")
+        repeats_match = self.panel_range.matches_info(plt_cng_cfg.repeats, deb, "repeat")
 
         overall = (
             float_match
@@ -84,15 +91,12 @@ class PlotFilter:
         )
 
         if plt_cng_cfg.print_debug:
-            logging.info(f"float {self.float_range}={plt_cng_cfg.float_cnt} {float_match}")
-            logging.info(f"cat {self.cat_range}={plt_cng_cfg.cat_cnt} {cat_match}")
-            logging.info(f"vec {self.vector_len}={plt_cng_cfg.vector_len} {vector_match}")
-            logging.info(f"result {self.result_vars}={plt_cng_cfg.result_vars} {result_var_match}")
-            logging.info(f"panel {self.panel_range}={plt_cng_cfg.panel_cnt} {panel_match}")
-            logging.info(f"repeats {self.repeats_range}={plt_cng_cfg.repeats} {repeats_match}")
-            logging.info(f"overall: {overall}")
+            logging.info(f"overall:\t{overall}")
 
         return overall
+
+    # def info(self,plt_cng_cfg.float_cnt):
+    # logging.info(f"float {self.float_range}={plt_cng_cfg.float_cnt} {float_match}")
 
     # def __repr__(self) -> str:
     # return f"{self.float_range}"

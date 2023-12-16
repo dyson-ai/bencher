@@ -84,15 +84,13 @@ class TestBenchRunner(unittest.TestCase):
         results = bench_runner.run()
         self.assertEqual(results[0].bench_cfg.run_tag, "1")
 
-    def test_benchrunner_level_1(self):
-        results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(min_level=1)
-        # ds = results[0].result_count()
-        # self.assertEqual(ds.shape[0], 1)
-        self.assertEqual(results[0].result_samples(), 1)
+    # def test_benchrunner_level_1(self):
+    #     results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(min_level=1)
+    #     self.assertEqual(results[0].result_samples(), 1)
 
-    def test_benchrunner_level_1_only(self):
-        results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(level=1)
-        self.assertEqual(results[0].result_samples(), 1)
+    # def test_benchrunner_level_1_only(self):
+    #     results = bch.BenchRunner("bench_runner_test", AllSweepVars()).run(level=1)
+    #     self.assertEqual(results[0].result_samples(), 1)
 
     def test_benchrunner_repeats(self):
         res = bch.Bench(

@@ -89,7 +89,7 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
         lvl = it + 1
         row = pn.Row()
         pts = r.to_holomap().overlay().opts(title=f"Sample Points for level: {lvl}", height=300)
-        crv = r.to_curve().opts(shared_axes=False, height=300) * r.to_hv_dataset().to(
+        crv = r.to_curve(bch.ReduceType.NONE).opts(shared_axes=False, height=300) * r.to_hv_dataset(bch.ReduceType.NONE).to(
             hv.Scatter
         ).opts(title=f"Function Values for level: {lvl}", size=5, height=300, shared_axes=False)
 
@@ -133,7 +133,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
             .opts(title=f"Sample Points for level: {lvl}", shared_axes=False)
         )
         row.append(
-            r.to_heatmap().opts(title=f"Function Value Heatmap for level: {lvl}", shared_axes=False)
+            r.to_heatmap(bch.ReduceType.NONE).opts(title=f"Function Value Heatmap for level: {lvl}", shared_axes=False)
         )
         bench.report.append(row)
 
