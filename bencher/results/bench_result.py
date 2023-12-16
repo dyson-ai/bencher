@@ -38,7 +38,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             self.to_volume,
             self.to_scatter_jitter,
             self.to_scatter,
-            self.to_curve,
+            # self.to_curve,
             self.to_panes,
             self.to_video,
         ]

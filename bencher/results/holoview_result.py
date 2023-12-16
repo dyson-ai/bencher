@@ -37,6 +37,7 @@ class HoloviewResult(BenchResultBase):
         kdims = [i.name for i in self.bench_cfg.input_vars]
         kdims.append("repeat")  # repeat is always used
         hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
+        # print(hvds)
         if reduce == ReduceType.REDUCE:
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
