@@ -40,6 +40,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             self.to_curve,
             self.to_panes,
             self.to_video,
+            self.to_surface_hv
         ]
 
         row = pn.Row()

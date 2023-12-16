@@ -138,7 +138,7 @@ class BenchResultBase(OptunaResult):
 
     def map_plots(
         self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
-    ) -> pn.Row():
+    ) -> pn.Row:
         if row is None:
             row = pn.Row(name=self.to_plot_title())
         for rv in self.get_results_var_list(result_var):

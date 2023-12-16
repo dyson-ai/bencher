@@ -1,8 +1,7 @@
 import unittest
-from bencher.plotting.plot_filter import VarRange, PlotFilter
+from bencher.plotting.plot_filter import VarRange
 from hypothesis import given, strategies as st
 
-from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
 
 class TestVarRange(unittest.TestCase):

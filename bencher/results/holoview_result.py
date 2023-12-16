@@ -1,9 +1,11 @@
 from __future__ import annotations
 from enum import Enum, auto
+import logging
 from typing import List, Optional
 import panel as pn
 import holoviews as hv
 import numpy as np
+from param import Parameter
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
@@ -178,6 +180,75 @@ class HoloviewResult(BenchResultBase):
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
+    def to_surface_hv(self) -> pn.Row:
+        return self.map_plots(self.to_surface_hv_single)
+
+    def to_surface_hv_single(self, result_var: Parameter) -> Optional[pn.panel]:
+        """Given a benchCfg generate a 2D surface plot
+
+        Args:
+            result_var (Parameter): result variable to plot
+
+        Returns:
+            pn.pane.holoview: A 2d surface plot as a holoview in a pane
+        """
+        if PlotFilter(
+            float_range=VarRange(2, 2),
+            cat_range=VarRange(0, None),
+            vector_len=VarRange(1, 1),
+            result_vars=VarRange(1, 1),
+        ).matches(self.plt_cnt_cfg):
+            xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var, self.bench_cfg.debug)
+            alpha = 0.3
+
+            da = self.to_dataarray(result_var,False)
+            mean = da.mean("repeat")
+
+            # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
+            # hv.config.image_rtol = 1.0
+
+            ds = hv.Dataset(mean)
+            # try:
+            # except Exception:
+            #     return plot_surface_plotly(bench_cfg, rv, xr_cfg)
+
+            try:
+                surface = ds.to(hv.Surface, vdims=[result_var.name])
+                surface = surface.opts(colorbar=True)
+            except Exception as e:
+                logging.warning(e)
+
+            if self.bench_cfg.repeats > 1:
+                std_dev = da.std("repeat")
+                surface *= (
+                    hv.Dataset(mean + std_dev)
+                    .to(hv.Surface)
+                    .opts(alpha=alpha, colorbar=False, backend="plotly")
+                )
+                surface *= (
+                    hv.Dataset(mean - std_dev)
+                    .to(hv.Surface)
+                    .opts(alpha=alpha, colorbar=False, backend="plotly")
+                )
+
+            surface = surface.opts(
+                width=800,
+                height=800,
+                zlabel=xr_cfg.zlabel,
+                title=xr_cfg.title,
+                backend="plotly",
+            )
+
+            if self.bench_cfg.render_plotly:
+                hv.extension("plotly")
+                out = surface
+            else:
+                # using render disabled the holoviews sliders :(
+                out = hv.render(surface, backend="plotly")
+            return pn.Column(out, name="surface_hv")
+
+        return None
+
     # def plot_scatter2D_hv(self, rv: ParametrizedSweep) -> pn.pane.Plotly:
     # import plotly.express as px
 
@@ -201,3 +272,39 @@ class HoloviewResult(BenchResultBase):
     #     return px.scatter(
     #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
     #     )
+
+
+from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+from bencher.variables.results import ResultVar
+
+
+def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+    """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
+
+    Args:
+        sns_cfg (PltCfgBase): See PltCfgBase definition
+        plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+
+    Returns:
+        PltCfgBase: See PltCfgBase definition
+    """
+    xr_cfg = PltCfgBase()
+    if plt_cnt_cfg.float_cnt == 2:
+        logging.info(f"surface plot: {rv.name}")
+        xr_cfg.x = plt_cnt_cfg.float_vars[0].name
+        xr_cfg.y = plt_cnt_cfg.float_vars[1].name
+        xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
+        xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
+        xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
+        xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
+
+        if plt_cnt_cfg.cat_cnt >= 1:
+            logging.info("surface plot with 1 categorical")
+            xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
+            xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
+        if plt_cnt_cfg.cat_cnt >= 2:
+            logging.info("surface plot with 2> categorical")
+            xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
+            xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
+    return xr_cfg

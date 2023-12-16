@@ -26,7 +26,7 @@ def example_floats2D(
         call,
         run_cfg=run_cfg,
         report=report,
-        plot_lib=bch.PlotLibrary().with_plotly(),
+        # plot_lib=bch.PlotLibrary().with_plotly(),
     )
 
     run_cfg.use_optuna = True
