@@ -2,11 +2,6 @@ from __future__ import annotations
 
 from bencher.plotting.plot_collection import PlotCollection
 from bencher.plotting.plot_types import PlotTypes
-from bencher.plotting.plots.catplot import Catplot
-from bencher.plotting.plots.heatmap import Heatmap
-
-# from bencher.plotting.plots.surface import SurfacePlot
-from bencher.plotting.plots.hv_interactive import HvInteractive
 
 
 class PlotLibrary:
@@ -20,10 +15,9 @@ class PlotLibrary:
             PlotCollection: A PlotCollection with sources of plots defined, but none selected
         """
         plt_col = PlotCollection()
-        plt_col.add_plotter_source(Catplot())
-        plt_col.add_plotter_source(Heatmap())
+        # plt_col.add_plotter_source(Catplot())
+        # plt_col.add_plotter_source(Heatmap())
         # plt_col.add_plotter_source(Scatter())
-        plt_col.add_plotter_source(HvInteractive())
         # plt_col.add_plotter_source(SurfacePlot())
 
         return plt_col
@@ -38,13 +32,10 @@ class PlotLibrary:
         plt_col = PlotLibrary.setup_sources()
         # plt_col.add(PlotTypes.scatter_hv)
 
-        plt_col.add(PlotTypes.swarmplot)
-        plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
+        # plt_col.add(PlotTypes.swarmplot)
+        # plt_col.add(PlotTypes.heatmap_2D)  # 2d image of a surface
         # plt_col.add(PlotTypes.lineplot)
-        plt_col.add(PlotTypes.lineplot_hv)
-        plt_col.add(PlotTypes.lineplot_hv_overlay)
-        plt_col.add(PlotTypes.lineplot_hv_layout)
-        plt_col.add(PlotTypes.scatter_hv)
+        # plt_col.add(PlotTypes.scatter_hv)
         # plt_col.add(PlotTypes.bar_hv)
         # plt_col.add(PlotTypes.cone_plotly)
         # plt_col.add(PlotTypes.lineplot_hv_subplot)
