@@ -31,6 +31,25 @@ from bencher.optuna_conversions import (
 )
 
 
+def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
+    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+
+    Args:
+        dataarray (xr.DataArray): dataarray with boolean coordinates
+
+    Returns:
+        xr.DataArray: dataarray with boolean coordinates converted to strings
+    """
+    bool_coords = {}
+    for c in dataset.coords:
+        if dataset.coords[c].dtype == bool:
+            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
+
+    if len(bool_coords) > 0:
+        return dataset.assign_coords(bool_coords)
+    return dataset
+
+
 class OptunaResult:
     def __init__(self, bench_cfg: BenchCfg) -> None:
         self.bench_cfg = bench_cfg
@@ -45,7 +64,7 @@ class OptunaResult:
     def post_setup(self):
         self.plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
         self.bench_cfg = self.wrap_long_time_labels(self.bench_cfg)
-        # self.plot_inputs = self.setup_plot_inputs()
+        self.ds = convert_dataset_bool_dims_to_str(self.ds)
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds

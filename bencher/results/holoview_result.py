@@ -28,20 +28,31 @@ class HoloviewResult(BenchResultBase):
         Returns:
             hv.Dataset: results in the form of a holoviews dataset
         """
-        ds = convert_dataset_bool_dims_to_str(self.ds)
+
+        # print(self.ds)
+
+        # self.ds =self.ds.squeeze()
+        # self.ds.reduce()
+
+        # print(self.to_pandas())
+        # print(self.ds)
 
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
         result_vars_str = [r.name for r in self.bench_cfg.result_vars]
-        kdims = [i.name for i in self.bench_cfg.input_vars]
-        kdims.append("repeat")  # repeat is always used
-        hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
-        # print(hvds)
+        kdims = [i.name for i in self.bench_cfg.all_vars]
+        hvds = hv.Dataset(self.ds, kdims=kdims, vdims=result_vars_str)
         if reduce == ReduceType.REDUCE:
+            print(hvds)
+            print(self.ds)
+            print(self.to_pandas())
+            print(hvds)
+            print(hvds.to(hv.Table))
             return hvds.reduce(["repeat"], np.mean, np.std)
         if reduce == ReduceType.SQUEEZE:
-            return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
+            return hv.Dataset(self.ds.squeeze(drop=True), vdims=result_vars_str)
+            # return hv.Dataset(self.ds.squeeze("repeat", drop=True), vdims=result_vars_str)
         return hvds
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
@@ -199,22 +210,3 @@ class HoloviewResult(BenchResultBase):
     #     return px.scatter(
     #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
     #     )
-
-
-def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
-    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
-
-    Args:
-        dataarray (xr.DataArray): dataarray with boolean coordinates
-
-    Returns:
-        xr.DataArray: dataarray with boolean coordinates converted to strings
-    """
-    bool_coords = {}
-    for c in dataset.coords:
-        if dataset.coords[c].dtype == bool:
-            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
-
-    if len(bool_coords) > 0:
-        return dataset.assign_coords(bool_coords)
-    return dataset
