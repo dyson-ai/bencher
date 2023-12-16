@@ -79,7 +79,7 @@ class PlotFilter:
         vector_match = self.vector_len.matches_info(plt_cng_cfg.vector_len, deb, "vec")
         result_var_match = self.result_vars.matches_info(plt_cng_cfg.result_vars, deb, "result")
         panel_match = self.panel_range.matches_info(plt_cng_cfg.panel_cnt, deb, "panel")
-        repeats_match = self.panel_range.matches_info(plt_cng_cfg.repeats, deb, "repeat")
+        repeats_match = self.repeats_range.matches_info(plt_cng_cfg.repeats, deb, "repeat")
 
         overall = (
             float_match

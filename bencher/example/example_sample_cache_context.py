@@ -63,7 +63,7 @@ def example_cache_context() -> bch.Bench:
     bencher.clear_tag_from_sample_cache("example_tag2", run_cfg)
 
     # run a benchmark with a constant value and save results with example_tag1
-    res = bencher.plot_sweep(
+    bencher.plot_sweep(
         title="Benchmark enum=value_1",
         const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_1)],
         result_vars=[Cfg.param.result],

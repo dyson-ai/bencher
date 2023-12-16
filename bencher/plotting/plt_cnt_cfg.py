@@ -81,7 +81,7 @@ class PltCntCfg(param.Parameterized):
     panel_cnt = param.Integer(0, doc="Number of results reprented as panel panes")
     repeats = param.Integer(0, doc="The number of repeat samples")
     print_debug = param.Boolean(
-        False, doc="Print debug information about why a filter matches this config or not"
+        True, doc="Print debug information about why a filter matches this config or not"
     )
 
     @staticmethod
