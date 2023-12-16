@@ -3,7 +3,6 @@ from bencher.plotting.plot_filter import VarRange
 from hypothesis import given, strategies as st
 
 
-
 class TestVarRange(unittest.TestCase):
     def test_matches_zero(self) -> None:
         zero_case = VarRange(0, 0)

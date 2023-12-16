@@ -10,6 +10,8 @@ from param import Parameter
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
+from bencher.variables.results import ResultVar
 
 
 class ReduceType(Enum):
@@ -201,7 +203,7 @@ class HoloviewResult(BenchResultBase):
             xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var, self.bench_cfg.debug)
             alpha = 0.3
 
-            da = self.to_dataarray(result_var,False)
+            da = self.to_dataarray(result_var, False)
             mean = da.mean("repeat")
 
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
@@ -272,11 +274,6 @@ class HoloviewResult(BenchResultBase):
     #     return px.scatter(
     #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
     #     )
-
-
-from bencher.plotting.plot_filter import PlotFilter, VarRange
-from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
-from bencher.variables.results import ResultVar
 
 
 def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
