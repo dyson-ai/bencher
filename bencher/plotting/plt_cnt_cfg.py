@@ -79,6 +79,7 @@ class PltCntCfg(param.Parameterized):
     result_vars = param.Integer(1, doc="The number result variables to plot")  # todo remove
     panel_vars = param.List(doc="A list of panel results")
     panel_cnt = param.Integer(0, doc="Number of results reprented as panel panes")
+    repeats = param.Integer(0, doc="The number of repeat samples")
     print_debug = param.Boolean(
         False, doc="Print debug information about why a filter matches this config or not"
     )
@@ -123,6 +124,7 @@ class PltCntCfg(param.Parameterized):
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
         plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
         plt_cnt_cfg.panel_cnt = len(plt_cnt_cfg.panel_vars)
+        plt_cnt_cfg.repeats = bench_cfg.repeats
         return plt_cnt_cfg
 
     def __str__(self):

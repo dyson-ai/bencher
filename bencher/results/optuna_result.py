@@ -39,7 +39,7 @@ class OptunaResult:
         self.hmaps = defaultdict(dict)
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []
-        self.plt_cnt_cfg = None
+        self.plt_cnt_cfg = PltCntCfg()
         self.plot_inputs = []
 
     def post_setup(self):

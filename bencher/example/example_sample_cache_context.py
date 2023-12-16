@@ -63,12 +63,15 @@ def example_cache_context() -> bch.Bench:
     bencher.clear_tag_from_sample_cache("example_tag2", run_cfg)
 
     # run a benchmark with a constant value and save results with example_tag1
-    bencher.plot_sweep(
+    res=bencher.plot_sweep(
         title="Benchmark enum=value_1",
         const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_1)],
         result_vars=[Cfg.param.result],
         tag="example_tag1",
+        # plot=False
     )
+
+    # res.to_scatter_jitter()
 
     # there are not values in the cache, so we expect 1 fn call and 0 cache calls
     assert_call_counts(bencher, run_cfg, wrapper_calls=1, fn_calls=1, cache_calls=0)
@@ -80,6 +83,8 @@ def example_cache_context() -> bch.Bench:
         const_vars=[Cfg.param.enum1.with_const(ExampleEnum.value_2)],
         result_vars=[Cfg.param.result],
         tag="example_tag1",
+        # plot=False
+
     )
 
     # these values have not been calcuated before so there should be 1 fn call
@@ -99,12 +104,14 @@ def example_cache_context() -> bch.Bench:
 
     # run the same benchmark as before but use a different tag.  The previously cached values will not be used and fresh values will be calculated instead
     bencher.clear_call_counts()
-    bencher.plot_sweep(
+    res = bencher.plot_sweep(
         title="Benchmark enum=[value_1,value_2] with different tag",
         input_vars=[Cfg.param.enum1],
         result_vars=[Cfg.param.result],
         tag="example_tag2",
     )
+
+    # bencher.report.append(res.to_scatter_jitter())
 
     # Both calls are calcuated becuase the tag is different so they don't hit the cache
     assert_call_counts(bencher, run_cfg, wrapper_calls=2, fn_calls=2, cache_calls=0)

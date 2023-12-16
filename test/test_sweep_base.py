@@ -29,8 +29,6 @@ class TestSweepBase(unittest.TestCase):
         explorer = AllSweepVars()
         bench = bch.Bench("tst_cnst", explorer.__call__)
 
-        # AllSweepVars.param.var_float.with_const(5)
-
         consts = explorer.get_input_defaults()
         consts_len = len(consts)
 
@@ -38,6 +36,7 @@ class TestSweepBase(unittest.TestCase):
             "tst",
             input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
+            plot=False
         )
 
         consts_after = [i[0] for i in res.bench_cfg.const_vars]

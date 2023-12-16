@@ -48,7 +48,7 @@ class HoloviewResult(BenchResultBase):
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> Optional[hv.Curve]:
         if PlotFilter(
-            float_range=VarRange(0, 1),
+            float_range=VarRange(1, None),
             cat_range=VarRange(0, 0),
         ).matches(self.plt_cnt_cfg):
             title = self.to_plot_title()
@@ -69,15 +69,25 @@ class HoloviewResult(BenchResultBase):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self):
-        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+    def to_scatter(self) -> Optional[hv.Scatter]:
+        if PlotFilter(
+            float_range=VarRange(0, 0), cat_range=VarRange(0, 1), repeats_range=VarRange(1, 1)
+        ).matches(self.plt_cnt_cfg):
+            return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+        return None
 
     def to_scatter_jitter(self) -> Optional[hv.Scatter]:
-        if PlotFilter(
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, 1),
-        ).matches(self.plt_cnt_cfg):
+        if (
+            PlotFilter(
+                float_range=VarRange(0, 0),
+                cat_range=VarRange(0, 1),
+                repeats_range=VarRange(2, None),
+            ).matches(self.plt_cnt_cfg)
+            and len(self.bench_cfg.input_vars) > 0
+        ):
             ds = self.to_hv_dataset(ReduceType.NONE)
+            # print(ds)
+            # print(self.to_pandas())
             pt = (
                 ds.to(hv.Scatter)
                 .opts(jitter=0.1)

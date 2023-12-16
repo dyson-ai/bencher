@@ -55,6 +55,7 @@ class PlotFilter:
     vector_len: VarRange = VarRange(1, 1)
     result_vars: VarRange = VarRange(1, 1)
     panel_range: VarRange = VarRange(0, 0)
+    repeats_range: VarRange = VarRange(1, None)
 
     def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
         """Checks if the result data signature matches the type of data the plot is able to display.
@@ -71,15 +72,17 @@ class PlotFilter:
         vector_match = self.vector_len.matches(plt_cng_cfg.vector_len)
         result_var_match = self.result_vars.matches(plt_cng_cfg.result_vars)
         panel_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
+        repeats_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
 
         if plt_cng_cfg.print_debug:
-            logging.info(f"float {self.float_range} {float_match}")
-            logging.info(f"cat {self.cat_range} {cat_match}")
-            logging.info(f"vec {self.vector_len} {vector_match}")
-            logging.info(f"result {self.result_vars} {result_var_match}")
-            logging.info(f"panel {self.panel_range} {panel_match}")
+            logging.info(f"float {self.float_range}={plt_cng_cfg.float_cnt} {float_match}")
+            logging.info(f"cat {self.cat_range}={plt_cng_cfg.cat_cnt} {cat_match}")
+            logging.info(f"vec {self.vector_len}={plt_cng_cfg.vector_len} {vector_match}")
+            logging.info(f"result {self.result_vars}={plt_cng_cfg.result_vars} {result_var_match}")
+            logging.info(f"panel {self.panel_range}={plt_cng_cfg.panel_cnt} {panel_match}")
+            logging.info(f"repeats {self.repeats_range}={plt_cng_cfg.repeats} {repeats_match}")
 
-        return float_match and cat_match and vector_match and result_var_match and panel_match
+        return float_match and cat_match and vector_match and result_var_match and panel_match and repeats_match
 
     # def __repr__(self) -> str:
     # return f"{self.float_range}"
