@@ -1,12 +1,13 @@
+from typing import Optional
+from functools import partial
 import panel as pn
 import xarray as xr
-from typing import Optional
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import ResultImage, ResultVideo
-from functools import partial
+from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class PanelResult(BenchResultBase):
@@ -57,7 +58,7 @@ class PanelResult(BenchResultBase):
             return pn.Column(buttons, panes)
         return None
 
-    def to_image(self):
+    def to_image(self) -> pn.Row():
         return self.map_plots(self.to_image_single)
 
     def to_image_single(
@@ -67,10 +68,18 @@ class PanelResult(BenchResultBase):
             return self.to_panes_single(result_var, container=container)
         return None
 
-    def to_panes(self, container=pn.pane.panel):
-        return self.map_plots(partial(self.to_panes_single, container=container))
+    def to_panes(self, container=pn.pane.panel) -> Optional[pn.pane.panel]:
+        if PlotFilter(
+            float_range=VarRange(0, None),
+            cat_range=VarRange(0, None),
+            panel_range=VarRange(1, None),
+        ).matches(self.plt_cnt_cfg):
+            return self.map_plots(partial(self.to_panes_single, container=container))
+        return None
 
-    def to_panes_single(self, result_var: ResultVar, container=pn.pane.panel):
+    def to_panes_single(
+        self, result_var: ResultVar, container=pn.pane.panel
+    ) -> Optional[pn.pane.panel]:
         xr_dataarray = self.to_dataarray(result_var)
         return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
 

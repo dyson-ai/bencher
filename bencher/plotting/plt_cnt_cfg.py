@@ -79,6 +79,9 @@ class PltCntCfg(param.Parameterized):
     result_vars = param.Integer(1, doc="The number result variables to plot")  # todo remove
     panel_vars = param.List(doc="A list of panel results")
     panel_cnt = param.Integer(0, doc="Number of results reprented as panel panes")
+    print_debug = param.Boolean(
+        False, doc="Print debug information about why a filter matches this config or not"
+    )
 
     @staticmethod
     def generate_plt_cnt_cfg(
@@ -121,3 +124,6 @@ class PltCntCfg(param.Parameterized):
         plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
         plt_cnt_cfg.panel_cnt = len(plt_cnt_cfg.panel_vars)
         return plt_cnt_cfg
+
+    def __str__(self):
+        return f"float_cnt: {self.float_cnt}\ncat_cnt: {self.cat_cnt} \npanel_cnt: {self.panel_cnt}\nvector_len: {self.vector_len}"

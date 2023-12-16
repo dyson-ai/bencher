@@ -1,6 +1,6 @@
 from __future__ import annotations
-
-
+import logging
+from dataclasses import dataclass
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
 
@@ -11,7 +11,7 @@ class VarRange:
         """
         Args:
             lower_bound (int, optional): The smallest acceptable value to matches(). Passing None will result in a lower bound of 0 (as matches only accepts positive integers). Defaults to 0.
-            upper_bound (int, optional): The largest acceptable value to matches().  Passing None will result in no upper bound. Defaults to -1.
+            upper_bound (int, optional): The largest acceptable value to matches().  Passing None will result in no upper bound. Defaults to -1 which results in a range with no matches.
         """
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
@@ -42,35 +42,19 @@ class VarRange:
 
         return lower_match and upper_match
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
 
 
+@dataclass
 class PlotFilter:
     """A class for representing the types of results a plot is able to represent."""
 
-    def __init__(
-        self,
-        float_range: VarRange = VarRange(),
-        cat_range: VarRange = VarRange(),
-        vector_len: VarRange = VarRange(1, 1),
-        result_vars: VarRange = VarRange(1, 1),
-        panes_vars: VarRange = VarRange(0, 0),
-    ) -> None:
-        """A class for representing the types of results a plot is able to represent.
-
-        Args:
-            float_range (VarRange, optional): The range of float varibles the plot supports. Defaults to VarRange().
-            cat_range (VarRange, optional): The range of categorical varibles the plot supports. Defaults to VarRange().
-            vector_len (VarRange, optional): The range of vector lengths the plot supports. Defaults to VarRange(1, 1).
-            result_vars (VarRange, optional): The range of number of result varibles the plot supports. Defaults to VarRange(1, 1).
-        """
-
-        self.float_range = float_range
-        self.cat_range = cat_range
-        self.vector_len = vector_len
-        self.result_vars = result_vars
-        self.panes_vars = panes_vars
+    float_range: VarRange = VarRange()
+    cat_range: VarRange = VarRange()
+    vector_len: VarRange = VarRange(1, 1)
+    result_vars: VarRange = VarRange(1, 1)
+    panel_range: VarRange = VarRange(0, 0)
 
     def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
         """Checks if the result data signature matches the type of data the plot is able to display.
@@ -82,13 +66,26 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        return (
-            self.float_range.matches(plt_cng_cfg.float_cnt)
-            and self.cat_range.matches(plt_cng_cfg.cat_cnt)
-            and self.vector_len.matches(plt_cng_cfg.vector_len)
-            and self.result_vars.matches(plt_cng_cfg.result_vars)
-            and self.panes_vars.matches(plt_cng_cfg.panel_cnt)
-        )
+        float_match = self.float_range.matches(plt_cng_cfg.float_cnt)
+        cat_match = self.cat_range.matches(plt_cng_cfg.cat_cnt)
+        vector_match = self.vector_len.matches(plt_cng_cfg.vector_len)
+        result_var_match = self.result_vars.matches(plt_cng_cfg.result_vars)
+        panel_match = self.panel_range.matches(plt_cng_cfg.panel_cnt)
+
+        if plt_cng_cfg.print_debug:
+            logging.info(f"float {self.float_range} {float_match}")
+            logging.info(f"cat {self.cat_range} {cat_match}")
+            logging.info(f"vec {self.vector_len} {vector_match}")
+            logging.info(f"result {self.result_vars} {result_var_match}")
+            logging.info(f"panel {self.panel_range} {panel_match}")
+
+        return float_match and cat_match and vector_match and result_var_match and panel_match
+
+    # def __repr__(self) -> str:
+    # return f"{self.float_range}"
+    #   print(f"float {plt_cnt_cfg.float_cnt}")
+    #         print(f"cat {plt_cnt_cfg.cat_cnt}")
+    #         print(f"vec {plt_cnt_cfg.vector_len}")
 
 
 class PlotProvider:

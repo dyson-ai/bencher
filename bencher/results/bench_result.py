@@ -33,19 +33,22 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
 
     def to_auto(self) -> List[pn.panel]:
         # plot_callback_list = [self.to_volume, self.to_curve]
+        self.plt_cnt_cfg.print_debug = True
         plot_callback_list = [
             self.to_volume,
             self.to_scatter_jitter,
             self.to_curve,
             self.to_panes,
             self.to_video,
-            # self.to_image,
         ]
 
         row = pn.Row()
         for cb in plot_callback_list:
+            if self.plt_cnt_cfg.print_debug:
+                print(cb)
             row.append(cb())
-            # row = self.map_plots(cb, row=row)
+
+        self.plt_cnt_cfg.print_debug = False
         return row
 
     def to_auto_plots(self) -> List[pn.panel]:
@@ -110,9 +113,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
                 plt_cnt_cfg.vector_len = 1
 
             if self.bench_cfg.plot_lib is not None:
-                print(f"float {plt_cnt_cfg.float_cnt}")
-                print(f"cat {plt_cnt_cfg.cat_cnt}")
-                print(f"vec {plt_cnt_cfg.vector_len}")
+                print(plt_cnt_cfg)
                 plot_rows.append(self.bench_cfg.plot_lib.gather_plots(self, rv, plt_cnt_cfg))
             # todo enable this check in future pr
             # if len(plot_rows) == 0:  # use the old plotting method as a backup

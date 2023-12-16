@@ -29,13 +29,15 @@ def example_1D_cat(
     )
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
-    bench.plot_sweep(
+    res =bench.plot_sweep(
         title="Example 1D Categorical",
         description="""This example shows how to sample a 1 dimensional categorical variable and plot the result of passing that parameter sweep to the benchmarking function""",
         input_vars=[ExampleBenchCfgIn.param.postprocess_fn],
         result_vars=[ExampleBenchCfgOut.param.out_cos, ExampleBenchCfgOut.param.out_sin],
         const_vars=explorer.get_input_defaults(),
     )
+
+    bench.report.append(res.to_auto())
 
     return bench
 
