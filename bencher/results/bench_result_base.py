@@ -12,6 +12,11 @@ from bencher.variables.results import ResultVar
 import panel as pn
 
 
+# todo add plugins
+# https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
+# https://kaleidoescape.github.io/decorated-plugins/
+
+
 class BenchResultBase(OptunaResult):
     def to_dataarray(self, result_var: ResultVar, squeeze: bool = True) -> xr.DataArray:
         var = result_var.name
