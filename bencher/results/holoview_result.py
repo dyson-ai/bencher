@@ -13,7 +13,20 @@ from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
 
+
 hv.extension("bokeh", "plotly")
+
+width_heigh = {"width": 600, "height": 600, "tools": ["hover"]}
+
+hv.opts.defaults(
+    hv.opts.Curve(**width_heigh),
+    hv.opts.Points(**width_heigh),
+    hv.opts.Bars(**width_heigh),
+    hv.opts.Scatter(**width_heigh),
+    hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
+    # hv.opts.Surface(**width_heigh),
+    hv.opts.GridSpace(plot_size=400),
+)
 
 
 class ReduceType(Enum):
