@@ -5,7 +5,6 @@ from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plots.catplot import Catplot
 from bencher.plotting.plots.heatmap import Heatmap
 from bencher.plotting.plots.lineplot import Lineplot
-from bencher.plotting.plots.volume import VolumePlot
 
 # from bencher.plotting.plots.surface import SurfacePlot
 from bencher.plotting.plots.hv_interactive import HvInteractive
