@@ -3,16 +3,19 @@ from copy import deepcopy
 from typing import List
 import panel as pn
 
-from bencher.results.panel_result import PanelResult
-from bencher.results.plotly_result import PlotlyResult
-from bencher.results.holoview_result import HoloviewResult
-from bencher.results.seaborn_result import SeabornResult
-
 
 import seaborn as sns
 
 
-# from bencher.results.bench_result import BenchResult
+from bencher.results.panel_result import PanelResult
+from bencher.results.plotly_result import PlotlyResult
+from bencher.results.holoview_result import HoloviewResult
+
+# from bencher.results.heatmap_result import HeatMapResult
+
+from bencher.results.seaborn_result import SeabornResult
+
+
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 
@@ -34,13 +37,14 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
     def to_auto(self) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = True
         plot_callback_list = [
-            self.to_volume,
             self.to_scatter_jitter,
             self.to_scatter,
             self.to_curve,
             self.to_panes,
             self.to_video,
+            self.to_heatmap,
             self.to_surface_hv,
+            self.to_volume,
         ]
 
         row = pn.Row()
