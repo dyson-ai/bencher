@@ -27,7 +27,6 @@ class PlotLibrary:
         plt_col.add_plotter_source(Lineplot())
         # plt_col.add_plotter_source(Scatter())
         plt_col.add_plotter_source(HvInteractive())
-        plt_col.add_plotter_source(VolumePlot())
         # plt_col.add_plotter_source(SurfacePlot())
 
         return plt_col
@@ -56,16 +55,6 @@ class PlotLibrary:
         # plt_col.add(PlotTypes.hv_interactive)
 
         return plt_col
-
-    @staticmethod
-    def with_plotly() -> PlotCollection:
-        """Display only table summaries of the data
-
-        Returns:
-            PlotCollection: Only table plots
-        """
-        defaults = PlotLibrary.default()
-        return defaults.add(PlotTypes.surface_hv).add(PlotTypes.volume_plotly)
 
     @staticmethod
     def all() -> PlotCollection:
