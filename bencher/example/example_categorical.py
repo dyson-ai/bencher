@@ -55,7 +55,7 @@ def example_categorical(
         post_description="The plot shows when noise=True the output has uniform random noise.",
     )
 
-    res = bench.get_result()
+    # bench.get_result()
     # report.append(res.to_scatter_jitter())
 
     bench.plot_sweep(

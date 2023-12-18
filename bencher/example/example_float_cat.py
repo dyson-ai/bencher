@@ -45,7 +45,10 @@ def example_float_cat(
         title="Float 1D Cat 1D  Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
+        plot=False
     )
+
+    # report.append(bench.get_result().to_curve())
 
     # # this does not work yet because it tries to find min and max of categorical values
     # bench.plot_sweep(

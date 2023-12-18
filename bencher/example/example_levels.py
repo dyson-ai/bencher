@@ -135,7 +135,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
             .opts(title=f"Sample Points for level: {lvl}", shared_axes=False)
         )
         row.append(
-            r.to_heatmap(bch.ReduceType.NONE).opts(
+            r.to_heatmap_single(r.bench_cfg.result_vars[0], bch.ReduceType.NONE).opts(
                 title=f"Function Value Heatmap for level: {lvl}", shared_axes=False
             )
         )

@@ -167,8 +167,15 @@ class HoloviewResult(BenchResultBase):
             return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
         return None
 
-    def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
-        htmap = self.to_heatmap_single(reduce).opts(
+    def to_heatmap_tap(
+        self,
+        result_var: ResultVar,
+        reduce: ReduceType = ReduceType.AUTO,
+        width=800,
+        height=800,
+        **kwargs,
+    ):
+        htmap = self.to_heatmap_single(result_var, reduce).opts(
             tools=["hover", "tap"], width=width, height=height
         )
         htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)

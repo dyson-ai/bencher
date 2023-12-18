@@ -95,7 +95,7 @@ def example_holosweep_tap(
     )
 
     bench.report.append(res.describe_sweep())
-    bench.report.append(res.to_heatmap_tap())
+    bench.report.append(res.to_heatmap_tap(PlotFunctions.param.fn_output))
 
     return bench
 
