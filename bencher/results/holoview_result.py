@@ -151,7 +151,9 @@ class HoloviewResult(BenchResultBase):
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
     ) -> hv.HeatMap:
         if PlotFilter(
-            float_range=VarRange(2, None), cat_range=VarRange(0, None), input_range=VarRange(1, None)
+            float_range=VarRange(2, None),
+            cat_range=VarRange(0, None),
+            input_range=VarRange(1, None),
         ).matches(self.plt_cnt_cfg):
             z = result_var
             title = f"{z.name} vs ("
