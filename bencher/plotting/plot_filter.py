@@ -1,5 +1,4 @@
 from __future__ import annotations
-import logging
 from dataclasses import dataclass
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
 import panel as pn
@@ -117,15 +116,3 @@ class PlotMatchesResult:
         if self.plt_cnt_cfg.print_debug:
             return pn.pane.Markdown(self.matches_info)
         return None
-
-
-class PlotProvider:
-    """A base class for code that displays or plots data. Each class that inherits provides plotting methods and a filter that specifies what the plot is capable of displaying"""
-
-    # commonly used filters that are shared across classes
-    float_1_cat_any_vec_1_res_1_ = PlotFilter(
-        float_range=VarRange(0, 0),
-        cat_range=VarRange(0, None),
-        vector_len=VarRange(1, 1),
-        result_vars=VarRange(1, 1),
-    )
