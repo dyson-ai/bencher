@@ -85,8 +85,7 @@ class HoloviewResult(BenchResultBase):
             for rv in self.bench_cfg.result_vars:
                 pt += plot_callback(rv)
             return pt
-        else:
-            return plot_callback(self.bench_cfg.result_vars[0])
+        return plot_callback(self.bench_cfg.result_vars[0])
 
     def to_curve_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
