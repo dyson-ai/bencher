@@ -18,7 +18,7 @@ from bencher.results.seaborn_result import SeabornResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 
-from bencher.variables.results import ResultVar, ResultVec
+from bencher.variables.results import ResultVar
 
 import xarray as xr
 
@@ -101,63 +101,63 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         # plot_cols.append(self.to_auto())
         # return plot_cols
 
-    def plot_results_row(self) -> pn.Row:
-        """Given a BenchCfg, plot each result variable and add to a panel row
+    # def plot_results_row(self) -> pn.Row:
+    #     """Given a BenchCfg, plot each result variable and add to a panel row
 
-        Returns:
-            pn.Row: A panel row with plots in it
-        """
-        # todo remove the scroll and make it resize dynamically
-        plot_rows = pn.Row(name=self.bench_cfg.bench_name)
+    #     Returns:
+    #         pn.Row: A panel row with plots in it
+    #     """
+    #     # todo remove the scroll and make it resize dynamically
+    #     plot_rows = pn.Row(name=self.bench_cfg.bench_name)
 
-        plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
+    #     plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
 
-        for rv in self.bench_cfg.result_vars:
-            plt_cnt_cfg.result_vars = 1
-            if type(rv) == ResultVec:
-                plt_cnt_cfg.vector_len = rv.size
-            else:
-                plt_cnt_cfg.vector_len = 1
+    #     for rv in self.bench_cfg.result_vars:
+    #         plt_cnt_cfg.result_vars = 1
+    #         if type(rv) == ResultVec:
+    #             plt_cnt_cfg.vector_len = rv.size
+    #         else:
+    #             plt_cnt_cfg.vector_len = 1
 
-            if self.bench_cfg.plot_lib is not None:
-                print(plt_cnt_cfg)
-                plot_rows.append(self.bench_cfg.plot_lib.gather_plots(self, rv, plt_cnt_cfg))
-            # todo enable this check in future pr
-            # if len(plot_rows) == 0:  # use the old plotting method as a backup
-            plot_rows.append(pn.panel(self.plot_result_variable(rv, plt_cnt_cfg)))
+    #         if self.bench_cfg.plot_lib is not None:
+    #             print(plt_cnt_cfg)
+    #             plot_rows.append(self.bench_cfg.plot_lib.gather_plots(self, rv, plt_cnt_cfg))
+    #         # todo enable this check in future pr
+    #         # if len(plot_rows) == 0:  # use the old plotting method as a backup
+    #         plot_rows.append(pn.panel(self.plot_result_variable(rv, plt_cnt_cfg)))
 
-        return plot_rows
+    #     return plot_rows
 
-    def plot_result_variable(self, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg) -> pn.Column:
-        """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
+    # def plot_result_variable(self, rv: ParametrizedSweep, plt_cnt_cfg: PltCntCfg) -> pn.Column:
+    #     """This method returns a single plot based on 1 result variable and a set of input variables.  It dedeuces the correct plot type by passing it to several configuration functions that operate on the number of inputs
 
-        Args:
-            rv (ParametrizedSweep): a config of the result variable
-            plt_cnt_cfg (PltCntCfg): A config of how many input types there are
+    #     Args:
+    #         rv (ParametrizedSweep): a config of the result variable
+    #         plt_cnt_cfg (PltCntCfg): A config of how many input types there are
 
-        Raises:
-            FileExistsError: If there are file naming conflicts
+    #     Raises:
+    #         FileExistsError: If there are file naming conflicts
 
-        Returns:
-            PlotResult: A summary of all the data used to generate a plot
-        """
-        surf_col = pn.Column()
+    #     Returns:
+    #         PlotResult: A summary of all the data used to generate a plot
+    #     """
+    #     surf_col = pn.Column()
 
-        sns_cfg = PltCfgBase()
-        sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
+    #     sns_cfg = PltCfgBase()
+    #     sns_cfg.y = rv.name  # by default the result variable is always plotted on the y axis
 
-        if plt_cnt_cfg.float_cnt < 2:
-            # set a marker for time series to its easy to see the measurment points
-            if self.bench_cfg.over_time:
-                sns_cfg.marker = "."
-            if plt_cnt_cfg.float_cnt == 0:
-                sns_cfg = BenchPlotter.plot_float_cnt_0(sns_cfg, plt_cnt_cfg)
-            elif plt_cnt_cfg.float_cnt == 1:
-                sns_cfg = BenchPlotter.plot_float_cnt_1(sns_cfg, plt_cnt_cfg)
-            sns_cfg = BenchPlotter.get_axes_and_title(rv, sns_cfg, plt_cnt_cfg)
-            surf_col.append(self.plot_sns(rv, sns_cfg))
+    #     if plt_cnt_cfg.float_cnt < 2:
+    #         # set a marker for time series to its easy to see the measurment points
+    #         if self.bench_cfg.over_time:
+    #             sns_cfg.marker = "."
+    #         if plt_cnt_cfg.float_cnt == 0:
+    #             sns_cfg = BenchPlotter.plot_float_cnt_0(sns_cfg, plt_cnt_cfg)
+    #         elif plt_cnt_cfg.float_cnt == 1:
+    #             sns_cfg = BenchPlotter.plot_float_cnt_1(sns_cfg, plt_cnt_cfg)
+    #         sns_cfg = BenchPlotter.get_axes_and_title(rv, sns_cfg, plt_cnt_cfg)
+    #         surf_col.append(self.plot_sns(rv, sns_cfg))
 
-        return surf_col
+    #     return surf_col
 
 
 class BenchPlotter:
