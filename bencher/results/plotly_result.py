@@ -24,8 +24,8 @@ class PlotlyResult(BenchResultBase):
             x = self.bench_cfg.input_vars[0]
             y = self.bench_cfg.input_vars[1]
             z = self.bench_cfg.input_vars[2]
-            width = 800
-            height = 800
+            width = 600
+            height = 600
 
             da = self.to_dataarray(result_var, squeeze=False)
             mean = da.mean("repeat")

@@ -13,6 +13,7 @@ from bencher.results.bench_result_base import BenchResultBase
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
+import hvplot.xarray
 
 
 hv.extension("bokeh", "plotly")
@@ -86,6 +87,16 @@ class HoloviewResult(BenchResultBase):
                 pt += plot_callback(rv)
             return pt
         return plot_callback(self.bench_cfg.result_vars[0])
+
+    def to_hvplot(self):
+        ds = self.to_hv_dataset()
+
+        # ds.data
+        # print(type(ds.data))
+        # print(ds.data)
+
+        # return pn.pane.panel(ds.data.interactive())
+        return None
 
     def to_curve_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs

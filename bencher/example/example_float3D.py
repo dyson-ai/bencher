@@ -92,9 +92,7 @@ def example_floats3D(
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
     )
 
-    # report.append(res.to_volume_single(VolumeResult.param.value))
-
-    report.append(res.to_volume())  # TODO
+    # report.append(res.to_hvplot())
 
     return bench
 
