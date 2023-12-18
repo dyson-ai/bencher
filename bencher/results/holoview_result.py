@@ -6,6 +6,7 @@ import panel as pn
 import holoviews as hv
 import numpy as np
 from param import Parameter
+from functools import partial
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
@@ -65,14 +66,34 @@ class HoloviewResult(BenchResultBase):
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
-    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> Optional[hv.Curve]:
+    def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
+        return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
+
+    def overlay_plots(self, plot_callback: callable):
+        pt = hv.Overlay()
+        for rv in self.bench_cfg.result_vars:
+            pt *= plot_callback(rv)
+        return pt
+
+    def layout_plots(self, plot_callback: callable):
+        pt = hv.Overlay()
+        for rv in self.bench_cfg.result_vars:
+            # pt.
+            pt += plot_callback(rv)
+        return pt
+
+    def to_curve_single(
+        self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
+    ) -> Optional[hv.Curve]:
         if PlotFilter(
             float_range=VarRange(1, None),
             cat_range=VarRange(0, None),
         ).matches(self.plt_cnt_cfg):
             title = self.to_plot_title()
             ds = self.to_hv_dataset(reduce)
-            pt = ds.to(hv.Curve).opts(title=title)
+            pt = ds.to(hv.Curve, vdims=[result_var.name], label=result_var.name, **kwargs).opts(
+                title=title
+            )
             if self.bench_cfg.repeats > 1:
                 pt *= ds.to(hv.Spread).opts(alpha=0.2)
             return pt
@@ -122,14 +143,19 @@ class HoloviewResult(BenchResultBase):
         return pt.opts(title=self.to_plot_title())
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
+        return self.map_plots(partial(self.to_heatmap_single,reduce=reduce,**kwargs))
+
+    def to_heatmap_single(
+        self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
+    ) -> hv.HeatMap:
         if PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
         ).matches(self.plt_cnt_cfg):
-            z = self.bench_cfg.result_vars[0]
-            title = f"{z.name} vs ({self.bench_cfg.input_vars[0].name}"
+            z = result_var
+            title = f"{z.name} vs ("
 
-            for iv in self.bench_cfg.input_vars[1:]:
+            for iv in self.bench_cfg.input_vars:
                 title += f" vs {iv.name}"
             title += ")"
 

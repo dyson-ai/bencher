@@ -44,7 +44,7 @@ class VarRange:
 
     def matches_info(self, val, print_msg, msg: str):
         match = self.matches(val)
-        if print_msg:
+        if not match and print_msg:
             logging.info(f"{msg}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}")
         return match
 

@@ -395,6 +395,9 @@ class BenchCfg(BenchRunCfg):
     def to_description(self, width: int = 800) -> pn.pane.Markdown:
         return pn.pane.Markdown(f"{self.description}", width=width)
 
+    def to_post_description(self, width: int = 800) -> pn.pane.Markdown:
+        return pn.pane.Markdown(f"{self.post_description}", width=width)
+
     def to_sweep_summary(
         self,
         name=None,

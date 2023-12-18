@@ -510,6 +510,7 @@ class Bench(BenchPlotServer):
             samples=repeats,
             samples_debug=2 if repeats > 2 else 1,
             units="repeats",
+            doc="The number of times a sample was measured",
         )
         bench_cfg.iv_repeat.name = "repeat"
         extra_vars = [bench_cfg.iv_repeat]

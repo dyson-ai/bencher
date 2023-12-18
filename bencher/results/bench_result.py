@@ -43,8 +43,8 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             self.to_panes,
             self.to_video,
             self.to_heatmap,
-            self.to_surface_hv,
-            self.to_volume,
+            # self.to_surface_hv,
+            # self.to_volume,
         ]
 
         row = pn.Row()
@@ -67,6 +67,9 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         """
         plot_cols = pn.Column()
         plot_cols.append(self.bench_cfg.to_sweep_summary(name="Plots View"))
+        plot_cols.append(self.to_auto())
+        plot_cols.append(self.bench_cfg.to_post_description())
+        return plot_cols
 
         if self.bench_cfg.over_time:
             if len(self.ds.coords["over_time"]) > 1:
