@@ -1,5 +1,4 @@
 import logging
-from copy import deepcopy
 from typing import List
 import panel as pn
 
@@ -71,36 +70,36 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         plot_cols.append(self.bench_cfg.to_post_description())
         return plot_cols
 
-        if self.bench_cfg.over_time:
-            if len(self.ds.coords["over_time"]) > 1:
-                plot_cols.append(pn.pane.Markdown("## Results Over Time"))
-                plot_cols.append(self.plot_results_row())
-            else:
-                plot_cols.append(
-                    pn.pane.Markdown("Results over time needs at least 2 time snapshots to plot")
-                )
+        # if self.bench_cfg.over_time:
+        #     if len(self.ds.coords["over_time"]) > 1:
+        #         plot_cols.append(pn.pane.Markdown("## Results Over Time"))
+        #         plot_cols.append(self.plot_results_row())
+        #     else:
+        #         plot_cols.append(
+        #             pn.pane.Markdown("Results over time needs at least 2 time snapshots to plot")
+        #         )
 
-            plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
-            bench_deep = deepcopy(self)  # TODO do this in the future without copying
-            bench_deep.bench_cfg.over_time = False
-            bench_deep.bench_cfg.iv_time = []
-            last_time = bench_deep.ds.coords["over_time"][-1]
-            try:
-                bench_deep.ds = bench_deep.ds.sel(over_time=last_time)
-                plot_cols.append(bench_deep.plot_results_row())
-            except ValueError as e:
-                warning = f"failed to load historical data: {e}"
-                plot_cols.append(pn.pane.Markdown(warning))
-                logging.warning(warning)
+        #     plot_cols.append(pn.pane.Markdown("## Most Recent Results"))
+        #     bench_deep = deepcopy(self)  # TODO do this in the future without copying
+        #     bench_deep.bench_cfg.over_time = False
+        #     bench_deep.bench_cfg.iv_time = []
+        #     last_time = bench_deep.ds.coords["over_time"][-1]
+        #     try:
+        #         bench_deep.ds = bench_deep.ds.sel(over_time=last_time)
+        #         plot_cols.append(bench_deep.plot_results_row())
+        #     except ValueError as e:
+        #         warning = f"failed to load historical data: {e}"
+        #         plot_cols.append(pn.pane.Markdown(warning))
+        #         logging.warning(warning)
 
-        else:
-            plot_cols.append(pn.pane.Markdown("## Results"))
-            plot_cols.append(self.plot_results_row())
+        # else:
+        #     plot_cols.append(pn.pane.Markdown("## Results"))
+        #     plot_cols.append(self.plot_results_row())
 
-        plot_cols.append(pn.pane.Markdown(f"{self.bench_cfg.post_description}"))
+        # plot_cols.append(pn.pane.Markdown(f"{self.bench_cfg.post_description}"))
 
-        plot_cols.append(self.to_auto())
-        return plot_cols
+        # plot_cols.append(self.to_auto())
+        # return plot_cols
 
     def plot_results_row(self) -> pn.Row:
         """Given a BenchCfg, plot each result variable and add to a panel row
