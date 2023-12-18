@@ -69,20 +69,24 @@ class HoloviewResult(BenchResultBase):
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
         return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
 
-    def overlay_plots(self, plot_callback: callable):
-        pt = hv.Overlay()
+    def overlay_plots(self, plot_callback: callable) -> Optional[hv.Overlay]:
+        results = []
         for rv in self.bench_cfg.result_vars:
             res = plot_callback(rv)
             if res is not None:
-                pt *= res
-        return pt
+                results.append(res)
+        if len(results) > 0:
+            return hv.Overlay(results)
+        return None
 
     def layout_plots(self, plot_callback: callable):
-        pt = hv.Overlay()
-        for rv in self.bench_cfg.result_vars:
-            # pt.
-            pt += plot_callback(rv)
-        return pt
+        if len(self.bench_cfg.result_vars) > 0:
+            pt = hv.Overlay()
+            for rv in self.bench_cfg.result_vars:
+                pt += plot_callback(rv)
+            return pt
+        else:
+            return plot_callback(self.bench_cfg.result_vars[0])
 
     def to_curve_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
