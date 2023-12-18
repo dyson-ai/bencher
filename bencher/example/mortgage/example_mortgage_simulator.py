@@ -200,8 +200,7 @@ res = bench.plot_sweep(
     ],
     # const_vars=[(inv.param.interest, .06)],
     result_vars=[pf.param.investments_value],
-    # plot_lib=bch.PlotLibrary.default().add(bch.PlotTypes.lineplot_hv),
-    plot_lib=bch.PlotLibrary.none(),
+    plot=False,
 )
 
 # bench.report.append(res.to_grid().overlay("month"))

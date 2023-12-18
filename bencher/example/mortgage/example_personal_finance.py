@@ -66,7 +66,7 @@ class PersonalFinances(bch.ParametrizedSweep):
 
 if __name__ == "__main__":
     pf = PersonalFinances()
-    bench = bch.Bench("PersonalFinances", pf.call, plot_lib=None)
+    bench = bch.Bench("PersonalFinances", pf.call)
 
     # res = bench.plot_sweep(
     #     "Mortgage",
