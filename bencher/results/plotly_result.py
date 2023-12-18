@@ -4,7 +4,6 @@ from typing import Optional
 
 from param import Parameter
 
-from bencher.plotting.plot_types import PlotTypes
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase
 
@@ -62,5 +61,5 @@ class PlotlyResult(BenchResultBase):
 
             fig = dict(data=data, layout=layout)
 
-            return pn.pane.Plotly(fig, name=PlotTypes.volume_plotly)
+            return pn.pane.Plotly(fig, name="volume_plotly")
         return None

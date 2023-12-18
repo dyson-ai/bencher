@@ -29,11 +29,6 @@ from bencher.variables.results import (
 )
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-
-from bencher.plotting.plot_collection import PlotCollection
-from bencher.plotting.plot_library import PlotLibrary  # noqa pylint: disable=unused-import
-
-
 from bencher.job import Job, FutureCache, JobFuture, Executors
 
 # Customize the formatter
