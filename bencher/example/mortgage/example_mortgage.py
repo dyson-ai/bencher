@@ -47,7 +47,7 @@ class Mortgage(bch.ParametrizedSweep):
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("Mortgage", Mortgage(), plot_lib=None)
+    bench = bch.Bench("Mortgage", Mortgage())
 
     res = bench.plot_sweep(
         "Mortgage",
@@ -57,6 +57,7 @@ if __name__ == "__main__":
             Mortgage.param.installment_principal,
             Mortgage.param.hmap,
         ],
+        plot=False,
     )
 
     bench.report.append(res.to_curve())

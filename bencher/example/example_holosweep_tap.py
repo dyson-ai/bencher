@@ -85,7 +85,7 @@ def example_holosweep_tap(
 
     run_cfg.use_optuna = True
     run_cfg.auto_plot = False
-    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
@@ -106,7 +106,7 @@ def example_holosweep_tap_slider(
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
