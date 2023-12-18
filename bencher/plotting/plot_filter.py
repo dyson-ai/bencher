@@ -89,7 +89,7 @@ class PlotMatchesResult:
 
         match_candidates = [
             (plot_filter.float_range, plt_cnt_cfg.float_cnt, "float"),
-            (plot_filter.cat_range, plt_cnt_cfg.float_cnt, "cat"),
+            (plot_filter.cat_range, plt_cnt_cfg.cat_cnt, "cat"),
             (plot_filter.vector_len, plt_cnt_cfg.vector_len, "vec"),
             (plot_filter.result_vars, plt_cnt_cfg.result_vars, "results"),
             (plot_filter.panel_range, plt_cnt_cfg.panel_cnt, "panels"),

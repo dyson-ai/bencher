@@ -80,7 +80,7 @@ def example_floats3D(
         report=report,
     )
 
-    bench.plot_sweep(
+    res = bench.plot_sweep(
         title="Float 3D Example",
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[
@@ -91,6 +91,10 @@ def example_floats3D(
         description="""This example shows how to sample 3 floating point variables and plot a volumetric representation of the results.  The benchmark function returns the distance to the origin""",
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
     )
+
+    # report.append(res.to_volume_single(VolumeResult.param.value))
+
+    report.append(res.to_volume())  # TODO
 
     return bench
 

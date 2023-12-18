@@ -140,7 +140,7 @@ class BenchResultBase(OptunaResult):
         self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
     ) -> pn.Row:
         if row is None:
-            row = pn.Row(name=self.to_plot_title())
+            row = pn.Column(name=self.to_plot_title())
         for rv in self.get_results_var_list(result_var):
             row.append(plot_callback(rv))
         return row

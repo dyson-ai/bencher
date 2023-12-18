@@ -1,9 +1,5 @@
-import logging
 from typing import List
 import panel as pn
-
-
-import seaborn as sns
 
 
 from bencher.results.panel_result import PanelResult
@@ -12,18 +8,10 @@ from bencher.results.holoview_result import HoloviewResult
 
 # from bencher.results.heatmap_result import HeatMapResult
 
-from bencher.results.seaborn_result import SeabornResult
+# from bencher.results.seaborn_result import SeabornResult
 
 
-from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
-
-from bencher.variables.results import ResultVar
-
-import xarray as xr
-
-
-class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
+class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
@@ -31,7 +19,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
         PanelResult.__init__(self, bench_cfg)
         PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
-        SeabornResult.__init__(self, bench_cfg)
+        # SeabornResult.__init__(self, bench_cfg)
 
     def to_auto(self) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = True
@@ -42,8 +30,8 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
             self.to_panes,
             self.to_video,
             self.to_heatmap,
-            # self.to_surface_hv,
-            # self.to_volume,
+            self.to_surface_hv,
+            self.to_volume,
         ]
 
         row = pn.Row()
@@ -160,126 +148,126 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult, SeabornResult):
     #     return surf_col
 
 
-class BenchPlotter:
-    """A deprecated class for handling benchmark plotting logic. Deprecation is still a work in progress"""
+# class BenchPlotter:
+#     """A deprecated class for handling benchmark plotting logic. Deprecation is still a work in progress"""
 
-    @staticmethod
-    def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
+#     @staticmethod
+#     def axis_mapping(cat_axis_order, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+#         """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
 
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+#         Args:
+#             sns_cfg (PltCfgBase): See PltCfgBase definition
+#             plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
 
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        sns_dict = {}
-        for i, v in enumerate(plt_cnt_cfg.cat_vars):
-            axis = cat_axis_order[i]
-            sns_dict[axis] = v.name
+#         Returns:
+#             PltCfgBase: See PltCfgBase definition
+#         """
+#         sns_dict = {}
+#         for i, v in enumerate(plt_cnt_cfg.cat_vars):
+#             axis = cat_axis_order[i]
+#             sns_dict[axis] = v.name
 
-        sns_cfg.param.update(**sns_dict)
+#         sns_cfg.param.update(**sns_dict)
 
-        return sns_cfg
+#         return sns_cfg
 
-    @staticmethod
-    def get_axes_and_title(
-        rv: ParametrizedSweep, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
-    ) -> PltCntCfg:
-        """Work out the axes label and plot tite
+#     @staticmethod
+#     def get_axes_and_title(
+#         rv: ParametrizedSweep, sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg
+#     ) -> PltCntCfg:
+#         """Work out the axes label and plot tite
 
-        Args:
-            rv (ParametrizedSweep): result variable
-            sns_cfg (PltCfgBase): plotting config
-            plt_cnt_cfg (PltCntCfg): plot count config
+#         Args:
+#             rv (ParametrizedSweep): result variable
+#             sns_cfg (PltCfgBase): plotting config
+#             plt_cnt_cfg (PltCntCfg): plot count config
 
-        Returns:
-            PltCfgBase: plot count config with titles added
-        """
-        all_vars = plt_cnt_cfg.float_vars + plt_cnt_cfg.cat_vars
-        xvar = None
-        for i in all_vars:
-            if i.name == sns_cfg.x:
-                xvar = i.units
-        if xvar is not None:
-            sns_cfg.xlabel = f"{sns_cfg.x} [{xvar}]"
-        sns_cfg.ylabel = f"{sns_cfg.y} [{rv.units}]"
-        sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
-        return sns_cfg
+#         Returns:
+#             PltCfgBase: plot count config with titles added
+#         """
+#         all_vars = plt_cnt_cfg.float_vars + plt_cnt_cfg.cat_vars
+#         xvar = None
+#         for i in all_vars:
+#             if i.name == sns_cfg.x:
+#                 xvar = i.units
+#         if xvar is not None:
+#             sns_cfg.xlabel = f"{sns_cfg.x} [{xvar}]"
+#         sns_cfg.ylabel = f"{sns_cfg.y} [{rv.units}]"
+#         sns_cfg.title = f"{sns_cfg.x} vs {sns_cfg.y}"
+#         return sns_cfg
 
-    @staticmethod
-    def plot_float_cnt_0(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
+#     @staticmethod
+#     def plot_float_cnt_0(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+#         """A function for determining the plot settings if there are 0 float variable and updates the PltCfgBase
 
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+#         Args:
+#             sns_cfg (PltCfgBase): See PltCfgBase definition
+#             plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
 
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
+#         Returns:
+#             PltCfgBase: See PltCfgBase definition
+#         """
 
-        if plt_cnt_cfg.float_cnt == 0:
-            sns_cfg.plot_callback = sns.catplot
-            sns_cfg.kind = "swarm"
+#         if plt_cnt_cfg.float_cnt == 0:
+#             sns_cfg.plot_callback = sns.catplot
+#             sns_cfg.kind = "swarm"
 
-            # as more cat variables are added, map them to these plot axes
-            cat_axis_order = ["x", "row", "col", "hue"]
-            sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
+#             # as more cat variables are added, map them to these plot axes
+#             cat_axis_order = ["x", "row", "col", "hue"]
+#             sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
 
-        return sns_cfg
+#         return sns_cfg
 
-    @staticmethod
-    def plot_float_cnt_1(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
-        """A function for determining the plot settings if there is 1 float variable and updates the PltCfgBase
+#     @staticmethod
+#     def plot_float_cnt_1(sns_cfg: PltCfgBase, plt_cnt_cfg: PltCntCfg) -> PltCfgBase:
+#         """A function for determining the plot settings if there is 1 float variable and updates the PltCfgBase
 
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+#         Args:
+#             sns_cfg (PltCfgBase): See PltCfgBase definition
+#             plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
 
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
+#         Returns:
+#             PltCfgBase: See PltCfgBase definition
+#         """
 
-        if plt_cnt_cfg.float_cnt == 1:
-            sns_cfg.x = plt_cnt_cfg.float_vars[0].name
-            sns_cfg.kind = "line"
-            sns_cfg.plot_callback = sns.relplot
+#         if plt_cnt_cfg.float_cnt == 1:
+#             sns_cfg.x = plt_cnt_cfg.float_vars[0].name
+#             sns_cfg.kind = "line"
+#             sns_cfg.plot_callback = sns.relplot
 
-            # as more cat variables are added, map them to these plot axes
-            cat_axis_order = ["hue", "row", "col", "hue"]
+#             # as more cat variables are added, map them to these plot axes
+#             cat_axis_order = ["hue", "row", "col", "hue"]
 
-            sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
+#             sns_cfg = BenchPlotter.axis_mapping(cat_axis_order, sns_cfg, plt_cnt_cfg)
 
-        return sns_cfg
+#         return sns_cfg
 
-    @staticmethod
-    def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
-        """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-        Args:
-            sns_cfg (PltCfgBase): See PltCfgBase definition
-            plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-        Returns:
-            PltCfgBase: See PltCfgBase definition
-        """
-        xr_cfg = PltCfgBase()
-        if plt_cnt_cfg.float_cnt == 2:
-            logging.info(f"surface plot: {rv.name}")
-            xr_cfg.plot_callback_xra = xr.plot.plot
-            xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-            xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-            xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-            xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-            xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
-            xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
+#     @staticmethod
+#     def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
+#         """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
+#         Args:
+#             sns_cfg (PltCfgBase): See PltCfgBase definition
+#             plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
+#         Returns:
+#             PltCfgBase: See PltCfgBase definition
+#         """
+#         xr_cfg = PltCfgBase()
+#         if plt_cnt_cfg.float_cnt == 2:
+#             logging.info(f"surface plot: {rv.name}")
+#             xr_cfg.plot_callback_xra = xr.plot.plot
+#             xr_cfg.x = plt_cnt_cfg.float_vars[0].name
+#             xr_cfg.y = plt_cnt_cfg.float_vars[1].name
+#             xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
+#             xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
+#             xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
+#             xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
 
-            if plt_cnt_cfg.cat_cnt >= 1:
-                logging.info("surface plot with 1 categorical")
-                xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-                xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-            if plt_cnt_cfg.cat_cnt >= 2:
-                logging.info("surface plot with 2> categorical")
-                xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-                xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-        return xr_cfg
+#             if plt_cnt_cfg.cat_cnt >= 1:
+#                 logging.info("surface plot with 1 categorical")
+#                 xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
+#                 xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
+#             if plt_cnt_cfg.cat_cnt >= 2:
+#                 logging.info("surface plot with 2> categorical")
+#                 xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
+#                 xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
+#         return xr_cfg
