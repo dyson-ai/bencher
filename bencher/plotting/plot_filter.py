@@ -2,6 +2,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
+import panel as pn
 
 
 class VarRange:
@@ -42,11 +43,10 @@ class VarRange:
 
         return lower_match and upper_match
 
-    def matches_info(self, val, print_msg, msg: str):
+    def matches_info(self, val, name):
         match = self.matches(val)
-        if not match and print_msg:
-            logging.info(f"{msg}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}")
-        return match
+        info = f"{name}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}"
+        return match, info
 
     def __str__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
@@ -62,8 +62,9 @@ class PlotFilter:
     result_vars: VarRange = VarRange(1, 1)
     panel_range: VarRange = VarRange(0, 0)
     repeats_range: VarRange = VarRange(1, None)
+    input_range: VarRange = VarRange(1, None)
 
-    def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
+    def matches(self, plt_cnt_cfg: PltCntCfg) -> bool:
         """Checks if the result data signature matches the type of data the plot is able to display.
 
         Args:
@@ -73,36 +74,49 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        deb = plt_cng_cfg.print_debug
-        float_match = self.float_range.matches_info(plt_cng_cfg.float_cnt, deb, "float")
-        cat_match = self.cat_range.matches_info(plt_cng_cfg.cat_cnt, deb, "cat")
-        vector_match = self.vector_len.matches_info(plt_cng_cfg.vector_len, deb, "vec")
-        result_var_match = self.result_vars.matches_info(plt_cng_cfg.result_vars, deb, "result")
-        panel_match = self.panel_range.matches_info(plt_cng_cfg.panel_cnt, deb, "panel")
-        repeats_match = self.repeats_range.matches_info(plt_cng_cfg.repeats, deb, "repeat")
+        return self.matches_result(plt_cnt_cfg).overall
 
-        overall = (
-            float_match
-            and cat_match
-            and vector_match
-            and result_var_match
-            and panel_match
-            and repeats_match
-        )
+    def matches_result(self, plt_cnt_cfg: PltCntCfg) -> PlotMatchesResult:
+        return PlotMatchesResult(self, plt_cnt_cfg)
 
-        if plt_cng_cfg.print_debug:
-            logging.info(f"overall:\t{overall}")
 
-        return overall
+# @dataclass
+class PlotMatchesResult:
+    """Stores information about which properites match the requirements of a particular plotter"""
 
-    # def info(self,plt_cng_cfg.float_cnt):
-    # logging.info(f"float {self.float_range}={plt_cng_cfg.float_cnt} {float_match}")
+    def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg):
+        match_info = []
+        matches = []
 
-    # def __repr__(self) -> str:
-    # return f"{self.float_range}"
-    #   print(f"float {plt_cnt_cfg.float_cnt}")
-    #         print(f"cat {plt_cnt_cfg.cat_cnt}")
-    #         print(f"vec {plt_cnt_cfg.vector_len}")
+        match_candidates = [
+            (plot_filter.float_range, plt_cnt_cfg.float_cnt, "float"),
+            (plot_filter.cat_range, plt_cnt_cfg.float_cnt, "cat"),
+            (plot_filter.vector_len, plt_cnt_cfg.vector_len, "vec"),
+            (plot_filter.result_vars, plt_cnt_cfg.result_vars, "results"),
+            (plot_filter.panel_range, plt_cnt_cfg.panel_cnt, "panels"),
+            (plot_filter.repeats_range, plt_cnt_cfg.repeats, "repeats"),
+            (plot_filter.input_range, plt_cnt_cfg.inputs_cnt, "inputs"),
+        ]
+
+        for m, cnt, name in match_candidates:
+            match, info = m.matches_info(cnt, name)
+            matches.append(match)
+            if not match:
+                match_info.append(info)
+
+        self.overall = all(matches)
+        self.matches_info = "\n".join(match_info).strip()
+        self.plt_cnt_cfg = plt_cnt_cfg
+
+        if self.plt_cnt_cfg.print_debug:
+            print(f"overall: {self.overall}")
+            if not self.overall:
+                print(self.matches_info)
+
+    def to_panel(self):
+        if self.plt_cnt_cfg.print_debug:
+            return pn.pane.Markdown(self.matches_info)
+        return None
 
 
 class PlotProvider:

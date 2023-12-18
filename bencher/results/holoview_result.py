@@ -72,7 +72,9 @@ class HoloviewResult(BenchResultBase):
     def overlay_plots(self, plot_callback: callable):
         pt = hv.Overlay()
         for rv in self.bench_cfg.result_vars:
-            pt *= plot_callback(rv)
+            res = plot_callback(rv)
+            if res is not None:
+                pt *= res
         return pt
 
     def layout_plots(self, plot_callback: callable):
@@ -117,14 +119,13 @@ class HoloviewResult(BenchResultBase):
         return None
 
     def to_scatter_jitter(self) -> Optional[hv.Scatter]:
-        if (
-            PlotFilter(
-                float_range=VarRange(0, 0),
-                cat_range=VarRange(0, 1),
-                repeats_range=VarRange(2, None),
-            ).matches(self.plt_cnt_cfg)
-            and len(self.bench_cfg.input_vars) > 0
-        ):
+        matches = PlotFilter(
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, 1),
+            repeats_range=VarRange(2, None),
+            input_range=VarRange(1, None),
+        ).matches(self.plt_cnt_cfg)
+        if matches:
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
                 ds.to(hv.Scatter)
@@ -134,6 +135,7 @@ class HoloviewResult(BenchResultBase):
             )
             return pt
         return None
+        # return matches.to_panel()
 
     def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
         ds = self.to_hv_dataset(reduce)
@@ -143,14 +145,13 @@ class HoloviewResult(BenchResultBase):
         return pt.opts(title=self.to_plot_title())
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        return self.map_plots(partial(self.to_heatmap_single,reduce=reduce,**kwargs))
+        return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))
 
     def to_heatmap_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
     ) -> hv.HeatMap:
         if PlotFilter(
-            float_range=VarRange(2, None),
-            cat_range=VarRange(0, None),
+            float_range=VarRange(2, None), cat_range=VarRange(0, None), input_range=VarRange(1, None)
         ).matches(self.plt_cnt_cfg):
             z = result_var
             title = f"{z.name} vs ("
@@ -165,7 +166,9 @@ class HoloviewResult(BenchResultBase):
         return None
 
     def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
-        htmap = self.to_heatmap(reduce).opts(tools=["hover", "tap"], width=width, height=height)
+        htmap = self.to_heatmap_single(reduce).opts(
+            tools=["hover", "tap"], width=width, height=height
+        )
         htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
 
         def tap_plot(x, y):

@@ -36,21 +36,27 @@ def example_categorical(
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         title="Categorical 1D Example",
         description="""This example shows how to sample categorical values. The same objective from the float examples is used but theta is kept constant with a value of 0 (as described in the ExampleBenchCfgIn class definition).
+
         
-        def bench_function(cfg: ExampleBenchCfgIn) -> ExampleBenchCfgOut:
-            "Takes an ExampleBenchCfgIn and returns a ExampleBenchCfgOut output"
-            out = ExampleBenchCfgOut()
-            noise = calculate_noise(cfg)
-            offset = 0.0
+```
+    def bench_function(cfg: ExampleBenchCfgIn) -> ExampleBenchCfgOut:
+        "Takes an ExampleBenchCfgIn and returns a ExampleBenchCfgOut output"
+        out = ExampleBenchCfgOut()
+        noise = calculate_noise(cfg)
+        offset = 0.0
 
-            postprocess_fn = abs if cfg.postprocess_fn == PostprocessFn.absolute else negate_fn
+        postprocess_fn = abs if cfg.postprocess_fn == PostprocessFn.absolute else negate_fn
 
-            out.out_sin = postprocess_fn(offset + math.sin(cfg.theta) + noise)          
-            return out
+        out.out_sin = postprocess_fn(offset + math.sin(cfg.theta) + noise)          
+        return out
+```
         
         """,
         post_description="The plot shows when noise=True the output has uniform random noise.",
     )
+
+    res = bench.get_result()
+    # report.append(res.to_scatter_jitter())
 
     bench.plot_sweep(
         input_vars=[ExampleBenchCfgIn.param.noisy, ExampleBenchCfgIn.param.noise_distribution],
