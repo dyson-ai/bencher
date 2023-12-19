@@ -3,7 +3,13 @@ from typing import Callable, List
 from copy import deepcopy
 import param
 from bencher.bench_cfg import BenchCfg
-from bencher.variables.results import ResultContainer, ResultImage, ResultVideo, ResultString,ResultReference
+from bencher.variables.results import (
+    ResultContainer,
+    ResultImage,
+    ResultVideo,
+    ResultString,
+    ResultReference,
+)
 
 
 class PltCfgBase(param.Parameterized):

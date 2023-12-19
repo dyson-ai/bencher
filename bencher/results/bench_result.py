@@ -35,7 +35,9 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
             PlotlyResult.to_volume,
         ]
 
-    # def
+    @staticmethod
+    def plotly_callbacks():
+        return [HoloviewResult.to_surface_hv, PlotlyResult.to_volume]
 
     def to_auto(
         self,
@@ -44,9 +46,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
             HoloviewResult.to_scatter,
             HoloviewResult.to_curve,
             HoloviewResult.to_heatmap,
-            # self.to_panes,
             PanelResult.to_video,
-            # self.to_surface_hv,
             PlotlyResult.to_volume,
         ],
         **kwargs,
@@ -59,12 +59,20 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
                 print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
             cb_with_self = partial(plot_callback, self=self)
-            row.append(cb_with_self(**kwargs))
+            cb_result = cb_with_self(**kwargs)
+
+            print("CB RESULT", cb_result)
+            if cb_result is not None:
+                row.append(cb_result)
 
         self.plt_cnt_cfg.print_debug = False
+        if len(row) == 0:
+            row.append(
+                pn.pane.Markdown("No Plotters are able to represent these results", **kwargs)
+            )
         return row
 
-    def to_auto_plots(self) -> List[pn.panel]:
+    def to_auto_plots(self, **kwargs) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
 
         Args:
@@ -75,7 +83,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
         """
         plot_cols = pn.Column()
         plot_cols.append(self.bench_cfg.to_sweep_summary(name="Plots View"))
-        plot_cols.append(self.to_auto())
+        plot_cols.append(self.to_auto(**kwargs))
         plot_cols.append(self.bench_cfg.to_post_description())
         return plot_cols
 

@@ -13,7 +13,6 @@ from bencher.results.bench_result_base import BenchResultBase
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
-import hvplot.xarray
 
 
 hv.extension("bokeh", "plotly")
@@ -64,10 +63,9 @@ class HoloviewResult(BenchResultBase):
             case _:
                 return hv.Dataset(self.ds, kdims=kdims, vdims=vdims)
 
+    @staticmethod
     def set_default_opts(width=600, height=600):
         width_heigh = {"width": width, "height": height, "tools": ["hover"]}
-        # self.width = width
-        # self.heigh = height
         hv.opts.defaults(
             hv.opts.Curve(**width_heigh),
             hv.opts.Points(**width_heigh),
@@ -98,9 +96,13 @@ class HoloviewResult(BenchResultBase):
     def layout_plots(self, plot_callback: callable):
         if len(self.bench_cfg.result_vars) > 0:
             pt = hv.Overlay()
+            got_results = False
             for rv in self.bench_cfg.result_vars:
-                pt += plot_callback(rv)
-            return pt
+                res = plot_callback(rv)
+                if res is not None:
+                    got_results = True
+                    pt += plot_callback(rv)
+            return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
 
     def to_hvplot(self):
@@ -193,7 +195,7 @@ class HoloviewResult(BenchResultBase):
 
             color_label = f"{z.name} [{z.units}]"
 
-            return self.to(hv.HeatMap, reduce).opts(title=title, clabel=color_label,**kwargs)
+            return self.to(hv.HeatMap, reduce).opts(title=title, clabel=color_label, **kwargs)
         return None
 
     def to_heatmap_tap(

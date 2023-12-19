@@ -72,7 +72,9 @@ class BenchMeta(bch.ParametrizedSweep):
     categorical_vars = bch.IntSweep(
         default=0, bounds=(0, 2), doc="The number of categorical variables that are swept"
     )
-    repeat_samples = bch.IntSweep(default=1, bounds=(1, 2))
+    sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 2))
+
+    sample_over_time = bch.BoolSweep(default=False)
 
     # plots = bch.ResultHmap()
     # plots = bch.ResultContainer()
@@ -83,7 +85,8 @@ class BenchMeta(bch.ParametrizedSweep):
 
         run_cfg = bch.BenchRunCfg()
         run_cfg.level = 2
-        run_cfg.repeats = self.repeat_samples
+        run_cfg.repeats = self.sample_with_repeats
+        run_cfg.over_time = self.sample_over_time
 
         bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
 
@@ -109,22 +112,30 @@ class BenchMeta(bch.ParametrizedSweep):
             result_vars=[BenchableObject.param.result_var],
             plot=False,
         )
+
+        # bench.report.append(res.to_sweep_summary())
+        # bench.report.app
         self.plots = bch.ResultReference()
         self.plots.obj = pn.Row(res.to_auto(width=300, height=300))
-
+        # self.plots.obj = bench.report.pane
         return super().__call__()
 
 
-def bench_bench_meta():
-    bench = bch.Bench("bench_meta", BenchMeta())
+def example_meta(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    print(run_cfg)
+    bench = bch.Bench("bench_meta", BenchMeta(), report=report)
 
     res = bench.plot_sweep(
         title="Meta Bench",
-        description="# All Combinations of Variable Sweeps and Resulting Plots",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots
+        This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            BenchMeta.param.repeat_samples,
+            BenchMeta.param.sample_with_repeats,
+            # BenchMeta.param.sample_over_time,
         ],
         plot=False,
     )
@@ -135,4 +146,4 @@ def bench_bench_meta():
 
 
 if __name__ == "__main__":
-    bench_bench_meta().report.show()
+    example_meta().report.show()

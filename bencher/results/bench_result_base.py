@@ -1,5 +1,5 @@
 import logging
-from typing import List, Any, Tuple
+from typing import List, Any, Tuple, Optional
 from collections.abc import Iterable
 
 import xarray as xr
@@ -26,7 +26,6 @@ class BenchResultBase(OptunaResult):
         if not isinstance(xr_dataarray["repeat"].values, Iterable):
             xr_dataarray = xr_dataarray.drop_indexes("repeat")
         return xr_dataarray
-        
 
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
@@ -139,13 +138,15 @@ class BenchResultBase(OptunaResult):
 
     def map_plots(
         self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
-    ) -> pn.Row:
+    ) -> Optional[pn.Row]:
         if row is None:
             row = pn.Column(name=self.to_plot_title())
         for rv in self.get_results_var_list(result_var):
-            print ("RV NAME",rv.name)
-            row.append(plot_callback(rv))
-        return row
+            print("RV NAME", rv.name)
+            plot_result = plot_callback(rv)
+            if plot_result is not None:
+                row.append(plot_result)
+        return row if len(row) > 0 else None
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self):

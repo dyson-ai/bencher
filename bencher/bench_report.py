@@ -50,9 +50,10 @@ class BenchReport(BenchPlotServer):
         self.append_tab(bench_res.to_auto_plots(), bench_res.bench_cfg.title)
 
     def append_tab(self, pane: pn.panel, name: str = None) -> None:
-        if name is None:
-            name = pane.name
-        self.pane.append(pn.Column(pane, name=name))
+        if pane is not None:
+            if name is None:
+                name = pane.name
+            self.pane.append(pn.Column(pane, name=name))
 
     def save_index(self, directory="", filename="index.html") -> Path:
         """Saves the result to index.html in the root folder so that it can be displayed by github pages.

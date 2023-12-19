@@ -14,7 +14,7 @@ from bencher.variables.results import (
     ResultImage,
     ResultString,
     ResultContainer,
-    ResultReference
+    ResultReference,
 )
 from uuid import uuid4
 
@@ -87,7 +87,7 @@ class ParametrizedSweep(Parameterized):
                     ResultImage,
                     ResultString,
                     ResultContainer,
-                    ResultReference
+                    ResultReference,
                 ),
             ):
                 results[k] = v

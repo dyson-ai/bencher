@@ -6,7 +6,7 @@ from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.variables.results import ResultImage, ResultVideo, ResultReference
+from bencher.variables.results import ResultImage, ResultVideo
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
@@ -68,20 +68,22 @@ class PanelResult(BenchResultBase):
             return self.to_panes_single(result_var, container=container)
         return None
 
-    def to_panes(self, container=pn.pane.panel) -> Optional[pn.pane.panel]:
+    def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:
         if PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             # panel_range=VarRange(1, None),
         ).matches(self.plt_cnt_cfg):
-            return self.map_plots(partial(self.to_panes_single, container=container))
+            return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))
         return None
 
     def to_panes_single(
-        self, result_var: ResultVar, container=pn.pane.panel
+        self, result_var: ResultVar, container=pn.pane.panel, **kwargs
     ) -> Optional[pn.pane.panel]:
         xr_dataarray = self.to_dataarray(result_var)
-        return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
+        return self._to_panes(
+            xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
+        )
 
     def to_reference_single(self, obj, container=None):
         obj_item = self.object_index[obj].obj
@@ -92,15 +94,14 @@ class PanelResult(BenchResultBase):
 
     def to_references(self, container=None):
         return self.map_plots(
-            partial(self.to_panes_single, container=partial(self.to_reference_single,container= container))
+            partial(
+                self.to_panes_single,
+                container=partial(self.to_reference_single, container=container),
+            )
         )
 
     def _to_panes(
-        self,
-        da: xr.DataArray,
-        last_item=False,
-        container=pn.pane.panel,
-        in_card=True,
+        self, da: xr.DataArray, last_item=False, container=pn.pane.panel, in_card=True, **kwargs
     ) -> pn.panel:
         num_dims = len(da.dims)
         if num_dims > 1:
@@ -160,13 +161,13 @@ class PanelResult(BenchResultBase):
                 dim_id = da.dims[0]
                 for val, label in zip(da.values, da.coords[dim_id].values):
                     col = pn.Column()
-                    col.append(container(val))
+                    col.append(container(val, **kwargs))
                     col.append(pn.pane.Markdown(f"{da.dims[0]}={label}", align=align))
                     # styles={"border-top": "1px solid grey"},sizing_mode="stretch_width"
                     inner.append(col)
             else:
                 for val in da.values:
-                    inner.append(container(val))
+                    inner.append(container(val, **kwargs))
             outer_container.append(inner)
 
         return outer_container
