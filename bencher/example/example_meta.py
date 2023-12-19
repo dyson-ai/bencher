@@ -9,6 +9,11 @@ import random
 from functools import partial
 
 
+# class NegateConfig(StrEnum):
+
+# none=auto()
+
+
 class NoiseDistribution(StrEnum):
     """A categorical variable describing the types of random noise"""
 
@@ -42,7 +47,7 @@ class BenchableObject(bch.ParametrizedSweep):
     )
     noise_distribution = bch.EnumSweep(NoiseDistribution, doc=NoiseDistribution.__doc__)
 
-    # var_string = StringSweep(["string1", "string2"])
+    negate_output = bch.StringSweep(["positive", "negative"])
 
     result_var = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
 
@@ -60,6 +65,9 @@ class BenchableObject(bch.ParametrizedSweep):
             self.noisy, self.noise_distribution, self.sigma
         )
 
+        if self.negate_output == "negative":
+            self.result_var *= -1
+
         return super().__call__()
 
 
@@ -70,7 +78,7 @@ class BenchMeta(bch.ParametrizedSweep):
         default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
-        default=0, bounds=(0, 2), doc="The number of categorical variables that are swept"
+        default=0, bounds=(0, 3), doc="The number of categorical variables that are swept"
     )
     sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 2))
 
@@ -100,6 +108,7 @@ class BenchMeta(bch.ParametrizedSweep):
         inputs_vars_cat = [
             BenchableObject.param.noisy,
             BenchableObject.param.noise_distribution,
+            BenchableObject.param.negate_output,
         ]
 
         input_vars = (
@@ -116,7 +125,7 @@ class BenchMeta(bch.ParametrizedSweep):
         # bench.report.append(res.to_sweep_summary())
         # bench.report.app
         self.plots = bch.ResultReference()
-        self.plots.obj = pn.Row(res.to_auto(width=300, height=300))
+        self.plots.obj = pn.Row(res.to_auto(width=500, height=300))
         # self.plots.obj = bench.report.pane
         return super().__call__()
 

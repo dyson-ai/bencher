@@ -7,6 +7,7 @@ import holoviews as hv
 import numpy as np
 from param import Parameter
 from functools import partial
+import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
@@ -90,15 +91,13 @@ class HoloviewResult(BenchResultBase):
                     markdown_results.append(res)
                 else:
                     results.append(res)
-
         if len(results) > 0:
             overlay = hv.Overlay(results).collate()
             if len(markdown_results) == 0:
                 return overlay
             return pn.Row(overlay, markdown_results)
-        else:
-            if len(markdown_results) > 0:
-                return markdown_results
+        if len(markdown_results) > 0:
+            return markdown_results
         return None
 
     def layout_plots(self, plot_callback: callable):
@@ -112,16 +111,6 @@ class HoloviewResult(BenchResultBase):
                     pt += plot_callback(rv)
             return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
-
-    def to_hvplot(self):
-        ds = self.to_hv_dataset()
-
-        # ds.data
-        # print(type(ds.data))
-        # print(ds.data)
-
-        # return pn.pane.panel(ds.data.interactive())
-        return None
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
         return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
@@ -154,20 +143,52 @@ class HoloviewResult(BenchResultBase):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self, **kwargs) -> Optional[hv.Scatter]:
-        matches_res = PlotFilter(
+    def to_scatter(self, **kwargs):
+        match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_scatter")
-        if matches_res.overall:
-            return (
-                self.to_hv_dataset(ReduceType.REDUCE)
-                .to(hv.Scatter)
-                .opts(title=self.to_plot_title(), **kwargs)
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
+        if match_res.overall:
+            hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
+            by = None
+            groupby = None
+            subplots = False
+            if self.plt_cnt_cfg.cat_cnt > 1:
+                by = [v.name for v in self.bench_cfg.input_vars[1:]]
+                subplots = False
+            return hv_ds.data.hvplot.scatter(by=by, subplots=subplots, **kwargs).opts(
+                title=self.to_plot_title()
             )
-        return matches_res.to_panel()
+        return match_res.to_panel(**kwargs)
 
     # def to_scatter_jitter(self, **kwargs) -> List[hv.Scatter]:
     #     return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
+
+    # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
+    #     matches = PlotFilter(
+    #         float_range=VarRange(0, 0),
+    #         cat_range=VarRange(0, None),
+    #         repeats_range=VarRange(2, None),
+    #         input_range=VarRange(1, None),
+    #     ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
+    #     if matches.overall:
+    #         hv_ds = self.to_hv_dataset(ReduceType.NONE)
+
+    #         by = None
+    #         groupby = None
+    #         subplots=False
+    #         if self.plt_cnt_cfg.cat_cnt > 1:
+    #             by = [v.name for v in self.bench_cfg.all_vars[1:]]
+    #             subplots=False
+    #         return hv_ds.data.hvplot.scatter(by=by,subplots=subplots, **kwargs).opts(title=self.to_plot_title())
+
+    #         # pt = (
+    #         #     hv_ds.to(hv.Scatter)
+    #         #     .opts(jitter=0.1)
+    #         #     .overlay("repeat")
+    #         #     .opts(show_legend=False, title=self.to_plot_title(), **kwargs)
+    #         # )
+    #         # return pt
+    #     return matches.to_panel()
 
     def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
@@ -205,12 +226,34 @@ class HoloviewResult(BenchResultBase):
             return pt
         return matches.to_panel()
 
-    def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
-        ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Bars)
-        if reduce:
-            pt *= ds.to(hv.ErrorBars)
-        return pt.opts(title=self.to_plot_title())
+    def to_bar(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Bars:
+        match_res = PlotFilter(
+            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
+        if match_res.overall:
+            ds = self.to_hv_dataset(reduce)
+            pt = ds.to(hv.Bars)
+            if reduce:
+                pt *= ds.to(hv.ErrorBars)
+            return pt.opts(title=self.to_plot_title(), **kwargs)
+        return match_res.to_panel()
+
+    def to_bar_hvplot(self, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
+        if match_res.overall:
+            hv_ds = self.to_hv_dataset()
+            by = None
+            col = None
+            if self.plt_cnt_cfg.cat_cnt >= 2:
+                by = self.plt_cnt_cfg.cat_vars[1].name
+            # if self.plt_cnt_cfg.cat_cnt >= 3: #TODO post about this hvplot bug
+            # col = self.plt_cnt_cfg.cat_vars[2].name
+
+            return hv_ds.data.hvplot.bar(by=by, col=col, **kwargs).opts(title=self.to_plot_title())
+
+        return match_res.to_panel(**kwargs)
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))

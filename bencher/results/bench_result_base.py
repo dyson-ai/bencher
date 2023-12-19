@@ -129,8 +129,14 @@ class BenchResultBase(OptunaResult):
 
     def to_plot_title(self) -> str:
         if len(self.bench_cfg.input_vars) > 0 and len(self.bench_cfg.result_vars) > 0:
-            return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
+            return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"            
         return ""
+    
+    def to_title(self,result_var:ResultVar):
+        title= f"{result_vars[0].name}"
+        for iv in self.bench_cfg.input_vars:
+            title += f" vs {iv.name}"
+        return title
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]

@@ -73,7 +73,7 @@ class PanelResult(BenchResultBase):
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             # panel_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg,"to_panes")
+        ).matches_result(self.plt_cnt_cfg, "to_panes")
         if matches_res.overall:
             return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))
         return matches_res.to_panel()
