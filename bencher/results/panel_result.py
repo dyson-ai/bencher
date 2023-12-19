@@ -12,14 +12,14 @@ from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 class PanelResult(BenchResultBase):
     def to_video(self, **kwargs):
-        return self.map_plots(partial(self.to_video_single,**kwargs))
+        return self.map_plots(partial(self.to_video_single, **kwargs))
 
     def to_video_single(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, ResultVideo):
             vid_p = []
 
             def create_video(vid):  # pragma: no cover
-                vid = pn.pane.Video(vid, autoplay=True,**kwargs)
+                vid = pn.pane.Video(vid, autoplay=True, **kwargs)
                 vid.loop = True
                 vid_p.append(vid)
                 return vid
@@ -83,14 +83,17 @@ class PanelResult(BenchResultBase):
         xr_dataarray = self.to_dataarray(result_var)
         return self._to_panes(xr_dataarray, len(xr_dataarray.dims) == 1, container=container)
 
-    def to_reference_single(self, obj):
-        print("REF OBJ", obj)
-        print(self.object_index[obj].obj)
-        # return self.object_index[obj].obj
-        return pn.Card(self.object_index[obj].obj)
+    def to_reference_single(self, obj, container=None):
+        obj_item = self.object_index[obj].obj
+        if container is not None:
+            return container(obj_item)
+        else:
+            return obj_item
 
-    def to_references(self):
-        return self.map_plots(partial(self.to_panes_single, container=self.to_reference_single))
+    def to_references(self, container=None):
+        return self.map_plots(
+            partial(self.to_panes_single, container=partial(self.to_reference_single,container= container))
+        )
 
     def _to_panes(
         self,

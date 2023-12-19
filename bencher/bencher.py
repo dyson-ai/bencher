@@ -387,10 +387,15 @@ class Bench(BenchPlotServer):
         with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             logging.info(f"saving results with key: {bench_cfg_hash}")
             self.bench_cfg_hashes.append(bench_cfg_hash)
+            # object index may not be pickleable so remove before caching
             obj_index_tmp = bench_res.object_index
             bench_res.object_index = []
+
             c[bench_cfg_hash] = bench_res
+
+            # restore object index
             bench_res.object_index = obj_index_tmp
+
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
@@ -618,9 +623,6 @@ class Bench(BenchPlotServer):
                 ):
                     set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultReference):
-                    # bench_res.object_index
-                    # print("RESULT VAR",rv,rv.obj)
-
                     bench_res.object_index.append(result_value)
                     set_xarray_multidim(
                         bench_res.ds[rv.name],
