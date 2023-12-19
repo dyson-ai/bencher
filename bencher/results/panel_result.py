@@ -89,8 +89,7 @@ class PanelResult(BenchResultBase):
         obj_item = self.object_index[obj].obj
         if container is not None:
             return container(obj_item)
-        else:
-            return obj_item
+        return obj_item
 
     def to_references(self, container=None):
         return self.map_plots(

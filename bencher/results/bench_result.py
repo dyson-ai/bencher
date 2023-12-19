@@ -41,17 +41,13 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
 
     def to_auto(
         self,
-        plot_list: List[callable] = [
-            HoloviewResult.to_scatter_jitter,
-            HoloviewResult.to_scatter,
-            HoloviewResult.to_curve,
-            HoloviewResult.to_heatmap,
-            PanelResult.to_video,
-            PlotlyResult.to_volume,
-        ],
+        plot_list: List[callable] = None,
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = True
+
+        if plot_list is None:
+            plot_list = BenchResult.default_plot_callbacks()
 
         row = pn.Row()
         for plot_callback in plot_list:
