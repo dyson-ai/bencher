@@ -1,0 +1,7 @@
+hvplot heatmap adds nothing over holoviews heatmap
+
+need to work out how to use holoviews area 
+
+need to work out how to do holoviews scatter
+
+use to_panel to do faceting, or work out why faceting is broken for hvplot/holoviews
