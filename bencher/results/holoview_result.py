@@ -92,7 +92,7 @@ class HoloviewResult(BenchResultBase):
             if res is not None:
                 results.append(res)
         if len(results) > 0:
-            return hv.Overlay(results)
+            return hv.Overlay(results).collate()
         return None
 
     def layout_plots(self, plot_callback: callable):

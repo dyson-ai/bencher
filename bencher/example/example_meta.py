@@ -30,9 +30,9 @@ class BenchableObject(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
     # floating point variables
-    float1 = bch.FloatSweep(default=0, bounds=[-1.0, 1.0], doc="x coordinate of the sample volume")
-    float2 = bch.FloatSweep(default=0, bounds=[-1.0, 1.0], doc="y coordinate of the sample volume")
-    float3 = bch.FloatSweep(default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume")
+    float1 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="x coordinate of the sample volume")
+    float2 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="y coordinate of the sample volume")
+    float3 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="z coordinate of the sample volume")
 
     sigma = bch.FloatSweep(default=5, bounds=[1, 10], doc="standard deviation of the added noise")
 
@@ -115,7 +115,7 @@ class BenchMeta(bch.ParametrizedSweep):
         return super().__call__()
 
 
-def bench_bench_bench():
+def bench_bench_meta():
     bench = bch.Bench("bench_meta", BenchMeta())
 
     res = bench.plot_sweep(
@@ -130,9 +130,9 @@ def bench_bench_bench():
     )
 
     bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_references(container=partial(pn.Card, width=1500, height=300)))
+    bench.report.append(res.to_references(container=partial(pn.Card, width=1500, height=350)))
     return bench
 
 
 if __name__ == "__main__":
-    bench_bench_bench().report.show()
+    bench_bench_meta().report.show()

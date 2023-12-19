@@ -1,6 +1,7 @@
+from __future__ import annotations
 from typing import List
 import panel as pn
-
+from functools import partial
 
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
@@ -21,24 +22,44 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
         HoloviewResult.__init__(self, bench_cfg)
         # SeabornResult.__init__(self, bench_cfg)
 
-    def to_auto(self, **kwargs) -> List[pn.panel]:
-        self.plt_cnt_cfg.print_debug = True
-        plot_callback_list = [
-            self.to_scatter_jitter,
-            self.to_scatter,
-            self.to_curve,
+    @staticmethod
+    def default_plot_callbacks():
+        return [
+            HoloviewResult.to_scatter_jitter,
+            HoloviewResult.to_scatter,
+            HoloviewResult.to_curve,
+            HoloviewResult.to_heatmap,
             # self.to_panes,
-            self.to_video,
-            self.to_heatmap,
+            PanelResult.to_video,
             # self.to_surface_hv,
-            self.to_volume,
+            PlotlyResult.to_volume,
         ]
 
+    # def
+
+    def to_auto(
+        self,
+        plot_list: List[callable] = [
+            HoloviewResult.to_scatter_jitter,
+            HoloviewResult.to_scatter,
+            HoloviewResult.to_curve,
+            HoloviewResult.to_heatmap,
+            # self.to_panes,
+            PanelResult.to_video,
+            # self.to_surface_hv,
+            PlotlyResult.to_volume,
+        ],
+        **kwargs,
+    ) -> List[pn.panel]:
+        self.plt_cnt_cfg.print_debug = True
+
         row = pn.Row()
-        for cb in plot_callback_list:
+        for plot_callback in plot_list:
             if self.plt_cnt_cfg.print_debug:
-                print(f"checking: {cb.__name__}")
-            row.append(cb(**kwargs))
+                print(f"checking: {plot_callback.__name__}")
+            # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
+            cb_with_self = partial(plot_callback, self=self)
+            row.append(cb_with_self(**kwargs))
 
         self.plt_cnt_cfg.print_debug = False
         return row
