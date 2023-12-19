@@ -20,10 +20,11 @@ class PlotlyResult(BenchResultBase):
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
         """
-        if PlotFilter(
+        matches_res = PlotFilter(
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
-        ).matches(self.plt_cnt_cfg):
+        ).matches_result(self.plt_cnt_cfg, "to_volume")
+        if matches_res.overall:
             x = self.bench_cfg.input_vars[0]
             y = self.bench_cfg.input_vars[1]
             z = self.bench_cfg.input_vars[2]
@@ -63,4 +64,4 @@ class PlotlyResult(BenchResultBase):
             fig = dict(data=data, layout=layout)
 
             return pn.pane.Plotly(fig, name="volume_plotly")
-        return None
+        return matches_res.to_panel()

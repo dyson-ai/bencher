@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 from dataclasses import dataclass
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
 import panel as pn
@@ -73,17 +74,17 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        return self.matches_result(plt_cnt_cfg).overall
+        return self.matches_result(plt_cnt_cfg, "null").overall
 
-    def matches_result(self, plt_cnt_cfg: PltCntCfg) -> PlotMatchesResult:
-        return PlotMatchesResult(self, plt_cnt_cfg)
+    def matches_result(self, plt_cnt_cfg: PltCntCfg, plot_name: str) -> PlotMatchesResult:
+        return PlotMatchesResult(self, plt_cnt_cfg, plot_name)
 
 
 # @dataclass
 class PlotMatchesResult:
     """Stores information about which properites match the requirements of a particular plotter"""
 
-    def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg):
+    def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg, plot_name: str):
         match_info = []
         matches = []
 
@@ -104,6 +105,8 @@ class PlotMatchesResult:
                 match_info.append(info)
 
         self.overall = all(matches)
+
+        match_info.insert(0, f"plot {plot_name} matches: {self.overall}")
         self.matches_info = "\n".join(match_info).strip()
         self.plt_cnt_cfg = plt_cnt_cfg
 
@@ -112,7 +115,7 @@ class PlotMatchesResult:
             if not self.overall:
                 print(self.matches_info)
 
-    def to_panel(self):
+    def to_panel(self, **kwargs) -> Optional[pn.pane.Markdown]:
         if self.plt_cnt_cfg.print_debug:
-            return pn.pane.Markdown(self.matches_info)
+            return pn.pane.Markdown(self.matches_info, **kwargs)
         return None

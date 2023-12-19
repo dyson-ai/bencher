@@ -44,7 +44,7 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
         plot_list: List[callable] = None,
         **kwargs,
     ) -> List[pn.panel]:
-        self.plt_cnt_cfg.print_debug = True
+        self.plt_cnt_cfg.print_debug = False
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()

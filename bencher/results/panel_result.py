@@ -69,13 +69,14 @@ class PanelResult(BenchResultBase):
         return None
 
     def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:
-        if PlotFilter(
+        matches_res = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             # panel_range=VarRange(1, None),
-        ).matches(self.plt_cnt_cfg):
+        ).matches_result(self.plt_cnt_cfg,"to_panes")
+        if matches_res.overall:
             return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))
-        return None
+        return matches_res.to_panel()
 
     def to_panes_single(
         self, result_var: ResultVar, container=pn.pane.panel, **kwargs
