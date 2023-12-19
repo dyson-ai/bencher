@@ -28,13 +28,15 @@ class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
             HoloviewResult.to_scatter_jitter,
             # HoloviewResult.to_scatter,
             HoloviewResult.to_curve,
+            HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
+            # HoloviewResult.to_heatmap_hvplot,
             # self.to_panes,
             PanelResult.to_video,
             # self.to_surface_hv,
             PlotlyResult.to_volume,
             # HoloviewResult.to_bar,
-            HoloviewResult.to_bar_hvplot
+            HoloviewResult.to_bar_hvplot,
         ]
 
     @staticmethod

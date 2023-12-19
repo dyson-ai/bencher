@@ -75,7 +75,7 @@ class BenchMeta(bch.ParametrizedSweep):
     """This class uses bencher to display the multidimensional types bencher can represent"""
 
     float_vars = bch.IntSweep(
-        default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
+        default=1, bounds=(0, 3), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
         default=0, bounds=(0, 3), doc="The number of categorical variables that are swept"
@@ -150,7 +150,7 @@ def example_meta(
     )
 
     bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_references(container=partial(pn.Card, width=1500, height=350)))
+    bench.report.append(res.to_references(container=partial(pn.Card, width=1000, height=350)))
     return bench
 
 

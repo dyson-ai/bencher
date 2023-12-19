@@ -112,6 +112,50 @@ class HoloviewResult(BenchResultBase):
             return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
 
+    def to_line(self, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_line")
+        if match_res.overall:
+            hv_ds = self.to_hv_dataset()
+
+            x = self.plt_cnt_cfg.float_vars[0].name
+            # y = self.plt_cnt_cfg.result_vars[0].name
+
+            by = None
+            col = None
+            if self.plt_cnt_cfg.cat_cnt >= 1:
+                by = self.plt_cnt_cfg.cat_vars[0].name
+            # if self.plt_cnt_cfg.cat_cnt >= 2:
+            # col= self.plt_cnt_cfg.cat_vars[1].name
+
+            return hv_ds.data.hvplot.line(x=x, by=by, **kwargs).opts(title=self.to_plot_title())
+
+        return match_res.to_panel(**kwargs)
+
+    # def to_area(self, **kwargs):
+    #     match_res = PlotFilter(
+    #         float_range=VarRange(1, None),
+    #         cat_range=VarRange(0, None),
+    #         repeats_range=VarRange(2, None),
+    #     ).matches_result(self.plt_cnt_cfg, "to_line")
+    #     if match_res.overall:
+    #         hv_ds = self.to_hv_dataset(ReduceType.REDUCE)
+
+    #         x = self.plt_cnt_cfg.float_vars[0].name
+    #         # y=self.res
+
+    #         by = None
+    #         col = None
+    #         if self.plt_cnt_cfg.cat_cnt >= 1:
+    #             by = self.plt_cnt_cfg.cat_vars[0].name
+    #         # if self.plt_cnt_cfg.cat_cnt >= 2:
+    #         # col= self.plt_cnt_cfg.cat_vars[1].name
+
+    #         return hv_ds.data.hvplot.area(x=x, by=by, **kwargs).opts(title=self.to_plot_title())
+
+    #     return match_res.to_panel(**kwargs)
+
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
         return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
 
@@ -119,8 +163,7 @@ class HoloviewResult(BenchResultBase):
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
     ) -> Optional[hv.Curve]:
         match_res = PlotFilter(
-            float_range=VarRange(1, None),
-            cat_range=VarRange(0, None),
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve")
         if match_res.overall:
             title = self.to_plot_title()
