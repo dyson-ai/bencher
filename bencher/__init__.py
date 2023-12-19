@@ -13,6 +13,7 @@ from .variables.results import (
     ResultImage,
     ResultString,
     ResultContainer,
+    ResultReference,
     OptDir,
     curve,
 )
@@ -22,6 +23,6 @@ from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .results.bench_result import BenchResult
 from .results.panel_result import PanelResult
-from .results.holoview_result import ReduceType
+from .results.holoview_result import ReduceType,HoloviewResult
 from .bench_report import BenchReport
 from .job import Executors

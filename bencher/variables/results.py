@@ -135,6 +135,19 @@ class ResultContainer(param.Parameter):
         return hash_sha1(self)
 
 
+class ResultReference(param.Parameter):
+    __slots__ = ["units", "obj"]
+
+    def __init__(self, default=None, units="container", **params):
+        super().__init__(default=default, **params)
+        self.units = units
+        self.obj = None
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 # class ResultCurve(ResultHmap):
 #     __slots__ = ["kdim", "vdim", "data"]
 

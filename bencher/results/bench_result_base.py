@@ -26,6 +26,7 @@ class BenchResultBase(OptunaResult):
         if not isinstance(xr_dataarray["repeat"].values, Iterable):
             xr_dataarray = xr_dataarray.drop_indexes("repeat")
         return xr_dataarray
+        
 
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
@@ -142,6 +143,7 @@ class BenchResultBase(OptunaResult):
         if row is None:
             row = pn.Column(name=self.to_plot_title())
         for rv in self.get_results_var_list(result_var):
+            print ("RV NAME",rv.name)
             row.append(plot_callback(rv))
         return row
 

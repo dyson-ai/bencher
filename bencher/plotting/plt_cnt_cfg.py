@@ -3,7 +3,7 @@ from typing import Callable, List
 from copy import deepcopy
 import param
 from bencher.bench_cfg import BenchCfg
-from bencher.variables.results import ResultContainer, ResultImage, ResultVideo, ResultString
+from bencher.variables.results import ResultContainer, ResultImage, ResultVideo, ResultString,ResultReference
 
 
 class PltCfgBase(param.Parameterized):
@@ -120,7 +120,9 @@ class PltCntCfg(param.Parameterized):
                 raise ValueError(f"No rule for type {typestr}")
 
         for rv in bench_cfg.result_vars:
-            if isinstance(rv, (ResultImage, ResultVideo, ResultContainer, ResultString)):
+            if isinstance(
+                rv, (ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+            ):
                 plt_cnt_cfg.panel_vars.append(rv)
 
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)

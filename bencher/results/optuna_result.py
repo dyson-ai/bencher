@@ -55,11 +55,18 @@ class OptunaResult:
         self.bench_cfg = bench_cfg
         # self.wrap_long_time_labels(bench_cfg)  # todo remove
         self.ds = xr.Dataset()
+        self.object_index = []
         self.hmaps = defaultdict(dict)
         self.result_hmaps = bench_cfg.result_hmaps
         self.studies = []
         self.plt_cnt_cfg = PltCntCfg()
         self.plot_inputs = []
+
+        # self.width=600/
+        # self.height=600
+
+        #   bench_res.objects.append(rv)
+        # bench_res.reference_index = len(bench_res.objects)
 
     def post_setup(self):
         self.plt_cnt_cfg = PltCntCfg.generate_plt_cnt_cfg(self.bench_cfg)
@@ -68,6 +75,9 @@ class OptunaResult:
 
     def to_xarray(self) -> xr.Dataset:
         return self.ds
+
+    def setup_object_index(self):
+        self.object_index = []
 
     def to_pandas(self, reset_index=True) -> pd.DataFrame:
         """Get the xarray results as a pandas dataframe

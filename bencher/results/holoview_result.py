@@ -18,17 +18,17 @@ import hvplot.xarray
 
 hv.extension("bokeh", "plotly")
 
-width_heigh = {"width": 600, "height": 600, "tools": ["hover"]}
+# width_heigh = {"width": 600, "height": 600, "tools": ["hover"]}
 
-hv.opts.defaults(
-    hv.opts.Curve(**width_heigh),
-    hv.opts.Points(**width_heigh),
-    hv.opts.Bars(**width_heigh),
-    hv.opts.Scatter(**width_heigh),
-    hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
-    # hv.opts.Surface(**width_heigh),
-    hv.opts.GridSpace(plot_size=400),
-)
+# hv.opts.defaults(
+#     hv.opts.Curve(**width_heigh),
+#     hv.opts.Points(**width_heigh),
+#     hv.opts.Bars(**width_heigh),
+#     hv.opts.Scatter(**width_heigh),
+#     hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
+#     # hv.opts.Surface(**width_heigh),
+#     hv.opts.GridSpace(plot_size=400),
+# )
 
 
 class ReduceType(Enum):
@@ -63,6 +63,21 @@ class HoloviewResult(BenchResultBase):
                 return hv.Dataset(self.ds.squeeze(drop=True), vdims=vdims)
             case _:
                 return hv.Dataset(self.ds, kdims=kdims, vdims=vdims)
+
+    def set_default_opts(width=600, height=600):
+        width_heigh = {"width": width, "height": height, "tools": ["hover"]}
+        # self.width = width
+        # self.heigh = height
+        hv.opts.defaults(
+            hv.opts.Curve(**width_heigh),
+            hv.opts.Points(**width_heigh),
+            hv.opts.Bars(**width_heigh),
+            hv.opts.Scatter(**width_heigh),
+            hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
+            # hv.opts.Surface(**width_heigh),
+            hv.opts.GridSpace(plot_size=400),
+        )
+        return width_heigh
 
     def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
@@ -107,8 +122,8 @@ class HoloviewResult(BenchResultBase):
         ).matches(self.plt_cnt_cfg):
             title = self.to_plot_title()
             ds = self.to_hv_dataset(reduce)
-            pt = ds.to(hv.Curve, vdims=[result_var.name], label=result_var.name, **kwargs).opts(
-                title=title
+            pt = ds.to(hv.Curve, vdims=[result_var.name], label=result_var.name).opts(
+                title=title, **kwargs
             )
             if self.bench_cfg.repeats > 1:
                 pt *= ds.to(hv.Spread).opts(alpha=0.2)
@@ -125,14 +140,14 @@ class HoloviewResult(BenchResultBase):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self) -> Optional[hv.Scatter]:
+    def to_scatter(self, **kwargs) -> Optional[hv.Scatter]:
         if PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, 1), repeats_range=VarRange(1, 1)
         ).matches(self.plt_cnt_cfg):
-            return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
+            return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter).opts(**kwargs)
         return None
 
-    def to_scatter_jitter(self) -> Optional[hv.Scatter]:
+    def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, 1),
@@ -145,7 +160,7 @@ class HoloviewResult(BenchResultBase):
                 ds.to(hv.Scatter)
                 .opts(jitter=0.1)
                 .overlay("repeat")
-                .opts(show_legend=False, title=self.to_plot_title())
+                .opts(show_legend=False, title=self.to_plot_title(), **kwargs)
             )
             return pt
         return None
@@ -178,7 +193,7 @@ class HoloviewResult(BenchResultBase):
 
             color_label = f"{z.name} [{z.units}]"
 
-            return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
+            return self.to(hv.HeatMap, reduce).opts(title=title, clabel=color_label,**kwargs)
         return None
 
     def to_heatmap_tap(
@@ -341,6 +356,9 @@ class HoloviewResult(BenchResultBase):
     #     return px.scatter(
     #         df, x=names[0], y=names[1], marginal_x="histogram", marginal_y="histogram"
     #     )
+
+
+HoloviewResult.set_default_opts()
 
 
 def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:

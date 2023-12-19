@@ -3,16 +3,19 @@ import plotly.graph_objs as go
 from typing import Optional
 
 from param import Parameter
+from functools import partial
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase
 
 
 class PlotlyResult(BenchResultBase):
-    def to_volume(self) -> pn.Row:
-        return self.map_plots(self.to_volume_single)
+    def to_volume(self, **kwargs) -> pn.Row:
+        return self.map_plots(partial(self.to_volume_single, **kwargs))
 
-    def to_volume_single(self, result_var: Parameter) -> Optional[pn.pane.Plotly]:
+    def to_volume_single(
+        self, result_var: Parameter, width=600, height=600
+    ) -> Optional[pn.pane.Plotly]:
         """Given a benchCfg generate a 3D surface plot
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
@@ -24,8 +27,6 @@ class PlotlyResult(BenchResultBase):
             x = self.bench_cfg.input_vars[0]
             y = self.bench_cfg.input_vars[1]
             z = self.bench_cfg.input_vars[2]
-            width = 600
-            height = 600
 
             da = self.to_dataarray(result_var, squeeze=False)
             mean = da.mean("repeat")

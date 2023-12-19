@@ -26,6 +26,7 @@ from bencher.variables.results import (
     ResultImage,
     ResultString,
     ResultContainer,
+    ResultReference,
 )
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -159,6 +160,7 @@ class Bench(BenchPlotServer):
         self.last_run_cfg = None  # cached run_cfg used to pass to the plotting function
         self.sample_cache = None  # store the results of each benchmark function call in a cache
         self.ds_dynamic = {}  # A dictionary to store unstructured vector datasets
+
         self.cache_size = int(100e9)  # default to 100gb
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
@@ -381,11 +383,14 @@ class Bench(BenchPlotServer):
                 f"You need to use {var_type}_vars =[{self.worker_input_cfg}.param.your_variable], instead of {var_type}_vars =[{self.worker_input_cfg}.your_variable]"
             )
 
-    def cache_results(self, bench_cfg: BenchCfg, bench_cfg_hash: int) -> None:
+    def cache_results(self, bench_res: BenchResult, bench_cfg_hash: int) -> None:
         with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:
             logging.info(f"saving results with key: {bench_cfg_hash}")
             self.bench_cfg_hashes.append(bench_cfg_hash)
-            c[bench_cfg_hash] = bench_cfg
+            obj_index_tmp = bench_res.object_index
+            bench_res.object_index = []
+            c[bench_cfg_hash] = bench_res
+            bench_res.object_index = obj_index_tmp
             logging.info(f"saving benchmark: {self.bench_name}")
             c[self.bench_name] = self.bench_cfg_hashes
 
@@ -463,9 +468,11 @@ class Bench(BenchPlotServer):
         data_vars = {}
 
         for rv in bench_cfg.result_vars:
-            if type(rv) == ResultVar:
-                result_data = np.empty(dims_cfg.dims_size)
-                result_data.fill(np.nan)
+            if isinstance(rv, ResultVar):
+                result_data = np.full(dims_cfg.dims_size, np.nan, dtype=float)
+                data_vars[rv.name] = (dims_cfg.dims_name, result_data)
+            if isinstance(rv, ResultReference):
+                result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             if isinstance(rv, (ResultVideo, ResultImage, ResultString, ResultContainer)):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
@@ -478,6 +485,7 @@ class Bench(BenchPlotServer):
         bench_res = BenchResult(bench_cfg)
         bench_res.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_res.ds_dynamic = self.ds_dynamic
+        bench_res.setup_object_index()
 
         return bench_res, function_inputs, dims_cfg.dims_name
 
@@ -609,6 +617,16 @@ class Bench(BenchPlotServer):
                     rv, (ResultVar, ResultVideo, ResultImage, ResultString, ResultContainer)
                 ):
                     set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
+                elif isinstance(rv, ResultReference):
+                    # bench_res.object_index
+                    # print("RESULT VAR",rv,rv.obj)
+
+                    bench_res.object_index.append(result_value)
+                    set_xarray_multidim(
+                        bench_res.ds[rv.name],
+                        worker_job.index_tuple,
+                        len(bench_res.object_index) - 1,
+                    )
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:
