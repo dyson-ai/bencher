@@ -12,7 +12,7 @@ from bencher.results.holoview_result import HoloviewResult
 # from bencher.results.seaborn_result import SeabornResult
 
 
-class BenchResult(PanelResult, PlotlyResult, HoloviewResult):
+class BenchResult( PlotlyResult, HoloviewResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
