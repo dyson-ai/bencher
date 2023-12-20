@@ -148,7 +148,7 @@ class HoloviewResult(PanelResult):
             cb = partial(self.to_line, **kwargs)
             # cb2 = partial(self.to_panes_multi2, plot_callback=cb, target_dimension=2)
             # return self.map_plots(cb2)
-            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
         return match_res.to_panel()
 
     def to_curve_multi(self, **kwargs):
@@ -194,14 +194,9 @@ class HoloviewResult(PanelResult):
         if matches_res.overall:
             xr_dataset = self.to_hv_dataset()
             cb = partial(self.to_heatmap_hv, **kwargs)
-            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
 
         return matches_res.to_panel()
-
-    # def to_hv_interactive(self,ds:xr.Dataset=None,**kwargs):
-    #     if ds is None:
-    #         ds = self.to_hv_dataset().data
-    #     return ds.hvplot.interactive
 
     def to_heatmap_hv(self, da, **kwargs):
         matches_res = PlotFilter(
