@@ -11,7 +11,6 @@ import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
-from bencher.results.bench_result_base import BenchResultBase
 from bencher.results.panel_result import PanelResult
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
@@ -146,8 +145,6 @@ class HoloviewResult(PanelResult):
             xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
 
             cb = partial(self.to_line, **kwargs)
-            # cb2 = partial(self.to_panes_multi2, plot_callback=cb, target_dimension=2)
-            # return self.map_plots(cb2)
             return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
         return match_res.to_panel()
 
@@ -159,7 +156,7 @@ class HoloviewResult(PanelResult):
         if match_res.overall:
             xr_dataset = self.to_hv_dataset(ReduceType.REDUCE)
             cb = partial(self.to_curve_da, **kwargs)
-            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
         return match_res.to_panel()
 
     def to_curve_da(self, da: xr.DataArray, **kwargs) -> Optional[hv.Curve]:
@@ -401,7 +398,7 @@ class HoloviewResult(PanelResult):
         if match_res.overall:
             xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
             cb = partial(self.to_bar_da, **kwargs)
-            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
         return match_res.to_panel()
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:

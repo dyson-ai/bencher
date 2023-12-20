@@ -12,7 +12,7 @@ from bencher.results.holoview_result import HoloviewResult
 # from bencher.results.seaborn_result import SeabornResult
 
 
-class BenchResult( PlotlyResult, HoloviewResult):
+class BenchResult(PlotlyResult, HoloviewResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
@@ -29,7 +29,6 @@ class BenchResult( PlotlyResult, HoloviewResult):
             # HoloviewResult.to_scatter,
             # HoloviewResult.to_curve,
             HoloviewResult.to_curve_multi,
-
             # HoloviewResult.to_line,
             # HoloviewResult.to_heatmap,
             HoloviewResult.to_heatmap_multi,
@@ -76,10 +75,9 @@ class BenchResult( PlotlyResult, HoloviewResult):
                 pn.pane.Markdown("No Plotters are able to represent these results", **kwargs)
             )
         return row
-    
+
     def to_auto_da(self):
         pass
-
 
     def to_auto_plots(self, **kwargs) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled

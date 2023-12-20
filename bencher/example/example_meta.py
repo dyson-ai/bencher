@@ -1,12 +1,10 @@
 from typing import Any
 import bencher as bch
 import numpy as np
-import panel as pn
 
 from enum import auto
 from strenum import StrEnum
 import random
-from functools import partial
 
 
 # class NegateConfig(StrEnum):
@@ -132,9 +130,6 @@ class BenchMeta(bch.ParametrizedSweep):
 
         # self.plots.obj = res.to_line_multi()
 
-
-
-
         # self.plots.obj = res
 
         # self.plots.obj = bench.report.pane
@@ -152,7 +147,6 @@ def example_meta(
     # plot = BenchMeta().__call__(float_vars=1, categorical_vars=0)["plots"].obj
     # rw.append(plot.to_heatmap_multi())
     # rw.show()
-
 
     bench = bch.Bench("bench_meta", BenchMeta(), report=report)
 
