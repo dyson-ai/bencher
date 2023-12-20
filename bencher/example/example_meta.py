@@ -158,7 +158,7 @@ def example_meta(
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            # BenchMeta.param.sample_with_repeats,
+            BenchMeta.param.sample_with_repeats,
             # BenchMeta.param.sample_over_time,
         ],
         plot=False,

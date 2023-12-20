@@ -72,7 +72,13 @@ class PanelResult(BenchResultBase):
             )
         return None
 
-    def zero_dim_da_to_val(self, da: xr.DataArray):
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
+        # todo this is really horrible, need to improve
+        if isinstance(da_ds, xr.Dataset):
+            dim = [d for d in da_ds.keys()][0]
+            da = da_ds[dim]
+        else:
+            da = da_ds
         for k in da.coords.keys():
             dim = k
             break
@@ -101,8 +107,8 @@ class PanelResult(BenchResultBase):
         xr_dataarray = xr_dataset.data[result_var.name]
 
         return self._to_panes_da(
-            # xr_dataset.data,
-            xr_dataarray,
+            xr_dataset.data,
+            # xr_dataarray,
             plot_callback=plot_callback,
             target_dimension=target_dimension,
             horizontal=len(xr_dataarray.dims) <= target_dimension + 1,
