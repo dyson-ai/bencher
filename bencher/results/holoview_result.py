@@ -8,9 +8,12 @@ import numpy as np
 from param import Parameter
 from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
+import xarray as xr
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.bench_result_base import BenchResultBase
+from bencher.results.panel_result import PanelResult
+
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
@@ -38,8 +41,10 @@ class ReduceType(Enum):
     NONE = auto()  # don't reduce
 
 
-class HoloviewResult(BenchResultBase):
-    def to_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
+class HoloviewResult(PanelResult):
+    def to_hv_dataset(
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+    ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
@@ -54,15 +59,15 @@ class HoloviewResult(BenchResultBase):
 
         vdims = [r.name for r in self.bench_cfg.result_vars]
         kdims = [i.name for i in self.bench_cfg.all_vars]
+
+        ds = self.ds if result_var is None else self.ds[result_var.name]
         match (reduce):
             case ReduceType.REDUCE:
-                return hv.Dataset(self.ds, kdims=kdims, vdims=vdims).reduce(
-                    ["repeat"], np.mean, np.std
-                )
+                return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
             case ReduceType.SQUEEZE:
-                return hv.Dataset(self.ds.squeeze(drop=True), vdims=vdims)
+                return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
             case _:
-                return hv.Dataset(self.ds, kdims=kdims, vdims=vdims)
+                return hv.Dataset(ds, kdims=kdims, vdims=vdims)
 
     @staticmethod
     def set_default_opts(width=600, height=600):
@@ -112,26 +117,50 @@ class HoloviewResult(BenchResultBase):
             return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
 
-    def to_line(self, **kwargs):
+    def to_line(self, da=None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
         if match_res.overall:
-            hv_ds = self.to_hv_dataset()
-
             x = self.plt_cnt_cfg.float_vars[0].name
             # y = self.plt_cnt_cfg.result_vars[0].name
 
             by = None
-            col = None
             if self.plt_cnt_cfg.cat_cnt >= 1:
                 by = self.plt_cnt_cfg.cat_vars[0].name
-            # if self.plt_cnt_cfg.cat_cnt >= 2:
-            # col= self.plt_cnt_cfg.cat_vars[1].name
 
-            return hv_ds.data.hvplot.line(x=x, by=by, **kwargs).opts(title=self.to_plot_title())
+            if da is None:
+                da = self.to_hv_dataset().data
+
+            title = self.title_from_da(da, **kwargs)
+
+            return da.hvplot.line(x=x, by=by, title=title, **kwargs).opts()
 
         return match_res.to_panel(**kwargs)
+
+    def to_line_multi(self, **kwargs):
+        cb = partial(self.to_line, **kwargs)
+        return self.to_panes_multi(cb, None, target_dimension=2)
+
+    def to_heatmap_multi(self, **kwargs):
+        cb = partial(self.to_heatmap_hv, **kwargs)
+        return self.to_panes_multi(cb, None, target_dimension=2)
+
+    # def to_hv_interactive(self,ds:xr.Dataset=None,**kwargs):
+    #     if ds is None:
+    #         ds = self.to_hv_dataset().data
+    #     return ds.hvplot.interactive
+
+    def to_heatmap_hv(self, da=None, **kwargs):
+        x = self.plt_cnt_cfg.float_vars[0].name
+        y = self.plt_cnt_cfg.float_vars[1].name
+        C = self.bench_cfg.result_vars[0].name
+        title = None
+        # title = self.title_from_da(da)
+        title = f"Heatmap of {da.name}"
+        # return da.hvplot.heatmap()
+
+        return da.hvplot.heatmap(x=x, y=y, C=C, title=title, **kwargs)
 
     # def to_area(self, **kwargs):
     #     match_res = PlotFilter(
@@ -319,7 +348,7 @@ class HoloviewResult(BenchResultBase):
 
             color_label = f"{z.name} [{z.units}]"
 
-            return self.to(hv.HeatMap, reduce).opts(title=title, clabel=color_label, **kwargs)
+            return self.to(hv.HeatMap, reduce).opts(clabel=color_label, **kwargs)
         return matches_res.to_panel()
 
     def to_heatmap_tap(

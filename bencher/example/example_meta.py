@@ -144,10 +144,6 @@ def example_meta(
 
     # rw.append(plot.to_hv_interactive().layout())
 
-    # rw.append(plot.to_line().layout())
-    # rw.append(
-    #     plot.to_panes_multi(BenchableObject.param.result_var, plot.to_line, target_dimension=2)
-    # )
 
     rw.append(plot.to_line_multi())
     plot = BenchMeta().__call__(float_vars=2, categorical_vars=1)["plots"].obj

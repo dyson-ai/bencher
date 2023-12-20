@@ -83,7 +83,10 @@ class PanelResult(BenchResultBase):
     ) -> Optional[pn.pane.panel]:
         if result_var is None:
             result_var = self.bench_cfg.result_vars[0]
-        xr_dataarray = self.to_dataarray(result_var)
+        # xr_dataarray = self.to_dataarray(result_var)
+
+        xr_dataarray = self.to_hv_dataset().data[result_var.name]
+
         return self._to_panes_da(
             xr_dataarray,
             plot_callback=plot_callback,
