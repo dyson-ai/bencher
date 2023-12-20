@@ -138,21 +138,19 @@ class PanelResult(BenchResultBase):
         horizontal=False,
         **kwargs,
     ) -> pn.panel:
+        ##todo remove recursion
         num_dims = len(da.dims)
-        print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
+        # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
 
         if num_dims > target_dimension and num_dims != 0:
             dim_sel = da.dims[-1]
-
-            # vertical=len(sliced.dims) == target_dimension,
 
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
             background_col = dim_color
             name = " vs ".join(da.dims)
 
-            # header_background=dim_color,
-            container_args = dict(name=name, styles={"background": background_col})
+            container_args = {"name": name, "styles": {"background": background_col}}
             outer_container = (
                 pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
@@ -168,11 +166,14 @@ class PanelResult(BenchResultBase):
                     horizontal=len(sliced.dims) <= target_dimension + 1,
                 )
                 width = num_dims - target_dimension
+
+                container_args = {"name": name, "styles": {"border": f"{width}px solid grey"}}
+
                 if horizontal:
-                    inner_container = pn.Column(styles={"border": f"{width}px solid grey"})
+                    inner_container = pn.Column(**container_args)
                     align = ("center", "center")
                 else:
-                    inner_container = pn.Row(styles={"border": f"{width}px solid grey"})
+                    inner_container = pn.Row(**container_args)
                     align = ("end", "center")
 
                 side = pn.pane.Markdown(f"{label}", align=align)
@@ -184,5 +185,3 @@ class PanelResult(BenchResultBase):
             return plot_callback(da=da, **kwargs)
 
         return outer_container
-
-   

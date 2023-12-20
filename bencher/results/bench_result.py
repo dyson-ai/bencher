@@ -65,7 +65,6 @@ class BenchResult(PlotlyResult, HoloviewResult):
             cb_with_self = partial(plot_callback, self=self)
             cb_result = cb_with_self(**kwargs)
 
-            print("CB RESULT", cb_result)
             if cb_result is not None:
                 row.append(cb_result)
 
