@@ -55,14 +55,14 @@ def example_image(
 
     for s in [
         [BenchPolygons.param.sides],
-        # [BenchPolygons.param.sides, BenchPolygons.param.linewidth],
-        # [BenchPolygons.param.sides, BenchPolygons.param.linewidth, BenchPolygons.param.linestyle],
-        # [
-        #     BenchPolygons.param.sides,
-        #     BenchPolygons.param.linewidth,
-        #     BenchPolygons.param.linestyle,
-        #     BenchPolygons.param.color,
-        # ],
+        [BenchPolygons.param.sides, BenchPolygons.param.linewidth],
+        [BenchPolygons.param.sides, BenchPolygons.param.linewidth, BenchPolygons.param.linestyle],
+        [
+            BenchPolygons.param.sides,
+            BenchPolygons.param.linewidth,
+            BenchPolygons.param.linestyle,
+            BenchPolygons.param.color,
+        ],
         # [
         #     BenchPolygons.param.sides,
         #     BenchPolygons.param.linewidth,
@@ -72,6 +72,8 @@ def example_image(
         # ],
     ]:
         bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
+        res = bench.get_result()
+        report.append(res.to_image())
 
     return bench
 

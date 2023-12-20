@@ -65,8 +65,23 @@ class PanelResult(BenchResultBase):
         self, result_var: ParametrizedSweep, container=pn.pane.PNG
     ) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, ResultImage):
-            return self.to_panes_single(result_var, container=container)
+            xr_dataset = self.to_hv_dataset()
+            plot_callback = partial(self.da_to_container, container=pn.pane.PNG)
+            return self.to_panes_multi_panel(
+                xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
+            )
+
         return None
+
+    def zero_dim_da_to_val(self, da: xr.DataArray):
+        for k in da.coords.keys():
+            dim = k
+            break
+        return da.expand_dims(dim).values[0]
+
+    def da_to_container(self, da: xr.DataArray, container):
+        val = self.zero_dim_da_to_val(da)
+        return container(val, styles={"background": "white"})
 
     def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:
         matches_res = PlotFilter(
@@ -109,7 +124,23 @@ class PanelResult(BenchResultBase):
             xr_dataarray,
             plot_callback=plot_callback,
             target_dimension=target_dimension,
-            vertical=len(xr_dataarray.dims) == target_dimension,
+            horizontal=len(xr_dataarray.dims) == target_dimension,
+            **kwargs,
+        )
+
+    def to_panes_multi_panel(
+        self, xr_dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
+    ):
+        if result_var is None:
+            result_var = self.bench_cfg.result_vars[0]
+
+        xr_dataarray = xr_dataset.data[result_var.name]
+
+        return self._to_panes_da(
+            xr_dataarray,
+            plot_callback=plot_callback,
+            target_dimension=target_dimension,
+            horizontal=len(xr_dataarray.dims) <= target_dimension + 1,
             **kwargs,
         )
 
@@ -127,12 +158,30 @@ class PanelResult(BenchResultBase):
             return container(obj_item)
         return obj_item
 
-    def to_references(self, container=None):
+    def to_reference_single_da(self, da: xr.DataArray, container=None):
+        val = self.zero_dim_da_to_val(da)
+        obj_item = self.object_index[val].obj
+        if container is not None:
+            return container(obj_item)
+        return obj_item
+
+    def to_references_old(self, container=None):
         return self.map_plots(
             partial(
                 self.to_panes_single,
                 container=partial(self.to_reference_single, container=container),
             )
+        )
+
+    # def da_to_reference(self, da: xr.DataArray, container):
+    #     val = self.zero_dim_da_to_val(da)
+    #     return container(val, styles={"background": "white"})
+
+    def to_references(self, container=None, **kwargs):
+        xr_dataset = self.to_hv_dataset()
+        plot_callback = partial(self.to_reference_single_da, container=container, **kwargs)
+        return self.to_panes_multi_panel(
+            xr_dataset, None, plot_callback=plot_callback, target_dimension=0
         )
 
     def _to_panes(
@@ -212,11 +261,13 @@ class PanelResult(BenchResultBase):
         da: xr.DataArray,
         plot_callback=pn.pane.panel,
         target_dimension=1,
-        vertical=True,
+        horizontal=False,
         **kwargs,
     ) -> pn.panel:
         num_dims = len(da.dims)
-        if num_dims > target_dimension:
+        print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
+
+        if num_dims > target_dimension and num_dims != 0:
             dim_sel = da.dims[-1]
 
             # vertical=len(sliced.dims) == target_dimension,
@@ -228,7 +279,9 @@ class PanelResult(BenchResultBase):
 
             # header_background=dim_color,
             container_args = dict(name=name, styles={"background": background_col})
-            outer_container = pn.Column(**container_args) if vertical else pn.Row(**container_args)
+            outer_container = (
+                pn.Row(**container_args) if horizontal else pn.Column(**container_args)
+            )
 
             for i in range(da.sizes[dim_sel]):
                 sliced = da.isel({dim_sel: i})
@@ -238,15 +291,16 @@ class PanelResult(BenchResultBase):
                     sliced,
                     plot_callback=plot_callback,
                     target_dimension=target_dimension,
-                    vertical=len(sliced.dims) == target_dimension,
+                    horizontal=len(sliced.dims) <= target_dimension + 1,
                 )
                 width = num_dims - target_dimension
-                if vertical:
-                    inner_container = pn.Row(styles={"border": f"{width}px solid grey"})
-                    align = ("end", "center")
-                else:
+                if horizontal:
                     inner_container = pn.Column(styles={"border": f"{width}px solid grey"})
                     align = ("center", "center")
+                else:
+                    inner_container = pn.Row(styles={"border": f"{width}px solid grey"})
+                    align = ("end", "center")
+
                 side = pn.pane.Markdown(f"{label}", align=align)
 
                 inner_container.append(side)

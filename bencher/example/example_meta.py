@@ -171,7 +171,7 @@ def example_meta(
     )
 
     bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_references(container=partial(pn.Card )))
+    bench.report.append(res.to_references())
     return bench
 
 
