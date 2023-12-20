@@ -94,6 +94,25 @@ class PanelResult(BenchResultBase):
             **kwargs,
         )
 
+    def to_da(self, da):
+        return da
+
+    def to_panes_multi2(
+        self, xr_dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
+    ):
+        if result_var is None:
+            result_var = self.bench_cfg.result_vars[0]
+
+        xr_dataarray = xr_dataset.data[result_var.name]
+
+        return self._to_panes_da(
+            xr_dataarray,
+            plot_callback=plot_callback,
+            target_dimension=target_dimension,
+            vertical=len(xr_dataarray.dims) == target_dimension,
+            **kwargs,
+        )
+
     def to_panes_single(
         self, result_var: ResultVar, container=pn.pane.panel, **kwargs
     ) -> Optional[pn.pane.panel]:
@@ -192,64 +211,98 @@ class PanelResult(BenchResultBase):
         self,
         da: xr.DataArray,
         plot_callback=pn.pane.panel,
-        in_card=True,
         target_dimension=1,
+        vertical=True,
         **kwargs,
     ) -> pn.panel:
         num_dims = len(da.dims)
         if num_dims > target_dimension:
             dim_sel = da.dims[-1]
 
+            # vertical=len(sliced.dims) == target_dimension,
+
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
             background_col = dim_color
             name = " vs ".join(da.dims)
-            outer_container = pn.Card(
-                title=name,
-                name=name,
-                styles={"background": background_col},
-                header_background=dim_color,
-            )
 
-            # todo remove this pre calculation and let panel work out the right sizes
-            padded_labels = []
-            sliced_da = []
-            max_label_size = 0
+            # header_background=dim_color,
+            container_args = dict(name=name, styles={"background": background_col})
+            outer_container = pn.Column(**container_args) if vertical else pn.Row(**container_args)
+
             for i in range(da.sizes[dim_sel]):
                 sliced = da.isel({dim_sel: i})
-                padded_labels.append(
-                    f"{dim_sel}={sliced.coords[dim_sel].values}",
-                )
-                label_size = len(padded_labels[-1])
-                if label_size > max_label_size:
-                    max_label_size = label_size
-                sliced_da.append(sliced)
-
-            for i in range(da.sizes[dim_sel]):
-                sliced = sliced_da[i]
+                label = f"{dim_sel}={sliced.coords[dim_sel].values}"
 
                 panes = self._to_panes_da(
                     sliced,
                     plot_callback=plot_callback,
-                    in_card=False,
                     target_dimension=target_dimension,
+                    vertical=len(sliced.dims) == target_dimension,
                 )
-                label = padded_labels[i].rjust(max_label_size, " ")
-                side = pn.pane.Markdown(
-                    f"{label}", align=("end", "center"), width=max_label_size * 8
-                )
+                width = num_dims - target_dimension
+                if vertical:
+                    inner_container = pn.Row(styles={"border": f"{width}px solid grey"})
+                    align = ("end", "center")
+                else:
+                    inner_container = pn.Column(styles={"border": f"{width}px solid grey"})
+                    align = ("center", "center")
+                side = pn.pane.Markdown(f"{label}", align=align)
 
-                outer_container.append(pn.Row(side, panes))
+                inner_container.append(side)
+                inner_container.append(panes)
+                outer_container.append(inner_container)
         else:
-            name = f"{da.dims[0]} vs {da.name}"
-            if in_card:
-                outer_container = pn.Card(title=name, name=name)
-            else:
-                outer_container = pn.Column(name=name)
-            outer_container= pn.Row(name=name)
+            return plot_callback(da=da, **kwargs)
 
-            inner = pn.Row(styles={"background": "white"})
-            inner.append(plot_callback(da=da, **kwargs))
-            outer_container.append(inner)
+        return outer_container
+
+    def _to_panes_ds(
+        self,
+        ds: xr.Dataset,
+        plot_callback=pn.pane.panel,
+        target_dimension=1,
+        vertical=True,
+        **kwargs,
+    ) -> pn.panel:
+        num_dims = len(ds.dims)
+        if num_dims > target_dimension:
+            dim_sel = ds.dims[-1]
+
+            # vertical=len(sliced.dims) == target_dimension,
+
+            dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
+
+            background_col = dim_color
+            name = " vs ".join(ds.dims)
+
+            # header_background=dim_color,
+            container_args = dict(name=name, styles={"background": background_col})
+            outer_container = pn.Column(**container_args) if vertical else pn.Row(**container_args)
+
+            for i in range(ds.sizes[dim_sel]):
+                sliced = ds.isel({dim_sel: i})
+                label = f"{dim_sel}={sliced.coords[dim_sel].values}"
+
+                panes = self._to_panes_ds(
+                    sliced,
+                    plot_callback=plot_callback,
+                    target_dimension=target_dimension,
+                    vertical=len(sliced.dims) == target_dimension,
+                )
+                width = num_dims - target_dimension
+                if vertical:
+                    inner_container = pn.Row(styles={"border": f"{width}px solid grey"})
+                    align = ("end", "center")
+                else:
+                    inner_container = pn.Column(styles={"border": f"{width}px solid grey"})
+                    align = ("center", "center")
+                side = pn.pane.Markdown(f"{label}", align=align)
+
+                inner_container.append(side)
+                inner_container.append(panes)
+                outer_container.append(inner_container)
+        else:
+            return plot_callback(da=ds, **kwargs)
 
         return outer_container

@@ -75,7 +75,7 @@ class BenchMeta(bch.ParametrizedSweep):
     """This class uses bencher to display the multidimensional types bencher can represent"""
 
     float_vars = bch.IntSweep(
-        default=1, bounds=(0, 3), doc="The number of floating point variables that are swept"
+        default=1, bounds=(0, 2), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
         default=0, bounds=(0, 3), doc="The number of categorical variables that are swept"
@@ -92,7 +92,7 @@ class BenchMeta(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
 
         run_cfg = bch.BenchRunCfg()
-        run_cfg.level = 4
+        run_cfg.level = 2
         run_cfg.repeats = self.sample_with_repeats
         run_cfg.over_time = self.sample_over_time
 
@@ -126,9 +126,16 @@ class BenchMeta(bch.ParametrizedSweep):
         # bench.report.app
         self.plots = bch.ResultReference()
         # self.plots.obj = pn.Row(res.to_auto(width=500, height=300))
-        # self.plots.obj = res.to_auto(width=500, height=300)
+        self.plots.obj = res.to_auto(width=500, height=300)
 
-        self.plots.obj = res
+        # self.plots.obj = res.to_da()
+
+        # self.plots.obj = res.to_line_multi()
+
+
+
+
+        # self.plots.obj = res
 
         # self.plots.obj = bench.report.pane
         return super().__call__()
@@ -139,40 +146,32 @@ def example_meta(
 ) -> bch.Bench:
     print(run_cfg)
 
-    plot = BenchMeta().__call__(float_vars=1, categorical_vars=3)["plots"].obj
-    rw = pn.Column()
+    # rw = pn.Column()
+    # plot = BenchMeta().__call__(float_vars=1, categorical_vars=3)["plots"].obj
+    # rw.append(plot.to_line_multi())
+    # plot = BenchMeta().__call__(float_vars=1, categorical_vars=0)["plots"].obj
+    # rw.append(plot.to_heatmap_multi())
+    # rw.show()
 
-    # rw.append(plot.to_hv_interactive().layout())
-
-
-    rw.append(plot.to_line_multi())
-    plot = BenchMeta().__call__(float_vars=2, categorical_vars=1)["plots"].obj
-
-    rw.append(plot.to_heatmap_multi())
-    # rw.append(plot.to_line_panes_single(BenchableObject.param.result_var, target_dimension=2))
-    # rw.append(plot.to_panes_multi(plot.to_heatmap_hv, None, target_dimension=3))
-
-    rw.show()
-
-    # plot.show()
 
     bench = bch.Bench("bench_meta", BenchMeta(), report=report)
 
     res = bench.plot_sweep(
         title="Meta Bench",
         description="""## All Combinations of Variable Sweeps and Resulting Plots
+
         This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            BenchMeta.param.sample_with_repeats,
+            # BenchMeta.param.sample_with_repeats,
             # BenchMeta.param.sample_over_time,
         ],
         plot=False,
     )
 
     bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_references(container=partial(pn.Card, width=1000, height=350)))
+    bench.report.append(res.to_references(container=partial(pn.Card )))
     return bench
 
 

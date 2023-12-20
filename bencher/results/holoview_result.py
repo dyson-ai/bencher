@@ -139,28 +139,91 @@ class HoloviewResult(PanelResult):
         return match_res.to_panel(**kwargs)
 
     def to_line_multi(self, **kwargs):
-        cb = partial(self.to_line, **kwargs)
-        return self.to_panes_multi(cb, None, target_dimension=2)
+        match_res = PlotFilter(
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_line")
+        if match_res.overall:
+            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
+
+            cb = partial(self.to_line, **kwargs)
+            # cb2 = partial(self.to_panes_multi2, plot_callback=cb, target_dimension=2)
+            # return self.map_plots(cb2)
+            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+        return match_res.to_panel()
+
+    def to_curve_multi(self, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
+        ).matches_result(self.plt_cnt_cfg, "to_line")
+
+        if match_res.overall:
+            xr_dataset = self.to_hv_dataset(ReduceType.REDUCE)
+            cb = partial(self.to_curve_da, **kwargs)
+            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+        return match_res.to_panel()
+
+    def to_curve_da(self, da: xr.DataArray, **kwargs) -> Optional[hv.Curve]:
+        match_res = PlotFilter(
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
+        ).matches_result(self.plt_cnt_cfg, "to_curve_da")
+        if match_res.overall:
+            return da
+
+            ds = hv.Dataset(da).reduce(["repeat"], np.mean, np.std)
+
+            # self.to_hv_dataset()
+
+            # return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
+            # ds.
+            # title = self.to_plot_title()
+            # ds = self.to_hv_dataset(reduce)
+            # pt = ds.to(hv.Curve, vdims=[da.name], label=da.name).opts(**kwargs)
+            pt = ds.to(hv.Curve).opts(**kwargs)
+
+            # if self.bench_cfg.repeats > 1:
+            pt *= ds.to(hv.Spread).opts(alpha=0.2)
+            return pt
+        return match_res.to_panel(**kwargs)
 
     def to_heatmap_multi(self, **kwargs):
-        cb = partial(self.to_heatmap_hv, **kwargs)
-        return self.to_panes_multi(cb, None, target_dimension=2)
+        matches_res = PlotFilter(
+            float_range=VarRange(2, None),
+            cat_range=VarRange(0, None),
+            input_range=VarRange(1, None),
+        ).matches_result(self.plt_cnt_cfg, "to_heatmap_multi")
+        if matches_res.overall:
+            xr_dataset = self.to_hv_dataset()
+            cb = partial(self.to_heatmap_hv, **kwargs)
+            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+
+        return matches_res.to_panel()
 
     # def to_hv_interactive(self,ds:xr.Dataset=None,**kwargs):
     #     if ds is None:
     #         ds = self.to_hv_dataset().data
     #     return ds.hvplot.interactive
 
-    def to_heatmap_hv(self, da=None, **kwargs):
-        x = self.plt_cnt_cfg.float_vars[0].name
-        y = self.plt_cnt_cfg.float_vars[1].name
-        C = self.bench_cfg.result_vars[0].name
-        title = None
-        # title = self.title_from_da(da)
-        title = f"Heatmap of {da.name}"
-        # return da.hvplot.heatmap()
+    def to_heatmap_hv(self, da, **kwargs):
+        matches_res = PlotFilter(
+            float_range=VarRange(2, None),
+            cat_range=VarRange(0, None),
+            input_range=VarRange(1, None),
+        ).matches_result(self.plt_cnt_cfg, "to_heatmap")
+        if matches_res and len(da.dims) >= 2:
+            print(da)
+            x = da.dims[0]
+            y = da.dims[1]
+            C = da.name
+            # x = self.plt_cnt_cfg.float_vars[0].name
+            # y = self.plt_cnt_cfg.float_vars[1].name
+            # C = self.bench_cfg.result_vars[0].name
+            title = None
+            # title = self.title_from_da(da)
+            title = f"Heatmap of {da.name}"
+            # return da.hvplot.heatmap()
 
-        return da.hvplot.heatmap(x=x, y=y, C=C, title=title, **kwargs)
+            return da.hvplot.heatmap(x=x, y=y, C=C, title=title, **kwargs)
+        return matches_res.to_panel()
 
     # def to_area(self, **kwargs):
     #     match_res = PlotFilter(
@@ -320,12 +383,31 @@ class HoloviewResult(PanelResult):
             col = None
             if self.plt_cnt_cfg.cat_cnt >= 2:
                 by = self.plt_cnt_cfg.cat_vars[1].name
-            # if self.plt_cnt_cfg.cat_cnt >= 3: #TODO post about this hvplot bug
-            # col = self.plt_cnt_cfg.cat_vars[2].name
-
             return hv_ds.data.hvplot.bar(by=by, col=col, **kwargs).opts(title=self.to_plot_title())
 
         return match_res.to_panel(**kwargs)
+
+    def to_bar_da(self, da, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_bar_da")
+        if match_res.overall:
+            by = None
+            if self.plt_cnt_cfg.cat_cnt >= 2:
+                by = self.plt_cnt_cfg.cat_vars[1].name
+            return da.hvplot.bar(by=by, **kwargs).opts(title=self.to_plot_title())
+
+        return match_res.to_panel(**kwargs)
+
+    def to_bar_multi(self, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_bar_da")
+        if match_res.overall:
+            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
+            cb = partial(self.to_bar_da, **kwargs)
+            return self.to_panes_multi2(xr_dataset, None, plot_callback=cb, target_dimension=2)
+        return match_res.to_panel()
 
     def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
         return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))

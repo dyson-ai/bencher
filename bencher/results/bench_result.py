@@ -27,16 +27,21 @@ class BenchResult( PlotlyResult, HoloviewResult):
         return [
             HoloviewResult.to_scatter_jitter,
             # HoloviewResult.to_scatter,
-            HoloviewResult.to_curve,
-            HoloviewResult.to_line,
-            HoloviewResult.to_heatmap,
+            # HoloviewResult.to_curve,
+            HoloviewResult.to_curve_multi,
+
+            # HoloviewResult.to_line,
+            # HoloviewResult.to_heatmap,
+            HoloviewResult.to_heatmap_multi,
+            HoloviewResult.to_line_multi,
             # HoloviewResult.to_heatmap_hvplot,
             # self.to_panes,
             PanelResult.to_video,
             # self.to_surface_hv,
             PlotlyResult.to_volume,
             # HoloviewResult.to_bar,
-            HoloviewResult.to_bar_hvplot,
+            # HoloviewResult.to_bar_hvplot,
+            HoloviewResult.to_bar_multi,
         ]
 
     @staticmethod
@@ -71,6 +76,10 @@ class BenchResult( PlotlyResult, HoloviewResult):
                 pn.pane.Markdown("No Plotters are able to represent these results", **kwargs)
             )
         return row
+    
+    def to_auto_da(self):
+        pass
+
 
     def to_auto_plots(self, **kwargs) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
