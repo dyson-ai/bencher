@@ -101,6 +101,7 @@ class PanelResult(BenchResultBase):
         xr_dataarray = xr_dataset.data[result_var.name]
 
         return self._to_panes_da(
+            # xr_dataset.data,
             xr_dataarray,
             plot_callback=plot_callback,
             target_dimension=target_dimension,
@@ -132,38 +133,39 @@ class PanelResult(BenchResultBase):
 
     def _to_panes_da(
         self,
-        da: xr.DataArray,
+        ds: xr.Dataset,
         plot_callback=pn.pane.panel,
         target_dimension=1,
         horizontal=False,
         **kwargs,
     ) -> pn.panel:
         ##todo remove recursion
-        num_dims = len(da.dims)
+        num_dims = len(ds.sizes)
         # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
+        dims = [d for d in ds.sizes]
 
         if num_dims > target_dimension and num_dims != 0:
-            dim_sel = da.dims[-1]
+            dim_sel = dims[-1]
 
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
             background_col = dim_color
-            name = " vs ".join(da.dims)
+            name = " vs ".join(dims)
 
             container_args = {"name": name, "styles": {"background": background_col}}
             outer_container = (
                 pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
 
-            for i in range(da.sizes[dim_sel]):
-                sliced = da.isel({dim_sel: i})
+            for i in range(ds.sizes[dim_sel]):
+                sliced = ds.isel({dim_sel: i})
                 label = f"{dim_sel}={sliced.coords[dim_sel].values}"
 
                 panes = self._to_panes_da(
                     sliced,
                     plot_callback=plot_callback,
                     target_dimension=target_dimension,
-                    horizontal=len(sliced.dims) <= target_dimension + 1,
+                    horizontal=len(sliced.sizes) <= target_dimension + 1,
                 )
                 width = num_dims - target_dimension
 
@@ -182,6 +184,62 @@ class PanelResult(BenchResultBase):
                 inner_container.append(panes)
                 outer_container.append(inner_container)
         else:
-            return plot_callback(da=da, **kwargs)
+            return plot_callback(da=ds, **kwargs)
 
         return outer_container
+
+    # def _to_panes_da_old(
+    #     self,
+    #     da: xr.DataArray,
+    #     plot_callback=pn.pane.panel,
+    #     target_dimension=1,
+    #     horizontal=False,
+    #     **kwargs,
+    # ) -> pn.panel:
+    #     ##todo remove recursion
+    #     num_dims = len(da.dims)
+    #     # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
+
+    #     if num_dims > target_dimension and num_dims != 0:
+    #         dim_sel = da.dims[-1]
+
+    #         dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
+
+    #         background_col = dim_color
+    #         name = " vs ".join(da.dims)
+
+    #         container_args = {"name": name, "styles": {"background": background_col}}
+    #         outer_container = (
+    #             pn.Row(**container_args) if horizontal else pn.Column(**container_args)
+    #         )
+
+    #         for i in range(da.sizes[dim_sel]):
+    #             sliced = da.isel({dim_sel: i})
+    #             label = f"{dim_sel}={sliced.coords[dim_sel].values}"
+
+    #             panes = self._to_panes_da_old(
+    #                 sliced,
+    #                 plot_callback=plot_callback,
+    #                 target_dimension=target_dimension,
+    #                 horizontal=len(sliced.dims) <= target_dimension + 1,
+    #             )
+    #             width = num_dims - target_dimension
+
+    #             container_args = {"name": name, "styles": {"border": f"{width}px solid grey"}}
+
+    #             if horizontal:
+    #                 inner_container = pn.Column(**container_args)
+    #                 align = ("center", "center")
+    #             else:
+    #                 inner_container = pn.Row(**container_args)
+    #                 align = ("end", "center")
+
+    #             side = pn.pane.Markdown(f"{label}", align=align)
+
+    #             inner_container.append(side)
+    #             inner_container.append(panes)
+    #             outer_container.append(inner_container)
+    #     else:
+    #         return plot_callback(da=da, **kwargs)
+
+    #     return outer_container
