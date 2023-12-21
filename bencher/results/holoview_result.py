@@ -141,7 +141,7 @@ class HoloviewResult(PanelResult):
                 by = self.plt_cnt_cfg.cat_vars[0].name
             if da is None:
                 da = self.to_hv_dataset().data
-            title = self.title_from_da(da, **kwargs)
+            title = self.title_from_da(da, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
             return da.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
@@ -177,7 +177,7 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_curve_da")
         if match_res.overall:
             ds = hv.Dataset(da)
-            title = self.title_from_da(da, **kwargs)
+            title = self.title_from_da(da, result_var, **kwargs)
             pt = ds.to(hv.Curve).opts(title=title, **kwargs)
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
             if len(da.sizes) > 1:
@@ -201,7 +201,7 @@ class HoloviewResult(PanelResult):
 
         return matches_res.to_panel()
 
-    def to_heatmap_hv(self, da: xr.Dataset, result_var, **kwargs):
+    def to_heatmap_hv(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -209,15 +209,12 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_heatmap")
         if matches_res and len(da.dims) >= 2:
             # dims = [d for d in da.sizes]
-
-            x = self.plt_cnt_cfg.float_vars[0].name
-            y = self.plt_cnt_cfg.float_vars[1].name
-
             # x = dims[0]
             # y = dims[1]
+            x = self.plt_cnt_cfg.float_vars[0].name
+            y = self.plt_cnt_cfg.float_vars[1].name
             name = result_var.name
             C = name
-            title = None
             title = f"Heatmap of {name}"
             time_args = self.time_widget(title)
             return da.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)

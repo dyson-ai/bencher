@@ -138,16 +138,23 @@ class BenchResultBase(OptunaResult):
     #         title += f" vs {iv.name}"
     #     return title
 
-    def title_from_da(self, da: xr.DataArray, **kwargs):
+    def title_from_da(self, da: xr.DataArray, result_var, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 
         if isinstance(da, xr.DataArray):
             tit = [da.name]
+            for d in da.dims:
+                tit.append(d)
         else:
-            tit = list(da.sizes)
-        for d in da.dims:
-            tit.append(d)
+            # tit = [result_var.name]
+            data_vars = list(da.data_vars.keys())
+            tit = [data_vars[0]]
+            tit.extend(list(da.sizes))
+
+            tit = list(da.variables)
+            # tit = [d for d in da.sizes]
+
         return " vs ".join(tit)
         # return title
 
