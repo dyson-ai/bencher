@@ -11,6 +11,9 @@ from bencher.variables.results import (
     ResultReference,
 )
 
+from bencher.variables.inputs import IntSweep, FloatSweep, BoolSweep, EnumSweep, StringSweep
+from bencher.variables.time import TimeSnapshot
+
 
 class PltCfgBase(param.Parameterized):
     """A base class that contains plotting parameters shared by seaborn and xarray"""
@@ -108,22 +111,23 @@ class PltCntCfg(param.Parameterized):
             PltCntCfg: see PltCntCfg definition
         """
         plt_cnt_cfg = PltCntCfg()
-        plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
+        # plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
+
         plt_cnt_cfg.cat_vars = []
+        plt_cnt_cfg.float_vars = []
 
         for iv in bench_cfg.input_vars:
-            type_allocated = False
-            typestr = str(type(iv))
-
-            if "IntSweep" in typestr or "FloatSweep" in typestr:
+            if isinstance(iv, (IntSweep, FloatSweep, TimeSnapshot)):
+                # if "IntSweep" in typestr or "FloatSweep" in typestr:
                 plt_cnt_cfg.float_vars.append(iv)
                 type_allocated = True
-            if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
+            if isinstance(iv, (EnumSweep, BoolSweep, StringSweep)):
+                # if "EnumSweep" in typestr or "BoolSweep" in typestr or "StringSweep" in typestr:
                 plt_cnt_cfg.cat_vars.append(iv)
                 type_allocated = True
 
             if not type_allocated:
-                raise ValueError(f"No rule for type {typestr}")
+                raise ValueError(f"No rule for type {type(iv)}")
 
         for rv in bench_cfg.result_vars:
             if isinstance(

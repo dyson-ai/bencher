@@ -126,19 +126,7 @@ class PanelResult(BenchResultBase):
     def to_panes_multi_panel(
         self, hv_dataset: hv.Dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
     ):
-        # if isinstance(hv_dataset,hv.Dataset):
         dims = len(hv_dataset.dimensions())
-        # else:
-        #     print(type(hv_dataset))
-        #     dims = len(hv_dataset.dims)
-        # if result_var is None:
-        #     result_var = self.bench_cfg.result_vars[0]
-        # else:
-        #     hv_dataset = hv_dataset[result_var.name]
-
-        # xr_dataarray = hv_dataset.data[result_var.name]
-
-        # hv.Dataset().dimensions
 
         return self._to_panes_da(
             hv_dataset.data,
@@ -159,13 +147,19 @@ class PanelResult(BenchResultBase):
         result_var=None,
         **kwargs,
     ) -> pn.panel:
+        # todo, when dealing with time and repeats, add feature to allow custom order of dimension recursion
         ##todo remove recursion
         num_dims = len(ds.sizes)
         # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
         dims = [d for d in ds.sizes]
 
-        if num_dims > target_dimension and num_dims != 0:
+        time_dim_delta = 0
+        if self.bench_cfg.over_time:
+            time_dim_delta = 0
+
+        if num_dims > (target_dimension + time_dim_delta) and num_dims != 0:
             dim_sel = dims[-1]
+            print(f"selected dim {dim_sel}")
 
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 

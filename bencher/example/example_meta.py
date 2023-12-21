@@ -128,8 +128,6 @@ class BenchMeta(bch.ParametrizedSweep):
 def example_meta(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    print(run_cfg)
-
     bench = bch.Bench("bench_meta", BenchMeta(), report=report)
 
     res = bench.plot_sweep(
@@ -143,9 +141,10 @@ This uses bencher to display all the combinatios of plots bencher is able to pro
             # BenchMeta.param.sample_over_time,
         ],
         # const_vars=[
-        #     # BenchMeta.param.sample_with_repeats.with_const(2),
-        #     # BenchMeta.param.float_vars.with_const(0),
-        #     # BenchMeta.param.categorical_vars.with_const(2),
+        # BenchMeta.param.float_vars.with_const(1),
+        # BenchMeta.param.sample_with_repeats.with_const(2),
+        # BenchMeta.param.categorical_vars.with_const(2),
+        # BenchMeta.param.sample_over_time.with_const(True),
         # ],
         plot=False,
     )
