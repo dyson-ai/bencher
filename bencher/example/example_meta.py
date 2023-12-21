@@ -37,7 +37,7 @@ class BenchableObject(bch.ParametrizedSweep):
     float2 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="y coordinate of the sample volume")
     float3 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="z coordinate of the sample volume")
 
-    sigma = bch.FloatSweep(default=5, bounds=[1, 10], doc="standard deviation of the added noise")
+    sigma = bch.FloatSweep(default=1, bounds=[1, 10], doc="standard deviation of the added noise")
 
     # categorial variables
     noisy = bch.BoolSweep(
@@ -121,7 +121,11 @@ class BenchMeta(bch.ParametrizedSweep):
             "test",
             input_vars=input_vars,
             # result_vars=[BenchableObject.param.distance],
-            result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+            # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+            # result_vars=[ BenchableObject.param.sample_noise],
+            result_vars=[BenchableObject.param.result_hmap],
+
+
 
             plot=False,
         )
@@ -156,7 +160,12 @@ This uses bencher to display all the combinatios of plots bencher is able to pro
     )
 
     bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_references())
+    # bench.report.append(res.to_references())
+
+    # bench.report.append(res.to_holomap())
+
+    bench.report.append(res.to_panes())
+
     return bench
 
 

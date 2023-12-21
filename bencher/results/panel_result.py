@@ -7,25 +7,43 @@ from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.variables.results import ResultImage, ResultVideo
+from bencher.variables.results import ResultImage, ResultVideo, ResultContainer
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class PanelResult(BenchResultBase):
     def to_video(self, **kwargs):
-        return self.map_plots(partial(self.to_video_single, **kwargs))
+        return self.map_plots(partial(self.to_video_multi, **kwargs))
 
-    def to_video_single(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
-        if isinstance(result_var, ResultVideo):
+    # def to_video_multi(
+    #     self, result_var: ParametrizedSweep, container=pn.pane.PNG
+    # ) -> Optional[pn.pane.PNG]:
+    #     if isinstance(result_var, ResultImage):
+    #         xr_dataset = self.to_hv_dataset()
+    #         plot_callback = partial(self.da_to_container, container=container)
+    #         return self.to_panes_multi_panel(
+    #             xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
+    #         )
+    #     return None
+
+    def to_video_multi(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
+        if isinstance(result_var, (ResultVideo, ResultContainer)):
             vid_p = []
 
-            def create_video(vid):  # pragma: no cover
-                vid = pn.pane.Video(vid, autoplay=True, **kwargs)
+            xr_dataset = self.to_hv_dataset()
+
+            def to_video_da(da, **kwargs):
+                print("to video da", da)
+                vid = pn.pane.Video(da, autoplay=True, **kwargs)
                 vid.loop = True
                 vid_p.append(vid)
                 return vid
 
-            panes = self.to_panes(create_video)
+            plot_callback = partial(self.da_to_container, container=to_video_da)
+
+            panes = self.to_panes_multi_panel(
+                xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
+            )
 
             def play_vid(_):  # pragma: no cover
                 for r in vid_p:
@@ -60,9 +78,9 @@ class PanelResult(BenchResultBase):
         return None
 
     def to_image(self) -> pn.Row():
-        return self.map_plots(self.to_image_single)
+        return self.map_plots(self.to_image_multi)
 
-    def to_image_single(
+    def to_image_multi(
         self, result_var: ParametrizedSweep, container=pn.pane.PNG
     ) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, ResultImage):
@@ -85,7 +103,7 @@ class PanelResult(BenchResultBase):
             break
         return da.expand_dims(dim).values[0]
 
-    def da_to_container(self, da: xr.DataArray, container):
+    def da_to_container(self, da: xr.DataArray, result_var: ResultVar, container):
         val = self.zero_dim_da_to_val(da)
         return container(val, styles={"background": "white"})
 
@@ -93,7 +111,7 @@ class PanelResult(BenchResultBase):
         matches_res = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
-            # panel_range=VarRange(1, None),
+            panel_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_panes")
         if matches_res.overall:
             return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))

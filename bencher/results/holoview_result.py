@@ -149,10 +149,10 @@ class HoloviewResult(PanelResult):
             by = None
             if self.plt_cnt_cfg.cat_cnt >= 2:
                 by = self.plt_cnt_cfg.cat_vars[1].name
-            da = da[result_var.name]
-            title = self.title_from_da(da, result_var, **kwargs)
+            da_plot = da[result_var.name]
+            title = self.title_from_da(da_plot, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
-            return da.hvplot.bar(by=by, **time_widget_args, **kwargs)
+            return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
             # title = self.title_from_da(da, result_var, **kwargs)
             # time_widget_args = self.time_widget(title)
@@ -182,10 +182,10 @@ class HoloviewResult(PanelResult):
             by = None
             if self.plt_cnt_cfg.cat_cnt >= 1:
                 by = self.plt_cnt_cfg.cat_vars[0].name
-            da = da[result_var.name]
-            title = self.title_from_da(da, result_var, **kwargs)
+            da_plot = da[result_var.name]
+            title = self.title_from_da(da_plot, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
-            return da.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
+            return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
         return match_res.to_panel(**kwargs)
 
@@ -229,13 +229,13 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_heatmap_multi")
         if matches_res.overall:
             xr_dataset = self.to_hv_dataset()
-            cb = partial(self.to_heatmap_hv, **kwargs)
+            cb = partial(self.to_heatmap_da, **kwargs)
             return self.to_panes_multi_panel(
                 xr_dataset, result_var, plot_callback=cb, target_dimension=2
             )
         return matches_res.to_panel()
 
-    def to_heatmap_hv(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+    def to_heatmap_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -302,7 +302,7 @@ class HoloviewResult(PanelResult):
 
     # def to_scatter_jitter_map(self,)
 
-    def to_scatter_jitter(self,result_var:ResultVar, **kwargs) -> List[hv.Scatter]:
+    def to_scatter_jitter(self, result_var: ResultVar, **kwargs) -> List[hv.Scatter]:
         return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
@@ -460,6 +460,9 @@ class HoloviewResult(PanelResult):
 
     def to_holomap(self, name: str = None) -> hv.HoloMap:
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
+    
+    # def to_holomap_single(self,result_var:ResultVar,**kwargs):
+
 
     def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
         if hmap_names is None:
