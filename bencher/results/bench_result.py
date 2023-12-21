@@ -23,7 +23,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
     @staticmethod
     def default_plot_callbacks():
         return [
-            HoloviewResult.to_bar_multi,
+            HoloviewResult.to_bar_multi_map,
             HoloviewResult.to_scatter_jitter,
             HoloviewResult.to_curve_multi_map,
             HoloviewResult.to_line_multi_map,
