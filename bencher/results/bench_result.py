@@ -17,10 +17,8 @@ class BenchResult(PlotlyResult, HoloviewResult):
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
-        PanelResult.__init__(self, bench_cfg)
         PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
-        # SeabornResult.__init__(self, bench_cfg)
 
     @staticmethod
     def default_plot_callbacks():

@@ -128,7 +128,7 @@ class BenchMeta(bch.ParametrizedSweep):
 def example_meta(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    bench = bch.Bench("bench_meta", BenchMeta(), report=report,run_cfg=run_cfg)
+    bench = bch.Bench("bench_meta", BenchMeta(), report=report, run_cfg=run_cfg)
 
     res = bench.plot_sweep(
         title="Meta Bench",
