@@ -164,22 +164,58 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve_da")
         if match_res.overall:
-            return da
+            # return da
+            # print(da)
+            # ds = hv.Dataset(da).reduce(["repeat"], np.mean, np.std)
+            ds = hv.Dataset(da)
+            # x = da.
+            x = self.plt_cnt_cfg.float_vars[0].name
+            # y = self.plt_cnt_cfg.result_vars[0].name
 
-            ds = hv.Dataset(da).reduce(["repeat"], np.mean, np.std)
+            y = "result_var"
+            y_std = f"{y}_std"
+
+            # print(da.to_dataframe())
+
+            # da_mean = da[y]
+            # da_std = da[y_std]
+            da["low"] = da[y] - (da[y_std] / 2.0)
+            da["hi"] = da[y] + (da[y_std] / 2.0)
+
+            print(da)
+            print(da.to_dataframe())
+
+            # da_std.drop_vars([y_std])
+            # da_stdy_std)
+
+            # print(da_std)
+
+            by = None
+            if self.plt_cnt_cfg.cat_cnt >= 1:
+                by = self.plt_cnt_cfg.cat_vars[0].name
+
+            # return da.hvplot.line(x=x, y=y,yerr=y_std, by=by, **kwargs)
+
+            # return da.hvplot.line(x=x, y=y, by=by, **kwargs) * da.hvplot.area(
+            #     x=x, y="low", y2="hi", by=by, alpha=0.2, **kwargs
+            # )
 
             # self.to_hv_dataset()
 
             # return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
             # ds.
+                
             # title = self.to_plot_title()
-            # ds = self.to_hv_dataset(reduce)
-            # pt = ds.to(hv.Curve, vdims=[da.name], label=da.name).opts(**kwargs)
-            pt = ds.to(hv.Curve).opts(**kwargs)
+            title = self.title_from_da(da, **kwargs)
+            pt = ds.to(hv.Curve).opts(title=title, **kwargs)
 
-            # if self.bench_cfg.repeats > 1:
             pt *= ds.to(hv.Spread).opts(alpha=0.2)
-            return pt
+            print(len(da.sizes))
+            print("VDIMS",ds.kdims)
+            if len(da.sizes)>1:
+                return pt.opts(legend_position="right").overlay()
+            return pt.opts(legend_position="right")
+
         return match_res.to_panel(**kwargs)
 
     def to_heatmap_multi(self, **kwargs):

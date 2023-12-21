@@ -76,7 +76,7 @@ class BenchMeta(bch.ParametrizedSweep):
         default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
-        default=0, bounds=(0, 3), doc="The number of categorical variables that are swept"
+        default=1, bounds=(0, 3), doc="The number of categorical variables that are swept"
     )
     sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 2))
 
