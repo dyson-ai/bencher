@@ -73,7 +73,7 @@ class BenchMeta(bch.ParametrizedSweep):
     """This class uses bencher to display the multidimensional types bencher can represent"""
 
     float_vars = bch.IntSweep(
-        default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
+        default=1, bounds=(0, 3), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
         default=1, bounds=(0, 3), doc="The number of categorical variables that are swept"
@@ -120,19 +120,8 @@ class BenchMeta(bch.ParametrizedSweep):
             plot=False,
         )
 
-        # bench.report.append(res.to_sweep_summary())
-        # bench.report.app
         self.plots = bch.ResultReference()
-        # self.plots.obj = pn.Row(res.to_auto(width=500, height=300))
         self.plots.obj = res.to_auto(width=500, height=300)
-
-        # self.plots.obj = res.to_da()
-
-        # self.plots.obj = res.to_line_multi()
-
-        # self.plots.obj = res
-
-        # self.plots.obj = bench.report.pane
         return super().__call__()
 
 
@@ -141,26 +130,23 @@ def example_meta(
 ) -> bch.Bench:
     print(run_cfg)
 
-    # rw = pn.Column()
-    # plot = BenchMeta().__call__(float_vars=1, categorical_vars=3)["plots"].obj
-    # rw.append(plot.to_line_multi())
-    # plot = BenchMeta().__call__(float_vars=1, categorical_vars=0)["plots"].obj
-    # rw.append(plot.to_heatmap_multi())
-    # rw.show()
-
     bench = bch.Bench("bench_meta", BenchMeta(), report=report)
 
     res = bench.plot_sweep(
         title="Meta Bench",
-        description="""## All Combinations of Variable Sweeps and Resulting Plots
-
-        This uses bencher to display all the combinatios of plots bencher is able to produce""",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots  
+This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
             BenchMeta.param.sample_with_repeats,
             # BenchMeta.param.sample_over_time,
         ],
+        # const_vars=[
+        #     # BenchMeta.param.sample_with_repeats.with_const(2),
+        #     # BenchMeta.param.float_vars.with_const(0),
+        #     # BenchMeta.param.categorical_vars.with_const(2),
+        # ],
         plot=False,
     )
 

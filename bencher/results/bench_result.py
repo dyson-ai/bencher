@@ -59,8 +59,8 @@ class BenchResult(PlotlyResult, HoloviewResult):
 
         row = pn.Row()
         for plot_callback in plot_list:
-            if self.plt_cnt_cfg.print_debug:
-                print(f"checking: {plot_callback.__name__}")
+            # if self.plt_cnt_cfg.print_debug:
+            print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
             cb_with_self = partial(plot_callback, self=self)
             cb_result = cb_with_self(**kwargs)

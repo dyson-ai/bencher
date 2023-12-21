@@ -140,7 +140,7 @@ class BenchResultBase(OptunaResult):
 
     def title_from_da(self, da: xr.DataArray, title=None, **kwargs):
         if title is None:
-            if isinstance(da,xr.DataArray):
+            if isinstance(da, xr.DataArray):
                 tit = [da.name]
             else:
                 tit = [d for d in da.sizes]

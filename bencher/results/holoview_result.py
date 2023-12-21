@@ -116,7 +116,7 @@ class HoloviewResult(PanelResult):
             return pt if got_results else None
         return plot_callback(self.bench_cfg.result_vars[0])
 
-    def to_line(self, da=None, **kwargs):
+    def to_line(self, da=None, result_var=None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
@@ -159,7 +159,9 @@ class HoloviewResult(PanelResult):
             return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
         return match_res.to_panel()
 
-    def to_curve_da(self, da: xr.DataArray, **kwargs) -> Optional[hv.Curve]:
+    def to_curve_da(
+        self, da: xr.DataArray, result_var: ResultVar = None, **kwargs
+    ) -> Optional[hv.Curve]:
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve_da")
@@ -183,54 +185,28 @@ class HoloviewResult(PanelResult):
         if matches_res.overall:
             xr_dataset = self.to_hv_dataset()
             cb = partial(self.to_heatmap_hv, **kwargs)
-            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(
+                xr_dataset, self.bench_cfg.result_vars[0], plot_callback=cb, target_dimension=2
+            )
 
         return matches_res.to_panel()
 
-    def to_heatmap_hv(self, da, **kwargs):
+    def to_heatmap_hv(self, da: xr.Dataset, result_var, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_heatmap")
         if matches_res and len(da.dims) >= 2:
-            print(da)
-            x = da.dims[0]
-            y = da.dims[1]
-            C = da.name
-            # x = self.plt_cnt_cfg.float_vars[0].name
-            # y = self.plt_cnt_cfg.float_vars[1].name
-            # C = self.bench_cfg.result_vars[0].name
+            dims = [d for d in da.sizes]
+            x = dims[0]
+            y = dims[1]
+            name = result_var.name
+            C = name
             title = None
-            # title = self.title_from_da(da)
-            title = f"Heatmap of {da.name}"
-            # return da.hvplot.heatmap()
-
-            return da.hvplot.heatmap(x=x, y=y, C=C, title=title, **kwargs)
+            title = f"Heatmap of {name}"
+            return da.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", title=title, **kwargs)
         return matches_res.to_panel()
-
-    # def to_area(self, **kwargs):
-    #     match_res = PlotFilter(
-    #         float_range=VarRange(1, None),
-    #         cat_range=VarRange(0, None),
-    #         repeats_range=VarRange(2, None),
-    #     ).matches_result(self.plt_cnt_cfg, "to_line")
-    #     if match_res.overall:
-    #         hv_ds = self.to_hv_dataset(ReduceType.REDUCE)
-
-    #         x = self.plt_cnt_cfg.float_vars[0].name
-    #         # y=self.res
-
-    #         by = None
-    #         col = None
-    #         if self.plt_cnt_cfg.cat_cnt >= 1:
-    #             by = self.plt_cnt_cfg.cat_vars[0].name
-    #         # if self.plt_cnt_cfg.cat_cnt >= 2:
-    #         # col= self.plt_cnt_cfg.cat_vars[1].name
-
-    #         return hv_ds.data.hvplot.area(x=x, by=by, **kwargs).opts(title=self.to_plot_title())
-
-    #     return match_res.to_panel(**kwargs)
 
     def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
         return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
@@ -269,7 +245,6 @@ class HoloviewResult(PanelResult):
         if match_res.overall:
             hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
             by = None
-            groupby = None
             subplots = False
             if self.plt_cnt_cfg.cat_cnt > 1:
                 by = [v.name for v in self.bench_cfg.input_vars[1:]]
@@ -279,8 +254,8 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    # def to_scatter_jitter(self, **kwargs) -> List[hv.Scatter]:
-    #     return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
+    def to_scatter_jitter(self, **kwargs) -> List[hv.Scatter]:
+        return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
     #     matches = PlotFilter(
@@ -309,23 +284,63 @@ class HoloviewResult(PanelResult):
     #         # return pt
     #     return matches.to_panel()
 
-    def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
-        matches = PlotFilter(
-            float_range=VarRange(0, 0),
-            cat_range=VarRange(0, None),
-            repeats_range=VarRange(2, None),
-            input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
-        if matches.overall:
-            ds = self.to_hv_dataset(ReduceType.NONE)
-            pt = (
-                ds.to(hv.Scatter)
-                .opts(jitter=0.1)
-                .overlay("repeat")
-                .opts(show_legend=False, title=self.to_plot_title(), **kwargs)
-            )
-            return pt
-        return matches.to_panel()
+    # def to_scatter_jitter_multi(self, **kwargs) -> Optional[hv.Scatter]:
+    #     matches = PlotFilter(
+    #         float_range=VarRange(0, 0),
+    #         cat_range=VarRange(0, None),
+    #         repeats_range=VarRange(2, None),
+    #         input_range=VarRange(1, None),
+    #     ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
+    #     if matches.overall:
+    #         hv_dataset = self.to_hv_dataset(ReduceType.NONE)
+
+    #         print("KDIMS",hv_dataset.kdims)
+    #         # hv_dataset.kdims =[hv_dataset.kdims[2],hv_dataset.kdims[1],hv_dataset.kdims[0]]
+    #         # print("KDIMS",hv_dataset.kdims)
+
+    #         # exit()
+    #         cb = partial(self.to_scatter_jitter_da, **kwargs)
+    #         return self.to_panes_multi_panel(hv_dataset, None, plot_callback=cb, target_dimension=3)
+    #     return matches.to_panel()
+
+    # def to_scatter_jitter_da(self, da: xr.Dataset, **kwargs) -> Optional[hv.Scatter]:
+    #     matches = PlotFilter(
+    #         float_range=VarRange(0, 0),
+    #         cat_range=VarRange(0, None),
+    #         repeats_range=VarRange(2, None),
+    #         input_range=VarRange(1, None),
+    #     ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
+    #     if matches.overall:
+
+    #         print("DA IN",da)
+    #         da = self.to_hv_dataset(ReduceType.NONE)
+    #         hvds = hv.Dataset(da)
+    #         # return None
+
+    #         # print("DA FRESH",da)
+    #         result_var = self.bench_cfg.result_vars[0]
+
+    #         print(hvds.data.sizes)
+    #         print("repeat" in hvds.data.sizes)
+    #         # if "repeat" in hvds.data.sizes:
+    #         # try:
+    #         #     pt = (
+    #         #         hvds.to(hv.Scatter)
+    #         #         .opts(jitter=0.1)
+    #         #         # .overlay()
+    #         #         .overlay("repeat")
+    #         #         .opts(show_legend=False, title=self.to_plot_title(), clabel=result_var.name, **kwargs)
+    #         #     )
+    #         # except:
+    #         pt = (
+    #             hvds.to(hv.Scatter)
+    #             .opts(jitter=0.1)
+    #             # .overlay()
+    #             # .overlay("repeat")
+    #             .opts(show_legend=False, title=self.to_plot_title(), clabel=result_var.name, **kwargs)
+    #         )
+    #         return pt
+    #     return matches.to_panel()
 
     def to_scatter_jitter_single(self, result_var: ResultVar, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
@@ -338,9 +353,8 @@ class HoloviewResult(PanelResult):
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(jitter=0.1)
+                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
                 .overlay("repeat")
-                .opts(show_legend=False, title=self.to_plot_title(), **kwargs)
             )
             return pt
         return matches.to_panel()
@@ -371,7 +385,7 @@ class HoloviewResult(PanelResult):
 
         return match_res.to_panel(**kwargs)
 
-    def to_bar_da(self, da, **kwargs):
+    def to_bar_da(self, da: xr.DataArray, result_var: ResultVar = None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_bar_da")

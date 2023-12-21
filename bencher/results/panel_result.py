@@ -2,6 +2,7 @@ from typing import Optional
 from functools import partial
 import panel as pn
 import xarray as xr
+import holoviews as hv
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase
@@ -98,23 +99,6 @@ class PanelResult(BenchResultBase):
             return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))
         return matches_res.to_panel()
 
-    def to_panes_multi_panel(
-        self, xr_dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
-    ):
-        if result_var is None:
-            result_var = self.bench_cfg.result_vars[0]
-
-        xr_dataarray = xr_dataset.data[result_var.name]
-
-        return self._to_panes_da(
-            xr_dataset.data,
-            # xr_dataarray,
-            plot_callback=plot_callback,
-            target_dimension=target_dimension,
-            horizontal=len(xr_dataarray.dims) <= target_dimension + 1,
-            **kwargs,
-        )
-
     def to_panes_single(
         self, result_var: ResultVar, container=pn.pane.panel, **kwargs
     ) -> Optional[pn.pane.panel]:
@@ -123,7 +107,9 @@ class PanelResult(BenchResultBase):
             xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
         )
 
-    def to_reference_single_da(self, da: xr.DataArray, container=None):
+    def to_reference_single_da(
+        self, da: xr.DataArray, result_var: ResultVar = None, container=None
+    ):
         val = self.zero_dim_da_to_val(da)
         obj_item = self.object_index[val].obj
         if container is not None:
@@ -137,12 +123,40 @@ class PanelResult(BenchResultBase):
             xr_dataset, None, plot_callback=plot_callback, target_dimension=0
         )
 
+    def to_panes_multi_panel(
+        self, hv_dataset: hv.Dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
+    ):
+        # if isinstance(hv_dataset,hv.Dataset):
+        dims = len(hv_dataset.dimensions())
+        # else:
+        #     print(type(hv_dataset))
+        #     dims = len(hv_dataset.dims)
+        # if result_var is None:
+        #     result_var = self.bench_cfg.result_vars[0]
+        # else:
+        #     hv_dataset = hv_dataset[result_var.name]
+
+        # xr_dataarray = hv_dataset.data[result_var.name]
+
+        # hv.Dataset().dimensions
+
+        return self._to_panes_da(
+            hv_dataset.data,
+            # xr_dataarray,
+            plot_callback=plot_callback,
+            target_dimension=target_dimension,
+            horizontal=dims <= target_dimension + 1,
+            result_var=result_var,
+            **kwargs,
+        )
+
     def _to_panes_da(
         self,
         ds: xr.Dataset,
         plot_callback=pn.pane.panel,
         target_dimension=1,
         horizontal=False,
+        result_var=None,
         **kwargs,
     ) -> pn.panel:
         ##todo remove recursion
@@ -172,6 +186,7 @@ class PanelResult(BenchResultBase):
                     plot_callback=plot_callback,
                     target_dimension=target_dimension,
                     horizontal=len(sliced.sizes) <= target_dimension + 1,
+                    result_var=result_var,
                 )
                 width = num_dims - target_dimension
 
@@ -190,7 +205,7 @@ class PanelResult(BenchResultBase):
                 inner_container.append(panes)
                 outer_container.append(inner_container)
         else:
-            return plot_callback(da=ds, **kwargs)
+            return plot_callback(da=ds, result_var=result_var, **kwargs)
 
         return outer_container
 
