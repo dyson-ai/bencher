@@ -1,8 +1,10 @@
 import logging
 from typing import List, Any, Tuple, Optional
 from collections.abc import Iterable
-
+from enum import Enum, auto
 import xarray as xr
+import holoviews as hv
+import numpy as np
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
@@ -15,6 +17,13 @@ import panel as pn
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
 # https://kaleidoescape.github.io/decorated-plugins/
+
+
+class ReduceType(Enum):
+    AUTO = auto()  # automatically determine the best way to reduce the dataset
+    SQUEEZE = auto()  # remove any dimensions of length 1
+    REDUCE = auto()  # get the mean and std dev of the the "repeat" dimension
+    NONE = auto()  # don't reduce
 
 
 class BenchResultBase(OptunaResult):
@@ -30,6 +39,35 @@ class BenchResultBase(OptunaResult):
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
         return self.ds.count()
+
+    def to_hv_dataset(
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+    ) -> hv.Dataset:
+        """Generate a holoviews dataset from the xarray dataset.
+
+        Args:
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+
+        Returns:
+            hv.Dataset: results in the form of a holoviews dataset
+        """
+
+        if reduce == ReduceType.AUTO:
+            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
+
+        vdims = [r.name for r in self.bench_cfg.result_vars]
+        kdims = [i.name for i in self.bench_cfg.all_vars]
+
+        print(kdims)
+
+        ds = self.ds if result_var is None else self.ds[result_var.name]
+        match (reduce):
+            case ReduceType.REDUCE:
+                return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
+            case ReduceType.SQUEEZE:
+                return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
+            case _:
+                return hv.Dataset(ds, kdims=kdims, vdims=vdims)
 
     def get_optimal_vec(
         self,

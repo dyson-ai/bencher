@@ -1,10 +1,8 @@
 from __future__ import annotations
-from enum import Enum, auto
 import logging
 from typing import List, Optional
 import panel as pn
 import holoviews as hv
-import numpy as np
 from param import Parameter
 from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
@@ -12,6 +10,7 @@ import xarray as xr
 
 from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.results.panel_result import PanelResult
+from bencher.results.bench_result_base import ReduceType
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
@@ -33,43 +32,7 @@ hv.extension("bokeh", "plotly")
 # )
 
 
-class ReduceType(Enum):
-    AUTO = auto()  # automatically determine the best way to reduce the dataset
-    SQUEEZE = auto()  # remove any dimensions of length 1
-    REDUCE = auto()  # get the mean and std dev of the the "repeat" dimension
-    NONE = auto()  # don't reduce
-
-
 class HoloviewResult(PanelResult):
-    def to_hv_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
-    ) -> hv.Dataset:
-        """Generate a holoviews dataset from the xarray dataset.
-
-        Args:
-            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
-
-        Returns:
-            hv.Dataset: results in the form of a holoviews dataset
-        """
-
-        if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
-
-        vdims = [r.name for r in self.bench_cfg.result_vars]
-        kdims = [i.name for i in self.bench_cfg.all_vars]
-
-        print(kdims)
-
-        ds = self.ds if result_var is None else self.ds[result_var.name]
-        match (reduce):
-            case ReduceType.REDUCE:
-                return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
-            case ReduceType.SQUEEZE:
-                return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
-            case _:
-                return hv.Dataset(ds, kdims=kdims, vdims=vdims)
-
     @staticmethod
     def set_default_opts(width=600, height=600):
         width_heigh = {"width": width, "height": height, "tools": ["hover"]}
@@ -460,9 +423,8 @@ class HoloviewResult(PanelResult):
 
     def to_holomap(self, name: str = None) -> hv.HoloMap:
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
-    
-    # def to_holomap_single(self,result_var:ResultVar,**kwargs):
 
+    # def to_holomap_single(self,result_var:ResultVar,**kwargs):
 
     def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
         if hmap_names is None:

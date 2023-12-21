@@ -91,7 +91,7 @@ class PanelResult(BenchResultBase):
             )
         return None
 
-    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset, result_var: ResultVar):
         # todo this is really horrible, need to improve
         if isinstance(da_ds, xr.Dataset):
             dim = [d for d in da_ds.keys()][0]
@@ -101,10 +101,12 @@ class PanelResult(BenchResultBase):
         for k in da.coords.keys():
             dim = k
             break
+        # print(dim,result_var.name)
+        # exit()
         return da.expand_dims(dim).values[0]
 
     def da_to_container(self, da: xr.DataArray, result_var: ResultVar, container):
-        val = self.zero_dim_da_to_val(da)
+        val = self.zero_dim_da_to_val(da, result_var)
         return container(val, styles={"background": "white"})
 
     def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:

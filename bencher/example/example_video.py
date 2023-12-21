@@ -18,7 +18,6 @@ class TuringPattern(bch.ParametrizedSweep):
     video = bch.ResultContainer()
     # video = bch.ResultContainer()
 
-
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
         Zleft = Z[1:-1, 0:-2]
@@ -80,7 +79,7 @@ def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     # run_cfg.auto_plot = False
-    run_cfg.use_sample_cache=True
+    run_cfg.use_sample_cache = True
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
     bench.plot_sweep(

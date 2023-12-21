@@ -68,7 +68,9 @@ class BenchableObject(bch.ParametrizedSweep):
         if self.negate_output == "negative":
             self.distance *= -1
 
-        self.result_hmap = hv.Text(x=0,y=0,text=f"distance:{self.distance}\nnoise:{self.sample_noise}")
+        self.result_hmap = hv.Text(
+            x=0, y=0, text=f"distance:{self.distance}\nnoise:{self.sample_noise}"
+        )
 
         return super().__call__()
 
@@ -124,9 +126,6 @@ class BenchMeta(bch.ParametrizedSweep):
             # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
             # result_vars=[ BenchableObject.param.sample_noise],
             result_vars=[BenchableObject.param.result_hmap],
-
-
-
             plot=False,
         )
 
