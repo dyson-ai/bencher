@@ -23,15 +23,15 @@ class BenchResult(PlotlyResult, HoloviewResult):
     @staticmethod
     def default_plot_callbacks():
         return [
-            HoloviewResult.to_bar_multi_map,
+            HoloviewResult.to_bar_multi,
             HoloviewResult.to_scatter_jitter,
-            HoloviewResult.to_curve_multi_map,
-            HoloviewResult.to_line_multi_map,
-            HoloviewResult.to_heatmap_multi_map,
+            HoloviewResult.to_curve_multi,
+            HoloviewResult.to_line_multi,
+            HoloviewResult.to_heatmap_multi,
             # self.to_panes,
-            PanelResult.to_video,
+            PanelResult.to_video_single,
             # self.to_surface_hv,
-            PlotlyResult.to_volume,
+            PlotlyResult.to_volume_single,
             # HoloviewResult.to_bar,
             # HoloviewResult.to_bar_hvplot,
         ]
@@ -55,8 +55,10 @@ class BenchResult(PlotlyResult, HoloviewResult):
             # if self.plt_cnt_cfg.print_debug:
             print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
-            cb_with_self = partial(plot_callback, self=self)
-            cb_result = cb_with_self(**kwargs)
+            cb_with_self = partial(plot_callback,self, **kwargs)
+
+            # self.map
+            cb_result = self.map_plots(cb_with_self)
 
             if cb_result is not None:
                 row.append(cb_result)

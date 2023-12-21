@@ -129,9 +129,6 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar_multi_map(self, **kwargs):
-        return self.map_plots(partial(self.to_bar_multi, **kwargs))
-
     def to_bar_multi(self, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
@@ -155,16 +152,13 @@ class HoloviewResult(PanelResult):
             da = da[result_var.name]
             title = self.title_from_da(da, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
-            return da.hvplot.bar( by=by, **time_widget_args, **kwargs)
-        
+            return da.hvplot.bar(by=by, **time_widget_args, **kwargs)
+
             # title = self.title_from_da(da, result_var, **kwargs)
             # time_widget_args = self.time_widget(title)
             # return da.hvplot.bar(by=by, **kwargs).opts(title=self.to_plot_title())
 
         return match_res.to_panel(**kwargs)
-
-    def to_line_multi_map(self, **kwargs):
-        return self.map_plots(partial(self.to_line_multi, **kwargs))
 
     def to_line_multi(self, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(
@@ -178,7 +172,7 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel()
 
-    def to_line_da(self, da, result_var:ResultVar, **kwargs):
+    def to_line_da(self, da, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
@@ -194,9 +188,6 @@ class HoloviewResult(PanelResult):
             return da.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
         return match_res.to_panel(**kwargs)
-
-    def to_curve_multi_map(self, **kwargs):
-        return self.map_plots(partial(self.to_curve_multi, **kwargs))
 
     def to_curve_multi(self, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(
@@ -311,7 +302,7 @@ class HoloviewResult(PanelResult):
 
     # def to_scatter_jitter_map(self,)
 
-    def to_scatter_jitter(self, **kwargs) -> List[hv.Scatter]:
+    def to_scatter_jitter(self,result_var:ResultVar, **kwargs) -> List[hv.Scatter]:
         return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
