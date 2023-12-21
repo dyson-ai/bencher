@@ -5,7 +5,7 @@ import numpy as np
 from enum import auto
 from strenum import StrEnum
 import random
-
+import holoviews as hv
 
 # class NegateConfig(StrEnum):
 
@@ -47,24 +47,28 @@ class BenchableObject(bch.ParametrizedSweep):
 
     negate_output = bch.StringSweep(["positive", "negative"])
 
-    result_var = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
+    distance = bch.ResultVar("m", doc="The distance from the sample point to the origin")
+    sample_noise = bch.ResultVar("m", doc="The amount of noise added to the distance sample")
 
-    # result_hmap = bch.ResultHmap()
+    result_hmap = bch.ResultHmap()
+    # result_im
     ##todo all var types
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
         # distance to origin
-        self.result_var = np.linalg.norm(np.array([self.float1, self.float2, self.float3]))
-
-        # optionally add noise
-        self.result_var += NoiseDistribution.calculate_noise(
+        self.distance = np.linalg.norm(np.array([self.float1, self.float2, self.float3]))
+        self.sample_noise = NoiseDistribution.calculate_noise(
             self.noisy, self.noise_distribution, self.sigma
         )
 
+        self.distance += self.sample_noise
+
         if self.negate_output == "negative":
-            self.result_var *= -1
+            self.distance *= -1
+
+        self.result_hmap = hv.Text(x=0,y=0,text=f"distance:{self.distance}\nnoise:{self.sample_noise}")
 
         return super().__call__()
 
@@ -73,7 +77,7 @@ class BenchMeta(bch.ParametrizedSweep):
     """This class uses bencher to display the multidimensional types bencher can represent"""
 
     float_vars = bch.IntSweep(
-        default=1, bounds=(0, 3), doc="The number of floating point variables that are swept"
+        default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
         default=1, bounds=(0, 3), doc="The number of categorical variables that are swept"
@@ -116,7 +120,9 @@ class BenchMeta(bch.ParametrizedSweep):
         res = bench.plot_sweep(
             "test",
             input_vars=input_vars,
-            result_vars=[BenchableObject.param.result_var],
+            # result_vars=[BenchableObject.param.distance],
+            result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+
             plot=False,
         )
 

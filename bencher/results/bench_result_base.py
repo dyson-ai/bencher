@@ -138,7 +138,7 @@ class BenchResultBase(OptunaResult):
     #         title += f" vs {iv.name}"
     #     return title
 
-    def title_from_da(self, da: xr.DataArray, result_var, **kwargs):
+    def title_from_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 
@@ -147,12 +147,12 @@ class BenchResultBase(OptunaResult):
             for d in da.dims:
                 tit.append(d)
         else:
-            # tit = [result_var.name]
-            data_vars = list(da.data_vars.keys())
-            tit = [data_vars[0]]
+            tit = [result_var.name]
+            # data_vars = list(da.data_vars.keys())
+            # tit = [data_vars[0]]
             tit.extend(list(da.sizes))
 
-            tit = list(da.variables)
+            # tit = list(da.variables)
             # tit = [d for d in da.sizes]
 
         return " vs ".join(tit)
@@ -160,13 +160,12 @@ class BenchResultBase(OptunaResult):
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]
-        # return pn.Row(*[self.to_volume_single(rv) for rv in rvs])
 
     def map_plots(
         self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
     ) -> Optional[pn.Row]:
         if row is None:
-            row = pn.Column(name=self.to_plot_title())
+            row = pn.Row(name=self.to_plot_title())
         for rv in self.get_results_var_list(result_var):
             print("RV NAME", rv.name)
             plot_result = plot_callback(rv)

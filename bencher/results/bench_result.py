@@ -23,22 +23,17 @@ class BenchResult(PlotlyResult, HoloviewResult):
     @staticmethod
     def default_plot_callbacks():
         return [
+            HoloviewResult.to_bar_multi,
             HoloviewResult.to_scatter_jitter,
-            # HoloviewResult.to_scatter,
-            # HoloviewResult.to_curve,
-            HoloviewResult.to_curve_multi,
-            # HoloviewResult.to_line,
-            # HoloviewResult.to_heatmap,
-            HoloviewResult.to_heatmap_multi,
-            HoloviewResult.to_line_multi,
-            # HoloviewResult.to_heatmap_hvplot,
+            HoloviewResult.to_curve_multi_map,
+            HoloviewResult.to_line_multi_map,
+            HoloviewResult.to_heatmap_multi_map,
             # self.to_panes,
             PanelResult.to_video,
             # self.to_surface_hv,
             PlotlyResult.to_volume,
             # HoloviewResult.to_bar,
             # HoloviewResult.to_bar_hvplot,
-            HoloviewResult.to_bar_multi,
         ]
 
     @staticmethod

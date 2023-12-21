@@ -129,7 +129,23 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_line(self, da=None, result_var=None, **kwargs):
+    def to_line_multi_map(self, **kwargs):
+        return self.map_plots(partial(self.to_line_multi, **kwargs))
+
+    def to_line_multi(self, result_var: ResultVar, **kwargs):
+        match_res = PlotFilter(
+            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+        ).matches_result(self.plt_cnt_cfg, "to_line")
+        if match_res.overall:
+            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
+
+            cb = partial(self.to_line_da, **kwargs)
+            return self.to_panes_multi_panel(
+                xr_dataset, result_var, plot_callback=cb, target_dimension=2
+            )
+        return match_res.to_panel()
+
+    def to_line_da(self, da=None, result_var=None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
@@ -141,37 +157,31 @@ class HoloviewResult(PanelResult):
                 by = self.plt_cnt_cfg.cat_vars[0].name
             if da is None:
                 da = self.to_hv_dataset().data
+            da = da[result_var.name]
             title = self.title_from_da(da, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
             return da.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
         return match_res.to_panel(**kwargs)
 
-    def to_line_multi(self, **kwargs):
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_line")
-        if match_res.overall:
-            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
+    def to_curve_multi_map(self, **kwargs):
+        return self.map_plots(partial(self.to_curve_multi, **kwargs))
 
-            cb = partial(self.to_line, **kwargs)
-            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
-        return match_res.to_panel()
-
-    def to_curve_multi(self, **kwargs):
+    def to_curve_multi(self, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
-        ).matches_result(self.plt_cnt_cfg, "to_line")
+        ).matches_result(self.plt_cnt_cfg, "to_curve")
 
         if match_res.overall:
-            xr_dataset = self.to_hv_dataset(ReduceType.REDUCE)
+            xr_dataset = self.to_hv_dataset(ReduceType.REDUCE,result_var)
+            # xr_dataset = xr_dataset[[result_var.name,f"{result_var.name_std}"]]
             cb = partial(self.to_curve_da, **kwargs)
-            return self.to_panes_multi_panel(xr_dataset, None, plot_callback=cb, target_dimension=2)
+            return self.to_panes_multi_panel(
+                xr_dataset, result_var, plot_callback=cb, target_dimension=2
+            )
         return match_res.to_panel()
 
-    def to_curve_da(
-        self, da: xr.DataArray, result_var: ResultVar = None, **kwargs
-    ) -> Optional[hv.Curve]:
+    def to_curve_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs) -> Optional[hv.Curve]:
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve_da")
@@ -186,7 +196,10 @@ class HoloviewResult(PanelResult):
 
         return match_res.to_panel(**kwargs)
 
-    def to_heatmap_multi(self, **kwargs):
+    def to_heatmap_multi_map(self, **kwargs):
+        return self.map_plots(partial(self.to_heatmap_multi, **kwargs))
+
+    def to_heatmap_multi(self, result_var: ResultVar, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -196,9 +209,8 @@ class HoloviewResult(PanelResult):
             xr_dataset = self.to_hv_dataset()
             cb = partial(self.to_heatmap_hv, **kwargs)
             return self.to_panes_multi_panel(
-                xr_dataset, self.bench_cfg.result_vars[0], plot_callback=cb, target_dimension=2
+                xr_dataset, result_var, plot_callback=cb, target_dimension=2
             )
-
         return matches_res.to_panel()
 
     def to_heatmap_hv(self, da: xr.Dataset, result_var: ResultVar, **kwargs):

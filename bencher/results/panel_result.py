@@ -124,13 +124,16 @@ class PanelResult(BenchResultBase):
         )
 
     def to_panes_multi_panel(
-        self, hv_dataset: hv.Dataset, result_var, plot_callback=None, target_dimension=1, **kwargs
+        self,
+        hv_dataset: hv.Dataset,
+        result_var: ResultVar,
+        plot_callback: callable = None,
+        target_dimension: int = 1,
+        **kwargs,
     ):
         dims = len(hv_dataset.dimensions())
-
         return self._to_panes_da(
             hv_dataset.data,
-            # xr_dataarray,
             plot_callback=plot_callback,
             target_dimension=target_dimension,
             horizontal=dims <= target_dimension + 1,
