@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Callable, List
-from copy import deepcopy
 import param
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.results import (
