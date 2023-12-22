@@ -615,8 +615,6 @@ class Bench(BenchPlotServer):
 
             result_dict = result if isinstance(result, dict) else result.param.values()
 
-            print(result_dict)
-
             for rv in bench_res.bench_cfg.result_vars:
                 result_value = result_dict[rv.name]
                 if bench_run_cfg.print_bench_results:

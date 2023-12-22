@@ -303,7 +303,7 @@ class BenchResultBase(OptunaResult):
 
         if num_dims > (target_dimension + time_dim_delta) and num_dims != 0:
             dim_sel = dims[-1]
-            print(f"selected dim {dim_sel}")
+            # print(f"selected dim {dim_sel}")
 
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
