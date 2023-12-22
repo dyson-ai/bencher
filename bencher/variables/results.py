@@ -148,7 +148,7 @@ class ResultReference(param.Parameter):
         return hash_sha1(self)
 
 
-PANEL_TYPES = (ResultImage, ResultContainer, ResultString,ResultReference)
+PANEL_TYPES = (ResultImage, ResultContainer, ResultString, ResultReference)
 
 # class ResultCurve(ResultHmap):
 #     __slots__ = ["kdim", "vdim", "data"]

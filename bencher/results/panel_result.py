@@ -6,14 +6,11 @@ from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import (
-    ResultImage,
     ResultVideo,
     ResultContainer,
     ResultReference,
-    ResultString,
     PANEL_TYPES,
 )
-from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class PanelResult(BenchResultBase):
