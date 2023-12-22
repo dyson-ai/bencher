@@ -79,7 +79,7 @@ def example_holosweep(
 
     bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
-    res = bench.plot_sweep(
+    bench.plot_sweep(
         "phase",
         input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
         result_vars=[PlotFunctions.param.fn_output, PlotFunctions.param.hmap],

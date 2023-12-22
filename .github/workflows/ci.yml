@@ -40,9 +40,9 @@ jobs:
         pip install flit
         flit install --extras test
     - run: |
-        ffdl install -y
-    - run: |
         pylint $(git ls-files '*.py')
+    - run: |
+        ffdl install -y
     - name: Test with pytest
       run: |
         coverage run -m pytest
