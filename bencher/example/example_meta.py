@@ -6,6 +6,7 @@ from enum import auto
 from strenum import StrEnum
 import random
 import holoviews as hv
+import math
 
 # class NegateConfig(StrEnum):
 
@@ -58,7 +59,9 @@ class BenchableObject(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
 
         # distance to origin
-        self.distance = np.linalg.norm(np.array([self.float1, self.float2, self.float3]))
+        self.distance = math.pow(
+            np.linalg.norm(np.array([self.float1, self.float2, self.float3])), 2
+        )
         self.sample_noise = NoiseDistribution.calculate_noise(
             self.noisy, self.noise_distribution, self.sigma
         )
@@ -88,7 +91,7 @@ class BenchMeta(bch.ParametrizedSweep):
 
     sample_over_time = bch.BoolSweep(default=False)
 
-    level = bch.IntSweep(default=2, units="level", bounds=(2, 4))
+    level = bch.IntSweep(default=2, units="level", bounds=(2, 5))
 
     # plots = bch.ResultHmap()
     # plots = bch.ResultContainer()
@@ -146,30 +149,30 @@ def example_meta(
 ) -> bch.Bench:
     bench = bch.Bench("bench_meta", BenchMeta(), report=report, run_cfg=run_cfg)
 
-    #     bench.plot_sweep(
-    #         title="Meta Bench",
-    #         description="""## All Combinations of Variable Sweeps and Resulting Plots
-    # This uses bencher to display all the combinatios of plots bencher is able to produce""",
-    #         input_vars=[
-    #             BenchMeta.param.float_vars,
-    #             BenchMeta.param.categorical_vars,
-    #             BenchMeta.param.sample_with_repeats,
-    #             # BenchMeta.param.sample_over_time,
-    #         ],
-    #         const_vars=[
-    #             # BenchMeta.param.float_vars.with_const(1),
-    #             # BenchMeta.param.sample_with_repeats.with_const(2),
-    #             # BenchMeta.param.categorical_vars.with_const(2),
-    #             # BenchMeta.param.sample_over_time.with_const(True),
-    #         ],
-    #     )
+    bench.plot_sweep(
+        title="Meta Bench",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots
+This uses bencher to display all the combinatios of plots bencher is able to produce""",
+        input_vars=[
+            BenchMeta.param.float_vars,
+            BenchMeta.param.categorical_vars,
+            BenchMeta.param.sample_with_repeats,
+            # BenchMeta.param.sample_over_time,
+        ],
+        const_vars=[
+            # BenchMeta.param.float_vars.with_const(1),
+            # BenchMeta.param.sample_with_repeats.with_const(2),
+            # BenchMeta.param.categorical_vars.with_const(2),
+            # BenchMeta.param.sample_over_time.with_const(True),
+        ],
+    )
 
     bench.plot_sweep(
-        title="Meta Bench Levels",
-        # description="""## All Combinations of Variable Sweeps and Resulting Plots
-        # This uses bencher to display all the combinatios of plots bencher is able to produce""",
-        input_vars=[
-            BenchMeta.param.level,
+        title="Using Levels to define sample density",
+        description="Sample levels let you perform parameter sweeps without having to decide how many samples to take when defining the class.  If you perform a sweep at level 2, then all the points are reused when sampling at level 3.  The higher levels reuse the points from lower levels to avoid having to recompute potentially expensive samples. The other advantage is that it enables a workflow where you can quickly see the results of the sweep at a low resolution to sense check the code, and then run it at a high level to get the fidelity you want.  When calling a sweep at a high level, you can publish the intermediate lower level results as the computiation continues so that you can track the progress of the computation and end the sweep early when you have sufficient resolution",
+        input_vars=[BenchMeta.param.float_vars.with_sample_values([1, 2]), BenchMeta.param.level],
+        const_vars=[
+            BenchMeta.param.categorical_vars.with_const(0),
         ],
     )
 
