@@ -85,7 +85,11 @@ class PanelResult(BenchResultBase):
 
     def da_to_container(self, da: xr.DataArray, result_var: ResultVar, container, **kwargs):
         val = self.zero_dim_da_to_val(da)
-        return container(val, styles={"background": "white"}, **kwargs)
+        if isinstance(result_var, ResultReference):
+            val = self.object_index[val].obj
+        if container is not None:
+            return container(val, styles={"background": "white"}, **kwargs)
+        return val
 
     def to_panes(self, result_var: ParametrizedSweep = None, **kwargs) -> Optional[pn.pane.panel]:
         return self.map_plot_panes(
@@ -94,27 +98,5 @@ class PanelResult(BenchResultBase):
             target_dimension=0,
             result_var=result_var,
             result_types=PANEL_TYPES,
-            # result_types=(ResultImage,  ResultString, ResultReference),
             **kwargs,
         )
-
-    def to_references(
-        self, result_var: ParametrizedSweep = None, container=None, **kwargs
-    ) -> Optional[pn.pane.PNG]:
-        return self.map_plot_panes(
-            partial(self.to_reference_single_da, container=container),
-            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),  # cannot sum references
-            target_dimension=0,
-            result_var=result_var,
-            result_types=(ResultReference),
-            **kwargs,
-        )
-
-    def to_reference_single_da(self, da: xr.DataArray, result_var: ResultVar, container=None):
-        val = self.zero_dim_da_to_val(da)
-        obj_item = self.object_index[val].obj
-        if container is not None:
-            return container(obj_item)
-        return obj_item
-
-   
