@@ -99,7 +99,7 @@ class BenchReport(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, embed=True, **kwargs)
         return base_path
 
-    def show(self, run_cfg: BenchRunCfg = None) -> Thread:
+    def show(self, run_cfg: BenchRunCfg = None) -> Thread:  # pragma: no cover
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -113,7 +113,7 @@ class BenchReport(BenchPlotServer):
 
     def publish(
         self, remote_callback: Callable, branch_name: str = None, debug: bool = False
-    ) -> str:
+    ) -> str:  # pragma: no cover
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         .. code-block:: python

@@ -338,9 +338,6 @@ class HoloviewResult(PanelResult):
             return pt
         return matches.to_panel()
 
-    # def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-    # return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))
-
     def to_heatmap_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
     ) -> hv.HeatMap:

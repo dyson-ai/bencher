@@ -102,7 +102,7 @@ def example_holosweep_tap(
 
 def example_holosweep_tap_slider(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+) -> bch.Bench:  # pragma: no cover
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
