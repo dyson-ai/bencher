@@ -4,7 +4,6 @@ from typing import Optional
 import xarray as xr
 
 from param import Parameter
-from functools import partial
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType

@@ -198,12 +198,6 @@ class BenchResultBase(OptunaResult):
             return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         return ""
 
-    # def to_title(self,result_var:ResultVar):
-    #     title= f"{result_vars[0].name}"
-    #     for iv in self.bench_cfg.input_vars:
-    #         title += f" vs {iv.name}"
-    #     return title
-
     def title_from_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
