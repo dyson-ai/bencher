@@ -16,20 +16,9 @@ from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.plotting.plt_cnt_cfg import PltCfgBase, PltCntCfg
 from bencher.variables.results import ResultVar
 
+from bencher.results.bench_result_base import EmptyContainer
 
 hv.extension("bokeh", "plotly")
-
-# width_heigh = {"width": 600, "height": 600, "tools": ["hover"]}
-
-# hv.opts.defaults(
-#     hv.opts.Curve(**width_heigh),
-#     hv.opts.Points(**width_heigh),
-#     hv.opts.Bars(**width_heigh),
-#     hv.opts.Scatter(**width_heigh),
-#     hv.opts.HeatMap(cmap="plasma", **width_heigh, colorbar=True),
-#     # hv.opts.Surface(**width_heigh),
-#     hv.opts.GridSpace(plot_size=400),
-# )
 
 
 class HoloviewResult(PanelResult):
@@ -116,24 +105,40 @@ class HoloviewResult(PanelResult):
             title = self.title_from_da(da_plot, result_var, **kwargs)
             time_widget_args = self.time_widget(title)
             return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
-
-            # title = self.title_from_da(da, result_var, **kwargs)
-            # time_widget_args = self.time_widget(title)
-            # return da.hvplot.bar(by=by, **kwargs).opts(title=self.to_plot_title())
-
         return match_res.to_panel(**kwargs)
 
-    def to_line_multi(self, result_var: ResultVar, **kwargs):
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_line")
-        if match_res.overall:
-            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
-            cb = partial(self.to_line_da, **kwargs)
-            return self.to_panes_multi_panel(
-                xr_dataset, result_var, plot_callback=cb, target_dimension=2
+    # def map_plots(
+    #     self,
+    #     plot_callback: callable,
+    #     result_var: ParametrizedSweep = None,
+    #     row: EmptyContainer = None,
+
+    def map_plot_panes(
+        self,
+        plot_callback: callable,
+        hv_dataset: hv.Dataset,
+        target_dimension: int,
+        result_var: ResultVar = None,
+        **kwargs,
+    ):
+        cb = partial(plot_callback, **kwargs)
+        row = EmptyContainer(pn.Row())
+        for rv in self.get_results_var_list(result_var):
+            row.append(
+                self.to_panes_multi_panel(
+                    hv_dataset, rv, plot_callback=cb, target_dimension=target_dimension
+                )
             )
-        return match_res.to_panel()
+        return row.get()
+
+    def to_line_multi(self, result_var: ResultVar = None, **kwargs):
+        return self.map_plot_panes(
+            self.to_line_da,
+            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+            target_dimension=2,
+            result_var=result_var,
+            **kwargs,
+        )
 
     def to_line_da(self, da, result_var: ResultVar, **kwargs):
         match_res = PlotFilter(

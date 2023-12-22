@@ -26,6 +26,20 @@ class ReduceType(Enum):
     NONE = auto()  # don't reduce
 
 
+class EmptyContainer:
+    """A wrapper for list like containers that only appends if the item is not None"""
+
+    def __init__(self, pane) -> None:
+        self.pane = pane
+
+    def append(self, child):
+        if child is not None:
+            self.pane.append(child)
+
+    def get(self):
+        return self.pane if len(self.pane) > 0 else None
+
+
 class BenchResultBase(OptunaResult):
     def to_dataarray(self, result_var: ResultVar, squeeze: bool = True) -> xr.DataArray:
         var = result_var.name
@@ -200,16 +214,17 @@ class BenchResultBase(OptunaResult):
         return self.bench_cfg.result_vars if result_var is None else [result_var]
 
     def map_plots(
-        self, plot_callback: callable, result_var: ParametrizedSweep = None, row: pn.Row = None
+        self,
+        plot_callback: callable,
+        result_var: ParametrizedSweep = None,
+        row: EmptyContainer = None,
     ) -> Optional[pn.Row]:
         if row is None:
-            row = pn.Row(name=self.to_plot_title())
+            row = EmptyContainer(pn.Row(name=self.to_plot_title()))
         for rv in self.get_results_var_list(result_var):
             print("RV NAME", rv.name)
-            plot_result = plot_callback(rv)
-            if plot_result is not None:
-                row.append(plot_result)
-        return row if len(row) > 0 else None
+            row.append(plot_callback(rv))
+        return row.get()
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self):

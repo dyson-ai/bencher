@@ -39,7 +39,7 @@ class PanelResult(BenchResultBase):
                 vid_p.append(vid)
                 return vid
 
-            plot_callback = partial(self.da_to_container, container=to_video_da)
+            plot_callback = partial(self.da_to_container, container=partial(to_video_da, **kwargs))
 
             panes = self.to_panes_multi_panel(
                 xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
@@ -81,32 +81,31 @@ class PanelResult(BenchResultBase):
         return self.map_plots(self.to_image_multi)
 
     def to_image_multi(
-        self, result_var: ParametrizedSweep, container=pn.pane.PNG
+        self, result_var: ParametrizedSweep, container=pn.pane.PNG,**kwargs
     ) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, ResultImage):
             xr_dataset = self.to_hv_dataset()
-            plot_callback = partial(self.da_to_container, container=container)
+            plot_callback = partial(self.da_to_container, container=container,**kwargs)
             return self.to_panes_multi_panel(
                 xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
             )
         return None
 
-    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset, result_var: ResultVar):
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
         # todo this is really horrible, need to improve
         if isinstance(da_ds, xr.Dataset):
-            dim = [d for d in da_ds.keys()][0]
+            # dim = [d for d in da_ds.keys()][0]
+            dim = list(da_ds.keys())[0]
             da = da_ds[dim]
         else:
             da = da_ds
         for k in da.coords.keys():
             dim = k
             break
-        # print(dim,result_var.name)
-        # exit()
         return da.expand_dims(dim).values[0]
 
     def da_to_container(self, da: xr.DataArray, result_var: ResultVar, container):
-        val = self.zero_dim_da_to_val(da, result_var)
+        val = self.zero_dim_da_to_val(da)
         return container(val, styles={"background": "white"})
 
     def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:
@@ -127,9 +126,7 @@ class PanelResult(BenchResultBase):
             xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
         )
 
-    def to_reference_single_da(
-        self, da: xr.DataArray, result_var: ResultVar = None, container=None
-    ):
+    def to_reference_single_da(self, da: xr.DataArray,result_var:ResultVar, container=None):
         val = self.zero_dim_da_to_val(da)
         obj_item = self.object_index[val].obj
         if container is not None:
@@ -174,7 +171,7 @@ class PanelResult(BenchResultBase):
         ##todo remove recursion
         num_dims = len(ds.sizes)
         # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
-        dims = [d for d in ds.sizes]
+        dims = list(d for d in ds.sizes)
 
         time_dim_delta = 0
         if self.bench_cfg.over_time:

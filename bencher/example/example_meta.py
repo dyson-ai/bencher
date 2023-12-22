@@ -122,15 +122,18 @@ class BenchMeta(bch.ParametrizedSweep):
         res = bench.plot_sweep(
             "test",
             input_vars=input_vars,
-            # result_vars=[BenchableObject.param.distance],
+            result_vars=[BenchableObject.param.distance],
             # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
             # result_vars=[ BenchableObject.param.sample_noise],
-            result_vars=[BenchableObject.param.result_hmap],
+            # result_vars=[BenchableObject.param.result_hmap],
             plot=False,
         )
 
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto(width=500, height=300)
+
+        # self.plots.obj = res.to_line_multi(width=500, height=300)
+
         return super().__call__()
 
 
@@ -144,26 +147,26 @@ def example_meta(
         description="""## All Combinations of Variable Sweeps and Resulting Plots  
 This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
-            BenchMeta.param.float_vars,
+            # BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            BenchMeta.param.sample_with_repeats,
+            # BenchMeta.param.sample_with_repeats,
             # BenchMeta.param.sample_over_time,
         ],
-        # const_vars=[
-        # BenchMeta.param.float_vars.with_const(1),
+        const_vars=[
+        BenchMeta.param.float_vars.with_const(1),
         # BenchMeta.param.sample_with_repeats.with_const(2),
         # BenchMeta.param.categorical_vars.with_const(2),
         # BenchMeta.param.sample_over_time.with_const(True),
-        # ],
+        ],
         plot=False,
     )
 
     bench.report.append(res.to_sweep_summary())
-    # bench.report.append(res.to_references())
+    bench.report.append(res.to_references())
 
     # bench.report.append(res.to_holomap())
 
-    bench.report.append(res.to_panes())
+    # bench.report.append(res.to_panes())
 
     return bench
 
