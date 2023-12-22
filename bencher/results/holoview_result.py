@@ -113,6 +113,7 @@ class HoloviewResult(PanelResult):
                 hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
                 target_dimension=2,
                 result_var=result_var,
+                result_types=(ResultVar),
                 **kwargs,
             )
         return match_res.to_panel(**kwargs)

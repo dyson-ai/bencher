@@ -71,16 +71,6 @@ class PanelResult(BenchResultBase):
             return pn.Column(buttons, panes)
         return None
 
-    # def to_image(self, result_var: ParametrizedSweep = None, **kwargs) -> Optional[pn.pane.PNG]:
-    #     return self.map_plot_panes(
-    #         partial(self.da_to_container, container=pn.pane.PNG, **kwargs),
-    #         hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-    #         target_dimension=0,
-    #         result_var=result_var,
-    #         result_types=(ResultImage),
-    #         **kwargs,
-    #     )
-
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
         # todo this is really horrible, need to improve
         if isinstance(da_ds, xr.Dataset):
@@ -127,20 +117,4 @@ class PanelResult(BenchResultBase):
             return container(obj_item)
         return obj_item
 
-    # def to_panes(self, container=pn.pane.panel, **kwargs) -> Optional[pn.pane.panel]:
-    #     matches_res = PlotFilter(
-    #         float_range=VarRange(0, None),
-    #         cat_range=VarRange(0, None),
-    #         panel_range=VarRange(1, None),
-    #     ).matches_result(self.plt_cnt_cfg, "to_panes")
-    #     if matches_res.overall:
-    #         return self.map_plots(partial(self.to_panes_single, container=container, **kwargs))
-    #     return matches_res.to_panel()
-
-    # def to_panes_single(
-    #     self, result_var: ResultVar, container=pn.pane.panel, **kwargs
-    # ) -> Optional[pn.pane.panel]:
-    #     xr_dataarray = self.to_dataarray(result_var)
-    #     return self._to_panes(
-    #         xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
-    #     )
+   
