@@ -3,7 +3,6 @@ from functools import partial
 import panel as pn
 import xarray as xr
 import holoviews as hv
-from bencher.bench_cfg import BenchCfg
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
@@ -212,5 +211,3 @@ class PanelResult(BenchResultBase):
             return plot_callback(da=ds, result_var=result_var, **kwargs)
 
         return outer_container
-
-   

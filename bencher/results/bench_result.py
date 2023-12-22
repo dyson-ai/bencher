@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import List
 import panel as pn
-from functools import partial
 
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
@@ -29,7 +28,6 @@ class BenchResult(PlotlyResult, HoloviewResult):
             HoloviewResult.to_curve,
             HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
-
             # PlotlyResult.to_volume_single,
             # self.to_panes,
             # self.to_surface_hv,
@@ -63,7 +61,6 @@ class BenchResult(PlotlyResult, HoloviewResult):
             # row.append(partial(plot_callback, self, **kwargs))
 
             row.append(plot_callback(self, **kwargs))
-
 
             # row.append(self.map_plots(partial(plot_callback, self, **kwargs)))
 

@@ -240,8 +240,7 @@ class BenchResultBase(OptunaResult):
             hv_dataset = self.to_hv_dataset()
         row = EmptyContainer(pn.Row())
         for rv in self.get_results_var_list(result_var):
-            if result_types is None or isinstance(rv,result_types):
-
+            if result_types is None or isinstance(rv, result_types):
                 row.append(
                     self.to_panes_multi_panel(
                         hv_dataset,
