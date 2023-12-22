@@ -28,6 +28,7 @@ dependencies = [
   "str2bool>=1.1,<=1.1",
   "mortgage>=1.0.5,<=1.0.5",
   "scoop>=0.7.0,<=0.7.2.0",
+  "ffmpeg-downloader>=0.3.0,<=0.3.0",
 ]
 
 [project.optional-dependencies]
