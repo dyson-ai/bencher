@@ -1,12 +1,10 @@
 from __future__ import annotations
-from typing import Callable, List
 import param
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.results import PANEL_TYPES
 
 from bencher.variables.inputs import IntSweep, FloatSweep, BoolSweep, EnumSweep, StringSweep
 from bencher.variables.time import TimeSnapshot
-
 
 
 class PltCntCfg(param.Parameterized):

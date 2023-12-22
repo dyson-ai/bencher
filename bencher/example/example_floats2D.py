@@ -63,6 +63,10 @@ def example_floats2D(
         """,
     )
 
+    res = bench.get_result()
+
+    bench.report.append(res.to_surface_hv())
+
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfg.param.theta,

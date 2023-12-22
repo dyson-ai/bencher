@@ -84,5 +84,3 @@ class BenchResult(PlotlyResult, HoloviewResult):
         plot_cols.append(self.to_auto(**kwargs))
         plot_cols.append(self.bench_cfg.to_post_description())
         return plot_cols
-
-     

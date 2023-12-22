@@ -1,6 +1,5 @@
 import logging
 from typing import List, Any, Tuple, Optional
-from collections.abc import Iterable
 from enum import Enum, auto
 import xarray as xr
 import holoviews as hv
@@ -331,8 +330,8 @@ class BenchResultBase(OptunaResult):
         return outer_container
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
-    def to_sweep_summary(self):
-        return self.bench_cfg.to_sweep_summary()
+    def to_sweep_summary(self,**kwargs):
+        return self.bench_cfg.to_sweep_summary(**kwargs)
 
     def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
         return self.bench_cfg.to_title(panel_name)
