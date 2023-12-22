@@ -21,7 +21,7 @@ class PanelResult(BenchResultBase):
         if isinstance(result_var, (ResultVideo, ResultContainer)):
             vid_p = []
 
-            xr_dataset = self.to_hv_dataset()
+            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
 
             def to_video_da(da, **kwargs):
                 print("to video da", da)

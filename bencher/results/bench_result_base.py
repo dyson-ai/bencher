@@ -79,7 +79,19 @@ class BenchResultBase(OptunaResult):
         ds = self.ds if result_var is None else self.ds[result_var.name]
         match (reduce):
             case ReduceType.REDUCE:
-                return hv.Dataset(ds, kdims=kdims, vdims=vdims).reduce(["repeat"], np.mean, np.std)
+                # if result_var
+                vdims = []
+                non_sum = []
+                for r in self.bench_cfg.result_vars:
+                    if isinstance(r, ResultVar):
+                        vdims.append(r.name)
+                    else:
+                        non_sum.append(r.name)
+
+                ds_num = ds.drop_vars(non_sum)
+                return hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
+                    ["repeat"], np.mean, np.std
+                )
             case ReduceType.SQUEEZE:
                 return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
             case _:

@@ -88,6 +88,8 @@ class BenchMeta(bch.ParametrizedSweep):
 
     sample_over_time = bch.BoolSweep(default=False)
 
+    level = bch.IntSweep(default=2, units="level", bounds=(2, 4))
+
     # plots = bch.ResultHmap()
     # plots = bch.ResultContainer()
     plots = bch.ResultReference(units="int")
@@ -96,7 +98,7 @@ class BenchMeta(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
 
         run_cfg = bch.BenchRunCfg()
-        run_cfg.level = 2
+        run_cfg.level = self.level
         run_cfg.repeats = self.sample_with_repeats
         run_cfg.over_time = self.sample_over_time
 
@@ -144,21 +146,30 @@ def example_meta(
 ) -> bch.Bench:
     bench = bch.Bench("bench_meta", BenchMeta(), report=report, run_cfg=run_cfg)
 
+    #     bench.plot_sweep(
+    #         title="Meta Bench",
+    #         description="""## All Combinations of Variable Sweeps and Resulting Plots
+    # This uses bencher to display all the combinatios of plots bencher is able to produce""",
+    #         input_vars=[
+    #             BenchMeta.param.float_vars,
+    #             BenchMeta.param.categorical_vars,
+    #             BenchMeta.param.sample_with_repeats,
+    #             # BenchMeta.param.sample_over_time,
+    #         ],
+    #         const_vars=[
+    #             # BenchMeta.param.float_vars.with_const(1),
+    #             # BenchMeta.param.sample_with_repeats.with_const(2),
+    #             # BenchMeta.param.categorical_vars.with_const(2),
+    #             # BenchMeta.param.sample_over_time.with_const(True),
+    #         ],
+    #     )
+
     bench.plot_sweep(
-        title="Meta Bench",
-        description="""## All Combinations of Variable Sweeps and Resulting Plots  
-This uses bencher to display all the combinatios of plots bencher is able to produce""",
+        title="Meta Bench Levels",
+        # description="""## All Combinations of Variable Sweeps and Resulting Plots
+        # This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
-            BenchMeta.param.float_vars,
-            BenchMeta.param.categorical_vars,
-            BenchMeta.param.sample_with_repeats,
-            # BenchMeta.param.sample_over_time,
-        ],
-        const_vars=[
-            # BenchMeta.param.float_vars.with_const(1),
-            # BenchMeta.param.sample_with_repeats.with_const(2),
-            # BenchMeta.param.categorical_vars.with_const(2),
-            # BenchMeta.param.sample_over_time.with_const(True),
+            BenchMeta.param.level,
         ],
     )
 

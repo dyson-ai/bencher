@@ -96,6 +96,7 @@ def example_video(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
+    run_cfg_ex.repeats=2
     # run_cfg.only_hash_tag = True
     # run_cfg.use_sample_cache = True
 

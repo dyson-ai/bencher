@@ -90,6 +90,7 @@ class HoloviewResult(PanelResult):
                 hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
                 target_dimension=2,
                 result_var=result_var,
+                result_types=(ResultVar),
                 **kwargs,
             )
         return match_res.to_panel(**kwargs)
@@ -133,19 +134,21 @@ class HoloviewResult(PanelResult):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve")
-
+        # print(result_var)
         if match_res.overall:
             return self.map_plot_panes(
                 self.to_curve_da,
                 hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
                 target_dimension=2,
                 result_var=result_var,
+                result_types=(ResultVar),
                 **kwargs,
             )
         return match_res.to_panel(**kwargs)
 
     def to_curve_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs) -> Optional[hv.Curve]:
         ds = hv.Dataset(da)
+        # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_da(da, result_var, **kwargs)
         pt = ds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= ds.to(hv.Spread).opts(alpha=0.2)
@@ -165,6 +168,7 @@ class HoloviewResult(PanelResult):
                 hv_dataset=self.to_hv_dataset(),
                 target_dimension=2,
                 result_var=result_var,
+                result_types=(ResultVar),
                 **kwargs,
             )
         return matches_res.to_panel()
@@ -313,9 +317,7 @@ class HoloviewResult(PanelResult):
     #     return matches.to_panel()
 
     def to_scatter_jitter(self, result_var: ResultVar = None, **kwargs) -> List[hv.Scatter]:
-        return self.overlay_plots(
-            partial(self.to_scatter_jitter_single, result_var=result_var, **kwargs)
-        )
+        return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     def to_scatter_jitter_single(self, result_var: ResultVar, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
