@@ -6,6 +6,7 @@ from functools import partial
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
+from bencher.results.bench_result_base import EmptyContainer
 
 # from bencher.results.heatmap_result import HeatMapResult
 
@@ -23,19 +24,20 @@ class BenchResult(PlotlyResult, HoloviewResult):
     @staticmethod
     def default_plot_callbacks():
         return [
-            HoloviewResult.to_bar_multi,
-            HoloviewResult.to_scatter_jitter_single,
-            HoloviewResult.to_curve_multi,
-            HoloviewResult.to_line_multi,
-            HoloviewResult.to_heatmap_multi,
-            PlotlyResult.to_volume_single,
+            HoloviewResult.to_bar,
+            HoloviewResult.to_scatter_jitter,
+            HoloviewResult.to_curve,
+            HoloviewResult.to_line,
+            HoloviewResult.to_heatmap,
+
+            # PlotlyResult.to_volume_single,
             # self.to_panes,
             # self.to_surface_hv,
             # HoloviewResult.to_bar,
             # HoloviewResult.to_bar_hvplot,
             # HoloviewResult.to_holomap,
-            PanelResult.to_image_multi,
-            PanelResult.to_video_multi,
+            PanelResult.to_image,
+            PanelResult.to_video,
         ]
 
     @staticmethod
@@ -52,25 +54,25 @@ class BenchResult(PlotlyResult, HoloviewResult):
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
 
-        row = pn.Row()
+        row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:
             # if self.plt_cnt_cfg.print_debug:
             print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
-            cb_with_self = partial(plot_callback, self, **kwargs)
 
-            # self.map
-            cb_result = self.map_plots(cb_with_self)
+            # row.append(partial(plot_callback, self, **kwargs))
 
-            if cb_result is not None:
-                row.append(cb_result)
+            row.append(plot_callback(self, **kwargs))
+
+
+            # row.append(self.map_plots(partial(plot_callback, self, **kwargs)))
 
         self.plt_cnt_cfg.print_debug = False
-        if len(row) == 0:
+        if len(row.pane) == 0:
             row.append(
                 pn.pane.Markdown("No Plotters are able to represent these results", **kwargs)
             )
-        return row
+        return row.pane
 
     def to_auto_da(self):
         pass

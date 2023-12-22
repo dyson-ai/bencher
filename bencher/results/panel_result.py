@@ -3,15 +3,19 @@ from functools import partial
 import panel as pn
 import xarray as xr
 import holoviews as hv
+from bencher.bench_cfg import BenchCfg
 from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
-from bencher.results.bench_result_base import BenchResultBase
+from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import ResultImage, ResultVideo, ResultContainer
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class PanelResult(BenchResultBase):
+    # def __init__(self, bench_cfg: BenchCfg) -> None:
+    # super().__init__(bench_cfg)
+
     def to_video(self, **kwargs):
         return self.map_plots(partial(self.to_video_multi, **kwargs))
 
@@ -25,6 +29,18 @@ class PanelResult(BenchResultBase):
     #             xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
     #         )
     #     return None
+
+    # def to_video(
+    #     self, result_var: ParametrizedSweep = None, **kwargs
+    # ) -> Optional[pn.pane.PNG]:
+    #     return self.map_plot_panes(
+    #         partial(self.da_to_container, container=pn.pane.PNG, **kwargs),
+    #         hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+    #         target_dimension=0,
+    #         result_var=result_var,
+    #         result_types=(ResultImage),
+    #         **kwargs,
+    #     )
 
     def to_video_multi(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, (ResultVideo, ResultContainer)):
@@ -77,19 +93,15 @@ class PanelResult(BenchResultBase):
             return pn.Column(buttons, panes)
         return None
 
-    def to_image(self) -> pn.Row():
-        return self.map_plots(self.to_image_multi)
-
-    def to_image_multi(
-        self, result_var: ParametrizedSweep, container=pn.pane.PNG,**kwargs
-    ) -> Optional[pn.pane.PNG]:
-        if isinstance(result_var, ResultImage):
-            xr_dataset = self.to_hv_dataset()
-            plot_callback = partial(self.da_to_container, container=container,**kwargs)
-            return self.to_panes_multi_panel(
-                xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
-            )
-        return None
+    def to_image(self, result_var: ParametrizedSweep = None, **kwargs) -> Optional[pn.pane.PNG]:
+        return self.map_plot_panes(
+            partial(self.da_to_container, container=pn.pane.PNG, **kwargs),
+            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+            target_dimension=0,
+            result_var=result_var,
+            result_types=(ResultImage),
+            **kwargs,
+        )
 
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
         # todo this is really horrible, need to improve
@@ -126,7 +138,7 @@ class PanelResult(BenchResultBase):
             xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
         )
 
-    def to_reference_single_da(self, da: xr.DataArray,result_var:ResultVar, container=None):
+    def to_reference_single_da(self, da: xr.DataArray, result_var: ResultVar, container=None):
         val = self.zero_dim_da_to_val(da)
         obj_item = self.object_index[val].obj
         if container is not None:

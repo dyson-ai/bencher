@@ -41,7 +41,7 @@ class BenchableObject(bch.ParametrizedSweep):
 
     # categorial variables
     noisy = bch.BoolSweep(
-        default=True, doc="Optionally add random noise to the output of the function"
+        default=False, doc="Optionally add random noise to the output of the function"
     )
     noise_distribution = bch.EnumSweep(NoiseDistribution, doc=NoiseDistribution.__doc__)
 
@@ -79,7 +79,7 @@ class BenchMeta(bch.ParametrizedSweep):
     """This class uses bencher to display the multidimensional types bencher can represent"""
 
     float_vars = bch.IntSweep(
-        default=1, bounds=(0, 1), doc="The number of floating point variables that are swept"
+        default=1, bounds=(0, 2), doc="The number of floating point variables that are swept"
     )
     categorical_vars = bch.IntSweep(
         default=1, bounds=(0, 3), doc="The number of categorical variables that are swept"
@@ -132,6 +132,8 @@ class BenchMeta(bch.ParametrizedSweep):
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto(width=500, height=300)
 
+        # self.plots.obj = res.to_heatmap_multi()
+
         # self.plots.obj = res.to_line_multi(width=500, height=300)
 
         return super().__call__()
@@ -147,13 +149,13 @@ def example_meta(
         description="""## All Combinations of Variable Sweeps and Resulting Plots  
 This uses bencher to display all the combinatios of plots bencher is able to produce""",
         input_vars=[
-            # BenchMeta.param.float_vars,
+            BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            # BenchMeta.param.sample_with_repeats,
+            BenchMeta.param.sample_with_repeats,
             # BenchMeta.param.sample_over_time,
         ],
         const_vars=[
-        BenchMeta.param.float_vars.with_const(1),
+        # BenchMeta.param.float_vars.with_const(1),
         # BenchMeta.param.sample_with_repeats.with_const(2),
         # BenchMeta.param.categorical_vars.with_const(2),
         # BenchMeta.param.sample_over_time.with_const(True),

@@ -5,6 +5,7 @@ from enum import Enum, auto
 import xarray as xr
 import holoviews as hv
 import numpy as np
+from functools import partial
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
@@ -224,6 +225,31 @@ class BenchResultBase(OptunaResult):
         for rv in self.get_results_var_list(result_var):
             print("RV NAME", rv.name)
             row.append(plot_callback(rv))
+        return row.get()
+
+    def map_plot_panes(
+        self,
+        plot_callback: callable,
+        hv_dataset: hv.Dataset = None,
+        target_dimension: int = 2,
+        result_var: ResultVar = None,
+        result_types=None,
+        **kwargs,
+    ):
+        if hv_dataset is None:
+            hv_dataset = self.to_hv_dataset()
+        row = EmptyContainer(pn.Row())
+        for rv in self.get_results_var_list(result_var):
+            if result_types is None or isinstance(rv,result_types):
+
+                row.append(
+                    self.to_panes_multi_panel(
+                        hv_dataset,
+                        rv,
+                        plot_callback=partial(plot_callback, **kwargs),
+                        target_dimension=target_dimension,
+                    )
+                )
         return row.get()
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.

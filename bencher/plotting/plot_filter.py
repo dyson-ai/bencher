@@ -111,7 +111,7 @@ class PlotMatchesResult:
         self.plt_cnt_cfg = plt_cnt_cfg
 
         if self.plt_cnt_cfg.print_debug:
-            print(f"overall: {self.overall}")
+            print(f"checking {plot_name} result: {self.overall}")
             if not self.overall:
                 print(self.matches_info)
 

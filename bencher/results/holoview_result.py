@@ -81,149 +81,105 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar_multi(self, result_var: ResultVar, **kwargs):
+    def to_bar(self, result_var: ResultVar = None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_bar_da")
         if match_res.overall:
-            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
-            cb = partial(self.to_bar_da, **kwargs)
-            return self.to_panes_multi_panel(
-                xr_dataset, result_var, plot_callback=cb, target_dimension=2
+            return self.map_plot_panes(
+                self.to_bar_da,
+                hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+                target_dimension=2,
+                result_var=result_var,
+                **kwargs,
             )
-        return match_res.to_panel()
-
-    def to_bar_da(self, da: xr.DataArray, result_var: ResultVar = None, **kwargs):
-        match_res = PlotFilter(
-            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_bar_da")
-        if match_res.overall:
-            by = None
-            if self.plt_cnt_cfg.cat_cnt >= 2:
-                by = self.plt_cnt_cfg.cat_vars[1].name
-            da_plot = da[result_var.name]
-            title = self.title_from_da(da_plot, result_var, **kwargs)
-            time_widget_args = self.time_widget(title)
-            return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
         return match_res.to_panel(**kwargs)
 
-    # def map_plots(
-    #     self,
-    #     plot_callback: callable,
-    #     result_var: ParametrizedSweep = None,
-    #     row: EmptyContainer = None,
+    def to_bar_da(self, da: xr.DataArray, result_var: ResultVar = None, **kwargs):
+        by = None
+        if self.plt_cnt_cfg.cat_cnt >= 2:
+            by = self.plt_cnt_cfg.cat_vars[1].name
+        da_plot = da[result_var.name]
+        title = self.title_from_da(da_plot, result_var, **kwargs)
+        time_widget_args = self.time_widget(title)
+        return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
-    def map_plot_panes(
-        self,
-        plot_callback: callable,
-        hv_dataset: hv.Dataset,
-        target_dimension: int,
-        result_var: ResultVar = None,
-        **kwargs,
-    ):
-        cb = partial(plot_callback, **kwargs)
-        row = EmptyContainer(pn.Row())
-        for rv in self.get_results_var_list(result_var):
-            row.append(
-                self.to_panes_multi_panel(
-                    hv_dataset, rv, plot_callback=cb, target_dimension=target_dimension
-                )
-            )
-        return row.get()
-
-    def to_line_multi(self, result_var: ResultVar = None, **kwargs):
-        return self.map_plot_panes(
-            self.to_line_da,
-            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-            target_dimension=2,
-            result_var=result_var,
-            **kwargs,
-        )
-
-    def to_line_da(self, da, result_var: ResultVar, **kwargs):
+    def to_line(self, result_var: ResultVar = None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
         if match_res.overall:
-            x = self.plt_cnt_cfg.float_vars[0].name
-            # y = self.plt_cnt_cfg.result_vars[0].name
-            by = None
-            if self.plt_cnt_cfg.cat_cnt >= 1:
-                by = self.plt_cnt_cfg.cat_vars[0].name
-            da_plot = da[result_var.name]
-            title = self.title_from_da(da_plot, result_var, **kwargs)
-            time_widget_args = self.time_widget(title)
-            return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
-
+            return self.map_plot_panes(
+                self.to_line_da,
+                hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+                target_dimension=2,
+                result_var=result_var,
+                **kwargs,
+            )
         return match_res.to_panel(**kwargs)
 
-    def to_curve_multi(self, result_var: ResultVar, **kwargs):
+    def to_line_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+        x = self.plt_cnt_cfg.float_vars[0].name
+        # y = self.plt_cnt_cfg.result_vars[0].name
+        by = None
+        if self.plt_cnt_cfg.cat_cnt >= 1:
+            by = self.plt_cnt_cfg.cat_vars[0].name
+        da_plot = da[result_var.name]
+        title = self.title_from_da(da_plot, result_var, **kwargs)
+        time_widget_args = self.time_widget(title)
+        return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
+
+    def to_curve(self, result_var: ResultVar = None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve")
 
         if match_res.overall:
-            xr_dataset = self.to_hv_dataset(ReduceType.REDUCE, result_var)
-            # xr_dataset = xr_dataset[[result_var.name,f"{result_var.name_std}"]]
-            cb = partial(self.to_curve_da, **kwargs)
-            return self.to_panes_multi_panel(
-                xr_dataset, result_var, plot_callback=cb, target_dimension=2
+            return self.map_plot_panes(
+                self.to_curve_da,
+                hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
+                target_dimension=2,
+                result_var=result_var,
+                **kwargs,
             )
-        return match_res.to_panel()
-
-    def to_curve_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs) -> Optional[hv.Curve]:
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
-        ).matches_result(self.plt_cnt_cfg, "to_curve_da")
-        if match_res.overall:
-            ds = hv.Dataset(da)
-            title = self.title_from_da(da, result_var, **kwargs)
-            pt = ds.to(hv.Curve).opts(title=title, **kwargs)
-            pt *= ds.to(hv.Spread).opts(alpha=0.2)
-            if len(da.sizes) > 1:
-                return pt.opts(legend_position="right").overlay()
-            return pt.opts(legend_position="right")
-
         return match_res.to_panel(**kwargs)
 
-    def to_heatmap_multi_map(self, **kwargs):
-        return self.map_plots(partial(self.to_heatmap_multi, **kwargs))
+    def to_curve_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs) -> Optional[hv.Curve]:
+        ds = hv.Dataset(da)
+        title = self.title_from_da(da, result_var, **kwargs)
+        pt = ds.to(hv.Curve).opts(title=title, **kwargs)
+        pt *= ds.to(hv.Spread).opts(alpha=0.2)
+        if len(da.sizes) > 1:
+            return pt.opts(legend_position="right").overlay()
+        return pt.opts(legend_position="right")
 
-    def to_heatmap_multi(self, result_var: ResultVar, **kwargs):
-        matches_res = PlotFilter(
-            float_range=VarRange(2, None),
-            cat_range=VarRange(0, None),
-            input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_heatmap_multi")
-        if matches_res.overall:
-            xr_dataset = self.to_hv_dataset()
-            cb = partial(self.to_heatmap_da, **kwargs)
-            return self.to_panes_multi_panel(
-                xr_dataset, result_var, plot_callback=cb, target_dimension=2
-            )
-        return matches_res.to_panel()
-
-    def to_heatmap_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+    def to_heatmap(self, result_var: ResultVar = None, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
         ).matches_result(self.plt_cnt_cfg, "to_heatmap")
-        if matches_res and len(da.dims) >= 2:
+        if matches_res.overall:
+            return self.map_plot_panes(
+                self.to_heatmap_da,
+                hv_dataset=self.to_hv_dataset(),
+                target_dimension=2,
+                result_var=result_var,
+                **kwargs,
+            )
+        return matches_res.to_panel()
+
+    def to_heatmap_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+        if len(da.dims) >= 2:
             # dims = [d for d in da.sizes]
             # x = dims[0]
             # y = dims[1]
             x = self.plt_cnt_cfg.float_vars[0].name
             y = self.plt_cnt_cfg.float_vars[1].name
-            name = result_var.name
-            C = name
-            title = f"Heatmap of {name}"
+            C = result_var.name
+            title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
             return da.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
-        return matches_res.to_panel()
-
-    def to_curve(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> List[hv.Curve]:
-        return self.overlay_plots(partial(self.to_curve_single, reduce=reduce, **kwargs))
 
     def to_curve_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
@@ -267,11 +223,6 @@ class HoloviewResult(PanelResult):
                 title=self.to_plot_title()
             )
         return match_res.to_panel(**kwargs)
-
-    # def to_scatter_jitter_map(self,)
-
-    def to_scatter_jitter(self, result_var: ResultVar, **kwargs) -> List[hv.Scatter]:
-        return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     # def to_scatter_jitter(self, **kwargs) -> Optional[hv.Scatter]:
     #     matches = PlotFilter(
@@ -358,6 +309,9 @@ class HoloviewResult(PanelResult):
     #         return pt
     #     return matches.to_panel()
 
+    def to_scatter_jitter(self, result_var: ResultVar=None, **kwargs) -> List[hv.Scatter]:
+        return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
+
     def to_scatter_jitter_single(self, result_var: ResultVar, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
             float_range=VarRange(0, 0),
@@ -375,8 +329,8 @@ class HoloviewResult(PanelResult):
             return pt
         return matches.to_panel()
 
-    def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))
+    # def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
+    # return self.map_plots(partial(self.to_heatmap_single, reduce=reduce, **kwargs))
 
     def to_heatmap_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
