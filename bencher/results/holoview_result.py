@@ -316,7 +316,9 @@ class HoloviewResult(PanelResult):
     #         return pt
     #     return matches.to_panel()
 
-    def to_scatter_jitter(self, result_var: ResultVar = None, **kwargs) -> List[hv.Scatter]:
+    def to_scatter_jitter(
+        self, result_var: ResultVar = None, **kwargs  # pylint: disable=unused-argument
+    ) -> List[hv.Scatter]:
         return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
     def to_scatter_jitter_single(self, result_var: ResultVar, **kwargs) -> Optional[hv.Scatter]:
