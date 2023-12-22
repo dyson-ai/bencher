@@ -80,7 +80,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
             pn.pane: A panel containing plot results
         """
         plot_cols = pn.Column()
-        plot_cols.append(self.bench_cfg.to_sweep_summary(name="Plots View"))
+        plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))
         plot_cols.append(self.bench_cfg.to_post_description())
         return plot_cols
