@@ -1,5 +1,5 @@
 import unittest
-from bencher.plotting.plot_filter import VarRange
+from bencher.plotting.plot_filter import VarRange,PlotFilter,PltCntCfg
 from hypothesis import given, strategies as st
 
 
@@ -39,27 +39,27 @@ class TestVarRange(unittest.TestCase):
         self.assertTrue(var_range.matches(val))
 
 
-# class TestPlotFilter(unittest.TestCase):
-#     @given(st.integers(min_value=0), st.integers(min_value=0))
-#     def test_matches_none(self, float_cnt, cat_cnt) -> None:
-#         """The default plot filter should not match any inputs"""
+class TestPlotFilter(unittest.TestCase):
+    @given(st.integers(min_value=0), st.integers(min_value=0))
+    def test_matches_none(self, float_cnt, cat_cnt) -> None:
+        """The default plot filter should not match any inputs"""
 
-#         null_case = PlotFilter()
-#         self.assertFalse(null_case.matches(PltCntCfg(float_cnt=float_cnt, cat_cnt=cat_cnt)))
+        null_case = PlotFilter()
+        self.assertFalse(null_case.matches_result(PltCntCfg(float_cnt=float_cnt, cat_cnt=cat_cnt)).overall)
 
-#     def test_matches_float(self) -> None:
-#         # match only float from 0 to 1
-#         pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
+    def test_matches_float(self) -> None:
+        # match only float from 0 to 1
+        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
 
-#         self.assertTrue(pf.matches(PltCntCfg(float_cnt=0)))
-#         self.assertTrue(pf.matches(PltCntCfg(float_cnt=1)))
-#         self.assertFalse(pf.matches(PltCntCfg(float_cnt=2)))
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=0)).overall)
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=1)).overall)
+        self.assertFalse(pf.matches_result(PltCntCfg(float_cnt=2)).overall)
 
-#     @given(st.integers(min_value=0))
-#     def test_matches_float_cat(self, cat_cnt) -> None:
-#         # match any cat count but only float from 0 to 1
-#         pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
+    @given(st.integers(min_value=0))
+    def test_matches_float_cat(self, cat_cnt) -> None:
+        # match any cat count but only float from 0 to 1
+        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
 
-#         self.assertTrue(pf.matches(PltCntCfg(float_cnt=0, cat_cnt=cat_cnt)))
-#         self.assertTrue(pf.matches(PltCntCfg(float_cnt=1, cat_cnt=cat_cnt)))
-#         self.assertFalse(pf.matches(PltCntCfg(float_cnt=2, cat_cnt=cat_cnt)))
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=0, cat_cnt=cat_cnt)).overall)
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=1, cat_cnt=cat_cnt)).overall)
+        self.assertFalse(pf.matches_result(PltCntCfg(float_cnt=2, cat_cnt=cat_cnt)).overall)
