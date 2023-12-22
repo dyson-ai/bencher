@@ -6,6 +6,7 @@ import xarray as xr
 import holoviews as hv
 import numpy as np
 from functools import partial
+from bencher.utils import int_to_col, color_tuple_to_css
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
@@ -250,6 +251,89 @@ class BenchResultBase(OptunaResult):
                     )
                 )
         return row.get()
+
+    def to_panes_multi_panel(
+        self,
+        hv_dataset: hv.Dataset,
+        result_var: ResultVar,
+        plot_callback: callable = None,
+        target_dimension: int = 1,
+        **kwargs,
+    ):
+        dims = len(hv_dataset.dimensions())
+        return self._to_panes_da(
+            hv_dataset.data,
+            plot_callback=plot_callback,
+            target_dimension=target_dimension,
+            horizontal=dims <= target_dimension + 1,
+            result_var=result_var,
+            **kwargs,
+        )
+
+    def _to_panes_da(
+        self,
+        ds: xr.Dataset,
+        plot_callback=pn.pane.panel,
+        target_dimension=1,
+        horizontal=False,
+        result_var=None,
+        **kwargs,
+    ) -> pn.panel:
+        # todo, when dealing with time and repeats, add feature to allow custom order of dimension recursion
+        ##todo remove recursion
+        num_dims = len(ds.sizes)
+        # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
+        dims = list(d for d in ds.sizes)
+
+        time_dim_delta = 0
+        if self.bench_cfg.over_time:
+            time_dim_delta = 0
+
+        if num_dims > (target_dimension + time_dim_delta) and num_dims != 0:
+            dim_sel = dims[-1]
+            print(f"selected dim {dim_sel}")
+
+            dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
+
+            background_col = dim_color
+            name = " vs ".join(dims)
+
+            container_args = {"name": name, "styles": {"background": background_col}}
+            outer_container = (
+                pn.Row(**container_args) if horizontal else pn.Column(**container_args)
+            )
+
+            for i in range(ds.sizes[dim_sel]):
+                sliced = ds.isel({dim_sel: i})
+                label = f"{dim_sel}={sliced.coords[dim_sel].values}"
+
+                panes = self._to_panes_da(
+                    sliced,
+                    plot_callback=plot_callback,
+                    target_dimension=target_dimension,
+                    horizontal=len(sliced.sizes) <= target_dimension + 1,
+                    result_var=result_var,
+                )
+                width = num_dims - target_dimension
+
+                container_args = {"name": name, "styles": {"border": f"{width}px solid grey"}}
+
+                if horizontal:
+                    inner_container = pn.Column(**container_args)
+                    align = ("center", "center")
+                else:
+                    inner_container = pn.Row(**container_args)
+                    align = ("end", "center")
+
+                side = pn.pane.Markdown(f"{label}", align=align)
+
+                inner_container.append(side)
+                inner_container.append(panes)
+                outer_container.append(inner_container)
+        else:
+            return plot_callback(da=ds, result_var=result_var, **kwargs)
+
+        return outer_container
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self):

@@ -34,8 +34,9 @@ class BenchResult(PlotlyResult, HoloviewResult):
             # HoloviewResult.to_bar,
             # HoloviewResult.to_bar_hvplot,
             # HoloviewResult.to_holomap,
-            PanelResult.to_image,
+            # PanelResult.to_image,
             PanelResult.to_video,
+            PanelResult.to_panes,
         ]
 
     @staticmethod

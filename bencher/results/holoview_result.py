@@ -168,7 +168,9 @@ class HoloviewResult(PanelResult):
             )
         return matches_res.to_panel()
 
-    def to_heatmap_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+    def to_heatmap_da(
+        self, da: xr.Dataset, result_var: ResultVar, **kwargs
+    ) -> Optional[hv.HeatMap]:
         if len(da.dims) >= 2:
             # dims = [d for d in da.sizes]
             # x = dims[0]
@@ -179,6 +181,7 @@ class HoloviewResult(PanelResult):
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
             return da.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
+        return None
 
     def to_curve_single(
         self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs

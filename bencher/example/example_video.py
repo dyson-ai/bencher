@@ -16,6 +16,7 @@ class TuringPattern(bch.ParametrizedSweep):
     dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
     video = bch.ResultContainer()
+    # video = bch.ResultVideo()
     # video = bch.ResultContainer()
 
     def laplacian(self, Z, dx):

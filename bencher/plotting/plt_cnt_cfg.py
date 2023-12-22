@@ -8,6 +8,7 @@ from bencher.variables.results import (
     ResultVideo,
     ResultString,
     ResultReference,
+    PANEL_TYPES
 )
 
 from bencher.variables.inputs import IntSweep, FloatSweep, BoolSweep, EnumSweep, StringSweep
@@ -129,9 +130,7 @@ class PltCntCfg(param.Parameterized):
                 raise ValueError(f"No rule for type {type(iv)}")
 
         for rv in bench_cfg.result_vars:
-            if isinstance(
-                rv, (ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
-            ):
+            if isinstance(rv, PANEL_TYPES):
                 plt_cnt_cfg.panel_vars.append(rv)
 
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
