@@ -78,8 +78,6 @@ def example_holosweep(
 ) -> bch.Bench:
     # wv = PlotFunctions()
 
-    # run_cfg.use_optuna = True
-
     bench = bch.Bench(
         "waves", bench_fn, worker_input_cfg=FunctionInputs, run_cfg=run_cfg, report=report
     )
@@ -94,8 +92,6 @@ def example_holosweep(
         ],
     )
 
-    # print(res.hmap_kdims)
-    # print(res.hmap.keys())
     # bench.report.append(res.summarise_sweep())
     # bench.report.append(res.to_optuna())
     # bench.report.append(res.get_best_holomap())

@@ -37,16 +37,11 @@ def example_1D_cat(
         const_vars=explorer.get_input_defaults(),
     )
 
-    # bench.report.append(res.to_auto())
-
     return bench
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.repeats = 10
-    # ex_run_cfg.print_pandas = True
-    # ex_run_cfg.over_time = True
-    # ex_run_cfg.use_cache = True
 
     srv1 = example_1D_cat(ex_run_cfg).report.show()

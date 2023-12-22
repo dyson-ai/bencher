@@ -386,6 +386,9 @@ class HoloviewResult(PanelResult):
             shared_axes=False, shared_datasource=False
         )
 
+    # def to_holomap(self, name: str = None) -> hv.HoloMap:
+    # return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
+
     def to_holomap(self, name: str = None) -> hv.HoloMap:
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
 

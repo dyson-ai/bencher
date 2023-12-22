@@ -95,5 +95,5 @@ def example_categorical(
 
 
 if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg(repeats=3)
+    ex_run_cfg = bch.BenchRunCfg()
     example_categorical(ex_run_cfg).report.show()
