@@ -80,7 +80,7 @@ def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     # run_cfg.auto_plot = False
-    run_cfg.use_sample_cache = True
+    # run_cfg.use_sample_cache = True
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
     bench.plot_sweep(
