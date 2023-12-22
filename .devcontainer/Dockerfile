@@ -12,5 +12,3 @@ RUN touch README.md \
     && mkdir -p src/bencher \
     && python -m flit install --only-deps --deps develop \
     && rm -r pyproject.toml README.md src
-
-RUN ffdl install -y
