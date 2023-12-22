@@ -8,39 +8,13 @@ from bencher.utils import int_to_col, color_tuple_to_css
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.parametrised_sweep import ParametrizedSweep
-from bencher.variables.results import ResultImage, ResultVideo, ResultContainer
+from bencher.variables.results import ResultImage, ResultVideo, ResultContainer, ResultReference
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 
 
 class PanelResult(BenchResultBase):
-    # def __init__(self, bench_cfg: BenchCfg) -> None:
-    # super().__init__(bench_cfg)
-
     def to_video(self, **kwargs):
         return self.map_plots(partial(self.to_video_multi, **kwargs))
-
-    # def to_video_multi(
-    #     self, result_var: ParametrizedSweep, container=pn.pane.PNG
-    # ) -> Optional[pn.pane.PNG]:
-    #     if isinstance(result_var, ResultImage):
-    #         xr_dataset = self.to_hv_dataset()
-    #         plot_callback = partial(self.da_to_container, container=container)
-    #         return self.to_panes_multi_panel(
-    #             xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
-    #         )
-    #     return None
-
-    # def to_video(
-    #     self, result_var: ParametrizedSweep = None, **kwargs
-    # ) -> Optional[pn.pane.PNG]:
-    #     return self.map_plot_panes(
-    #         partial(self.da_to_container, container=pn.pane.PNG, **kwargs),
-    #         hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-    #         target_dimension=0,
-    #         result_var=result_var,
-    #         result_types=(ResultImage),
-    #         **kwargs,
-    #     )
 
     def to_video_multi(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
         if isinstance(result_var, (ResultVideo, ResultContainer)):
@@ -106,7 +80,6 @@ class PanelResult(BenchResultBase):
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
         # todo this is really horrible, need to improve
         if isinstance(da_ds, xr.Dataset):
-            # dim = [d for d in da_ds.keys()][0]
             dim = list(da_ds.keys())[0]
             da = da_ds[dim]
         else:
@@ -138,19 +111,24 @@ class PanelResult(BenchResultBase):
             xr_dataarray, len(xr_dataarray.dims) == 1, container=container, **kwargs
         )
 
+    def to_references(
+        self, result_var: ParametrizedSweep = None, container=None, **kwargs
+    ) -> Optional[pn.pane.PNG]:
+        return self.map_plot_panes(
+            partial(self.to_reference_single_da, container=container),
+            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),  # cannot sum references
+            target_dimension=0,
+            result_var=result_var,
+            result_types=(ResultReference),
+            **kwargs,
+        )
+
     def to_reference_single_da(self, da: xr.DataArray, result_var: ResultVar, container=None):
         val = self.zero_dim_da_to_val(da)
         obj_item = self.object_index[val].obj
         if container is not None:
             return container(obj_item)
         return obj_item
-
-    def to_references(self, container=None, **kwargs):
-        xr_dataset = self.to_hv_dataset()
-        plot_callback = partial(self.to_reference_single_da, container=container, **kwargs)
-        return self.to_panes_multi_panel(
-            xr_dataset, None, plot_callback=plot_callback, target_dimension=0
-        )
 
     def to_panes_multi_panel(
         self,
@@ -235,58 +213,4 @@ class PanelResult(BenchResultBase):
 
         return outer_container
 
-    # def _to_panes_da_old(
-    #     self,
-    #     da: xr.DataArray,
-    #     plot_callback=pn.pane.panel,
-    #     target_dimension=1,
-    #     horizontal=False,
-    #     **kwargs,
-    # ) -> pn.panel:
-    #     ##todo remove recursion
-    #     num_dims = len(da.dims)
-    #     # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
-
-    #     if num_dims > target_dimension and num_dims != 0:
-    #         dim_sel = da.dims[-1]
-
-    #         dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
-
-    #         background_col = dim_color
-    #         name = " vs ".join(da.dims)
-
-    #         container_args = {"name": name, "styles": {"background": background_col}}
-    #         outer_container = (
-    #             pn.Row(**container_args) if horizontal else pn.Column(**container_args)
-    #         )
-
-    #         for i in range(da.sizes[dim_sel]):
-    #             sliced = da.isel({dim_sel: i})
-    #             label = f"{dim_sel}={sliced.coords[dim_sel].values}"
-
-    #             panes = self._to_panes_da_old(
-    #                 sliced,
-    #                 plot_callback=plot_callback,
-    #                 target_dimension=target_dimension,
-    #                 horizontal=len(sliced.dims) <= target_dimension + 1,
-    #             )
-    #             width = num_dims - target_dimension
-
-    #             container_args = {"name": name, "styles": {"border": f"{width}px solid grey"}}
-
-    #             if horizontal:
-    #                 inner_container = pn.Column(**container_args)
-    #                 align = ("center", "center")
-    #             else:
-    #                 inner_container = pn.Row(**container_args)
-    #                 align = ("end", "center")
-
-    #             side = pn.pane.Markdown(f"{label}", align=align)
-
-    #             inner_container.append(side)
-    #             inner_container.append(panes)
-    #             outer_container.append(inner_container)
-    #     else:
-    #         return plot_callback(da=da, **kwargs)
-
-    #     return outer_container
+   
