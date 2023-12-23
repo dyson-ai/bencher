@@ -62,9 +62,9 @@ class TestBenchExamples(unittest.TestCase):
         # b_run.run(level=4, grouped=True, save=True)
         # b_run.shutdown()
         report = bch.BenchReport()
-        run_cfg.level = 3
         example_image(run_cfg=run_cfg, report=report)
         example_video(run_cfg=run_cfg, report=report)
+        run_cfg.level = 4
         example_meta_levels(run_cfg=run_cfg, report=report)
         # example_meta(run_cfg=run_cfg, report=report)
 
