@@ -27,8 +27,6 @@ class TestPrinting(bch.ParametrizedSweep):
 def example_strings(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    run_cfg.auto_plot = False
-
     bench = bch.Bench("strings", TestPrinting(), run_cfg=run_cfg, report=report)
 
     for s in [
@@ -37,9 +35,10 @@ def example_strings(
         [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c],
         [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
     ]:
-        res1 = bench.plot_sweep("t1", input_vars=s)
-        resA = bch.PanelResult(res1)
-        bench.report.append_tab(resA.to_panes())
+        bench.plot_sweep(f"String Panes {[v.name for v in s]}", input_vars=s)
+        # bench.report.append(res.to_sweep_summary())
+        # bench.report.append(res.to_panes())
+
     return bench
 
 

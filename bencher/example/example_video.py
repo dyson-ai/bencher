@@ -15,7 +15,9 @@ class TuringPattern(bch.ParametrizedSweep):
     time = bch.FloatSweep(default=20.0, bounds=(1, 100), doc="total time of simulation")
     dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
-    video = bch.ResultContainer()
+    # video = bch.ResultContainer()
+    video = bch.ResultVideo()
+    # video = bch.ResultContainer()
 
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
@@ -66,8 +68,8 @@ class TuringPattern(bch.ParametrizedSweep):
                 artists.append([ax.imshow(U)])
 
         ani = ArtistAnimation(fig=fig, artists=artists, interval=60, blit=True)
-        # path = self.gen_path("turing", "vid", ".mp4")
-        path = self.gen_path("turing", "vid", ".gif")
+        path = self.gen_path("turing", "vid", ".mp4")
+        # path = self.gen_path("turing", "vid", ".gif")
         print(f"saving {len(artists)} frames")
         ani.save(path)
         self.video = path
@@ -77,19 +79,16 @@ class TuringPattern(bch.ParametrizedSweep):
 def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    run_cfg.auto_plot = False
+    # run_cfg.auto_plot = False
+    # run_cfg.use_sample_cache = True
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
-    res = bench.plot_sweep(
+    bench.plot_sweep(
         "Turing patterns with different parameters",
-        # input_vars=[TuringPattern.param.a, TuringPattern.param.b],
+        # input_vars=[TuringPattern.param.alpha, TuringPattern.param.beta],
         input_vars=[TuringPattern.param.alpha],
         result_vars=[TuringPattern.param.video],
     )
-
-    # bench.report.append(bch.PanelResult(res).to_video())
-    bench.report.append(res.summarise_sweep())
-    bench.report.append(bch.PanelResult(res).to_panes())
 
     return bench
 
@@ -97,6 +96,7 @@ def example_video(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
+    run_cfg_ex.repeats = 2
     # run_cfg.only_hash_tag = True
     # run_cfg.use_sample_cache = True
 

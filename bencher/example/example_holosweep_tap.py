@@ -85,7 +85,7 @@ def example_holosweep_tap(
 
     run_cfg.use_optuna = True
     run_cfg.auto_plot = False
-    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
@@ -94,19 +94,19 @@ def example_holosweep_tap(
         run_cfg=run_cfg,
     )
 
-    bench.report.append(res.summarise_sweep())
-    bench.report.append(res.to_heatmap_tap())
+    bench.report.append(res.describe_sweep())
+    bench.report.append(res.to_heatmap_tap(PlotFunctions.param.fn_output))
 
     return bench
 
 
 def example_holosweep_tap_slider(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+) -> bch.Bench:  # pragma: no cover
     wv = PlotFunctions()
 
     run_cfg.use_optuna = True
-    bench = bch.Bench("waves", wv, plot_lib=None, run_cfg=run_cfg, report=report)
+    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
     res = bench.plot_sweep(
         "phase",
@@ -125,7 +125,7 @@ def example_holosweep_tap_slider(
     def tap_plot(x, y):
         print(x, y)
         selres = bch.get_nearest_coords(res.ds, theta=x, freq=y, phase=sld1.value, repeat=1)
-        return res.hmap[bch.hmap_canonical_input(selres)]
+        return res.hmaps[bch.hmap_canonical_input(selres)]
 
     tap_dmap = hv.DynamicMap(tap_plot, streams=[posxy])
 

@@ -21,6 +21,8 @@ def example_categorical(
     with open("README.md", "r", encoding="utf-8") as file:
         readme = file.read()
 
+    # run_cfg.over_time = True
+
     bench = bch.Bench(
         "Bencher_Example_Categorical",
         bench_function,
@@ -36,17 +38,20 @@ def example_categorical(
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         title="Categorical 1D Example",
         description="""This example shows how to sample categorical values. The same objective from the float examples is used but theta is kept constant with a value of 0 (as described in the ExampleBenchCfgIn class definition).
+
         
-        def bench_function(cfg: ExampleBenchCfgIn) -> ExampleBenchCfgOut:
-            "Takes an ExampleBenchCfgIn and returns a ExampleBenchCfgOut output"
-            out = ExampleBenchCfgOut()
-            noise = calculate_noise(cfg)
-            offset = 0.0
+```
+    def bench_function(cfg: ExampleBenchCfgIn) -> ExampleBenchCfgOut:
+        "Takes an ExampleBenchCfgIn and returns a ExampleBenchCfgOut output"
+        out = ExampleBenchCfgOut()
+        noise = calculate_noise(cfg)
+        offset = 0.0
 
-            postprocess_fn = abs if cfg.postprocess_fn == PostprocessFn.absolute else negate_fn
+        postprocess_fn = abs if cfg.postprocess_fn == PostprocessFn.absolute else negate_fn
 
-            out.out_sin = postprocess_fn(offset + math.sin(cfg.theta) + noise)          
-            return out
+        out.out_sin = postprocess_fn(offset + math.sin(cfg.theta) + noise)          
+        return out
+```
         
         """,
         post_description="The plot shows when noise=True the output has uniform random noise.",
@@ -58,7 +63,6 @@ def example_categorical(
         title="Categorical 2D Example",
         description="""Adding another categorical value creates a facet plot over that dimension""",
         post_description="The output shows swarm plots of different noise distributions",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -73,7 +77,7 @@ def example_categorical(
         post_description="The output shows swarm plots of different noise distributions",
     )
 
-    bench.run_cfg.over_time = True
+    run_cfg.over_time = True
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfgIn.param.noisy,
@@ -84,14 +88,12 @@ def example_categorical(
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description="""Lastly, what if you want to track these distributions over time? Set over_time=True and bencher will cache and display historical resuts alongside the latest result.  Use clear_history=True to clear that cache.""",
         post_description="The output shows faceted line plot with confidence intervals for the mean value over time.",
+        run_cfg=run_cfg,
     )
 
     return bench
 
 
 if __name__ == "__main__":
-    ex_run_cfg = bch.BenchRunCfg(repeats=5)
-    ex_run_cfg.over_time = True
-    ex_run_cfg.executor = bch.Executors.SERIAL
-
+    ex_run_cfg = bch.BenchRunCfg()
     example_categorical(ex_run_cfg).report.show()

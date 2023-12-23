@@ -52,14 +52,11 @@ def optuna_rastrigin(
 
     bench = bch.Bench("Rastrigin", explorer.rastrigin, run_cfg=run_cfg, report=report)
 
-    bench.to_optuna(
-        input_vars=[explorer.param.input1, explorer.param.input2],
-        result_vars=[explorer.param.output],
-    )
-
-    bench.report.append_markdown(
-        f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
-    )
+    # res = bench.to_optuna(
+    #     input_vars=[explorer.param.input1, explorer.param.input2],
+    #     result_vars=[explorer.param.output],
+    #     n_trials=30
+    # )
 
     run_cfg.use_optuna = True
     res = bench.plot_sweep(
@@ -69,8 +66,11 @@ def optuna_rastrigin(
         run_cfg=run_cfg,
     )
 
-    bench.to_optuna_from_sweep(res, 10)
-
+    bench.report.append(res.to_optuna_plots())
+    bench.report.append(res.to_optuna_from_sweep(bench.worker))
+    bench.report.append_markdown(
+        f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
+    )
     return bench
 
 

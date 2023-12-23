@@ -45,7 +45,8 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     out_sum = bch.ResultVar(units="v", doc="The sum")
 
-    hmap = bch.ResultHmap()
+    hmap = bch.ResultReference()
+    hmap1 = bch.ResultHmap()
 
     def __call__(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
@@ -55,7 +56,8 @@ class PlotFunctions(bch.ParametrizedSweep):
             0, noise
         )
 
-        self.hmap = self.plot_holo(plot)
+        self.hmap1 = self.plot_holo(plot)
+        self.hmap = bch.ResultReference(self.hmap1)
 
         return self.get_results_values_as_dict()
 
@@ -73,23 +75,26 @@ def example_holosweep(
 ) -> bch.Bench:
     wv = PlotFunctions()
 
-    run_cfg.use_optuna = True
+    # run_cfg.use_optuna = True
 
     bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
 
-    res = bench.plot_sweep(
+    bench.plot_sweep(
         "phase",
         input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
         result_vars=[PlotFunctions.param.fn_output, PlotFunctions.param.hmap],
+        # result_vars=[PlotFunctions.param.hmap],
     )
 
-    print("best", res.get_best_trial_params(True))
-    print(res.hmap_kdims)
-    bench.report.append(res.summarise_sweep())
-    bench.report.append(res.to_optuna())
-    bench.report.append(res.get_best_holomap())
-    bench.report.append(res.to_curve(), "Slider view")
-    bench.report.append(res.to_holomap().layout())
+    # print("best", res.get_best_trial_params(True))
+    # print(res.hmap_kdims)
+    # bench.report.append(res.describe_sweep())
+    # bench.report.append(res.to_optuna_plots())
+    # bench.report.append(res.get_best_holomap())
+    # bench.report.append(res.to_curve(), "Slider view")
+    # bench.report.append(res.to_holomap())
+
+    # bench.report.append(res.to_holomap().layout())
     return bench
 
 

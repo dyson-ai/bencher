@@ -1,109 +1,22 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import logging
-from collections import defaultdict
 
-from typing import Any, Callable, List, Tuple
+from typing import List
 
 import param
-import xarray as xr
-from pandas import DataFrame
 from str2bool import str2bool
-import holoviews as hv
-import numpy as np
 import panel as pn
 
 
-import bencher as bch
 from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
-from bencher.utils import hmap_canonical_input, get_nearest_coords
 from bencher.job import Executors
-from enum import Enum, auto
 from datetime import datetime
 
-
-class ReduceType(Enum):
-    AUTO = auto()
-    SQUEEZE = auto()
-    REDUCE = auto()
-    NONE = auto()
-
-
-class PltCfgBase(param.Parameterized):
-    """A base class that contains plotting parameters shared by seaborn and xarray"""
-
-    x: str = param.String(None, doc="the x parameter for seaborn and xarray plotting functions")
-    y: str = param.String(None, doc="the y parameter for seaborn and xarray plotting functions")
-    z: str = param.String(None, doc="the z parameter for xarray plotting functions")
-    hue: str = param.String(None, doc="the hue parameter for seaborn and xarray plotting functions")
-
-    row: str = param.String(None, doc="the row parameter for seaborn and xarray plotting functions")
-    col: str = param.String(None, doc="the col parameter for seaborn and xarray plotting functions")
-
-    num_rows: int = param.Integer(1, doc="The number of rows in the facetgrid")
-    num_cols: int = param.Integer(1, doc="The number of cols in the facetgrid")
-
-    kind: str = param.String(None, doc="the 'kind' of plot, ie barplot, lineplot, scatter etc")
-    marker: str = param.String(None, doc="The marker to use when plotting")
-
-    cmap = param.String(None, doc="colormap type")
-
-    plot_callback_sns: Callable = None
-    plot_callback_xra: Callable = None
-    plot_callback: Callable = None
-
-    xlabel: str = param.String(None, doc="The label for the x-axis")
-    ylabel: str = param.String(None, doc="The label for the y-axis")
-    zlabel: str = param.String(None, doc="The label for the z-axis")
-
-    title: str = param.String(None, doc="The title of the graph")
-
-    width: int = param.Integer(700, doc="Width of the plot in pixels")
-    height: int = param.Integer(700, doc="Height of the plot in pixels")
-
-    def as_dict(self, include_params: List[str] = None, exclude_params: List[str] = None) -> dict:
-        """Return this class as dictionary to pass to plotting functions but exclude parameters that are not expected by those functions
-
-        Args:
-            include_params (List[str], optional): a list of property names to include. Defaults to None.
-            exclude_params (List[str], optional): a list of property names to exclude. Defaults to None.
-
-        Returns:
-            dict: a dictionary of plotting arguments
-        """
-        all_params = self.param.values()
-        all_params.pop("name")
-
-        output = {}
-        if include_params is not None:
-            for i in include_params:
-                output[i] = all_params[i]
-        else:
-            output = all_params
-
-        if exclude_params is not None:
-            for e in exclude_params:
-                output.pop(e)
-
-        return output
-
-    def as_sns_args(self) -> dict:
-        return self.as_dict(include_params=["x", "y", "hue", "row", "col", "kind"])
-
-
-class PltCntCfg(param.Parameterized):
-    """Plot Count Config"""
-
-    float_vars = param.List(doc="A list of float vars in order of plotting, x then y")
-    float_cnt = param.Integer(0, doc="The number of float variables to plot")
-    cat_vars = param.List(doc="A list of categorical values to plot in order hue,row,col")
-    cat_cnt = param.Integer(0, doc="The number of cat variables")
-    vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
-    result_vars = param.Integer(1, doc="The number result variables to plot")
+# from bencher.results.bench_result import BenchResult
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -383,11 +296,7 @@ class BenchCfg(BenchRunCfg):
 
     def __init__(self, **params):
         super().__init__(**params)
-        self.studies = []
-        self.ds = xr.Dataset()
         self.plot_lib = None
-        # self.hmap = {}
-        self.hmaps = defaultdict(dict)
         self.hmap_kdims = None
         self.iv_repeat = None
 
@@ -423,291 +332,73 @@ class BenchCfg(BenchRunCfg):
 
         return hash_val
 
-    def get_optimal_value_indices(self, result_var: bch.ParametrizedSweep) -> xr.DataArray:
-        """Get an xarray mask of the values with the best values found during a parameter sweep
-
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal value of this result variable
-
-        Returns:
-            xr.DataArray: xarray mask of optimal values
-        """
-        result_da = self.ds[result_var.name]
-        if result_var.direction == OptDir.maximize:
-            opt_val = result_da.max()
-        else:
-            opt_val = result_da.min()
-        indicies = result_da.where(result_da == opt_val, drop=True).squeeze()
-        logging.info(f"optimal value of {result_var.name}: {opt_val.values}")
-        return indicies
-
-    def get_optimal_inputs(
-        self, result_var: bch.ParametrizedSweep, keep_existing_consts: bool = True
-    ) -> Tuple[bch.ParametrizedSweep, Any]:
-        """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
-
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal values of this result variable
-            keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
-
-        Returns:
-            Tuple[bch.ParametrizedSweep, Any]: Tuples of variable name and optimal values
-        """
-        da = self.get_optimal_value_indices(result_var)
-        if keep_existing_consts:
-            output = copy.deepcopy(self.const_vars)
-        else:
-            output = []
-
-        for iv in self.input_vars:
-            # assert da.coords[iv.name].values.size == (1,)
-            if da.coords[iv.name].values.size == 1:
-                # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
-                # use [()] to convert from a 0d numpy array to a scalar
-                output.append((iv, da.coords[iv.name].values[()]))
-            else:
-                logging.warning(f"values size: {da.coords[iv.name].values.size}")
-                output.append((iv, max(da.coords[iv.name].values[()])))
-
-            logging.info(f"Maximum value of {iv.name}: {output[-1][1]}")
-        return output
-
-    def get_optimal_vec(
-        self,
-        result_var: bch.ParametrizedSweep,
-        input_vars: List[bch.ParametrizedSweep],
-    ) -> List[Any]:
-        """Get the optimal values from the sweep as a vector.
-
-        Args:
-            result_var (bch.ParametrizedSweep): Optimal values of this result variable
-            input_vars (List[bch.ParametrizedSweep]): Define which input vars values are returned in the vector
-
-        Returns:
-            List[Any]: A vector of optimal values for the desired input vector
-        """
-
-        da = self.get_optimal_value_indices(result_var)
-        output = []
-        for iv in input_vars:
-            if da.coords[iv.name].values.size == 1:
-                # https://stackoverflow.com/questions/773030/why-are-0d-arrays-in-numpy-not-considered-scalar
-                # use [()] to convert from a 0d numpy array to a scalar
-                output.append(da.coords[iv.name].values[()])
-            else:
-                logging.warning(f"values size: {da.coords[iv.name].values.size}")
-                output.append(max(da.coords[iv.name].values[()]))
-            logging.info(f"Maximum value of {iv.name}: {output[-1]}")
-        return output
-
-    def get_dataframe(self, reset_index=True) -> DataFrame:
-        """Get the xarray results as a pandas dataframe
-
-        Returns:
-            pd.DataFrame: The xarray results array as a pandas dataframe
-        """
-        ds = self.ds.to_dataframe()
-        if reset_index:
-            return ds.reset_index()
-        return ds
-
-    def result_samples(self) -> int:
-        """The number of samples in the results dataframe"""
-        return len(self.get_dataframe().index)
-
-    def get_best_trial_params(self, canonical=False):
-        if len(self.studies) == 0:
-            from bencher.optuna_conversions import bench_cfg_to_study
-
-            self.studies = [bench_cfg_to_study(self, True)]
-        out = self.studies[0].best_trials[0].params
-        if canonical:
-            return hmap_canonical_input(out)
-        return out
-
-    def get_best_holomap(self, name: str = None):
-        return self.get_hmap(name)[self.get_best_trial_params(True)]
-
-    def get_hmap(self, name: str = None):
-        try:
-            if name is None:
-                name = self.result_hmaps[0].name
-                print(name)
-            if name in self.hmaps:
-                return self.hmaps[name]
-        except Exception as e:
-            raise RuntimeError(
-                "You are trying to plot a holomap result but it is not in the result_vars list.  Add the holomap to the result_vars list"
-            ) from e
-        return None
-
-    def get_pareto_front_params(self):
-        return [p.params for p in self.studies[0].trials]
-
-    def to_hv_dataset(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Dataset:
-        """Generate a holoviews dataset from the xarray dataset.
-
-        Args:
-            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
-
-        Returns:
-            hv.Dataset: results in the form of a holoviews dataset
-        """
-        ds = convert_dataset_bool_dims_to_str(self.ds)
-
-        if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.repeats > 1 else ReduceType.SQUEEZE
-
-        result_vars_str = [r.name for r in self.result_vars]
-        kdims = [i.name for i in self.input_vars]
-        kdims.append("repeat")  # repeat is always used
-        hvds = hv.Dataset(ds, kdims=kdims, vdims=result_vars_str)
-        if reduce == ReduceType.REDUCE:
-            return hvds.reduce(["repeat"], np.mean, np.std)
-        if reduce == ReduceType.SQUEEZE:
-            return hv.Dataset(ds.squeeze("repeat", drop=True), vdims=result_vars_str)
-        return hvds
-
-    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
-        return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
-
-    def to_curve(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Curve:
-        title = f"{self.result_vars[0].name} vs {self.input_vars[0].name}"
-        ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Curve).opts(title=title)
-        if self.repeats > 1:
-            pt *= ds.to(hv.Spread).opts(alpha=0.2)
-        return pt
-
-    def to_error_bar(self) -> hv.Bars:
-        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
-
-    def to_points(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Points:
-        ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Points)
-        if reduce:
-            pt *= ds.to(hv.ErrorBars)
-        return pt
-
-    def to_scatter(self):
-        return self.to_hv_dataset(ReduceType.REDUCE).to(hv.Scatter)
-
-    def to_scatter_jitter(self) -> hv.Scatter:
-        ds = self.to_hv_dataset(ReduceType.NONE)
-        pt = ds.to(hv.Scatter).opts(jitter=0.1).overlay("repeat").opts(show_legend=False)
-        return pt
-
-    def to_bar(self, reduce: ReduceType = ReduceType.AUTO) -> hv.Bars:
-        ds = self.to_hv_dataset(reduce)
-        pt = ds.to(hv.Bars)
-        if reduce:
-            pt *= ds.to(hv.ErrorBars)
-        return pt
-
-    def to_heatmap(self, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.HeatMap:
-        z = self.result_vars[0]
-        title = f"{z.name} vs ({self.input_vars[0].name}"
-
-        for iv in self.input_vars[1:]:
-            title += f" vs {iv.name}"
-        title += ")"
-
-        color_label = f"{z.name} [{z.units}]"
-
-        return self.to(hv.HeatMap, reduce, **kwargs).opts(title=title, clabel=color_label)
-
-    def to_heatmap_tap(self, reduce: ReduceType = ReduceType.AUTO, width=800, height=800, **kwargs):
-        htmap = self.to_heatmap(reduce).opts(tools=["hover", "tap"], width=width, height=height)
-        htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
-
-        def tap_plot(x, y):
-            kwargs[self.input_vars[0].name] = x
-            kwargs[self.input_vars[1].name] = y
-            return self.get_nearest_holomap(**kwargs).opts(width=width, height=height)
-
-        tap_htmap = hv.DynamicMap(tap_plot, streams=[htmap_posxy])
-        return htmap + tap_htmap
-
-    def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
-        print(self.hmap_kdims)
-        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.hmap_kdims).opts(
-            shared_axes=False, shared_datasource=False
-        )
-
-    def to_holomap(self, name: str = None) -> hv.HoloMap:
-        return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
-
-    def to_holomap_list(self, hmap_names: List[str] = None) -> hv.HoloMap:
-        if hmap_names is None:
-            hmap_names = [i.name for i in self.result_hmaps]
-        col = pn.Column()
-        for name in hmap_names:
-            self.to_holomap(name)
-        return col
-
-    def get_nearest_holomap(self, name: str = None, **kwargs):
-        canonical_inp = hmap_canonical_input(
-            get_nearest_coords(self.ds, collapse_list=True, **kwargs)
-        )
-        return self.get_hmap(name)[canonical_inp].opts(framewise=True)
-
-    def to_volume(self, **opts) -> pn.panel:
-        from bencher.plt_cfg import BenchPlotter
-        from bencher.plotting.plots.volume import VolumePlot
-        from bencher.plotting.plot_collection import PlotInput
-
-        # BenchPlotter.plot_result_variable()
-        # return BenchPlotter.plot_results_row(self)
-        return VolumePlot().volume_plotly(
-            PlotInput(self, self.result_vars[0], BenchPlotter.generate_plt_cnt_cfg(self)), **opts
-        )
-
-    def to_dynamic_map(self, name: str = None) -> hv.DynamicMap:
-        """use the values stored in the holomap dictionary to populate a dynamic map. Note that this is much faster than passing the holomap to a holomap object as the values are calculated on the fly"""
-
-        def cb(**kwargs):
-            return self.get_hmap(name)[hmap_canonical_input(kwargs)].opts(
-                framewise=True, shared_axes=False
-            )
-
-        kdims = []
-        for i in self.input_vars + [self.iv_repeat]:
-            kdims.append(i.as_dim(compute_values=True, debug=self.debug))
-
-        return hv.DynamicMap(cb, kdims=kdims)
-
-    def to_grid(self, inputs=None):
-        if inputs is None:
-            inputs = self.inputs_as_str()
-        if len(inputs) > 2:
-            inputs = inputs[:2]
-        return self.to_holomap().grid(inputs)
-
-    def to_table(self):
-        return self.to(hv.Table, ReduceType.SQUEEZE)
-
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self) -> pn.pane.Markdown:
-        """Produce a markdown summary of the sweep settings
+    def describe_sweep(self, width: int = 800) -> pn.pane.Markdown:
+        """Produce a markdown summary of the sweep settings"""
+        return pn.pane.Markdown(self.describe_benchmark(), width=width)
+
+    def describe_benchmark(self) -> str:
+        """Generate a string summary of the inputs and results from a BenchCfg
 
         Returns:
-            pn.pane.Markdown: _description_
+            str: summary of BenchCfg
         """
-        return pn.pane.Markdown(
-            describe_benchmark(self, self.summarise_constant_inputs), name=self.bench_name
-        )
+        benchmark_sampling_str = ["```text"]
+        benchmark_sampling_str.append("")
 
-    def to_title(self, panel_name=None) -> pn.pane.Markdown:
+        benchmark_sampling_str.append("Input Variables:")
+        for iv in self.input_vars:
+            benchmark_sampling_str.extend(describe_variable(iv, self.debug, True))
+
+        if self.const_vars and (self.summarise_constant_inputs):
+            benchmark_sampling_str.append("\nConstants:")
+            for cv in self.const_vars:
+                benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
+
+        benchmark_sampling_str.append("\nResult Variables:")
+        for rv in self.result_vars:
+            benchmark_sampling_str.extend(describe_variable(rv, self.debug, False))
+
+        print_meta = True
+        # if len(self.meta_vars) == 1:
+        #     mv = self.meta_vars[0]
+        #     if mv.name == "repeat" and mv.samples == 1:
+        #         print_meta = False
+
+        if print_meta:
+            benchmark_sampling_str.append("\nMeta Variables:")
+            benchmark_sampling_str.append(f"    run date: {self.run_date}")
+            if self.run_tag is not None and len(self.run_tag) > 0:
+                benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
+            if self.level is not None:
+                benchmark_sampling_str.append(f"    bench level: {self.level}")
+            benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
+            benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
+            benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
+            benchmark_sampling_str.append(f"    parallel: {self.executor}")
+
+            for mv in self.meta_vars:
+                benchmark_sampling_str.extend(describe_variable(mv, self.debug, True))
+
+        benchmark_sampling_str.append("```")
+
+        benchmark_sampling_str = "\n".join(benchmark_sampling_str)
+        return benchmark_sampling_str
+
+    def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
         if panel_name is None:
             panel_name = self.title
         return pn.pane.Markdown(f"# {self.title}", name=panel_name)
 
-    def to_description(self) -> pn.pane.Markdown:
-        return pn.pane.Markdown(f"{self.description}", width=800)
+    def to_description(self, width: int = 800) -> pn.pane.Markdown:
+        return pn.pane.Markdown(f"{self.description}", width=width)
 
-    def summarise_sweep(
+    def to_post_description(self, width: int = 800) -> pn.pane.Markdown:
+        return pn.pane.Markdown(f"{self.post_description}", width=width)
+
+    def to_sweep_summary(
         self,
         name=None,
         description=True,
@@ -733,94 +424,12 @@ class BenchCfg(BenchRunCfg):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def to_optuna(self) -> List[pn.pane.panel]:
-        """Create an optuna summary from the benchmark results
-
-        Returns:
-            List[pn.pane.panel]: A list of optuna plot summarising the benchmark process
-        """
-
-        from bencher.optuna_conversions import collect_optuna_plots
-
-        return collect_optuna_plots(self)
-
     def optuna_targets(self) -> List[str]:
         target_names = []
         for rv in self.result_vars:
             if rv.direction != OptDir.none:
                 target_names.append(rv.name)
         return target_names
-
-
-def describe_benchmark(bench_cfg: BenchCfg, summarise_constant_inputs) -> str:
-    """Generate a string summary of the inputs and results from a BenchCfg
-
-    Args:
-        bench_cfg (BenchCfg): BenchCfg to generate a summary of
-
-    Returns:
-        str: summary of BenchCfg
-    """
-    benchmark_sampling_str = ["```text"]
-    benchmark_sampling_str.append("")
-
-    benchmark_sampling_str.append("Input Variables:")
-    for iv in bench_cfg.input_vars:
-        benchmark_sampling_str.extend(describe_variable(iv, bench_cfg.debug, True))
-
-    if bench_cfg.const_vars and (bench_cfg.summarise_constant_inputs or summarise_constant_inputs):
-        benchmark_sampling_str.append("\nConstants:")
-        for cv in bench_cfg.const_vars:
-            benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
-
-    benchmark_sampling_str.append("\nResult Variables:")
-    for rv in bench_cfg.result_vars:
-        benchmark_sampling_str.extend(describe_variable(rv, bench_cfg.debug, False))
-
-    print_meta = True
-    # if len(bench_cfg.meta_vars) == 1:
-    #     mv = bench_cfg.meta_vars[0]
-    #     if mv.name == "repeat" and mv.samples == 1:
-    #         print_meta = False
-
-    if print_meta:
-        benchmark_sampling_str.append("\nMeta Variables:")
-        benchmark_sampling_str.append(f"    run date: {bench_cfg.run_date}")
-        if bench_cfg.run_tag is not None and len(bench_cfg.run_tag) > 0:
-            benchmark_sampling_str.append(f"    run tag: {bench_cfg.run_tag}")
-        if bench_cfg.level is not None:
-            benchmark_sampling_str.append(f"    bench level: {bench_cfg.level}")
-        benchmark_sampling_str.append(f"    use_cache: {bench_cfg.use_cache}")
-        benchmark_sampling_str.append(f"    use_sample_cache: {bench_cfg.use_sample_cache}")
-        benchmark_sampling_str.append(f"    only_hash_tag: {bench_cfg.only_hash_tag}")
-        benchmark_sampling_str.append(f"    parallel: {bench_cfg.executor}")
-
-        for mv in bench_cfg.meta_vars:
-            benchmark_sampling_str.extend(describe_variable(mv, bench_cfg.debug, True))
-
-    benchmark_sampling_str.append("```")
-
-    benchmark_sampling_str = "\n".join(benchmark_sampling_str)
-    return benchmark_sampling_str
-
-
-def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
-    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
-
-    Args:
-        dataarray (xr.DataArray): dataarray with boolean coordinates
-
-    Returns:
-        xr.DataArray: dataarray with boolean coordinates converted to strings
-    """
-    bool_coords = {}
-    for c in dataset.coords:
-        if dataset.coords[c].dtype == bool:
-            bool_coords[c] = [str(vals) for vals in dataset.coords[c].values]
-
-    if len(bool_coords) > 0:
-        return dataset.assign_coords(bool_coords)
-    return dataset
 
 
 class DimsCfg:

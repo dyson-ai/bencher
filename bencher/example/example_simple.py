@@ -112,7 +112,7 @@ if __name__ == "__main__":
         description="""Perform a 2D sweep over the enum and continuous variable to see how they act together.  Here the setting use_optuna=True so additional graphs a plotted at the end. 
         """,
         post_description="In this example function the two input settings combine in a linear and predictable way, so the best combination of settings is enum = AlgoSetting.optimum and float = 1.33.  Setting use_optuna=True adds a plot of how much each input parameter affects the metric and a printout of the best parameter values found during the sweep.  If the value for repeat is high it is an indication there is something wrong with your benchmark function. The repeat should have no affect on the value of the function if calls to the function are independent.  This can be useful to detect undesired side effects in your code",
-        run_cfg=bch.BenchRunCfg(repeats=10, use_optuna=True, server_xarray=True, serve_pandas=True),
+        run_cfg=bch.BenchRunCfg(repeats=10, use_optuna=True, serve_xarray=True, serve_pandas=True),
     )
 
     # In the last example we track the value of the categorical values over time.

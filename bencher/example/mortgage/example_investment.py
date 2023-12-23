@@ -31,7 +31,7 @@ class Investment(bch.ParametrizedSweep):
 
 
 if __name__ == "__main__":
-    bench = bch.Bench("Investment", Investment(), plot_lib=None)
+    bench = bch.Bench("Investment", Investment())
 
     res = bench.plot_sweep(
         "Investment Sweep",

@@ -12,17 +12,15 @@ from bencher.example.example_float3D import example_floats3D
 
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
-from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep import example_holosweep
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
-from bencher.example.example_levels import run_levels
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-
+from bencher.example.example_meta import example_meta
 
 import os
 
@@ -57,7 +55,8 @@ class TestBenchExamples(unittest.TestCase):
         b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
         b_run.add_run(example_categorical)
         b_run.add_run(example_floats)
-        b_run.add_run(run_levels)
+        b_run.add_run(example_meta)
+        # b_run.add_run(run_levels)
 
         b_run.run(level=2, grouped=True, save=True)
         b_run.shutdown()
@@ -98,9 +97,6 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_floats3D_workflow(self) -> None:
         self.examples_asserts(example_floats3D_workflow(self.create_run_cfg()))
 
-    def test_plot_library(self) -> None:
-        self.examples_asserts(example_plot_library(self.create_run_cfg()))
-
     def test_holosweep(self) -> None:
         self.examples_asserts(example_holosweep(self.create_run_cfg()))
 
@@ -121,6 +117,9 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))
+
+    # def test_example_meta(self) -> None:
+    # self.examples_asserts(example_meta(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:

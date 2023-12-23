@@ -24,12 +24,9 @@ class BenchPolygons(bch.ParametrizedSweep):
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         points = polygon_points(self.radius, self.sides)
-        print(points)
-
         self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, self.gen_image_path("polygon"))
-
-        return self.get_results_values_as_dict()
+        return super().__call__()
 
     def points_to_polygon_png(self, points: list[float], filename: str):
         """Draw a closed polygon and save to png"""
@@ -52,7 +49,6 @@ class BenchPolygons(bch.ParametrizedSweep):
 def example_image(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    run_cfg.auto_plot = False
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
     # bench.plot_sweep("Polygons", input_vars=[BenchPolygons.param.sides])
@@ -67,17 +63,15 @@ def example_image(
             BenchPolygons.param.linestyle,
             BenchPolygons.param.color,
         ],
-        [
-            BenchPolygons.param.sides,
-            BenchPolygons.param.linewidth,
-            BenchPolygons.param.linestyle,
-            BenchPolygons.param.color,
-            BenchPolygons.param.radius,
-        ],
+        # [
+        #     BenchPolygons.param.sides,
+        #     BenchPolygons.param.linewidth,
+        #     BenchPolygons.param.linestyle,
+        #     BenchPolygons.param.color,
+        #     BenchPolygons.param.radius,
+        # ],
     ]:
-        res1 = bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
-        resA = bch.PanelResult(res1)
-        bench.report.append_tab(resA.to_image())
+        bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
 
     return bench
 

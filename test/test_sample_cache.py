@@ -31,6 +31,7 @@ class TestSampleCache(unittest.TestCase):
 
         run_cfg.use_sample_cache = True  # this will store the result of every call
         run_cfg.only_hash_tag = True
+        run_cfg.auto_plot = False
 
         instance = UnreliableClass()
         instance.trigger_crash = True

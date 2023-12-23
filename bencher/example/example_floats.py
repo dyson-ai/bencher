@@ -47,7 +47,6 @@ def example_floats(
     The following examples will show how to perform parameter sweeps to characterise the behavior of the function.  The idea is that the benchmarking can be used to gain understanding of an unknown function. 
         """,
         post_description="Here you can see the output plot of sin theta between 0 and pi.  In the tabs at the top you can also view 3 tabular representations of the data",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -56,7 +55,6 @@ def example_floats(
         title="Float 1D and Bool Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We pass the boolean  'noisy' and keep the other parameters the same""",
         post_description="Now the plot has two lines, one for each of the boolean values where noisy=true and noisy=false.",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -65,7 +63,6 @@ def example_floats(
         title="Float 1D and Bool Example with multiple outputs",
         description="""Following from the previous example here the second output is added to the result variables""",
         post_description="Another column is added for the result variable that shows cos(theta)",
-        run_cfg=run_cfg,
     )
 
     bench.plot_sweep(
@@ -81,7 +78,6 @@ def example_floats(
         title="Float 1D, Bool and Categorical Example",
         description="""Following from the previous example lets add another input parameter to see how that affects the output.  We add the 'postprocess_fn' categorical enum value which either takes the absolute value or negates the output of the function.""",
         post_description="This generates two rows of results, one for each of the category options.",
-        run_cfg=run_cfg,
     )
 
     return bench

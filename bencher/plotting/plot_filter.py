@@ -1,9 +1,8 @@
 from __future__ import annotations
-
+from typing import Optional
 from dataclasses import dataclass
-
-from bencher.bench_cfg import BenchCfg, PltCntCfg
-from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.plotting.plt_cnt_cfg import PltCntCfg
+import panel as pn
 
 
 class VarRange:
@@ -13,7 +12,7 @@ class VarRange:
         """
         Args:
             lower_bound (int, optional): The smallest acceptable value to matches(). Passing None will result in a lower bound of 0 (as matches only accepts positive integers). Defaults to 0.
-            upper_bound (int, optional): The largest acceptable value to matches().  Passing None will result in no upper bound. Defaults to -1.
+            upper_bound (int, optional): The largest acceptable value to matches().  Passing None will result in no upper bound. Defaults to -1 which results in a range with no matches.
         """
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
@@ -44,35 +43,28 @@ class VarRange:
 
         return lower_match and upper_match
 
-    def __repr__(self) -> str:
+    def matches_info(self, val, name):
+        match = self.matches(val)
+        info = f"{name}\t{match}\t{self.lower_bound}>= {val} <={self.upper_bound}"
+        return match, info
+
+    def __str__(self) -> str:
         return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
 
 
+@dataclass
 class PlotFilter:
     """A class for representing the types of results a plot is able to represent."""
 
-    def __init__(
-        self,
-        float_range: VarRange = VarRange(),
-        cat_range: VarRange = VarRange(),
-        vector_len: VarRange = VarRange(1, 1),
-        result_vars: VarRange = VarRange(1, 1),
-    ) -> None:
-        """A class for representing the types of results a plot is able to represent.
+    float_range: VarRange = VarRange()
+    cat_range: VarRange = VarRange()
+    vector_len: VarRange = VarRange(1, 1)
+    result_vars: VarRange = VarRange(1, 1)
+    panel_range: VarRange = VarRange(0, 0)
+    repeats_range: VarRange = VarRange(1, None)
+    input_range: VarRange = VarRange(1, None)
 
-        Args:
-            float_range (VarRange, optional): The range of float varibles the plot supports. Defaults to VarRange().
-            cat_range (VarRange, optional): The range of categorical varibles the plot supports. Defaults to VarRange().
-            vector_len (VarRange, optional): The range of vector lengths the plot supports. Defaults to VarRange(1, 1).
-            result_vars (VarRange, optional): The range of number of result varibles the plot supports. Defaults to VarRange(1, 1).
-        """
-
-        self.float_range = float_range
-        self.cat_range = cat_range
-        self.vector_len = vector_len
-        self.result_vars = result_vars
-
-    def matches(self, plt_cng_cfg: PltCntCfg) -> bool:
+    def matches(self, plt_cnt_cfg: PltCntCfg) -> bool:
         """Checks if the result data signature matches the type of data the plot is able to display.
 
         Args:
@@ -82,35 +74,48 @@ class PlotFilter:
             bool: True if the configuration matches the filter, False otherwise.
         """
 
-        return (
-            self.float_range.matches(plt_cng_cfg.float_cnt)
-            and self.cat_range.matches(plt_cng_cfg.cat_cnt)
-            and self.vector_len.matches(plt_cng_cfg.vector_len)
-            and self.result_vars.matches(plt_cng_cfg.result_vars)
-        )
+        return self.matches_result(plt_cnt_cfg, "null").overall
+
+    def matches_result(self, plt_cnt_cfg: PltCntCfg, plot_name: str) -> PlotMatchesResult:
+        return PlotMatchesResult(self, plt_cnt_cfg, plot_name)
 
 
-@dataclass
-class PlotInput:
-    """A dataclass that contains all the information needed to plot
-    Args:
-        bench_cfg (BenchCfg): The benchmark configuration used to generate the result data
-        rv (ParametrizedSweep): The result variable to plot
-        plt_cnt_cfg (PltCntCfg): The number and types of variable to plot
-    """
+# @dataclass
+class PlotMatchesResult:
+    """Stores information about which properites match the requirements of a particular plotter"""
 
-    bench_cfg: BenchCfg
-    rv: ParametrizedSweep
-    plt_cnt_cfg: PltCntCfg
+    def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg, plot_name: str):
+        match_info = []
+        matches = []
 
+        match_candidates = [
+            (plot_filter.float_range, plt_cnt_cfg.float_cnt, "float"),
+            (plot_filter.cat_range, plt_cnt_cfg.cat_cnt, "cat"),
+            (plot_filter.vector_len, plt_cnt_cfg.vector_len, "vec"),
+            (plot_filter.result_vars, plt_cnt_cfg.result_vars, "results"),
+            (plot_filter.panel_range, plt_cnt_cfg.panel_cnt, "panels"),
+            (plot_filter.repeats_range, plt_cnt_cfg.repeats, "repeats"),
+            (plot_filter.input_range, plt_cnt_cfg.inputs_cnt, "inputs"),
+        ]
 
-class PlotProvider:
-    """A base class for code that displays or plots data. Each class that inherits provides plotting methods and a filter that specifies what the plot is capable of displaying"""
+        for m, cnt, name in match_candidates:
+            match, info = m.matches_info(cnt, name)
+            matches.append(match)
+            if not match:
+                match_info.append(info)
 
-    # commonly used filters that are shared across classes
-    float_1_cat_any_vec_1_res_1_ = PlotFilter(
-        float_range=VarRange(0, 0),
-        cat_range=VarRange(0, None),
-        vector_len=VarRange(1, 1),
-        result_vars=VarRange(1, 1),
-    )
+        self.overall = all(matches)
+
+        match_info.insert(0, f"plot {plot_name} matches: {self.overall}")
+        self.matches_info = "\n".join(match_info).strip()
+        self.plt_cnt_cfg = plt_cnt_cfg
+
+        if self.plt_cnt_cfg.print_debug:
+            print(f"checking {plot_name} result: {self.overall}")
+            if not self.overall:
+                print(self.matches_info)
+
+    def to_panel(self, **kwargs) -> Optional[pn.pane.Markdown]:
+        if self.plt_cnt_cfg.print_debug:
+            return pn.pane.Markdown(self.matches_info, **kwargs)
+        return None
