@@ -18,6 +18,7 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
+from bencher.example.example_meta_levels import example_meta_levels
 
 import os
 
@@ -54,7 +55,7 @@ class TestBenchExamples(unittest.TestCase):
         # b_run.add_run(example_floats)
         b_run.add_run(example_image)
         b_run.add_run(example_video)
-        # b_run.add_run(example_meta)
+        b_run.add_run(example_meta_levels)
         # b_run.add_run(run_levels)
 
         b_run.run(level=4, grouped=True, save=True)
