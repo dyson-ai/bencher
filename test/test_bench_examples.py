@@ -18,7 +18,6 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-from bencher.example.example_meta import example_meta
 from bencher.example.example_meta_levels import example_meta_levels
 
 
