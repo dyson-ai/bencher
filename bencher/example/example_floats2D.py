@@ -90,4 +90,4 @@ def example_floats2D(
 
 
 if __name__ == "__main__":
-    example_floats2D(bch.BenchRunCfg(level=3)).report.show()
+    example_floats2D(bch.BenchRunCfg(repeats=2, level=3)).report.show()

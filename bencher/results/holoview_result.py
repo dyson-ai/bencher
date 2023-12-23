@@ -426,39 +426,6 @@ class HoloviewResult(PanelResult):
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
-    # def plot_float_cnt_2(plt_cnt_cfg: PltCntCfg, rv: ResultVar, debug: bool) -> PltCfgBase:
-    # """A function for determining the plot settings if there are 2 float variable and updates the PltCfgBase
-
-    # Args:
-    #     sns_cfg (PltCfgBase): See PltCfgBase definition
-    #     plt_cnt_cfg (PltCntCfg): See PltCntCfg definition
-
-    # Returns:
-    #     PltCfgBase: See PltCfgBase definition
-    # """
-    # xr_cfg = PltCfgBase()
-    # if plt_cnt_cfg.float_cnt == 2:
-    #     logging.info(f"surface plot: {rv.name}")
-    #     xr_cfg.x = plt_cnt_cfg.float_vars[0].name
-    #     xr_cfg.y = plt_cnt_cfg.float_vars[1].name
-    #     xr_cfg.xlabel = f"{xr_cfg.x} [{plt_cnt_cfg.float_vars[0].units}]"
-    #     xr_cfg.ylabel = f"{xr_cfg.y} [{plt_cnt_cfg.float_vars[1].units}]"
-    #     xr_cfg.zlabel = f"{rv.name} [{rv.units}]"
-    #     xr_cfg.title = f"{rv.name} vs ({xr_cfg.x} and {xr_cfg.y})"
-
-    #     if plt_cnt_cfg.cat_cnt >= 1:
-    #         logging.info("surface plot with 1 categorical")
-    #         xr_cfg.row = plt_cnt_cfg.cat_vars[0].name
-    #         xr_cfg.num_rows = len(plt_cnt_cfg.cat_vars[0].values(debug))
-    #     if plt_cnt_cfg.cat_cnt >= 2:
-    #         logging.info("surface plot with 2> categorical")
-    #         xr_cfg.col = plt_cnt_cfg.cat_vars[1].name
-    #         xr_cfg.num_cols = len(plt_cnt_cfg.cat_vars[1].values(debug))
-    # return xr_cfg
-
-    # def to_surface_hv(self) -> pn.Row:
-    # return self.map_plots(self.to_surface_da)
-
     def to_surface(self, result_var: ResultVar = None, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
@@ -468,7 +435,7 @@ class HoloviewResult(PanelResult):
         if matches_res.overall:
             return self.map_plot_panes(
                 self.to_surface_da,
-                hv_dataset=self.to_hv_dataset(),
+                hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
                 target_dimension=2,
                 result_var=result_var,
                 result_types=(ResultVar),
@@ -477,7 +444,7 @@ class HoloviewResult(PanelResult):
         return matches_res.to_panel()
 
     def to_surface_da(
-        self, da: xr.DataArray, result_var: Parameter, **kwargs
+        self, da: xr.DataArray, result_var: Parameter, alpha: float = 0.3, **kwargs
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -496,20 +463,12 @@ class HoloviewResult(PanelResult):
         if matches_res.overall:
             # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var, self.bench_cfg.debug)
 
-            alpha = 0.3
-
-            # da = self.to_dataarray(result_var, False)
-            # mean = da.mean("repeat")
-
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
             # hv.config.image_rtol = 1.0
 
             mean = da[result_var.name]
 
             ds = hv.Dataset(da[result_var.name])
-            # try:
-            # except Exception:
-            #     return plot_surface_plotly(bench_cfg, rv, xr_cfg)
 
             x = self.plt_cnt_cfg.float_vars[0]
             y = self.plt_cnt_cfg.float_vars[1]
@@ -521,14 +480,21 @@ class HoloviewResult(PanelResult):
                 logging.warning(e)
 
             if self.bench_cfg.repeats > 1:
-                std_dev = da.std("repeat")
+                std_dev = da[f"{result_var.name}_std"]
+
+                upper = mean + std_dev
+                upper.name = result_var.name
+
+                lower = mean - std_dev
+                lower.name = result_var.name
+
                 surface *= (
-                    hv.Dataset(mean + std_dev)
+                    hv.Dataset(upper)
                     .to(hv.Surface)
                     .opts(alpha=alpha, colorbar=False, backend="plotly")
                 )
                 surface *= (
-                    hv.Dataset(mean - std_dev)
+                    hv.Dataset(lower)
                     .to(hv.Surface)
                     .opts(alpha=alpha, colorbar=False, backend="plotly")
                 )
