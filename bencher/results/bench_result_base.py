@@ -330,7 +330,7 @@ class BenchResultBase(OptunaResult):
         return outer_container
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
-    def to_sweep_summary(self,**kwargs):
+    def to_sweep_summary(self, **kwargs):
         return self.bench_cfg.to_sweep_summary(**kwargs)
 
     def to_title(self, panel_name: str = None) -> pn.pane.Markdown:

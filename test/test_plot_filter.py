@@ -46,22 +46,46 @@ class TestPlotFilter(unittest.TestCase):
 
         null_case = PlotFilter()
         self.assertFalse(
-            null_case.matches_result(PltCntCfg(float_cnt=float_cnt, cat_cnt=cat_cnt), "").overall
+            null_case.matches_result(
+                PltCntCfg(float_cnt=float_cnt, cat_cnt=cat_cnt), "test_matches_none"
+            ).overall
         )
 
     def test_matches_float(self) -> None:
         # match only float from 0 to 1
-        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
+        pf = PlotFilter(
+            float_range=VarRange(0, 1),
+            cat_range=VarRange(None, None),
+            repeats_range=VarRange(None, None),
+            input_range=VarRange(None, None),
+        )
 
-        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=0), "").overall)
-        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=1), "").overall)
-        self.assertFalse(pf.matches_result(PltCntCfg(float_cnt=2), "").overall)
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=0), "test_matches_float0").overall)
+        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=1), "test_matches_float1").overall)
+        self.assertFalse(pf.matches_result(PltCntCfg(float_cnt=2), "test_matches_float2").overall)
 
     @given(st.integers(min_value=0))
     def test_matches_float_cat(self, cat_cnt) -> None:
         # match any cat count but only float from 0 to 1
-        pf = PlotFilter(float_range=VarRange(0, 1), cat_range=VarRange(None, None))
+        pf = PlotFilter(
+            float_range=VarRange(0, 1),
+            cat_range=VarRange(None, None),
+            repeats_range=VarRange(None, None),
+            input_range=VarRange(None, None),
+        )
 
-        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=0, cat_cnt=cat_cnt), "").overall)
-        self.assertTrue(pf.matches_result(PltCntCfg(float_cnt=1, cat_cnt=cat_cnt), "").overall)
-        self.assertFalse(pf.matches_result(PltCntCfg(float_cnt=2, cat_cnt=cat_cnt), "").overall)
+        self.assertTrue(
+            pf.matches_result(
+                PltCntCfg(float_cnt=0, cat_cnt=cat_cnt), "test_matches_float0_cat"
+            ).overall
+        )
+        self.assertTrue(
+            pf.matches_result(
+                PltCntCfg(float_cnt=1, cat_cnt=cat_cnt), "test_matches_float1_cat"
+            ).overall
+        )
+        self.assertFalse(
+            pf.matches_result(
+                PltCntCfg(float_cnt=2, cat_cnt=cat_cnt), "test_matches_float2_cat"
+            ).overall
+        )
