@@ -477,7 +477,7 @@ class HoloviewResult(PanelResult):
         return matches_res.to_panel()
 
     def to_surface_da(
-        self, da: xr.DataArray, result_var: Parameter, width=600, height=600, **kwargs
+        self, da: xr.DataArray, result_var: Parameter, **kwargs
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -534,11 +534,10 @@ class HoloviewResult(PanelResult):
                 )
 
             surface = surface.opts(
-                width=width,
-                height=height,
                 zlabel=f"{result_var.name} [{result_var.units}]",
                 title=f"{result_var.name} vs ({x.name} and {y.name})",
                 backend="plotly",
+                **kwargs,
             )
 
             if self.bench_cfg.render_plotly:
