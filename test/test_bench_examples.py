@@ -18,7 +18,9 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
+from bencher.example.example_meta import example_meta
 from bencher.example.example_meta_levels import example_meta_levels
+
 
 import os
 
@@ -50,16 +52,23 @@ class TestBenchExamples(unittest.TestCase):
             self.assertTrue(os.path.exists(path))
 
     def test_publish_docs(self):
-        b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
+        run_cfg = self.create_run_cfg()
+        # b_run = bch.BenchRunner("bench_runner_test", run_cfg=run_cfg)
         # b_run.add_run(example_categorical)
         # b_run.add_run(example_floats)
-        b_run.add_run(example_image)
-        b_run.add_run(example_video)
-        b_run.add_run(example_meta_levels)
+        # b_run.add_run(example_image)
+        # b_run.add_run(example_video)
+        # b_run.add_run(example_meta_levels)
         # b_run.add_run(run_levels)
+        # b_run.run(level=4, grouped=True, save=True)
+        # b_run.shutdown()
+        report = bch.BenchReport()
+        example_image(run_cfg=run_cfg, report=report)
+        example_video(run_cfg=run_cfg, report=report)
+        example_meta_levels(run_cfg=run_cfg, report=report)
+        example_meta(run_cfg=run_cfg, report=report)
 
-        b_run.run(level=4, grouped=True, save=True)
-        b_run.shutdown()
+        report.save()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
