@@ -53,6 +53,7 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_publish_docs(self):
         run_cfg = self.create_run_cfg()
+        # run_cfg.level=3
         # b_run = bch.BenchRunner("bench_runner_test", run_cfg=run_cfg)
         # b_run.add_run(example_categorical)
         # b_run.add_run(example_floats)
@@ -68,7 +69,7 @@ class TestBenchExamples(unittest.TestCase):
         example_meta_levels(run_cfg=run_cfg, report=report)
         example_meta(run_cfg=run_cfg, report=report)
 
-        report.save()
+        report.save_index()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
