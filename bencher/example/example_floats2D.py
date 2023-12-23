@@ -46,6 +46,8 @@ def example_floats2D(
         post_description="Here you can see the output plot of sin theta between 0 and pi.  In the tabs at the top you can also view 3 tabular representations of the data",
     )
 
+    bench.report.append(bench.get_result().to_surface())
+
     bench.plot_sweep(
         input_vars=[
             ExampleBenchCfg.param.theta,
@@ -62,10 +64,7 @@ def example_floats2D(
         description="""Here we add plot a 2d surface and facet over a categorical variable
         """,
     )
-
-    res = bench.get_result()
-
-    bench.report.append(res.to_surface_hv())
+    bench.report.append(bench.get_result().to_surface())
 
     bench.plot_sweep(
         input_vars=[
@@ -85,8 +84,10 @@ def example_floats2D(
         """,
     )
 
+    bench.report.append(bench.get_result().to_surface())
+
     return bench
 
 
 if __name__ == "__main__":
-    example_floats2D(bch.BenchRunCfg(repeats=1, level=4)).report.show()
+    example_floats2D(bch.BenchRunCfg(level=3)).report.show()

@@ -36,7 +36,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
 
     @staticmethod
     def plotly_callbacks():
-        return [HoloviewResult.to_surface_hv, PlotlyResult.to_volume]
+        return [HoloviewResult.to_surface, PlotlyResult.to_volume]
 
     def to_auto(
         self,

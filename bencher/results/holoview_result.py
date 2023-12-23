@@ -459,7 +459,7 @@ class HoloviewResult(PanelResult):
     # def to_surface_hv(self) -> pn.Row:
     # return self.map_plots(self.to_surface_da)
 
-    def to_surface_hv(self, result_var: ResultVar = None, **kwargs):
+    def to_surface(self, result_var: ResultVar = None, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -467,7 +467,7 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_surface")
         if matches_res.overall:
             return self.map_plot_panes(
-                self.to_heatmap_da,
+                self.to_surface_da,
                 hv_dataset=self.to_hv_dataset(),
                 target_dimension=2,
                 result_var=result_var,
@@ -476,7 +476,9 @@ class HoloviewResult(PanelResult):
             )
         return matches_res.to_panel()
 
-    def to_surface_da(self, da: xr.DataArray, result_var: Parameter) -> Optional[pn.panel]:
+    def to_surface_da(
+        self, da: xr.DataArray, result_var: Parameter, width=600, height=600, **kwargs
+    ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
         Args:
@@ -532,8 +534,8 @@ class HoloviewResult(PanelResult):
                 )
 
             surface = surface.opts(
-                width=800,
-                height=800,
+                width=width,
+                height=height,
                 zlabel=f"{result_var.name} [{result_var.units}]",
                 title=f"{result_var.name} vs ({x.name} and {y.name})",
                 backend="plotly",
