@@ -1,7 +1,5 @@
 import unittest
 import bencher as bch
-from bencher.example.example_categorical import example_categorical
-from bencher.example.example_floats import example_floats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
@@ -20,7 +18,6 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-from bencher.example.example_meta import example_meta
 
 import os
 
