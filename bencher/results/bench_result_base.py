@@ -1,6 +1,5 @@
 import logging
 from typing import List, Any, Tuple, Optional
-from collections.abc import Iterable
 from enum import Enum, auto
 import xarray as xr
 import holoviews as hv
@@ -43,15 +42,6 @@ class EmptyContainer:
 
 
 class BenchResultBase(OptunaResult):
-    def to_dataarray(self, result_var: ResultVar, squeeze: bool = True) -> xr.DataArray:
-        var = result_var.name
-        xr_dataarray = self.ds[var]
-        if squeeze:
-            xr_dataarray = xr_dataarray.squeeze()
-        if not isinstance(xr_dataarray["repeat"].values, Iterable):
-            xr_dataarray = xr_dataarray.drop_indexes("repeat")
-        return xr_dataarray
-
     def result_samples(self) -> int:
         """The number of samples in the results dataframe"""
         return self.ds.count()
@@ -73,8 +63,6 @@ class BenchResultBase(OptunaResult):
 
         vdims = [r.name for r in self.bench_cfg.result_vars]
         kdims = [i.name for i in self.bench_cfg.all_vars]
-
-        print(kdims)
 
         ds = self.ds if result_var is None else self.ds[result_var.name]
         match (reduce):
@@ -342,8 +330,8 @@ class BenchResultBase(OptunaResult):
         return outer_container
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
-    def to_sweep_summary(self):
-        return self.bench_cfg.to_sweep_summary()
+    def to_sweep_summary(self, **kwargs):
+        return self.bench_cfg.to_sweep_summary(**kwargs)
 
     def to_title(self, panel_name: str = None) -> pn.pane.Markdown:
         return self.bench_cfg.to_title(panel_name)

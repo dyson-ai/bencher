@@ -64,19 +64,8 @@ class PlotFilter:
     repeats_range: VarRange = VarRange(1, None)
     input_range: VarRange = VarRange(1, None)
 
-    def matches(self, plt_cnt_cfg: PltCntCfg) -> bool:
-        """Checks if the result data signature matches the type of data the plot is able to display.
-
-        Args:
-            plt_cng_cfg (PltCntCfg): The plot count configuration to check.
-
-        Returns:
-            bool: True if the configuration matches the filter, False otherwise.
-        """
-
-        return self.matches_result(plt_cnt_cfg, "null").overall
-
     def matches_result(self, plt_cnt_cfg: PltCntCfg, plot_name: str) -> PlotMatchesResult:
+        """Checks if the result data signature matches the type of data the plot is able to display."""
         return PlotMatchesResult(self, plt_cnt_cfg, plot_name)
 
 
