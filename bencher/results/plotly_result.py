@@ -16,7 +16,7 @@ class PlotlyResult(BenchResultBase):
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
         ).matches_result(self.plt_cnt_cfg, "to_volume")
-        if matches_res.overall :
+        if matches_res.overall:
             return self.map_plot_panes(
                 self.to_volume_da,
                 hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
