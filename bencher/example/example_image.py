@@ -51,8 +51,6 @@ def example_image(
 ) -> bch.Bench:
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
-    # bench.plot_sweep("Polygons", input_vars=[BenchPolygons.param.sides])
-
     for s in [
         [BenchPolygons.param.sides],
         [BenchPolygons.param.sides, BenchPolygons.param.linewidth],
@@ -63,15 +61,19 @@ def example_image(
             BenchPolygons.param.linestyle,
             BenchPolygons.param.color,
         ],
-        # [
-        #     BenchPolygons.param.sides,
-        #     BenchPolygons.param.linewidth,
-        #     BenchPolygons.param.linestyle,
-        #     BenchPolygons.param.color,
-        #     BenchPolygons.param.radius,
-        # ],
+        [
+            BenchPolygons.param.sides,
+            BenchPolygons.param.linewidth,
+            BenchPolygons.param.linestyle,
+            BenchPolygons.param.color,
+            BenchPolygons.param.radius,
+        ],
     ]:
-        bench.plot_sweep("Polygons", input_vars=s, result_vars=[BenchPolygons.param.polygon])
+        bench.plot_sweep(
+            f"Polygons Sweeping {len(s)} Parameters",
+            input_vars=s,
+            result_vars=[BenchPolygons.param.polygon],
+        )
 
     return bench
 

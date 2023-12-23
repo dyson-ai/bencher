@@ -15,9 +15,7 @@ class TuringPattern(bch.ParametrizedSweep):
     time = bch.FloatSweep(default=20.0, bounds=(1, 100), doc="total time of simulation")
     dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
-    # video = bch.ResultContainer()
     video = bch.ResultVideo()
-    # video = bch.ResultContainer()
 
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
@@ -85,8 +83,8 @@ def example_video(
 
     bench.plot_sweep(
         "Turing patterns with different parameters",
-        # input_vars=[TuringPattern.param.alpha, TuringPattern.param.beta],
-        input_vars=[TuringPattern.param.alpha],
+        input_vars=[TuringPattern.param.alpha, TuringPattern.param.beta],
+        # input_vars=[TuringPattern.param.alpha],
         result_vars=[TuringPattern.param.video],
     )
 
@@ -96,8 +94,5 @@ def example_video(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
-    run_cfg_ex.repeats = 2
-    # run_cfg.only_hash_tag = True
-    # run_cfg.use_sample_cache = True
 
     example_video(run_cfg_ex).report.show()
