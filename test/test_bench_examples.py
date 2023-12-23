@@ -53,12 +53,14 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_publish_docs(self):
         b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
-        b_run.add_run(example_categorical)
-        b_run.add_run(example_floats)
-        b_run.add_run(example_meta)
+        # b_run.add_run(example_categorical)
+        # b_run.add_run(example_floats)
+        b_run.add_run(example_image)
+        b_run.add_run(example_video)
+        # b_run.add_run(example_meta)
         # b_run.add_run(run_levels)
 
-        b_run.run(level=2, grouped=True, save=True)
+        b_run.run(level=4, grouped=True, save=True)
         b_run.shutdown()
 
     # def test_example_categorical(self) -> None:
@@ -117,9 +119,6 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))
-
-    # def test_example_meta(self) -> None:
-    # self.examples_asserts(example_meta(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:
