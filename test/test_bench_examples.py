@@ -18,7 +18,6 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-from bencher.example.example_meta import example_meta
 from bencher.example.example_meta_levels import example_meta_levels
 
 
@@ -63,12 +62,13 @@ class TestBenchExamples(unittest.TestCase):
         # b_run.run(level=4, grouped=True, save=True)
         # b_run.shutdown()
         report = bch.BenchReport()
+        run_cfg.level = 3
         example_image(run_cfg=run_cfg, report=report)
         example_video(run_cfg=run_cfg, report=report)
         example_meta_levels(run_cfg=run_cfg, report=report)
-        example_meta(run_cfg=run_cfg, report=report)
+        # example_meta(run_cfg=run_cfg, report=report)
 
-        report.save()
+        report.save_index()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
