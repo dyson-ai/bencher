@@ -28,7 +28,6 @@ class BenchResult(PlotlyResult, HoloviewResult):
             HoloviewResult.to_curve,
             HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
-            # self.to_surface_hv,
             PlotlyResult.to_volume,
             PanelResult.to_video,
             PanelResult.to_panes,
@@ -50,15 +49,10 @@ class BenchResult(PlotlyResult, HoloviewResult):
 
         row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:
-            # if self.plt_cnt_cfg.print_debug:
-            print(f"checking: {plot_callback.__name__}")
+            if self.plt_cnt_cfg.print_debug:
+                print(f"checking: {plot_callback.__name__}")
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
-
-            # row.append(partial(plot_callback, self, **kwargs))
-
             row.append(plot_callback(self, **kwargs))
-
-            # row.append(self.map_plots(partial(plot_callback, self, **kwargs)))
 
         self.plt_cnt_cfg.print_debug = False
         if len(row.pane) == 0:
