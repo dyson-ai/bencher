@@ -24,7 +24,6 @@ class PanelResult(BenchResultBase):
             xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
 
             def to_video_da(da, **kwargs):
-                print("to video da", da)
                 vid = pn.pane.Video(da, autoplay=True, **kwargs)
                 vid.loop = True
                 vid_p.append(vid)

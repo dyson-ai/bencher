@@ -172,7 +172,6 @@ class BenchResultBase(OptunaResult):
         try:
             if name is None:
                 name = self.result_hmaps[0].name
-                print(name)
             if name in self.hmaps:
                 return self.hmaps[name]
         except Exception as e:
@@ -218,7 +217,6 @@ class BenchResultBase(OptunaResult):
         if row is None:
             row = EmptyContainer(pn.Row(name=self.to_plot_title()))
         for rv in self.get_results_var_list(result_var):
-            print("RV NAME", rv.name)
             row.append(plot_callback(rv))
         return row.get()
 
