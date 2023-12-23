@@ -18,7 +18,9 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
+from bencher.example.example_meta import example_meta
 from bencher.example.example_meta_levels import example_meta_levels
+
 
 import os
 
@@ -64,6 +66,8 @@ class TestBenchExamples(unittest.TestCase):
         example_image(run_cfg=run_cfg, report=report)
         example_video(run_cfg=run_cfg, report=report)
         example_meta_levels(run_cfg=run_cfg, report=report)
+        example_meta(run_cfg=run_cfg, report=report)
+
         report.save()
 
     # def test_example_categorical(self) -> None:
