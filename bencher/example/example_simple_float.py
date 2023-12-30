@@ -36,7 +36,7 @@ def example_1D_float(
     # print(res.to_hv_dataset_new().data)
 
     bench.report.append(res.to_hv_dataset().data)
-    bench.report.append(res.to_hv_dataset_new().data)
+    bench.report.append(res.to_hv_dataset_old().data)
         
 
     # report.append(res.to_hv_container(hv.Area))

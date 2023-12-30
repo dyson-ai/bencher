@@ -47,7 +47,7 @@ class BenchResultBase(OptunaResult):
         """The number of samples in the results dataframe"""
         return self.ds.count()
 
-    def to_hv_dataset_new(
+    def to_hv_dataset(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
@@ -70,7 +70,7 @@ class BenchResultBase(OptunaResult):
 
         return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims, vdims=vdims)
 
-    def to_hv_dataset(
+    def to_hv_dataset_old(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
