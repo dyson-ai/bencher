@@ -103,6 +103,29 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
+    def hv_container_ds(
+        self, dataset: xr.Dataset, result_var: Parameter, container: hv.Chart = None, **kwargs
+    ):
+        return hv.Dataset(dataset[result_var.name]).to(container).opts(**kwargs)
+
+    def to_hv_container(
+        self,
+        container: pn.pane.panel,
+        reduce_type=ReduceType.AUTO,
+        target_dimension: int = 2,
+        result_var: Parameter = None,
+        result_types=(ResultVar),
+        **kwargs,
+    ) -> Optional[pn.pane.panel]:
+        return self.map_plot_panes(
+            partial(self.hv_container_ds, container=container),
+            hv_dataset=self.to_hv_dataset(reduce_type),
+            target_dimension=target_dimension,
+            result_var=result_var,
+            result_types=result_types,
+            **kwargs,
+        )
+
     def to_line(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
