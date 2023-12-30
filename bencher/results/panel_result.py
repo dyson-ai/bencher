@@ -88,11 +88,13 @@ class PanelResult(BenchResultBase):
             return container(val, styles={"background": "white"}, **kwargs)
         return val
 
-    def to_panes(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.panel]:
+    def to_panes(
+        self, result_var: Parameter = None, target_dimension: int = 0, **kwargs
+    ) -> Optional[pn.pane.panel]:
         return self.map_plot_panes(
             partial(self.ds_to_container, container=pn.pane.panel),
             hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-            target_dimension=0,
+            target_dimension=target_dimension,
             result_var=result_var,
             result_types=PANEL_TYPES,
             **kwargs,

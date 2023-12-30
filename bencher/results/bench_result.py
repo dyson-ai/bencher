@@ -54,7 +54,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
             # the callbacks are passed from the static class definition, so self needs to be passed before the plotting callback can be called
             row.append(plot_callback(self, **kwargs))
 
-        self.plt_cnt_cfg.print_debug = False
+        self.plt_cnt_cfg.print_debug = True
         if len(row.pane) == 0:
             row.append(
                 pn.pane.Markdown("No Plotters are able to represent these results", **kwargs)
