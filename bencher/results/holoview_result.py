@@ -79,7 +79,7 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar(self, result_var: Parameter = None, **kwargs)->Optional[pn.panel]:
+    def to_bar(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_bar_da")
@@ -103,7 +103,7 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
-    def to_line(self, result_var: Parameter = None, **kwargs)->Optional[pn.panel]:
+    def to_line(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
@@ -259,7 +259,7 @@ class HoloviewResult(PanelResult):
     #         return self.to_panes_multi_panel(hv_dataset, None, plot_callback=cb, target_dimension=3)
     #     return matches.to_panel()
 
-    # def to_scatter_jitter_da(self, da: xr.Dataset, **kwargs) -> Optional[hv.Scatter]:
+    # def to_scatter_jitter_da(self, ds: xr.Dataset, **kwargs) -> Optional[hv.Scatter]:
     #     matches = PlotFilter(
     #         float_range=VarRange(0, 0),
     #         cat_range=VarRange(0, None),

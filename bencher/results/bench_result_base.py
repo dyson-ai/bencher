@@ -2,6 +2,7 @@ import logging
 from typing import List, Any, Tuple, Optional
 from enum import Enum, auto
 import xarray as xr
+from param import Parameter
 import holoviews as hv
 import numpy as np
 from functools import partial
@@ -185,19 +186,19 @@ class BenchResultBase(OptunaResult):
             return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         return ""
 
-    def title_from_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs):
+    def title_from_da(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 
-        if isinstance(da, xr.DataArray):
-            tit = [da.name]
-            for d in da.dims:
+        if isinstance(ds, xr.DataArray):
+            tit = [ds.name]
+            for d in ds.dims:
                 tit.append(d)
         else:
             tit = [result_var.name]
             # data_vars = list(da.data_vars.keys())
             # tit = [data_vars[0]]
-            tit.extend(list(da.sizes))
+            tit.extend(list(ds.sizes))
 
             # tit = list(da.variables)
             # tit = [d for d in da.sizes]

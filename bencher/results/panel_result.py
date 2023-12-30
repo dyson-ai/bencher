@@ -1,7 +1,8 @@
-from typing import Optional
+from typing import Optional, Any
 from functools import partial
 import panel as pn
 import xarray as xr
+from param import Parameter
 from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -17,7 +18,7 @@ class PanelResult(BenchResultBase):
     def to_video(self, **kwargs):
         return self.map_plots(partial(self.to_video_multi, **kwargs))
 
-    def to_video_multi(self, result_var: ParametrizedSweep, **kwargs) -> Optional[pn.pane.PNG]:
+    def to_video_multi(self, result_var: Parameter, **kwargs) -> Optional[pn.Column]:
         if isinstance(result_var, (ResultVideo, ResultContainer)):
             vid_p = []
 
@@ -29,7 +30,7 @@ class PanelResult(BenchResultBase):
                 vid_p.append(vid)
                 return vid
 
-            plot_callback = partial(self.da_to_container, container=partial(to_video_da, **kwargs))
+            plot_callback = partial(self.ds_to_container, container=partial(to_video_da, **kwargs))
 
             panes = self.to_panes_multi_panel(
                 xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
@@ -67,7 +68,7 @@ class PanelResult(BenchResultBase):
             return pn.Column(buttons, panes)
         return None
 
-    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset):
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
         # todo this is really horrible, need to improve
         if isinstance(da_ds, xr.Dataset):
             dim = list(da_ds.keys())[0]
@@ -79,17 +80,17 @@ class PanelResult(BenchResultBase):
             break
         return da.expand_dims(dim).values[0]
 
-    def da_to_container(self, da: xr.DataArray, result_var: ResultVar, container, **kwargs):
-        val = self.zero_dim_da_to_val(da[result_var.name])
+    def ds_to_container(self, ds: xr.Dataset, result_var: Parameter, container, **kwargs) -> Any:
+        val = self.zero_dim_da_to_val(ds[result_var.name])
         if isinstance(result_var, ResultReference):
             val = self.object_index[val].obj
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
 
-    def to_panes(self, result_var: ParametrizedSweep = None, **kwargs) -> Optional[pn.pane.panel]:
+    def to_panes(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.panel]:
         return self.map_plot_panes(
-            partial(self.da_to_container, container=pn.pane.panel),
+            partial(self.ds_to_container, container=pn.pane.panel),
             hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
             target_dimension=0,
             result_var=result_var,
