@@ -86,6 +86,11 @@ class BenchResultBase(OptunaResult):
             case _:
                 return hv.Dataset(ds, kdims=kdims, vdims=vdims)
 
+    def to_dataset(
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+    ) -> xr.Dataset:
+        return self.to_hv_dataset(reduce=reduce, result_var=result_var).data
+
     def get_optimal_vec(
         self,
         result_var: ParametrizedSweep,
@@ -318,7 +323,7 @@ class BenchResultBase(OptunaResult):
                 inner_container.append(panes)
                 outer_container.append(inner_container)
         else:
-            return plot_callback(ds=dataset, result_var=result_var, **kwargs)
+            return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
         return outer_container
 
