@@ -145,7 +145,9 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_curve_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
+    def to_curve_ds(
+        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
+    ) -> Optional[hv.Curve]:
         hvds = hv.Dataset(dataset)
         # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
