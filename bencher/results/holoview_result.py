@@ -79,13 +79,13 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar(self, result_var: ResultVar = None, **kwargs):
+    def to_bar(self, result_var: Parameter = None, **kwargs)->Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_bar_da")
         if match_res.overall:
             return self.map_plot_panes(
-                self.to_bar_da,
+                self.to_bar_ds,
                 hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
                 target_dimension=2,
                 result_var=result_var,
@@ -94,22 +94,22 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_bar_da(self, da: xr.DataArray, result_var: ResultVar = None, **kwargs):
+    def to_bar_ds(self, ds: xr.Dataset, result_var: Parameter = None, **kwargs):
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
-        da_plot = da[result_var.name]
+        da_plot = ds[result_var.name]
         title = self.title_from_da(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
-    def to_line(self, result_var: ResultVar = None, **kwargs):
+    def to_line(self, result_var: Parameter = None, **kwargs)->Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_line")
         if match_res.overall:
             return self.map_plot_panes(
-                self.to_line_da,
+                self.to_line_ds,
                 hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
                 target_dimension=2,
                 result_var=result_var,
@@ -118,25 +118,25 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_line_da(self, da: xr.Dataset, result_var: ResultVar, **kwargs):
+    def to_line_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
         # y = self.plt_cnt_cfg.result_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
-        da_plot = da[result_var.name]
+        da_plot = ds[result_var.name]
         title = self.title_from_da(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
-    def to_curve(self, result_var: ResultVar = None, **kwargs):
+    def to_curve(self, result_var: Parameter = None, **kwargs):
         match_res = PlotFilter(
             float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
         ).matches_result(self.plt_cnt_cfg, "to_curve")
         # print(result_var)
         if match_res.overall:
             return self.map_plot_panes(
-                self.to_curve_da,
+                self.to_curve_ds,
                 hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
                 target_dimension=2,
                 result_var=result_var,
@@ -145,17 +145,17 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_curve_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs) -> Optional[hv.Curve]:
-        ds = hv.Dataset(da)
+    def to_curve_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
+        ds = hv.Dataset(ds)
         # result_var = self.get_results_var_list(result_var)[0]
-        title = self.title_from_da(da, result_var, **kwargs)
+        title = self.title_from_da(ds, result_var, **kwargs)
         pt = ds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= ds.to(hv.Spread).opts(alpha=0.2)
-        if len(da.sizes) > 1:
+        if len(ds.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")
 
-    def to_heatmap(self, result_var: ResultVar = None, **kwargs):
+    def to_heatmap(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -163,7 +163,7 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_heatmap")
         if matches_res.overall:
             return self.map_plot_panes(
-                self.to_heatmap_da,
+                self.to_heatmap_ds,
                 hv_dataset=self.to_hv_dataset(),
                 target_dimension=2,
                 result_var=result_var,
@@ -172,10 +172,10 @@ class HoloviewResult(PanelResult):
             )
         return matches_res.to_panel()
 
-    def to_heatmap_da(
-        self, da: xr.Dataset, result_var: ResultVar, **kwargs
+    def to_heatmap_ds(
+        self, ds: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
-        if len(da.dims) >= 2:
+        if len(ds.dims) >= 2:
             # dims = [d for d in da.sizes]
             # x = dims[0]
             # y = dims[1]
@@ -184,25 +184,8 @@ class HoloviewResult(PanelResult):
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
-            return da.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
+            return ds.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
-
-    def to_curve_single(
-        self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
-    ) -> Optional[hv.Curve]:
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
-        ).matches_result(self.plt_cnt_cfg, "to_curve")
-        if match_res.overall:
-            title = self.to_plot_title()
-            ds = self.to_hv_dataset(reduce)
-            pt = ds.to(hv.Curve, vdims=[result_var.name], label=result_var.name).opts(
-                title=title, **kwargs
-            )
-            if self.bench_cfg.repeats > 1:
-                pt *= ds.to(hv.Spread).opts(alpha=0.2)
-            return pt
-        return match_res.to_panel(**kwargs)
 
     def to_error_bar(self) -> hv.Bars:
         return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
@@ -214,7 +197,7 @@ class HoloviewResult(PanelResult):
             pt *= ds.to(hv.ErrorBars)
         return pt
 
-    def to_scatter(self, **kwargs):
+    def to_scatter(self, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
             float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
         ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
@@ -316,11 +299,11 @@ class HoloviewResult(PanelResult):
     #     return matches.to_panel()
 
     def to_scatter_jitter(
-        self, result_var: ResultVar = None, **kwargs  # pylint: disable=unused-argument
+        self, result_var: Parameter = None, **kwargs  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
         return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 
-    def to_scatter_jitter_single(self, result_var: ResultVar, **kwargs) -> Optional[hv.Scatter]:
+    def to_scatter_jitter_single(self, result_var: Parameter, **kwargs) -> Optional[hv.Scatter]:
         matches = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
@@ -338,7 +321,7 @@ class HoloviewResult(PanelResult):
         return matches.to_panel()
 
     def to_heatmap_single(
-        self, result_var: ResultVar, reduce: ReduceType = ReduceType.AUTO, **kwargs
+        self, result_var: Parameter, reduce: ReduceType = ReduceType.AUTO, **kwargs
     ) -> hv.HeatMap:
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
@@ -360,7 +343,7 @@ class HoloviewResult(PanelResult):
 
     def to_heatmap_tap(
         self,
-        result_var: ResultVar,
+        result_var: Parameter,
         reduce: ReduceType = ReduceType.AUTO,
         width=800,
         height=800,
@@ -426,7 +409,7 @@ class HoloviewResult(PanelResult):
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
-    def to_surface(self, result_var: ResultVar = None, **kwargs):
+    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         matches_res = PlotFilter(
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
@@ -434,7 +417,7 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_surface")
         if matches_res.overall:
             return self.map_plot_panes(
-                self.to_surface_da,
+                self.to_surface_ds,
                 hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
                 target_dimension=2,
                 result_var=result_var,
@@ -443,8 +426,8 @@ class HoloviewResult(PanelResult):
             )
         return matches_res.to_panel()
 
-    def to_surface_da(
-        self, da: xr.DataArray, result_var: Parameter, alpha: float = 0.3, **kwargs
+    def to_surface_ds(
+        self, ds: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -466,9 +449,9 @@ class HoloviewResult(PanelResult):
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
             # hv.config.image_rtol = 1.0
 
-            mean = da[result_var.name]
+            mean = ds[result_var.name]
 
-            ds = hv.Dataset(da[result_var.name])
+            ds = hv.Dataset(ds[result_var.name])
 
             x = self.plt_cnt_cfg.float_vars[0]
             y = self.plt_cnt_cfg.float_vars[1]
@@ -480,7 +463,7 @@ class HoloviewResult(PanelResult):
                 logging.warning(e)
 
             if self.bench_cfg.repeats > 1:
-                std_dev = da[f"{result_var.name}_std"]
+                std_dev = ds[f"{result_var.name}_std"]
 
                 upper = mean + std_dev
                 upper.name = result_var.name
