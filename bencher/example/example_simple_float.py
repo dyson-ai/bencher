@@ -26,6 +26,22 @@ def example_1D_float(
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description=example_1D_float.__doc__,
     )
+
+    res = bench.get_result()
+
+    import holoviews as hv
+
+    report.append(res.to_hv_container(hv.Area))
+
+    # report.append(res.ds)
+    # report.append(res.to_dataset(ExampleBenchCfgOut.param.out_sin))
+    # print(res.ds)
+
+    # report.append(res.to_line())
+
+    # print(res.to_dataset())
+    # print(res.to_hv_dataset())
+    # report.append(res.to_dataset())
     return bench
 
 

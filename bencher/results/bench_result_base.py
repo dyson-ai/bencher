@@ -78,9 +78,24 @@ class BenchResultBase(OptunaResult):
                         non_sum.append(r.name)
 
                 ds_num = ds.drop_vars(non_sum)
-                return hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
-                    ["repeat"], np.mean, np.std
+                reduced_ds= hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
+                    ["repeat"], np.mean, np.std,keep_attrs=True
                 )
+
+                # # print(kdims)
+                # print(vdims)
+                # print(ds["out_sin"])
+
+                # print(reduced_ds["out_sin"])
+                # reduced_ds.data[out_sin]
+                # exit()
+                # print(ds.coords)
+
+                for v in reduced_ds.vdims:
+                    # print()
+                    # reduced_ds.data[v].attrs = ds[v].attrs
+                    print(reduced_ds.data[v].attrs)
+                    # reduced_ds.data[v].attrs = ds[v].attrs
             case ReduceType.SQUEEZE:
                 return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
             case _:
