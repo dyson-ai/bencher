@@ -29,15 +29,12 @@ def example_1D_float(
 
     res = bench.get_result()
 
-    import holoviews as hv
-
     # print(res.to_hv_dataset().data)
     # print("new")
     # print(res.to_hv_dataset_new().data)
 
     bench.report.append(res.to_hv_dataset().data)
     bench.report.append(res.to_hv_dataset_old().data)
-        
 
     # report.append(res.to_hv_container(hv.Area))
 

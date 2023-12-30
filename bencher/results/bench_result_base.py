@@ -129,7 +129,7 @@ class BenchResultBase(OptunaResult):
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
                     # dict([(v, f"{v}_std") for v in ds_reduce_mean.variables])
-                
+
                 return ds_reduce_mean
                 # return xr.merge((ds_reduce_mean, ds_reduce_std))
             case ReduceType.SQUEEZE:
