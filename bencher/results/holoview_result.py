@@ -146,11 +146,11 @@ class HoloviewResult(PanelResult):
         return match_res.to_panel(**kwargs)
 
     def to_curve_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
-        ds = hv.Dataset(ds)
+        hvds = hv.Dataset(ds)
         # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(ds, result_var, **kwargs)
-        pt = ds.to(hv.Curve).opts(title=title, **kwargs)
-        pt *= ds.to(hv.Spread).opts(alpha=0.2)
+        pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
+        pt *= hvds.to(hv.Spread).opts(alpha=0.2)
         if len(ds.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")

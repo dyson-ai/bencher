@@ -196,15 +196,9 @@ class BenchResultBase(OptunaResult):
                 tit.append(d)
         else:
             tit = [result_var.name]
-            # data_vars = list(da.data_vars.keys())
-            # tit = [data_vars[0]]
-            # tit.extend(list(ds.sizes))
-
-            # tit = list(da.variables)
-            tit.extend([d for d in ds.sizes])
+            tit.extend(list(ds.sizes))
 
         return " vs ".join(tit)
-        # return title
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]

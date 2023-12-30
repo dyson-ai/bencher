@@ -31,7 +31,7 @@ def example_1D_float(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.repeats = 1
+    ex_run_cfg.repeats = 2
     # ex_run_cfg.over_time = True
 
     example_1D_float(ex_run_cfg).report.show()
