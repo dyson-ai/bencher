@@ -11,7 +11,7 @@ from bencher.variables.results import ResultVar
 
 
 class PlotlyResult(BenchResultBase):
-    def to_volume(self, result_var: ResultVar = None, **kwargs):
+    def to_volume(self, result_var: Parameter = None, **kwargs):
         matches_res = PlotFilter(
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
@@ -28,7 +28,7 @@ class PlotlyResult(BenchResultBase):
         return matches_res.to_panel()
 
     def to_volume_da(
-        self, da: xr.DataArray, result_var: Parameter, width=600, height=600
+        self, dataset: xr.Dataset, result_var: Parameter, width=600, height=600
     ) -> Optional[pn.pane.Plotly]:
         """Given a benchCfg generate a 3D surface plot
         Returns:
@@ -38,7 +38,7 @@ class PlotlyResult(BenchResultBase):
         y = self.bench_cfg.input_vars[1]
         z = self.bench_cfg.input_vars[2]
         opacity = 0.1
-        meandf = da[result_var.name].to_dataframe().reset_index()
+        meandf = dataset[result_var.name].to_dataframe().reset_index()
         data = [
             go.Volume(
                 x=meandf[x.name],

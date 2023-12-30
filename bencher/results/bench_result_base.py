@@ -2,6 +2,7 @@ import logging
 from typing import List, Any, Tuple, Optional
 from enum import Enum, auto
 import xarray as xr
+from param import Parameter
 import holoviews as hv
 import numpy as np
 from functools import partial
@@ -84,6 +85,11 @@ class BenchResultBase(OptunaResult):
                 return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
             case _:
                 return hv.Dataset(ds, kdims=kdims, vdims=vdims)
+
+    def to_dataset(
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+    ) -> xr.Dataset:
+        return self.to_hv_dataset(reduce=reduce, result_var=result_var).data
 
     def get_optimal_vec(
         self,
@@ -185,25 +191,19 @@ class BenchResultBase(OptunaResult):
             return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         return ""
 
-    def title_from_da(self, da: xr.DataArray, result_var: ResultVar, **kwargs):
+    def title_from_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 
-        if isinstance(da, xr.DataArray):
-            tit = [da.name]
-            for d in da.dims:
+        if isinstance(dataset, xr.DataArray):
+            tit = [dataset.name]
+            for d in dataset.dims:
                 tit.append(d)
         else:
             tit = [result_var.name]
-            # data_vars = list(da.data_vars.keys())
-            # tit = [data_vars[0]]
-            tit.extend(list(da.sizes))
-
-            # tit = list(da.variables)
-            # tit = [d for d in da.sizes]
+            tit.extend(list(dataset.sizes))
 
         return " vs ".join(tit)
-        # return title
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else [result_var]
@@ -228,7 +228,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         **kwargs,
-    ):
+    ) -> Optional[pn.Row]:
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
         row = EmptyContainer(pn.Row())
@@ -264,7 +264,7 @@ class BenchResultBase(OptunaResult):
 
     def _to_panes_da(
         self,
-        ds: xr.Dataset,
+        dataset: xr.Dataset,
         plot_callback=pn.pane.panel,
         target_dimension=1,
         horizontal=False,
@@ -273,9 +273,9 @@ class BenchResultBase(OptunaResult):
     ) -> pn.panel:
         # todo, when dealing with time and repeats, add feature to allow custom order of dimension recursion
         ##todo remove recursion
-        num_dims = len(ds.sizes)
+        num_dims = len(dataset.sizes)
         # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
-        dims = list(d for d in ds.sizes)
+        dims = list(d for d in dataset.sizes)
 
         time_dim_delta = 0
         if self.bench_cfg.over_time:
@@ -295,8 +295,8 @@ class BenchResultBase(OptunaResult):
                 pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
 
-            for i in range(ds.sizes[dim_sel]):
-                sliced = ds.isel({dim_sel: i})
+            for i in range(dataset.sizes[dim_sel]):
+                sliced = dataset.isel({dim_sel: i})
                 label = f"{dim_sel}={sliced.coords[dim_sel].values}"
 
                 panes = self._to_panes_da(
@@ -323,7 +323,7 @@ class BenchResultBase(OptunaResult):
                 inner_container.append(panes)
                 outer_container.append(inner_container)
         else:
-            return plot_callback(da=ds, result_var=result_var, **kwargs)
+            return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
         return outer_container
 
