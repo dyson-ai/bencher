@@ -198,10 +198,10 @@ class BenchResultBase(OptunaResult):
             tit = [result_var.name]
             # data_vars = list(da.data_vars.keys())
             # tit = [data_vars[0]]
-            tit.extend(list(ds.sizes))
+            # tit.extend(list(ds.sizes))
 
             # tit = list(da.variables)
-            # tit = [d for d in da.sizes]
+            tit.extend([d for d in ds.sizes])
 
         return " vs ".join(tit)
         # return title
@@ -229,7 +229,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         **kwargs,
-    ):
+    ) -> Optional[pn.Row]:
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
         row = EmptyContainer(pn.Row())

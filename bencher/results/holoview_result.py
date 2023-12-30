@@ -451,13 +451,13 @@ class HoloviewResult(PanelResult):
 
             mean = ds[result_var.name]
 
-            ds = hv.Dataset(ds[result_var.name])
+            hvds = hv.Dataset(ds[result_var.name])
 
             x = self.plt_cnt_cfg.float_vars[0]
             y = self.plt_cnt_cfg.float_vars[1]
 
             try:
-                surface = ds.to(hv.Surface, vdims=[result_var.name])
+                surface = hvds.to(hv.Surface, vdims=[result_var.name])
                 surface = surface.opts(colorbar=True)
             except Exception as e:
                 logging.warning(e)
