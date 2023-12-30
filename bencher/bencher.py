@@ -415,7 +415,7 @@ class Bench(BenchPlotServer):
     #     return BenchPlotServer().plot_server(self.bench_name, run_cfg, pane)
 
     def load_history_cache(
-        self, ds: xr.Dataset, bench_cfg_hash: int, clear_history: bool
+        self, dataset: xr.Dataset, bench_cfg_hash: int, clear_history: bool
     ) -> xr.Dataset:
         """Load historical data from a cache if over_time=true
 
@@ -435,13 +435,13 @@ class Bench(BenchPlotServer):
                 if bench_cfg_hash in c:
                     logging.info("loading historical data from cache")
                     ds_old = c[bench_cfg_hash]
-                    ds = xr.concat([ds_old, ds], "over_time")
+                    dataset = xr.concat([ds_old, dataset], "over_time")
                 else:
                     logging.info("did not detect any historical data")
 
             logging.info("saving data to history cache")
-            c[bench_cfg_hash] = ds
-        return ds
+            c[bench_cfg_hash] = dataset
+        return dataset
 
     def setup_dataset(
         self, bench_cfg: BenchCfg, time_src: datetime | str

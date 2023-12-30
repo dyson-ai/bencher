@@ -94,11 +94,11 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_bar_ds(self, ds: xr.Dataset, result_var: Parameter = None, **kwargs):
+    def to_bar_ds(self, dataset: xr.Dataset, result_var: Parameter = None, **kwargs):
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
-        da_plot = ds[result_var.name]
+        da_plot = dataset[result_var.name]
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
@@ -118,13 +118,13 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_line_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
+    def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
         # y = self.plt_cnt_cfg.result_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
-        da_plot = ds[result_var.name]
+        da_plot = dataset[result_var.name]
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
@@ -145,13 +145,13 @@ class HoloviewResult(PanelResult):
             )
         return match_res.to_panel(**kwargs)
 
-    def to_curve_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
-        hvds = hv.Dataset(ds)
+    def to_curve_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
+        hvds = hv.Dataset(dataset)
         # result_var = self.get_results_var_list(result_var)[0]
-        title = self.title_from_ds(ds, result_var, **kwargs)
+        title = self.title_from_ds(dataset, result_var, **kwargs)
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= hvds.to(hv.Spread).opts(alpha=0.2)
-        if len(ds.sizes) > 1:
+        if len(dataset.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")
 
@@ -173,9 +173,9 @@ class HoloviewResult(PanelResult):
         return matches_res.to_panel()
 
     def to_heatmap_ds(
-        self, ds: xr.Dataset, result_var: Parameter, **kwargs
+        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
-        if len(ds.dims) >= 2:
+        if len(dataset.dims) >= 2:
             # dims = [d for d in da.sizes]
             # x = dims[0]
             # y = dims[1]
@@ -184,7 +184,7 @@ class HoloviewResult(PanelResult):
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
-            return ds.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
+            return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
     def to_error_bar(self) -> hv.Bars:
@@ -427,7 +427,7 @@ class HoloviewResult(PanelResult):
         return matches_res.to_panel()
 
     def to_surface_ds(
-        self, ds: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs
+        self, dataset: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs
     ) -> Optional[pn.panel]:
         """Given a benchCfg generate a 2D surface plot
 
@@ -449,9 +449,9 @@ class HoloviewResult(PanelResult):
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
             # hv.config.image_rtol = 1.0
 
-            mean = ds[result_var.name]
+            mean = dataset[result_var.name]
 
-            hvds = hv.Dataset(ds[result_var.name])
+            hvds = hv.Dataset(dataset[result_var.name])
 
             x = self.plt_cnt_cfg.float_vars[0]
             y = self.plt_cnt_cfg.float_vars[1]
@@ -463,7 +463,7 @@ class HoloviewResult(PanelResult):
                 logging.warning(e)
 
             if self.bench_cfg.repeats > 1:
-                std_dev = ds[f"{result_var.name}_std"]
+                std_dev = dataset[f"{result_var.name}_std"]
 
                 upper = mean + std_dev
                 upper.name = result_var.name

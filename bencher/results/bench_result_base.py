@@ -186,17 +186,17 @@ class BenchResultBase(OptunaResult):
             return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         return ""
 
-    def title_from_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
+    def title_from_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 
-        if isinstance(ds, xr.DataArray):
-            tit = [ds.name]
-            for d in ds.dims:
+        if isinstance(dataset, xr.DataArray):
+            tit = [dataset.name]
+            for d in dataset.dims:
                 tit.append(d)
         else:
             tit = [result_var.name]
-            tit.extend(list(ds.sizes))
+            tit.extend(list(dataset.sizes))
 
         return " vs ".join(tit)
 
@@ -259,7 +259,7 @@ class BenchResultBase(OptunaResult):
 
     def _to_panes_da(
         self,
-        ds: xr.Dataset,
+        dataset: xr.Dataset,
         plot_callback=pn.pane.panel,
         target_dimension=1,
         horizontal=False,
@@ -268,9 +268,9 @@ class BenchResultBase(OptunaResult):
     ) -> pn.panel:
         # todo, when dealing with time and repeats, add feature to allow custom order of dimension recursion
         ##todo remove recursion
-        num_dims = len(ds.sizes)
+        num_dims = len(dataset.sizes)
         # print(f"num_dims: {num_dims}, horizontal: {horizontal}, target: {target_dimension}")
-        dims = list(d for d in ds.sizes)
+        dims = list(d for d in dataset.sizes)
 
         time_dim_delta = 0
         if self.bench_cfg.over_time:
@@ -290,8 +290,8 @@ class BenchResultBase(OptunaResult):
                 pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
 
-            for i in range(ds.sizes[dim_sel]):
-                sliced = ds.isel({dim_sel: i})
+            for i in range(dataset.sizes[dim_sel]):
+                sliced = dataset.isel({dim_sel: i})
                 label = f"{dim_sel}={sliced.coords[dim_sel].values}"
 
                 panes = self._to_panes_da(
@@ -318,7 +318,7 @@ class BenchResultBase(OptunaResult):
                 inner_container.append(panes)
                 outer_container.append(inner_container)
         else:
-            return plot_callback(ds=ds, result_var=result_var, **kwargs)
+            return plot_callback(ds=dataset, result_var=result_var, **kwargs)
 
         return outer_container
 

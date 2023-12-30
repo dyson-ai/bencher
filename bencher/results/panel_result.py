@@ -78,8 +78,8 @@ class PanelResult(BenchResultBase):
             break
         return da.expand_dims(dim).values[0]
 
-    def ds_to_container(self, ds: xr.Dataset, result_var: Parameter, container, **kwargs) -> Any:
-        val = self.zero_dim_da_to_val(ds[result_var.name])
+    def ds_to_container(self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs) -> Any:
+        val = self.zero_dim_da_to_val(dataset[result_var.name])
         if isinstance(result_var, ResultReference):
             val = self.object_index[val].obj
         if container is not None:
