@@ -186,7 +186,7 @@ class BenchResultBase(OptunaResult):
             return f"{self.bench_cfg.result_vars[0].name} vs {self.bench_cfg.input_vars[0].name}"
         return ""
 
-    def title_from_da(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
+    def title_from_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs):
         if "title" in kwargs:
             return kwargs["title"]
 

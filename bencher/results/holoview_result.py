@@ -99,7 +99,7 @@ class HoloviewResult(PanelResult):
         if self.plt_cnt_cfg.cat_cnt >= 2:
             by = self.plt_cnt_cfg.cat_vars[1].name
         da_plot = ds[result_var.name]
-        title = self.title_from_da(da_plot, result_var, **kwargs)
+        title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
@@ -125,7 +125,7 @@ class HoloviewResult(PanelResult):
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
         da_plot = ds[result_var.name]
-        title = self.title_from_da(da_plot, result_var, **kwargs)
+        title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
@@ -148,7 +148,7 @@ class HoloviewResult(PanelResult):
     def to_curve_ds(self, ds: xr.Dataset, result_var: Parameter, **kwargs) -> Optional[hv.Curve]:
         ds = hv.Dataset(ds)
         # result_var = self.get_results_var_list(result_var)[0]
-        title = self.title_from_da(ds, result_var, **kwargs)
+        title = self.title_from_ds(ds, result_var, **kwargs)
         pt = ds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= ds.to(hv.Spread).opts(alpha=0.2)
         if len(ds.sizes) > 1:
