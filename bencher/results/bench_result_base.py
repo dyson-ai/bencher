@@ -47,6 +47,29 @@ class BenchResultBase(OptunaResult):
         """The number of samples in the results dataframe"""
         return self.ds.count()
 
+    def to_hv_dataset_new(
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+    ) -> hv.Dataset:
+        """Generate a holoviews dataset from the xarray dataset.
+
+        Args:
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+
+        Returns:
+            hv.Dataset: results in the form of a holoviews dataset
+        """
+
+        if reduce == ReduceType.AUTO:
+            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
+
+        vdims = [r.name for r in self.bench_cfg.result_vars]
+        kdims = [i.name for i in self.bench_cfg.all_vars]
+
+        if reduce in (ReduceType.REDUCE, ReduceType.SQUEEZE):
+            kdims.remove("repeat")
+
+        return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims, vdims=vdims)
+
     def to_hv_dataset(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> hv.Dataset:
@@ -78,24 +101,9 @@ class BenchResultBase(OptunaResult):
                         non_sum.append(r.name)
 
                 ds_num = ds.drop_vars(non_sum)
-                reduced_ds= hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
-                    ["repeat"], np.mean, np.std,keep_attrs=True
+                return hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
+                    ["repeat"], np.mean, np.std
                 )
-
-                # # print(kdims)
-                # print(vdims)
-                # print(ds["out_sin"])
-
-                # print(reduced_ds["out_sin"])
-                # reduced_ds.data[out_sin]
-                # exit()
-                # print(ds.coords)
-
-                for v in reduced_ds.vdims:
-                    # print()
-                    # reduced_ds.data[v].attrs = ds[v].attrs
-                    print(reduced_ds.data[v].attrs)
-                    # reduced_ds.data[v].attrs = ds[v].attrs
             case ReduceType.SQUEEZE:
                 return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
             case _:
@@ -104,7 +112,30 @@ class BenchResultBase(OptunaResult):
     def to_dataset(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> xr.Dataset:
-        return self.to_hv_dataset(reduce=reduce, result_var=result_var).data
+        if reduce == ReduceType.AUTO:
+            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
+
+        ds = self.ds if result_var is None else self.ds[result_var.name]
+
+        match (reduce):
+            case ReduceType.REDUCE:
+                ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
+
+                print(ds_reduce_mean.data_vars)
+
+                print(self.bench_cfg.result_vars)
+
+                for v in ds_reduce_mean.data_vars:
+                    ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
+                    # dict([(v, f"{v}_std") for v in ds_reduce_mean.variables])
+                
+                return ds_reduce_mean
+                # return xr.merge((ds_reduce_mean, ds_reduce_std))
+            case ReduceType.SQUEEZE:
+                return ds.squeeze(drop=True)
+            case _:
+                return ds
 
     def get_optimal_vec(
         self,
