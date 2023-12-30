@@ -3,9 +3,7 @@ from functools import partial
 import panel as pn
 import xarray as xr
 from param import Parameter
-from bencher.variables.results import ResultVar
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import (
     ResultVideo,
     ResultContainer,
