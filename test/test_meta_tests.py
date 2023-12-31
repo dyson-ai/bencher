@@ -81,7 +81,9 @@ class TestBenchMeta(unittest.TestCase):
         res1_ds = res1.to_dataset(bch.ReduceType.SQUEEZE)
         res2_ds = res2.to_dataset(bch.ReduceType.REDUCE)
 
-        self.assertFalse(res1_ds.identical(res2_ds),"should not be equal because of std_dev column")
+        self.assertFalse(
+            res1_ds.identical(res2_ds), "should not be equal because of std_dev column"
+        )
 
         res2_ds = res2_ds.drop_vars("distance_std")
         res2_ds = res2_ds.drop_vars("sample_noise_std")
@@ -92,23 +94,15 @@ class TestBenchMeta(unittest.TestCase):
         print(res1_ds["distance"].attrs)
         print(res2_ds["distance"].attrs)
 
-        self.assertTrue(res1_ds["distance"].attrs.equals(res2_ds),"should be equal because of std_dev column")
-
-        
-        self.assertTrue(res1_ds.equals(res2_ds),"should be equal because of std_dev column")
-
-        self.assertTrue(res1_ds.identical(res2_ds),"should be equal because of std_dev column")
-
-
-
-        # self.assertTrue(
-        #     res1.to_dataset(bch.ReduceType.SQUEEZE).identical(
-        #         res2.to_dataset(bch.ReduceType.REDUCE)
-        #     ),
-        #     "both have repeats removed so should be equal again",
-        # )
+        self.assertTrue(
+            res1_ds.equals(res2_ds), "should be equal because of removed std_dev column"
+        )
 
         self.assertTrue(
-            res1.to_dataset().identical(res2.to_dataset()),
-            "passing no arguments should select correct reduction types where both have repeats removed so should be equal again",
+            res1_ds.identical(res2_ds), "should be equal because of removed std_dev column"
         )
+
+        # self.assertTrue(
+        #     res1.to_dataset().identical(res2.to_dataset()),
+        #     "passing no arguments should select correct reduction types where both have repeats removed so should be equal again",
+        # )
