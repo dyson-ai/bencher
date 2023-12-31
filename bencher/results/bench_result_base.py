@@ -4,7 +4,6 @@ from enum import Enum, auto
 import xarray as xr
 from param import Parameter
 import holoviews as hv
-import numpy as np
 from functools import partial
 from bencher.utils import int_to_col, color_tuple_to_css
 

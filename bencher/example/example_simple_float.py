@@ -1,7 +1,6 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
 
 import bencher as bch
-import holoviews as hv
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
