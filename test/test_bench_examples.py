@@ -18,7 +18,7 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-from bencher.example.example_meta_levels import example_meta_levels
+from bencher.example.example_meta_levels import example_meta_levels, example_meta
 
 
 import os
@@ -126,6 +126,9 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))
+
+    def test_example_meta(self) -> None:
+        self.examples_asserts(example_meta(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:
