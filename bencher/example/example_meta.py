@@ -83,7 +83,7 @@ class BenchMeta(bch.ParametrizedSweep):
     categorical_vars = bch.IntSweep(
         default=1, bounds=(0, 3), doc="The number of categorical variables that are swept"
     )
-    sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 2))
+    sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 10))
 
     sample_over_time = bch.BoolSweep(default=False)
 
@@ -152,7 +152,7 @@ This uses bencher to display all the combinatios of plots bencher is able to pro
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            BenchMeta.param.sample_with_repeats,
+            BenchMeta.param.sample_with_repeats.with_sample_values([1,2]),
             # BenchMeta.param.sample_over_time,
         ],
         const_vars=[
