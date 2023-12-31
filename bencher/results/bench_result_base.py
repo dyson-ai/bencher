@@ -60,45 +60,6 @@ class BenchResultBase(OptunaResult):
         """
         return hv.Dataset(self.to_dataset(reduce, result_var))
 
-    def to_hv_dataset_old(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
-    ) -> hv.Dataset:
-        """Generate a holoviews dataset from the xarray dataset.
-
-        Args:
-            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
-
-        Returns:
-            hv.Dataset: results in the form of a holoviews dataset
-        """
-
-        if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
-
-        vdims = [r.name for r in self.bench_cfg.result_vars]
-        kdims = [i.name for i in self.bench_cfg.all_vars]
-
-        ds = self.ds if result_var is None else self.ds[result_var.name]
-        match (reduce):
-            case ReduceType.REDUCE:
-                # if result_var
-                vdims = []
-                non_sum = []
-                for r in self.bench_cfg.result_vars:
-                    if isinstance(r, ResultVar):
-                        vdims.append(r.name)
-                    else:
-                        non_sum.append(r.name)
-
-                ds_num = ds.drop_vars(non_sum)
-                return hv.Dataset(ds_num, kdims=kdims, vdims=vdims).reduce(
-                    ["repeat"], np.mean, np.std
-                )
-            case ReduceType.SQUEEZE:
-                return hv.Dataset(ds.squeeze(drop=True), vdims=vdims)
-            case _:
-                return hv.Dataset(ds, kdims=kdims, vdims=vdims)
-
     def to_dataset(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> xr.Dataset:
