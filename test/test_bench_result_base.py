@@ -1,7 +1,7 @@
 import unittest
 import bencher as bch
 
-from bencher.example.example_meta import BenchableObject
+from bencher.example.meta.example_meta import BenchableObject
 
 
 class TestBenchResultBase(unittest.TestCase):
