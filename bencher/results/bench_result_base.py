@@ -58,17 +58,7 @@ class BenchResultBase(OptunaResult):
         Returns:
             hv.Dataset: results in the form of a holoviews dataset
         """
-
-        if reduce == ReduceType.AUTO:
-            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
-
-        vdims = [r.name for r in self.bench_cfg.result_vars]
-        kdims = [i.name for i in self.bench_cfg.all_vars]
-
-        if reduce in (ReduceType.REDUCE, ReduceType.SQUEEZE):
-            kdims.remove("repeat")
-
-        return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims, vdims=vdims)
+        return hv.Dataset(self.to_dataset(reduce, result_var))
 
     def to_hv_dataset_old(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
@@ -112,6 +102,14 @@ class BenchResultBase(OptunaResult):
     def to_dataset(
         self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
     ) -> xr.Dataset:
+        """Generate a summarised xarray dataset.
+
+        Args:
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+
+        Returns:
+            xr.Dataset: results in the form of an xarray dataset
+        """
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
@@ -122,16 +120,9 @@ class BenchResultBase(OptunaResult):
                 ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
                 ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
 
-                print(ds_reduce_mean.data_vars)
-
-                print(self.bench_cfg.result_vars)
-
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
-                    # dict([(v, f"{v}_std") for v in ds_reduce_mean.variables])
-
                 return ds_reduce_mean
-                # return xr.merge((ds_reduce_mean, ds_reduce_std))
             case ReduceType.SQUEEZE:
                 return ds.squeeze(drop=True)
             case _:
