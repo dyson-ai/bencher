@@ -325,7 +325,8 @@ class BenchResultBase(OptunaResult):
 
                 inner_container.append(side)
                 inner_container.append(panes)
-                outer_container.append(pn.Row(inner_container, align="end"))
+                outer_container.append(inner_container)
+                # outer_container.append(pn.Row(inner_container, align="center"))
         else:
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
