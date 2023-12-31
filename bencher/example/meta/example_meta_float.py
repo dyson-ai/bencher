@@ -9,7 +9,7 @@ def example_meta_float(
 
     bench.plot_sweep(
         title="Sweeping Floating Point Variables",
-        input_vars=[BenchMeta.param.float_vars.with_sample_values([1, 2, 3, 4])],
+        input_vars=[BenchMeta.param.float_vars.with_sample_values([1, 2, 3])],
         const_vars=[
             BenchMeta.param.categorical_vars.with_const(0),
             BenchMeta.param.level.with_const(3),
