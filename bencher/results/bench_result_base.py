@@ -57,6 +57,10 @@ class BenchResultBase(OptunaResult):
         Returns:
             hv.Dataset: results in the form of a holoviews dataset
         """
+
+        if reduce == ReduceType.NONE:
+            kdims = [i.name for i in self.bench_cfg.all_vars]
+            return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims)
         return hv.Dataset(self.to_dataset(reduce, result_var))
 
     def to_dataset(
