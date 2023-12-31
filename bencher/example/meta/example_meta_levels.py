@@ -1,11 +1,11 @@
 import bencher as bch
-from bencher.example.example_meta import BenchMeta
+from bencher.example.meta.example_meta import BenchMeta
 
 
 def example_meta_levels(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    bench = bch.Bench("bench_meta", BenchMeta(), report=report, run_cfg=run_cfg)
+    bench = BenchMeta().to_bench(run_cfg, report)
 
     bench.plot_sweep(
         title="Using Levels to define sample density",

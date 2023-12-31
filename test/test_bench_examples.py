@@ -18,7 +18,10 @@ from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
 from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
-from bencher.example.example_meta_levels import example_meta_levels
+from bencher.example.meta.example_meta_levels import example_meta_levels
+from bencher.example.meta.example_meta import example_meta
+from bencher.example.meta.example_meta_cat import example_meta_cat
+from bencher.example.meta.example_meta_float import example_meta_float
 
 
 import os
@@ -62,11 +65,13 @@ class TestBenchExamples(unittest.TestCase):
         # b_run.run(level=4, grouped=True, save=True)
         # b_run.shutdown()
         report = bch.BenchReport()
-        example_image(run_cfg=run_cfg, report=report)
-        example_video(run_cfg=run_cfg, report=report)
+        example_image(run_cfg, report)
+        example_video(run_cfg, report)
+        example_meta_cat(run_cfg, report)
+        example_meta_float(run_cfg, report)
         run_cfg.level = 4
-        example_meta_levels(run_cfg=run_cfg, report=report)
-        # example_meta(run_cfg=run_cfg, report=report)
+        example_meta_levels(run_cfg, report)
+        # example_meta(run_cfg,report)
 
         report.save_index()
 
@@ -126,6 +131,12 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))
+
+    def test_example_meta(self) -> None:
+        self.examples_asserts(example_meta(self.create_run_cfg()))
+
+    # def test_example_meta_scatter(self) -> None:
+    # self.examples_asserts(example_meta_scatter(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:
