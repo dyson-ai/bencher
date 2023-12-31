@@ -26,6 +26,7 @@ def example_1D_float(
         result_vars=[ExampleBenchCfgOut.param.out_sin],
         description=example_1D_float.__doc__,
     )
+
     return bench
 
 

@@ -206,3 +206,8 @@ class ParametrizedSweep(Parameterized):
 
     def gen_image_path(self, image_name: str, filetype=".png") -> str:
         return self.gen_path(image_name, "img", filetype)
+
+    def to_bench(self, run_cfg=None, report=None):
+        from bencher import Bench
+
+        return Bench(self.name, self, run_cfg=run_cfg, report=report)
