@@ -20,7 +20,6 @@ from bencher.example.example_image import example_image
 from bencher.example.example_video import example_video
 from bencher.example.meta.example_meta_levels import example_meta_levels
 from bencher.example.meta.example_meta import example_meta
-from bencher.example.meta.example_meta_scatter import example_meta_scatter
 from bencher.example.meta.example_meta_cat import example_meta_cat
 from bencher.example.meta.example_meta_float import example_meta_float
 
@@ -70,7 +69,6 @@ class TestBenchExamples(unittest.TestCase):
         example_video(run_cfg, report)
         example_meta_cat(run_cfg, report)
         example_meta_float(run_cfg, report)
-        example_meta_scatter(run_cfg, report)
         run_cfg.level = 4
         example_meta_levels(run_cfg, report)
         # example_meta(run_cfg,report)
