@@ -16,6 +16,7 @@ from bencher.variables.results import (
     ResultContainer,
     ResultReference,
 )
+
 from uuid import uuid4
 
 
@@ -207,7 +208,15 @@ class ParametrizedSweep(Parameterized):
     def gen_image_path(self, image_name: str, filetype=".png") -> str:
         return self.gen_path(image_name, "img", filetype)
 
-    def to_bench(self, run_cfg=None, report=None):
+    def to_bench(self, run_cfg=None, report=None, name: str = None):
         from bencher import Bench
 
-        return Bench(self.name, self, run_cfg=run_cfg, report=report)
+        assert isinstance(self, ParametrizedSweep)
+
+        if name is None:
+            name = self.name
+
+        print(run_cfg)
+        print(report)
+
+        return Bench(name, self, run_cfg=run_cfg, report=report)
