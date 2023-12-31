@@ -24,7 +24,7 @@ def example_docs(
     example_video(run_cfg, report)
     example_meta_cat(report=report)
     example_meta_float(report=report)
-    example_meta_levels(report= report)
+    example_meta_levels(report=report)
     # example_meta(run_cfg,report)
 
     return report
