@@ -50,8 +50,7 @@ class TestBenchExamples(unittest.TestCase):
             self.assertTrue(os.path.exists(path))
 
     def test_publish_docs(self):
-        report = example_docs(run_cfg=self.create_run_cfg)
-
+        report = example_docs(run_cfg=self.create_run_cfg())
         report.save_index()
 
     # def test_example_categorical(self) -> None:
