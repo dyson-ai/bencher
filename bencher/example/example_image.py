@@ -42,7 +42,7 @@ class BenchPolygons(bch.ParametrizedSweep):
         )
         ax.set_aspect("equal")
         fig.add_axes(ax)
-        fig.savefig(filename, dpi=50)       
+        fig.savefig(filename, dpi=50)
         return filename
 
 
