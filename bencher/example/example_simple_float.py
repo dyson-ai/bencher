@@ -1,6 +1,7 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
 
 import bencher as bch
+import holoviews as hv
 
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
@@ -27,26 +28,6 @@ def example_1D_float(
         description=example_1D_float.__doc__,
     )
 
-    res = bench.get_result()
-
-    # print(res.to_hv_dataset().data)
-    # print("new")
-    # print(res.to_hv_dataset_new().data)
-
-    bench.report.append(res.to_hv_dataset().data)
-    bench.report.append(res.to_hv_dataset_old().data)
-
-    # report.append(res.to_hv_container(hv.Area))
-
-    # report.append(res.ds)
-    # report.append(res.to_dataset(ExampleBenchCfgOut.param.out_sin))
-    # print(res.ds)
-
-    # report.append(res.to_line())
-
-    # print(res.to_dataset())
-    # print(res.to_hv_dataset())
-    # report.append(res.to_dataset())
     return bench
 
 
