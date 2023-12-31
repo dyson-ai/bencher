@@ -216,7 +216,4 @@ class ParametrizedSweep(Parameterized):
         if name is None:
             name = self.name
 
-        print(run_cfg)
-        print(report)
-
         return Bench(name, self, run_cfg=run_cfg, report=report)
