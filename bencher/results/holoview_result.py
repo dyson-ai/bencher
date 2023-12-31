@@ -337,6 +337,9 @@ class HoloviewResult(PanelResult):
         ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
+
+            print(ds.kdims)
+
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
                 .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
