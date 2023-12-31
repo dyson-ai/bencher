@@ -18,18 +18,15 @@ def example_docs(
     # b_run.add_run(run_levels)
     # b_run.run(level=4, grouped=True, save=True)
     # b_run.shutdown()
-
+    run_cfg.repeats = 1
     run_cfg.level = 2
-    report = bch.BenchReport()
     example_image(run_cfg, report)
     example_video(run_cfg, report)
-    example_meta_cat(run_cfg, report)
-    example_meta_float(run_cfg, report)
-    run_cfg.level = 4
-    example_meta_levels(run_cfg, report)
+    example_meta_cat(report=report)
+    example_meta_float(report=report)
+    example_meta_levels(report= report)
     # example_meta(run_cfg,report)
 
-    # report.save_index()
     return report
 
 
