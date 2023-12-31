@@ -1,5 +1,5 @@
 import bencher as bch
-from bencher.example.example_meta import BenchMeta
+from bencher.example.meta.example_meta import BenchMeta
 
 
 def example_meta_scatter(

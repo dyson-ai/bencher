@@ -152,7 +152,7 @@ This uses bencher to display all the combinatios of plots bencher is able to pro
         input_vars=[
             BenchMeta.param.float_vars,
             BenchMeta.param.categorical_vars,
-            BenchMeta.param.sample_with_repeats.with_sample_values([1,2]),
+            BenchMeta.param.sample_with_repeats.with_sample_values([1, 2]),
             # BenchMeta.param.sample_over_time,
         ],
         const_vars=[
