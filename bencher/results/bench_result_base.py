@@ -337,8 +337,6 @@ class BenchResultBase(OptunaResult):
                 inner_container.append(side)
                 inner_container.append(panes)
                 outer_container.append(inner_container)
-            for c in outer_container:
-                c[0].width = max_len * 7
                 # outer_container.append(pn.Row(inner_container, align="center"))
             for c in outer_container:
                 c[0].width = max_len * 7
