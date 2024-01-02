@@ -12,7 +12,9 @@ from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
+from bencher.results.float_formatter import FormatFloat
 import panel as pn
+
 
 
 # todo add plugins
@@ -296,9 +298,16 @@ class BenchResultBase(OptunaResult):
                 pn.Row(**container_args) if horizontal else pn.Column(**container_args, align="end")
             )
 
+            max_len=0
+
             for i in range(dataset.sizes[dim_sel]):
                 sliced = dataset.isel({dim_sel: i})
-                label = f"{dim_sel}={sliced.coords[dim_sel].values}"
+
+                lable_val = sliced.coords[dim_sel].values.item()
+                if isinstance(lable_val, (int,float)):
+                    lable_val = FormatFloat()(lable_val)
+
+                label = f"{dim_sel}={lable_val}"
 
                 panes = self._to_panes_da(
                     sliced,
@@ -321,11 +330,17 @@ class BenchResultBase(OptunaResult):
                     inner_container = pn.Row(**container_args)
                     align = ("end", "center")
 
-                side = pn.pane.Markdown(f"{label}", align=align)
+                label_len = len(label)
+                if label_len > max_len:
+                    max_len = label_len
+                side = pn.pane.Markdown(label, align=align)
+                
 
                 inner_container.append(side)
                 inner_container.append(panes)
                 outer_container.append(inner_container)
+            for c in outer_container:
+                c[0].width = max_len *7
                 # outer_container.append(pn.Row(inner_container, align="center"))
         else:
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
