@@ -1,4 +1,5 @@
-#from https://stackoverflow.com/questions/22989372/how-to-format-a-floating-number-to-maximum-fixed-width-in-python
+# from https://stackoverflow.com/questions/22989372/how-to-format-a-floating-number-to-maximum-fixed-width-in-python
+
 
 class FormatFloat:
     def __init__(self, width=8):
