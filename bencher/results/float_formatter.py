@@ -1,4 +1,5 @@
-#from https://stackoverflow.com/questions/22989372/how-to-format-a-floating-number-to-maximum-fixed-width-in-python
+# from https://stackoverflow.com/questions/22989372/how-to-format-a-floating-number-to-maximum-fixed-width-in-python
+
 
 class FormatFloat:
     def __init__(self, width=8):
@@ -9,7 +10,7 @@ class FormatFloat:
     def __call__(self, x):
         # for small numbers
         # if -999,999 < given < 9,999,999:
-        if x > self.minnum and x < self.maxnum:
+        if self.minnum < x < self.maxnum:
             # o = f'{x:7}'
             o = f"{x:{self.width - 1}}"
 

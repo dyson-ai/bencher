@@ -16,7 +16,6 @@ from bencher.results.float_formatter import FormatFloat
 import panel as pn
 
 
-
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
 # https://kaleidoescape.github.io/decorated-plugins/
@@ -81,7 +80,7 @@ class BenchResultBase(OptunaResult):
 
         ds = self.ds if result_var is None else self.ds[result_var.name]
 
-        match (reduce):
+        match reduce:
             case ReduceType.REDUCE:
                 ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
                 ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
@@ -295,16 +294,16 @@ class BenchResultBase(OptunaResult):
 
             container_args = {"name": name, "styles": {"background": background_col}}
             outer_container = (
-                pn.Row(**container_args) if horizontal else pn.Column(**container_args, align="end")
+                pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
 
-            max_len=0
+            max_len = 0
 
             for i in range(dataset.sizes[dim_sel]):
                 sliced = dataset.isel({dim_sel: i})
 
                 lable_val = sliced.coords[dim_sel].values.item()
-                if isinstance(lable_val, (int,float)):
+                if isinstance(lable_val, (int, float)):
                     lable_val = FormatFloat()(lable_val)
 
                 label = f"{dim_sel}={lable_val}"
@@ -334,14 +333,15 @@ class BenchResultBase(OptunaResult):
                 if label_len > max_len:
                     max_len = label_len
                 side = pn.pane.Markdown(label, align=align)
-                
 
                 inner_container.append(side)
                 inner_container.append(panes)
                 outer_container.append(inner_container)
             for c in outer_container:
-                c[0].width = max_len *7
+                c[0].width = max_len * 7
                 # outer_container.append(pn.Row(inner_container, align="center"))
+            for c in outer_container:
+                c[0].width = max_len * 7
         else:
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
