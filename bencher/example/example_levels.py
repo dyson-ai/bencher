@@ -32,7 +32,7 @@ class RunWithLevel(bch.ParametrizedSweep):
 
     level_samples = bch.ResultVar()
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> dict():
         self.update_params_from_kwargs(**kwargs)
 
         self.level_samples = int(
@@ -44,7 +44,7 @@ class RunWithLevel(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]):
+def run_with_dim(bench: bch.Bench, dims: List[bch.SweepBase]) -> List[bch.BenchResult]:
     results = []
     for level in range(1, 6):
         print(level)
@@ -70,12 +70,14 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
     res1 = bench1.plot_sweep("Levels", input_vars=[RunWithLevel.param.level])
 
     bench.report.append_markdown(
-        "Sample levels let you perform parameter sweeps without having to decide how many samples to take.  If you perform a sweep at level 1, then all the points are reused when sampling at level 2.  The higher levels reuse the points from lower levels to avoid having to recompute potentially expensive samples. The other advantage is that it enables a workflow where you can quickly see the results of the sweep at a low resolution to sense check the code, and then run it at a high level to get the fidelity you want.  When calling a sweep at a high level, you can publish the intermediate lower level results as the computiation continues so that you can track the progress of the computation and end the sweep early when you have sufficient resolution",
+        "Sample levels let you perform parameter sweeps without having to decide how many samples to take when defining the class.  If you perform a sweep at level 2, then all the points are reused when sampling at level 3.  The higher levels reuse the points from lower levels to avoid having to recompute potentially expensive samples. The other advantage is that it enables a workflow where you can quickly see the results of the sweep at a low resolution to sense check the code, and then run it at a high level to get the fidelity you want.  When calling a sweep at a high level, you can publish the intermediate lower level results as the computiation continues so that you can track the progress of the computation and end the sweep early when you have sufficient resolution",
         width=600,
     )
     row = pn.Row()
     row.append(res1.to_table())
-    row.append(res1.to_curve().opts(shared_axes=False))
+    # row.append(res1.to_curve().opts(shared_axes=False))
+    row.append(res1.to_curve())
+
     bench.report.append(row)
 
     bench.report.append_markdown(
@@ -89,15 +91,18 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
         lvl = it + 1
         row = pn.Row()
         pts = r.to_holomap().overlay().opts(title=f"Sample Points for level: {lvl}", height=300)
-        crv = r.to_curve().opts(shared_axes=False, height=300) * r.to_hv_dataset().to(
-            hv.Scatter
-        ).opts(title=f"Function Values for level: {lvl}", size=5, height=300, shared_axes=False)
+        ds = r.to_hv_dataset()
+        crv = r.to_curve_ds(ds.data).opts(shared_axes=False, height=300) * r.to_hv_dataset(
+            bch.ReduceType.NONE
+        ).to(hv.Scatter).opts(
+            title=f"Function Values for level: {lvl}", size=5, height=300, shared_axes=False
+        )
 
         combined_pts *= pts
         combined_curve *= crv
         row.append(pts)
         row.append(crv)
-        bench.report.append_markdown(f"## {r.title}")
+        bench.report.append_markdown(f"## {r.bench_cfg.title}")
         bench.report.append(row)
 
     bench.report.append_markdown(
@@ -120,20 +125,24 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     )
     row = pn.Row()
     row.append(res1.to_table())
-    row.append(res1.to_curve().opts(shared_axes=False))
+    # row.append(res1.to_curve().opts(shared_axes=False))
+    row.append(res1.to_curve())
+
     bench.report.append(row)
 
     for it, r in enumerate(results):
         lvl = it + 1
         row = pn.Row()
-        bench.report.append_markdown(f"## {r.title}")
+        bench.report.append_markdown(f"## {r.bench_cfg.title}")
         row.append(
             r.to_holomap()
             .overlay()
             .opts(title=f"Sample Points for level: {lvl}", shared_axes=False)
         )
         row.append(
-            r.to_heatmap().opts(title=f"Function Value Heatmap for level: {lvl}", shared_axes=False)
+            r.to_heatmap_single(r.bench_cfg.result_vars[0], bch.ReduceType.NONE).opts(
+                title=f"Function Value Heatmap for level: {lvl}", shared_axes=False
+            )
         )
         bench.report.append(row)
 

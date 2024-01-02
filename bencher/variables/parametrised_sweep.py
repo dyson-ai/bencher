@@ -6,7 +6,17 @@ import panel as pn
 from pathlib import Path
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage
+from bencher.variables.results import (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+    ResultContainer,
+    ResultReference,
+)
+
 from uuid import uuid4
 
 
@@ -68,7 +78,19 @@ class ParametrizedSweep(Parameterized):
         inputs = {}
         results = {}
         for k, v in cls.param.objects().items():
-            if isinstance(v, (ResultVar, ResultVec, ResultHmap, ResultVideo, ResultImage)):
+            if isinstance(
+                v,
+                (
+                    ResultVar,
+                    ResultVec,
+                    ResultHmap,
+                    ResultVideo,
+                    ResultImage,
+                    ResultString,
+                    ResultContainer,
+                    ResultReference,
+                ),
+            ):
                 results[k] = v
             else:
                 inputs[k] = v
@@ -155,7 +177,7 @@ class ParametrizedSweep(Parameterized):
             name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
-    def to_gui(self):
+    def to_gui(self):  # pragma: no cover
         main = pn.Row(
             self.to_dynamic_map(),
         )
@@ -170,24 +192,28 @@ class ParametrizedSweep(Parameterized):
         )
 
     def __call__(self):
-        pass
+        return self.get_results_values_as_dict()
 
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
 
-    def get_cachedir(self, path: str) -> str:
-        """Returns a path relative to the cache directory"""
-        return (Path("cachedir") / Path(path)).absolute().as_posix()
-    
-    def gen_path(self,filename,folder,suffix):
-        path = (Path(f"cachedir/{folder}") / Path(filename)).absolute().as_posix()
-        return f"{path}{uuid4()}{suffix}"
+    def gen_path(self, filename, folder, suffix):
+        path = Path(f"cachedir/{folder}") / Path(filename)
+        path.mkdir(parents=True, exist_ok=True)
+        return f"{path.absolute().as_posix()}_{uuid4()}{suffix}"
 
-    def gen_video_path(self,video_name:str)->str:
-        return self.gen_path(video_name,"vid",".webm")
+    def gen_video_path(self, video_name: str) -> str:
+        return self.gen_path(video_name, "vid", ".webm")
 
-    def gen_image_path(self,image_name:str,filetype=".png")->str:
-        return self.gen_path(image_name,"img",filetype)
+    def gen_image_path(self, image_name: str, filetype=".png") -> str:
+        return self.gen_path(image_name, "img", filetype)
 
-    
+    def to_bench(self, run_cfg=None, report=None, name: str = None):
+        from bencher import Bench
 
+        assert isinstance(self, ParametrizedSweep)
+
+        if name is None:
+            name = self.name
+
+        return Bench(name, self, run_cfg=run_cfg, report=report)

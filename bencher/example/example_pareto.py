@@ -42,7 +42,7 @@ def example_pareto(
 This is a slightly unusual way of doing pareto optimisation as we are not using a typical multi-objective optimisation algorithm [TODO, add example].  Instead we are performing a grid search and looking at the resulting pareto plot.  The reason for doing a grid search instead of standard pareto optimisation is that we can produce more isolated plots of how an input affects an output which can help understanding of the parameter space.  Future examples will show how to use grid search to bootstrap further optimisation with a multi objective optimiser""",
     )
 
-    bench.report.append(res.to_optuna())
+    bench.report.append(res.to_optuna_plots())
     return bench
 
 

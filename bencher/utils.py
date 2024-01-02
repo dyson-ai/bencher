@@ -33,7 +33,7 @@ def make_namedtuple(class_name: str, **fields) -> namedtuple:
     return namedtuple(class_name, fields)(*fields.values())
 
 
-def get_nearest_coords(ds: xr.Dataset, collapse_list=False, **kwargs) -> dict:
+def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> dict:
     """Given an xarray dataset and kwargs of key value pairs of coordinate values, return a dictionary of the nearest coordinate name value pair that was found in the dataset
 
     Args:
@@ -43,7 +43,7 @@ def get_nearest_coords(ds: xr.Dataset, collapse_list=False, **kwargs) -> dict:
         dict: nearest coordinate name value pair that matches the input coordinate name value pairs.
     """
 
-    selection = ds.sel(method="nearest", **kwargs)
+    selection = dataset.sel(method="nearest", **kwargs)
     cd = selection.coords.to_dataset().to_dict()["coords"]
     cd2 = {}
     for k, v in cd.items():
@@ -102,3 +102,7 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
     if alpha >= 0:
         return (*rgb, alpha)
     return rgb
+
+
+def color_tuple_to_css(color: tuple[float, float, float]) -> str:
+    return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"

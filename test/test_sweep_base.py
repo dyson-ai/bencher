@@ -29,8 +29,6 @@ class TestSweepBase(unittest.TestCase):
         explorer = AllSweepVars()
         bench = bch.Bench("tst_cnst", explorer.__call__)
 
-        # AllSweepVars.param.var_float.with_const(5)
-
         consts = explorer.get_input_defaults()
         consts_len = len(consts)
 
@@ -38,9 +36,10 @@ class TestSweepBase(unittest.TestCase):
             "tst",
             input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
+            plot=False,
         )
 
-        consts_after = [i[0] for i in res.const_vars]
+        consts_after = [i[0] for i in res.bench_cfg.const_vars]
 
         self.assertEqual(consts_len, len(consts))
         self.assertEqual(consts_len - 1, len(consts_after))
@@ -159,10 +158,10 @@ class TestSweepBase(unittest.TestCase):
 
         run_cfg.level = 4
         res = bench.plot_sweep("asv", input_vars=[AllSweepVars.param.var_float], run_cfg=run_cfg)
-        self.assertEqual(len(res.get_dataframe().index), 5)
+        self.assertEqual(res.result_samples(), 5)
 
         res = bench.plot_sweep("asv", input_vars=[AllSweepVars.param.var_int_big], run_cfg=run_cfg)
-        self.assertEqual(len(res.get_dataframe().index), 5)
+        self.assertEqual(res.result_samples(), 5)
 
         run_cfg.level = 4
         res = bench.plot_sweep(
@@ -170,9 +169,7 @@ class TestSweepBase(unittest.TestCase):
             input_vars=[AllSweepVars.param.var_float.with_level(level=run_cfg.level, max_level=3)],
             run_cfg=run_cfg,
         )
-        self.assertEqual(
-            len(res.get_dataframe().index), 3, "the number of samples should be limited to 3"
-        )
+        self.assertEqual(res.result_samples(), 3, "the number of samples should be limited to 3")
 
         res = bench.plot_sweep(
             "asv",
@@ -181,9 +178,7 @@ class TestSweepBase(unittest.TestCase):
             ],
             run_cfg=run_cfg,
         )
-        self.assertEqual(
-            len(res.get_dataframe().index), 3, "the number of samples should be limited to 3"
-        )
+        self.assertEqual(res.result_samples(), 3, "the number of samples should be limited to 3")
 
     # @given(st.integers(min_value=0), st.integers(min_value=1,max_value=10))
     # def test_levels_int(self, start, var_range):

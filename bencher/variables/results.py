@@ -89,11 +89,11 @@ def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
 
 
-class ResultVideo(param.Filename):
+class PathResult(param.Filename):
     __slots__ = ["units"]
 
-    def __init__(self, units="video", **params):
-        super().__init__(self, **params)
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
         self.units = units
 
     def hash_persistent(self) -> str:
@@ -101,11 +101,21 @@ class ResultVideo(param.Filename):
         return hash_sha1(self)
 
 
-class ResultImage(param.Filename):
+class ResultVideo(PathResult):
+    def __init__(self, default=None, units="video", **params):
+        super().__init__(default=default, units=units, **params)
+
+
+class ResultImage(PathResult):
+    def __init__(self, default=None, units="image", **params):
+        super().__init__(default=default, units=units, **params)
+
+
+class ResultString(param.String):
     __slots__ = ["units"]
 
-    def __init__(self, units="image", **params):
-        super().__init__(self, **params)
+    def __init__(self, default=None, units="str", **params):
+        super().__init__(default=default, **params)
         self.units = units
 
     def hash_persistent(self) -> str:
@@ -113,87 +123,29 @@ class ResultImage(param.Filename):
         return hash_sha1(self)
 
 
-# class ResultCurve(ResultHmap):
-#     __slots__ = ["kdim", "vdim", "data"]
+class ResultContainer(param.Parameter):
+    __slots__ = ["units"]
 
-#     def __init__(self, kdim, vdim: ResultVar, doc=None, **params) -> None:
-#         super().__init__(self, doc=doc, **params)
-#         self.kdim = kdim
-#         self.vdim = vdim
-#         self.data = []
+    def __init__(self, default=None, units="container", **params):
+        super().__init__(default=default, **params)
+        self.units = units
 
-#     def append(self, x, y) -> None:
-#         self.data.append((x, y))
-
-#     def to_curve(self, **kwargs) -> hv.Curve:
-#         return hv.Curve(
-#             self.data,
-#             kdims=[self.kdim.as_dim()],
-#             vdims=[self.vdim.as_dim()],
-#             label=self.vdim.name,
-#             **kwargs,
-#         )
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 
-# class ResultList(param.Parameter):
-#     """A class to unknown size vector result variable"""
+class ResultReference(param.Parameter):
+    __slots__ = ["units", "obj"]
 
-#     __slots__ = ["units", "dim_name", "dim_units", "indices"]
+    def __init__(self, obj=None, default=None, units="container", **params):
+        super().__init__(default=default, **params)
+        self.units = units
+        self.obj = obj
 
-#     def __init__(
-#         self,
-#         index_name: str,
-#         index_units: str,
-#         default=ResultSeries(),
-#         units="ul",
-#         indices: List[float] = None,
-#         instantiate=True,
-#         **params,
-#     ):
-#         param.Parameter.__init__(self, default=default, instantiate=instantiate, **params)
-#         self.units = units
-#         self.dim_name = index_name
-#         self.dim_units = index_units
-#         self.indices = indices
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
-#     def hash_persistent(self) -> str:
-#         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-#         return hash_sha1((self.units, self.dim_name, self.dim_units))
 
-# class ResultSeries:
-#     """A class to represent a vector of results, it also includes an index similar to pandas.series"""
-
-#     def __init__(self, values=None, index=None) -> None:
-#         self.values = []
-#         self.index = []
-#         self.set_index_and_values(values, index)
-
-#     def append(self, value: float | int, index: float | int | str = None) -> None:
-#         """Add a value and index to the result series
-
-#         Args:
-#             value (float | int): result value of the series
-#             index (float | int | str, optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
-#         """
-
-#         if index is None:
-#             self.index.append(len(self.values))
-#         else:
-#             self.index.append(index)
-#         self.values.append(value)
-
-#     def set_index_and_values(
-#         self, values: List[float | int], index: List[float | int | str] = None
-#     ) -> None:
-#         """Add values and indices to the result series
-
-#         Args:
-#             value (List[float | int]): result value of the series
-#             index (List[float | int | str], optional): index value of series, the same as a pandas.series index  If no value is passed an integer index is automatically created. Defaults to None.
-#         """
-#         if values is not None:
-#             if index is None:
-#                 self.index = list(range(len(values)))
-#             else:
-#                 self.index = index
-#             self.values = values
+PANEL_TYPES = (ResultImage, ResultContainer, ResultString, ResultReference)

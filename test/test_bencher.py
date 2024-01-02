@@ -13,7 +13,7 @@ from datetime import datetime
 from diskcache import Cache
 
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
-from bencher import Bench, BenchCfg, BenchRunCfg, BenchPlotter
+from bencher import Bench, BenchCfg, BenchRunCfg
 
 
 def get_hash_isolated_process() -> bytes:
@@ -250,7 +250,7 @@ class TestBencher(unittest.TestCase):
         bench_cfg.raise_duplicate_exception = False
         with Cache("unique_names") as name_cache:
             bench_repr = bench_cfg.__repr__()
-            plots = BenchPlotter.plot(bench_cfg)
+            plots = bench_cfg.to_auto_plots()
             for p in plots:
                 if p.name is not None:
                     if p.name in name_cache:

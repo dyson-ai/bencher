@@ -6,8 +6,9 @@ from pathlib import Path
 import shutil
 from threading import Thread
 
-from bencher.bench_cfg import BenchRunCfg, BenchCfg
-from bencher.bench_plot_server import BenchPlotServer, BenchPlotter
+from bencher.results.bench_result import BenchResult
+from bencher.bench_plot_server import BenchPlotServer
+from bencher.bench_cfg import BenchRunCfg
 
 
 class BenchReport(BenchPlotServer):
@@ -45,13 +46,14 @@ class BenchReport(BenchPlotServer):
             col = pn.Column(pane, name=pane.name)
         self.pane.append(col)
 
-    def append_result(self, res: BenchCfg) -> None:
-        self.append_tab(BenchPlotter.plot(res), res.title)
+    def append_result(self, bench_res: BenchResult) -> None:
+        self.append_tab(bench_res.to_auto_plots(), bench_res.bench_cfg.title)
 
     def append_tab(self, pane: pn.panel, name: str = None) -> None:
-        if name is None:
-            name = pane.name
-        self.pane.append(pn.Column(pane, name=name))
+        if pane is not None:
+            if name is None:
+                name = pane.name
+            self.pane.append(pn.Column(pane, name=name))
 
     def save_index(self, directory="", filename="index.html") -> Path:
         """Saves the result to index.html in the root folder so that it can be displayed by github pages.
@@ -97,7 +99,7 @@ class BenchReport(BenchPlotServer):
         self.pane.save(filename=base_path, progress=True, embed=True, **kwargs)
         return base_path
 
-    def show(self, run_cfg: BenchRunCfg = None) -> Thread:
+    def show(self, run_cfg: BenchRunCfg = None) -> Thread:  # pragma: no cover
         """Launches a webserver with plots of the benchmark results, blocking
 
         Args:
@@ -111,7 +113,7 @@ class BenchReport(BenchPlotServer):
 
     def publish(
         self, remote_callback: Callable, branch_name: str = None, debug: bool = False
-    ) -> str:
+    ) -> str:  # pragma: no cover
         """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
 
         .. code-block:: python

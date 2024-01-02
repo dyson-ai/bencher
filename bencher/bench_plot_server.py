@@ -2,14 +2,12 @@
 import logging
 import os
 from typing import List, Tuple
+from threading import Thread
 
 import panel as pn
 from diskcache import Cache
 
 from bencher.bench_cfg import BenchCfg, BenchPlotSrvCfg
-from bencher.plt_cfg import BenchPlotter
-
-from threading import Thread
 
 logging.basicConfig(level=logging.INFO)
 
@@ -63,10 +61,10 @@ class BenchPlotServer:
                     # load the results based on the hash retrieved from the benchmark name
                     if bench_cfg_hash in cache:
                         logging.info(f"loading cached results from key: {bench_cfg_hash}")
-                        bench_cfg = cache[bench_cfg_hash]
-                        logging.info(f"loaded: {bench_cfg.title}")
+                        bench_res = cache[bench_cfg_hash]
+                        logging.info(f"loaded: {bench_res.bench_cfg.title}")
 
-                        plots_instance = BenchPlotter.plot(bench_cfg)
+                        plots_instance = bench_res.to_auto_plots()
                     else:
                         raise FileNotFoundError(
                             "The benchmarks have been run and saved, but the specific results you are trying to load do not exist.  This should not happen and could be because the cache was cleared."

@@ -1,7 +1,5 @@
 import unittest
 import bencher as bch
-from bencher.example.example_categorical import example_categorical
-from bencher.example.example_floats import example_floats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
@@ -12,13 +10,16 @@ from bencher.example.example_float3D import example_floats3D
 
 from bencher.example.example_custom_sweep import example_custom_sweep
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
-from bencher.example.example_plot_library import example_plot_library
 from bencher.example.example_holosweep import example_holosweep
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
-from bencher.example.example_levels import run_levels
+from bencher.example.example_strings import example_strings
+from bencher.example.example_image import example_image
+from bencher.example.example_video import example_video
+from bencher.example.meta.example_meta import example_meta
+from bencher.example.example_docs import example_docs
 
 import os
 
@@ -45,18 +46,12 @@ class TestBenchExamples(unittest.TestCase):
     def examples_asserts(self, example_result, save=False) -> None:
         self.assertIsNotNone(example_result)
         if save or self.generate_all:
-            # example_result.save("bencher/example/html")
             path = example_result.report.save_index("cachedir")
             self.assertTrue(os.path.exists(path))
 
     def test_publish_docs(self):
-        b_run = bch.BenchRunner("bench_runner_test", run_cfg=self.create_run_cfg())
-        b_run.add_run(example_categorical)
-        b_run.add_run(example_floats)
-        b_run.add_run(run_levels)
-
-        b_run.run(level=2, grouped=True, save=True)
-        b_run.shutdown()
+        report = example_docs(run_cfg=self.create_run_cfg())
+        report.save_index()
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
@@ -94,9 +89,6 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_floats3D_workflow(self) -> None:
         self.examples_asserts(example_floats3D_workflow(self.create_run_cfg()))
 
-    def test_plot_library(self) -> None:
-        self.examples_asserts(example_plot_library(self.create_run_cfg()))
-
     def test_holosweep(self) -> None:
         self.examples_asserts(example_holosweep(self.create_run_cfg()))
 
@@ -108,6 +100,21 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_sample_cache(self) -> None:
         self.examples_asserts(example_sample_cache(self.create_run_cfg(), trigger_crash=False))
+
+    def test_example_strings(self) -> None:
+        self.examples_asserts(example_strings(self.create_run_cfg()))
+
+    def test_example_image(self) -> None:
+        self.examples_asserts(example_image(self.create_run_cfg()))
+
+    def test_example_video(self) -> None:
+        self.examples_asserts(example_video(self.create_run_cfg()))
+
+    def test_example_meta(self) -> None:
+        self.examples_asserts(example_meta(self.create_run_cfg()))
+
+    # def test_example_meta_scatter(self) -> None:
+    # self.examples_asserts(example_meta_scatter(self.create_run_cfg()))
 
     # shelved
     # def test_example_cone(self) -> None:

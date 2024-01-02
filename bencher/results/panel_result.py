@@ -1,159 +1,101 @@
-from bencher.results.bench_result_base import BenchResultBase
-
+from typing import Optional, Any
+from functools import partial
 import panel as pn
+import xarray as xr
+from param import Parameter
+from bencher.results.bench_result_base import BenchResultBase, ReduceType
+from bencher.variables.results import (
+    ResultVideo,
+    ResultContainer,
+    ResultReference,
+    PANEL_TYPES,
+)
 
 
 class PanelResult(BenchResultBase):
-    # def __init__(self, xr_dataset) -> None:
-    # super().__init__(xr_dataset)
+    def to_video(self, **kwargs):
+        return self.map_plots(partial(self.to_video_multi, **kwargs))
 
-    def to_video(self, var="vid"):
-        # for self.bench_cfg.input_vars:
+    def to_video_multi(self, result_var: Parameter, **kwargs) -> Optional[pn.Column]:
+        if isinstance(result_var, (ResultVideo, ResultContainer)):
+            vid_p = []
 
-        xr_dataarray = self.xr_dataset[var]
+            xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
 
-        row = pn.Row()
+            def to_video_da(da, **kwargs):
+                vid = pn.pane.Video(da, autoplay=True, **kwargs)
+                vid.loop = True
+                vid_p.append(vid)
+                return vid
 
-        play_btn = pn.widgets.Button(name="Play Videos")
-        pause_bth = pn.widgets.Button(name="Pause Videos")
-        loop_btn = pn.widgets.Button(name="Loop Videos")
-        reset_btn = pn.widgets.Button(name="Reset Videos")
+            plot_callback = partial(self.ds_to_container, container=partial(to_video_da, **kwargs))
 
-        vid_p = []
+            panes = self.to_panes_multi_panel(
+                xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
+            )
 
-        buttons = pn.Row(play_btn, loop_btn, pause_bth, reset_btn)
+            def play_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.loop = False
 
-        container = pn.Column(buttons, row)
+            def pause_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = True
 
-        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
-            vid = pn.pane.Video(v1[0], autoplay=True)
-            vid.loop = True
-            vid_p.append(vid)
-            row.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), vid))
+            def reset_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.time = 0
 
-        def play_vid(_):
-            for r in vid_p:
-                r.paused = False
-                r.loop = False
+            def loop_vid(_):  # pragma: no cover
+                for r in vid_p:
+                    r.paused = False
+                    r.time = 0
+                    r.loop = True
 
-        def pause_vid(_):
-            for r in vid_p:
-                r.paused = True
+            button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
+            buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
+            buttons = pn.Row()
 
-        def reset_vid(_):
-            for r in vid_p:
-                r.paused = False
-                r.time = 0
+            for name, cb in zip(button_names, buttom_cb):
+                button = pn.widgets.Button(name=name)
+                pn.bind(cb, button, watch=True)
+                buttons.append(button)
 
-        def loop_vid(_):
-            for r in vid_p:
-                r.paused = False
-                r.time = 0
-                r.loop = True
+            return pn.Column(buttons, panes)
+        return None
 
-        pn.bind(play_vid, play_btn, watch=True)
-        pn.bind(loop_vid, loop_btn, watch=True)
-        pn.bind(pause_vid, pause_bth, watch=True)
-        pn.bind(reset_vid, reset_btn, watch=True)
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
+        # todo this is really horrible, need to improve
+        if isinstance(da_ds, xr.Dataset):
+            dim = list(da_ds.keys())[0]
+            da = da_ds[dim]
+        else:
+            da = da_ds
+        for k in da.coords.keys():
+            dim = k
+            break
+        return da.expand_dims(dim).values[0]
 
-        return container
+    def ds_to_container(
+        self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
+    ) -> Any:
+        val = self.zero_dim_da_to_val(dataset[result_var.name])
+        if isinstance(result_var, ResultReference):
+            val = self.object_index[val].obj
+        if container is not None:
+            return container(val, styles={"background": "white"}, **kwargs)
+        return val
 
-    # def map_to_type(self,)
-
-    def get_var(self, da):
-        coords = list(da.coords)
-        var = coords[0]
-        return var
-
-    def to_image(self, var="img"):
-        xr_dataarray = self.xr_dataset[var]
-        container = pn.Row()
-        for v, v1 in zip(xr_dataarray.coords[self.get_var(xr_dataarray)], xr_dataarray.values):
-            img = pn.pane.PNG(v1[0])
-            container.append(pn.Column(pn.pane.Markdown(f"## {v.name} = {v.values}"), img))
-        return container
-
-
-# import numpy as np
-# import panel as pn
-
-
-# def print_n_dimensional_array(arr):
-#     def print_recursively(sub_arr, depth, index_str):
-#         if isinstance(sub_arr, np.ndarray):
-#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
-#             accordion.append(
-#                 (
-#                     f"{index_str}:",
-#                     pn.Column(
-#                         *[
-#                             print_recursively(sub_elem, depth + 20, f"[{i}]")
-#                             for i, sub_elem in enumerate(sub_arr)
-#                         ]
-#                     ),
-#                 )
-#             )
-#             accordion.active=[0]
-
-#             return accordion
-#         else:
-#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
-
-#     return print_recursively(arr, 0, "Array Contents")
-
-
-# import numpy as np
-# import panel as pn
-# import xarray as xr
-
-
-# def print_xarray_dataarray(da):
-#     def print_recursively(sub_arr, depth, index_str):
-#         if isinstance(sub_arr, xr.DataArray):
-#             accordion = pn.Accordion(margin=(5, 0, 10, depth))
-#             for coord in sub_arr.coords:
-#                 if sub_arr[coord].ndim == 0:
-#                     # Handle 0-dimensional arrays
-#                     accordion.append(
-#                         (
-#                             f"{coord}:",
-#                             pn.pane.Str(f"{' ' * (depth + 20)}{coord} = {sub_arr[coord].values}"),
-#                         )
-#                     )
-#                 else:
-#                     accordion.append(
-#                         (
-#                             f"{coord}:",
-#                             pn.Column(
-#                                 *[
-#                                     print_recursively(
-#                                         sub_arr.loc[{coord: val}],
-#                                         depth + 20,
-#                                         f"{coord}={val}",
-#                                     )
-#                                     for val in sub_arr[coord].values
-#                                 ]
-#                             ),
-#                         )
-#                     )
-#             accordion.active = list(range(len(accordion)))
-#             return accordion
-#         else:
-#             return pn.pane.Str(f"{' ' * depth}{index_str} = {sub_arr}")
-
-#     return print_recursively(da, 0, "DataArray Contents")
-
-
-# # Example usage:
-# data = np.random.rand(2, 3, 4)
-# coords = {
-#     "x": np.linspace(0, 1, 2),
-#     "y": np.linspace(10, 20, 3),
-#     "z": np.linspace(100, 110, 4),
-# }
-# da = xr.DataArray(data, coords=coords, dims=["x", "y", "z"])
-# output = print_xarray_dataarray(da)
-# pn.Column(output).show()
-
-
-# exit()
+    def to_panes(
+        self, result_var: Parameter = None, target_dimension: int = 0, **kwargs
+    ) -> Optional[pn.pane.panel]:
+        return self.map_plot_panes(
+            partial(self.ds_to_container, container=pn.pane.panel),
+            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
+            target_dimension=target_dimension,
+            result_var=result_var,
+            result_types=PANEL_TYPES,
+            **kwargs,
+        )
