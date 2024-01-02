@@ -293,7 +293,7 @@ class BenchResultBase(OptunaResult):
 
             container_args = {"name": name, "styles": {"background": background_col}}
             outer_container = (
-                pn.Row(**container_args) if horizontal else pn.Column(**container_args, align="end")
+                pn.Row(**container_args) if horizontal else pn.Column(**container_args)
             )
 
             for i in range(dataset.sizes[dim_sel]):
@@ -326,7 +326,7 @@ class BenchResultBase(OptunaResult):
                 inner_container.append(side)
                 inner_container.append(panes)
                 outer_container.append(inner_container)
-                # outer_container.append(pn.Row(inner_container, align="center"))
+                # outer_container.append(pn.Row(inner_container, align=("end","start")))
         else:
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
