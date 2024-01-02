@@ -10,7 +10,7 @@ class FormatFloat:
     def __call__(self, x):
         # for small numbers
         # if -999,999 < given < 9,999,999:
-        if x > self.minnum and x < self.maxnum:
+        if self.minnum < x < self.maxnum:
             # o = f'{x:7}'
             o = f"{x:{self.width - 1}}"
 
