@@ -25,7 +25,7 @@ class BenchPolygons(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
         points = polygon_points(self.radius, self.sides)
         self.hmap = hv.Curve(points)
-        self.polygon = self.points_to_polygon_png(points, self.gen_image_path("polygon"))
+        self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
         return super().__call__()
 
     def points_to_polygon_png(self, points: list[float], filename: str):
