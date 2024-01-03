@@ -185,3 +185,9 @@ class FloatSweep(Number, SweepBase):
             ]
             return [self.sample_values[i] for i in indices]
         return self.sample_values
+
+
+def box(name, center, width):
+    var = FloatSweep(default=center, bounds=(center - width, center + width))
+    var.name = name
+    return var

@@ -388,7 +388,6 @@ class HoloviewResult(PanelResult):
         return htmap + tap_htmap
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
-        print(self.bench_cfg.hmap_kdims)
         return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims).opts(
             shared_axes=False, shared_datasource=False
         )
