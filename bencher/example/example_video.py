@@ -66,7 +66,7 @@ class TuringPattern(bch.ParametrizedSweep):
                 artists.append([ax.imshow(U)])
 
         ani = ArtistAnimation(fig=fig, artists=artists, interval=60, blit=True)
-        path = bch.gen_path("turing", "vid", ".mp4")
+        path = bch.gen_video_path("turing", ".mp4")
         # path = self.gen_path("turing", "vid", ".gif")
         print(f"saving {len(artists)} frames")
         ani.save(path)
