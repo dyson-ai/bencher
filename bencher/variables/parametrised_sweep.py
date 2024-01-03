@@ -197,10 +197,11 @@ class ParametrizedSweep(Parameterized):
 
     def to_bench(self, run_cfg=None, report=None, name: str = None):
         from bencher import Bench
+        
 
         assert isinstance(self, ParametrizedSweep)
 
         if name is None:
-            name = self.name
+            name = self.name[:-5] #param adds 5 digit number to the end, so remove it
 
         return Bench(name, self, run_cfg=run_cfg, report=report)
