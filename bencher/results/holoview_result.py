@@ -153,20 +153,20 @@ class HoloviewResult(PanelResult):
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
     def to_curve(self, result_var: Parameter = None, **kwargs):
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(2, None)
-        ).matches_result(self.plt_cnt_cfg, "to_curve")
-        # print(result_var)
-        if match_res.overall:
-            return self.map_plot_panes(
-                self.to_curve_ds,
-                hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                **kwargs,
-            )
-        return match_res.to_panel(**kwargs)
+        return self.filter(
+            self.to_curve_ds,
+            "to_curve",
+            PlotFilter(
+                float_range=VarRange(1, 1),
+                cat_range=VarRange(0, None),
+                repeats_range=VarRange(2, None),
+            ),
+            hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
+            target_dimension=2,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_curve_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
