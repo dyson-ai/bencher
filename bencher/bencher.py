@@ -228,7 +228,7 @@ class Bench(BenchPlotServer):
                 )
                 input_vars = self.worker_class_instance.get_inputs_only()
                 for i in input_vars:
-                    logging.info(i.name)
+                    logging.info(f"input var: {i.name}")
             if result_vars is None:
                 logging.info(
                     "No results variables passed, using all result variables in bench class:"
