@@ -3,7 +3,7 @@ from typing import List, Tuple, Any
 from param import Parameter, Parameterized
 import holoviews as hv
 import panel as pn
-from pathlib import Path
+
 
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import (
@@ -17,7 +17,6 @@ from bencher.variables.results import (
     ResultReference,
 )
 
-from uuid import uuid4
 
 
 class ParametrizedSweep(Parameterized):
@@ -197,16 +196,7 @@ class ParametrizedSweep(Parameterized):
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
 
-    def gen_path(self, filename, folder, suffix):
-        path = Path(f"cachedir/{folder}/{filename}/") 
-        path.mkdir(parents=True, exist_ok=True)
-        return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
 
-    def gen_video_path(self, video_name: str,extension:str=".webm") -> str:
-        return self.gen_path(video_name, "vid", extension)
-
-    def gen_image_path(self, image_name: str, filetype=".png") -> str:
-        return self.gen_path(image_name, "img", filetype)
 
     def to_bench(self, run_cfg=None, report=None, name: str = None):
         from bencher import Bench

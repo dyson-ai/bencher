@@ -5,6 +5,8 @@ import hashlib
 import re
 import math
 from colorsys import hsv_to_rgb
+from pathlib import Path
+from uuid import uuid4
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -106,3 +108,17 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
 
 def color_tuple_to_css(color: tuple[float, float, float]) -> str:
     return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"
+
+
+def gen_path(filename, folder, suffix):
+    path = Path(f"cachedir/{folder}/{filename}/")
+    path.mkdir(parents=True, exist_ok=True)
+    return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
+
+
+def gen_video_path(video_name: str, extension: str = ".webm") -> str:
+    return gen_path(video_name, "vid", extension)
+
+
+def gen_image_path(image_name: str, filetype=".png") -> str:
+    return gen_path(image_name, "img", filetype)
