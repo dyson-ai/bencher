@@ -7,7 +7,7 @@ from param import Parameter
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.results import ResultVar
+from bencher.variables.results import ResultVar,ResultVolume
 
 
 class PlotlyResult(BenchResultBase):
@@ -22,7 +22,7 @@ class PlotlyResult(BenchResultBase):
                 hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
                 target_dimension=3,
                 result_var=result_var,
-                result_types=(ResultVar),
+                result_types=(ResultVar, ResultVolume),
                 **kwargs,
             )
         return matches_res.to_panel()

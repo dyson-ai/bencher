@@ -14,6 +14,7 @@ from .variables.results import (
     ResultString,
     ResultContainer,
     ResultReference,
+    ResultVolume,
     OptDir,
     curve,
 )
