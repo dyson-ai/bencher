@@ -18,7 +18,6 @@ from bencher.variables.results import (
 )
 
 
-
 class ParametrizedSweep(Parameterized):
     """Parent class for all Sweep types that need a custom hash"""
 
@@ -195,8 +194,6 @@ class ParametrizedSweep(Parameterized):
 
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
-
-
 
     def to_bench(self, run_cfg=None, report=None, name: str = None):
         from bencher import Bench
