@@ -198,12 +198,12 @@ class ParametrizedSweep(Parameterized):
         return self.__call__(**kwargs)["hmap"]
 
     def gen_path(self, filename, folder, suffix):
-        path = Path(f"cachedir/{folder}") / Path(filename)
+        path = Path(f"cachedir/{folder}/{filename}/") 
         path.mkdir(parents=True, exist_ok=True)
-        return f"{path.absolute().as_posix()}_{uuid4()}{suffix}"
+        return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
 
-    def gen_video_path(self, video_name: str) -> str:
-        return self.gen_path(video_name, "vid", ".webm")
+    def gen_video_path(self, video_name: str,extension:str=".webm") -> str:
+        return self.gen_path(video_name, "vid", extension)
 
     def gen_image_path(self, image_name: str, filetype=".png") -> str:
         return self.gen_path(image_name, "img", filetype)
