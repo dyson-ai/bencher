@@ -18,7 +18,14 @@ from .variables.results import (
     curve,
 )
 from .plotting.plot_filter import VarRange, PlotFilter
-from .utils import hmap_canonical_input, get_nearest_coords, make_namedtuple
+from .utils import (
+    hmap_canonical_input,
+    get_nearest_coords,
+    make_namedtuple,
+    gen_path,
+    gen_image_path,
+    gen_video_path,
+)
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .results.bench_result import BenchResult
@@ -26,3 +33,4 @@ from .results.panel_result import PanelResult
 from .results.holoview_result import ReduceType, HoloviewResult
 from .bench_report import BenchReport
 from .job import Executors
+from .video_writer import VideoWriter

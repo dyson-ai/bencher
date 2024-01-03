@@ -1,4 +1,5 @@
 from typing import Optional, Any
+from pathlib import Path
 from functools import partial
 import panel as pn
 import xarray as xr
@@ -23,10 +24,12 @@ class PanelResult(BenchResultBase):
             xr_dataset = self.to_hv_dataset(ReduceType.SQUEEZE)
 
             def to_video_da(da, **kwargs):
-                vid = pn.pane.Video(da, autoplay=True, **kwargs)
-                vid.loop = True
-                vid_p.append(vid)
-                return vid
+                if da is not None and Path(da).exists():
+                    vid = pn.pane.Video(da, autoplay=True, **kwargs)
+                    vid.loop = True
+                    vid_p.append(vid)
+                    return vid
+                return pn.pane.Markdown(f"video does not exist {da}")
 
             plot_callback = partial(self.ds_to_container, container=partial(to_video_da, **kwargs))
 
