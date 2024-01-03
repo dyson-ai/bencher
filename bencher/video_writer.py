@@ -1,17 +1,17 @@
 from bencher import gen_video_path
 
 class VideoWriter:
-    def __init__(self ) -> None:
+    def __init__(self,filename:str) -> None:
         self.images = []
+        self.filename = gen_video_path(filename)
 
     def append(self, img):
         self.images.append(img)
 
-    def write(self, file, bitrate:int=1500)->str:
+    def write(self,  bitrate:int=1500)->str:
         import moviepy.video.io.ImageSequenceClip
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(self.images, fps=30)
-        fn = gen_video_path(file)
-        clip.write_videofile(fn, bitrate=f"{bitrate}k")
-        return fn
+        clip.write_videofile(self.filename, bitrate=f"{bitrate}k")
+        return self.filename
 
     
