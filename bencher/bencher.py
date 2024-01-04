@@ -226,16 +226,16 @@ class Bench(BenchPlotServer):
         iterations: int = 1,
         relationship_cb=None,
     ) -> List[BenchResult]:
-        results=[]
+        results = []
         if relationship_cb is None:
             relationship_cb = combinations
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+                if iterations > 1:
+                    title += f" iteration:{it}"
                 res = self.plot_sweep(
-                    title="Sweeping "
-                    + " vs ".join([i.name for i in input_vars])
-                    + f" iteration:{it}",
-                    # title=f"Sweeping {i.name} iteration:{iter}",
+                    title=title,
                     input_vars=input_group,
                     result_vars=result_vars,
                     const_vars=const_vars,
