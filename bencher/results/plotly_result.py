@@ -5,27 +5,23 @@ import xarray as xr
 
 from param import Parameter
 
-from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_filter import VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultVar,ResultVolume
 
 
 class PlotlyResult(BenchResultBase):
     def to_volume(self, result_var: Parameter = None, **kwargs):
-        matches_res = PlotFilter(
+        return self.filter(
+            self.to_volume_da,
             float_range=VarRange(3, 3),
             cat_range=VarRange(-1, 0),
-        ).matches_result(self.plt_cnt_cfg, "to_volume")
-        if matches_res.overall:
-            return self.map_plot_panes(
-                self.to_volume_da,
-                hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
-                target_dimension=3,
-                result_var=result_var,
-                result_types=(ResultVar, ResultVolume),
-                **kwargs,
-            )
-        return matches_res.to_panel()
+            reduce=ReduceType.REDUCE,
+            target_dimension=3,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_volume_da(
         self, dataset: xr.Dataset, result_var: Parameter, width=600, height=600
