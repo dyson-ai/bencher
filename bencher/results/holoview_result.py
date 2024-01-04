@@ -80,19 +80,17 @@ class HoloviewResult(PanelResult):
         # return time_widget_args
 
     def to_bar(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
-        match_res = PlotFilter(
-            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_bar_da")
-        if match_res.overall:
-            return self.map_plot_panes(
-                self.to_bar_ds,
-                hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                **kwargs,
-            )
-        return match_res.to_panel(**kwargs)
+        return self.filter(
+            self.to_bar_ds,
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, None),
+            repeats_range=VarRange(1, 1),
+            reduce=ReduceType.SQUEEZE,
+            target_dimension=2,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_bar_ds(self, dataset: xr.Dataset, result_var: Parameter = None, **kwargs):
         by = None
@@ -127,19 +125,17 @@ class HoloviewResult(PanelResult):
         )
 
     def to_line(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
-        match_res = PlotFilter(
-            float_range=VarRange(1, 1), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
-        ).matches_result(self.plt_cnt_cfg, "to_line")
-        if match_res.overall:
-            return self.map_plot_panes(
-                self.to_line_ds,
-                hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE),
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                **kwargs,
-            )
-        return match_res.to_panel(**kwargs)
+        return self.filter(
+            self.to_line_ds,
+            float_range=VarRange(1, 1),
+            cat_range=VarRange(0, None),
+            repeats_range=VarRange(1, 1),
+            reduce=ReduceType.SQUEEZE,
+            target_dimension=2,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
@@ -155,7 +151,6 @@ class HoloviewResult(PanelResult):
     def to_curve(self, result_var: Parameter = None, **kwargs):
         return self.filter(
             self.to_curve_ds,
-            "to_curve",
             float_range=VarRange(1, 1),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
@@ -179,21 +174,16 @@ class HoloviewResult(PanelResult):
         return pt.opts(legend_position="right")
 
     def to_heatmap(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
-        matches_res = PlotFilter(
+        return self.filter(
+            self.to_heatmap_ds,
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_heatmap")
-        if matches_res.overall:
-            return self.map_plot_panes(
-                self.to_heatmap_ds,
-                hv_dataset=self.to_hv_dataset(),
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                **kwargs,
-            )
-        return matches_res.to_panel()
+            target_dimension=2,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_heatmap_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
@@ -432,21 +422,17 @@ class HoloviewResult(PanelResult):
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
     def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
-        matches_res = PlotFilter(
+        return self.filter(
+            self.to_surface_ds,
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_surface")
-        if matches_res.overall:
-            return self.map_plot_panes(
-                self.to_surface_ds,
-                hv_dataset=self.to_hv_dataset(ReduceType.REDUCE),
-                target_dimension=2,
-                result_var=result_var,
-                result_types=(ResultVar),
-                **kwargs,
-            )
-        return matches_res.to_panel()
+            reduce=ReduceType.REDUCE,
+            target_dimension=2,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
 
     def to_surface_ds(
         self, dataset: xr.Dataset, result_var: Parameter, alpha: float = 0.3, **kwargs

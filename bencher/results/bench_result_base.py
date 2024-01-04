@@ -250,7 +250,6 @@ class BenchResultBase(OptunaResult):
     def filter(
         self,
         plot_callback: callable,
-        name,
         plot_filter=None,
         float_range: VarRange = VarRange(0, None),
         cat_range: VarRange = VarRange(0, None),
@@ -274,7 +273,7 @@ class BenchResultBase(OptunaResult):
             repeats_range=repeats_range,
             input_range=input_range,
         )
-        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, name)
+        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, plot_callback.__name__)
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
