@@ -67,7 +67,7 @@ def optuna_rastrigin(
     )
 
     bench.report.append(res.to_optuna_plots())
-    bench.report.append(res.to_optuna_from_sweep(bench.worker))
+    bench.report.append(res.to_optuna_from_sweep(bench))
     bench.report.append_markdown(
         f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
     )
