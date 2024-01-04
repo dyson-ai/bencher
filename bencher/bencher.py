@@ -199,7 +199,7 @@ class Bench(BenchPlotServer):
         run_cfg: BenchRunCfg = None,
         plot: bool = False,
     ) -> BenchResult:
-        title = "Sweeping " + "vs".join([i.name for i in input_vars])
+        title = "Sweeping " + " vs ".join([i.name for i in input_vars])
         return self.plot_sweep(
             title,
             input_vars=input_vars,
@@ -221,17 +221,22 @@ class Bench(BenchPlotServer):
         const_vars: List[ParametrizedSweep] = None,
         optimise_var: ParametrizedSweep = None,
         run_cfg: BenchRunCfg = None,
+        iterations: int = 1,
     ):
-        # const_vars =
-        for i in input_vars:
-            res = self.sweep(
-                input_vars=[i],
-                result_vars=result_vars,
-                const_vars=const_vars,
-                run_cfg=run_cfg,
-                plot=True,
-            )
-            const_vars = res.get_optimal_inputs(optimise_var, True)
+        for iter in range(iterations):
+            for i in input_vars:
+                res = self.plot_sweep(
+                    # title="Sweeping " + " vs ".join([i.name for i in input_vars]) + f" iteration:{iter}",
+                    title=f"Sweeping {i.name} iteration:{iter}",
+
+                    input_vars=[i],
+                    result_vars=result_vars,
+                    const_vars=const_vars,
+                    run_cfg=run_cfg,
+                    plot=True,
+                )
+                if optimise_var is not None:
+                    const_vars = res.get_optimal_inputs(optimise_var, True)
 
     def plot_sweep(
         self,
