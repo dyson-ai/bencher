@@ -197,9 +197,8 @@ class OptunaResult:
                 else:
                     params[i.name] = row[1][i.name]
 
-            for r in self.bench_cfg.result_vars:
-                if r.direction != OptDir.none:
-                    values.append(row[1][r.name])
+            for r in self.bench_cfg.optuna_targets():
+                values.append(row[1][r])
 
             trials.append(
                 optuna.trial.create_trial(
