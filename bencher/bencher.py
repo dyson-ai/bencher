@@ -225,7 +225,8 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
-    ):
+    ) -> List[BenchResult]:
+        results=[]
         if relationship_cb is None:
             relationship_cb = combinations
         for it in range(iterations):
@@ -243,6 +244,8 @@ class Bench(BenchPlotServer):
                 )
                 if optimise_var is not None:
                     const_vars = res.get_optimal_inputs(optimise_var, True)
+                results.append(res)
+        return results
 
     def plot_sweep(
         self,
