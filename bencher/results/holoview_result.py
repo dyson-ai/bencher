@@ -156,12 +156,10 @@ class HoloviewResult(PanelResult):
         return self.filter(
             self.to_curve_ds,
             "to_curve",
-            PlotFilter(
-                float_range=VarRange(1, 1),
-                cat_range=VarRange(0, None),
-                repeats_range=VarRange(2, None),
-            ),
-            hv_dataset=self.to_hv_dataset(ReduceType.REDUCE, result_var),
+            float_range=VarRange(1, 1),
+            cat_range=VarRange(0, None),
+            repeats_range=VarRange(2, None),
+            reduce=ReduceType.REDUCE,
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),

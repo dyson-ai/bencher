@@ -11,9 +11,9 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
-from bencher.variables.results import ResultVar, VarRange
+from bencher.variables.results import ResultVar
 from bencher.results.float_formatter import FormatFloat
-from bencher.plotting.plot_filter import VarRange
+from bencher.plotting.plot_filter import VarRange, PlotFilter
 import panel as pn
 
 
@@ -252,32 +252,39 @@ class BenchResultBase(OptunaResult):
         plot_callback: callable,
         name,
         plot_filter=None,
-        float_range: VarRange = VarRange()
-        cat_range: VarRange = VarRange(),
+        float_range: VarRange = VarRange(0, None),
+        cat_range: VarRange = VarRange(0, None),
         vector_len: VarRange = VarRange(1, 1),
         result_vars: VarRange = VarRange(1, 1),
         panel_range: VarRange = VarRange(0, 0),
         repeats_range: VarRange = VarRange(1, None),
         input_range: VarRange = VarRange(1, None),
-        hv_dataset: hv.Dataset = None,
+        reduce: ReduceType = ReduceType.AUTO,
         target_dimension: int = 2,
         result_var: ResultVar = None,
         result_types=None,
         **kwargs,
-        ):
-        if plot_filter is not None:
-            matches_res = plot_filter.matches_result(self.plt_cnt_cfg, name)
-            if matches_res.overall:
-                return self.map_plot_panes(
-                    plot_callback=plot_callback,
-                    hv_dataset=self.to_hv_dataset(),
-                    target_dimension=2,
-                    result_var=result_var,
-                    result_types=(ResultVar),
-                    **kwargs,
-                )
-            return matches_res.to_panel()
-        return None
+    ):
+        plot_filter = PlotFilter(
+            float_range=float_range,
+            cat_range=cat_range,
+            vector_len=vector_len,
+            result_vars=result_vars,
+            panel_range=panel_range,
+            repeats_range=repeats_range,
+            input_range=input_range,
+        )
+        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, name)
+        if matches_res.overall:
+            return self.map_plot_panes(
+                plot_callback=plot_callback,
+                hv_dataset=self.to_hv_dataset(reduce=reduce),
+                target_dimension=target_dimension,
+                result_var=result_var,
+                result_types=result_types,
+                **kwargs,
+            )
+        return matches_res.to_panel()
 
     def to_panes_multi_panel(
         self,
