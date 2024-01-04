@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List
 import numpy as np
 import optuna
@@ -122,25 +123,26 @@ class OptunaResult:
 
         return self.collect_optuna_plots()
 
-    def to_optuna_from_sweep(self, worker, n_trials=30):
-        optu = self.to_optuna_from_results(worker, n_trials=n_trials)
+    def to_optuna_from_sweep(self, bench, n_trials=30):
+        optu = self.to_optuna_from_results(bench.worker, n_trials=n_trials,extra_results=bench.results)
         return summarise_optuna_study(optu)
 
-    def to_optuna_from_results(self, worker, n_trials=100, sampler=optuna.samplers.TPESampler()):
+    def to_optuna_from_results(self, worker, n_trials=100,extra_results:List[OptunaResult]=None, sampler=optuna.samplers.TPESampler()):
         directions = []
-        for rv in self.bench_cfg.result_vars:
-            if rv.direction != OptDir.none:
-                directions.append(rv.direction)
+        for rv in self.bench_cfg.optuna_targets(True):
+            directions.append(rv.direction)
 
         study = optuna.create_study(
             sampler=sampler, directions=directions, study_name=self.bench_cfg.title
         )
 
         # add already calculated results
-        if len(self.ds.sizes) > 0:
-            study.add_trials(self.bench_results_to_optuna_trials(True))
+        results_list = extra_results if extra_results is not None else [self]
+        for res in results_list:
+            if len(res.ds.sizes)>0:
+                study.add_trials(res.bench_results_to_optuna_trials(True))
 
-        def wrapped(trial):
+        def wrapped(trial) -> tuple:
             kwargs = {}
             for iv in self.bench_cfg.input_vars:
                 kwargs[iv.name] = sweep_var_to_suggest(iv, trial)
