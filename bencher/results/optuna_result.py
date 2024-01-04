@@ -16,7 +16,6 @@ from optuna.visualization import (
 )
 from bencher.utils import hmap_canonical_input
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import OptDir
 from bencher.bench_cfg import BenchCfg
 from bencher.plotting.plt_cnt_cfg import PltCntCfg
 
@@ -124,10 +123,18 @@ class OptunaResult:
         return self.collect_optuna_plots()
 
     def to_optuna_from_sweep(self, bench, n_trials=30):
-        optu = self.to_optuna_from_results(bench.worker, n_trials=n_trials,extra_results=bench.results)
+        optu = self.to_optuna_from_results(
+            bench.worker, n_trials=n_trials, extra_results=bench.results
+        )
         return summarise_optuna_study(optu)
 
-    def to_optuna_from_results(self, worker, n_trials=100,extra_results:List[OptunaResult]=None, sampler=optuna.samplers.TPESampler()):
+    def to_optuna_from_results(
+        self,
+        worker,
+        n_trials=100,
+        extra_results: List[OptunaResult] = None,
+        sampler=optuna.samplers.TPESampler(),
+    ):
         directions = []
         for rv in self.bench_cfg.optuna_targets(True):
             directions.append(rv.direction)
@@ -139,7 +146,7 @@ class OptunaResult:
         # add already calculated results
         results_list = extra_results if extra_results is not None else [self]
         for res in results_list:
-            if len(res.ds.sizes)>0:
+            if len(res.ds.sizes) > 0:
                 study.add_trials(res.bench_results_to_optuna_trials(True))
 
         def wrapped(trial) -> tuple:

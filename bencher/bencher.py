@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from itertools import product
-from more_itertools import windowed
 
 from typing import Callable, List
 from copy import deepcopy
@@ -223,18 +222,20 @@ class Bench(BenchPlotServer):
         const_vars: List[ParametrizedSweep] = None,
         optimise_var: ParametrizedSweep = None,
         run_cfg: BenchRunCfg = None,
-        dim_window:int =1,
+        dim_window: int = 1,
         iterations: int = 1,
-        relationship_cb = None
-
+        relationship_cb=None,
     ):
         from itertools import combinations
+
         if relationship_cb is None:
             relationship_cb = combinations
         for iter in range(iterations):
-            for i in relationship_cb(input_vars,dim_window):
+            for i in relationship_cb(input_vars, dim_window):
                 res = self.plot_sweep(
-                    title="Sweeping " + " vs ".join([i.name for i in input_vars]) + f" iteration:{iter}",
+                    title="Sweeping "
+                    + " vs ".join([i.name for i in input_vars])
+                    + f" iteration:{iter}",
                     # title=f"Sweeping {i.name} iteration:{iter}",
                     input_vars=i,
                     result_vars=result_vars,

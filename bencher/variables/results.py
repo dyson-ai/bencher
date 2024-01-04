@@ -23,7 +23,7 @@ class ResultVar(Number):
 
     def __init__(self, units="ul", direction: OptDir = OptDir.minimize, **params):
         Number.__init__(self, **params)
-        assert(isinstance(units,str))
+        assert isinstance(units, str)
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction

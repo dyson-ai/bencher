@@ -25,7 +25,7 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
     bump_scale = bch.FloatSweep(default=1.5, bounds=[1, 10])
 
     # RESULTS
-    output = bch.ResultVar("ul",bch.OptDir.minimize)
+    output = bch.ResultVar("ul", bch.OptDir.minimize)
 
     def rastrigin(self, **kwargs) -> dict:
         """A modified version of the rastrigin function which is very difficult to find the global optimum
