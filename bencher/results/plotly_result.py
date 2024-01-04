@@ -5,7 +5,7 @@ import xarray as xr
 
 from param import Parameter
 
-from bencher.plotting.plot_filter import PlotFilter, VarRange
+from bencher.plotting.plot_filter import VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultVar
 
