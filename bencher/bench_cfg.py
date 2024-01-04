@@ -424,10 +424,10 @@ class BenchCfg(BenchRunCfg):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def optuna_targets(self,as_var=False) -> List[str]:
+    def optuna_targets(self, as_var=False) -> List[str]:
         targets = []
         for rv in self.result_vars:
-            if hasattr(rv,"direction") and rv.direction != OptDir.none:
+            if hasattr(rv, "direction") and rv.direction != OptDir.none:
                 if as_var:
                     targets.append(rv)
                 else:

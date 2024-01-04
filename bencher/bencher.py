@@ -228,7 +228,6 @@ class Bench(BenchPlotServer):
                 res = self.plot_sweep(
                     # title="Sweeping " + " vs ".join([i.name for i in input_vars]) + f" iteration:{iter}",
                     title=f"Sweeping {i.name} iteration:{iter}",
-
                     input_vars=[i],
                     result_vars=result_vars,
                     const_vars=const_vars,

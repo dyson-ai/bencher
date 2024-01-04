@@ -14,7 +14,6 @@ from bencher.bench_cfg import BenchCfg
 
 from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import OptDir
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -76,7 +75,7 @@ def summarise_trial(trial: optuna.trial, bench_cfg: BenchCfg) -> List[str]:
         output.append(f"{sep}{sep}{k}:{v}")
     output.append(f"{sep}Results:")
     for it, rv in enumerate(bench_cfg.optuna_targets()):
-            output.append(f"{sep}{sep}{rv}:{trial.values[it]}")
+        output.append(f"{sep}{sep}{rv}:{trial.values[it]}")
     return output
 
 
