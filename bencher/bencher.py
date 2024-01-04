@@ -219,10 +219,19 @@ class Bench(BenchPlotServer):
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
+        optimise_var: ParametrizedSweep = None,
         run_cfg: BenchRunCfg = None,
     ):
+        # const_vars =
         for i in input_vars:
-            self.sweep(input_vars=[i], result_vars=result_vars, const_vars=const_vars, plot=True)
+            res = self.sweep(
+                input_vars=[i],
+                result_vars=result_vars,
+                const_vars=const_vars,
+                run_cfg=run_cfg,
+                plot=True,
+            )
+            const_vars = res.get_optimal_inputs(optimise_var, True)
 
     def plot_sweep(
         self,
