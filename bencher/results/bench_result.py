@@ -47,8 +47,9 @@ class BenchResult(PlotlyResult, HoloviewResult):
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
-        for p in remove_plots:
-            plot_list.remove(p)
+        if remove_plots is not None:
+            for p in remove_plots:
+                plot_list.remove(p)
 
         row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:
