@@ -40,12 +40,16 @@ class BenchResult(PlotlyResult, HoloviewResult):
     def to_auto(
         self,
         plot_list: List[callable] = None,
+        remove_plots: List[callable] = None,
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
+        if remove_plots is not None:
+            for p in remove_plots:
+                plot_list.remove(p)
 
         row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:

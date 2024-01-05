@@ -25,7 +25,7 @@ class ToyOptimisationProblem(bch.ParametrizedSweep):
     bump_scale = bch.FloatSweep(default=1.5, bounds=[1, 10])
 
     # RESULTS
-    output = bch.ResultVar(bch.OptDir.minimize)
+    output = bch.ResultVar("ul", bch.OptDir.minimize)
 
     def rastrigin(self, **kwargs) -> dict:
         """A modified version of the rastrigin function which is very difficult to find the global optimum
@@ -58,7 +58,7 @@ def optuna_rastrigin(
     #     n_trials=30
     # )
 
-    run_cfg.use_optuna = True
+    # run_cfg.use_optuna = True
     res = bench.plot_sweep(
         "Rastrigin",
         input_vars=[explorer.param.input1, explorer.param.input2],
@@ -67,7 +67,7 @@ def optuna_rastrigin(
     )
 
     bench.report.append(res.to_optuna_plots())
-    bench.report.append(res.to_optuna_from_sweep(bench.worker))
+    bench.report.append(res.to_optuna_from_sweep(bench))
     bench.report.append_markdown(
         f"The optimal value should be input1:{-optimal_value},input2:{-optimal_value} with a value of 0"
     )

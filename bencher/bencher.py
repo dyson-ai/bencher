@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
-from itertools import product
+from itertools import product, combinations
+
 from typing import Callable, List
 from copy import deepcopy
 import numpy as np
@@ -186,9 +187,69 @@ class Bench(BenchPlotServer):
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
+    def sweep(
+        self,
+        input_vars: List[ParametrizedSweep] = None,
+        result_vars: List[ParametrizedSweep] = None,
+        const_vars: List[ParametrizedSweep] = None,
+        time_src: datetime = None,
+        description: str = None,
+        post_description: str = None,
+        pass_repeat: bool = False,
+        tag: str = "",
+        run_cfg: BenchRunCfg = None,
+        plot: bool = False,
+    ) -> BenchResult:
+        title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+        return self.plot_sweep(
+            title,
+            input_vars=input_vars,
+            result_vars=result_vars,
+            const_vars=const_vars,
+            time_src=time_src,
+            description=description,
+            post_description=post_description,
+            pass_repeat=pass_repeat,
+            tag=tag,
+            run_cfg=run_cfg,
+            plot=plot,
+        )
+
+    def sweep_sequential(
+        self,
+        input_vars: List[ParametrizedSweep] = None,
+        result_vars: List[ParametrizedSweep] = None,
+        const_vars: List[ParametrizedSweep] = None,
+        optimise_var: ParametrizedSweep = None,
+        run_cfg: BenchRunCfg = None,
+        group_size: int = 1,
+        iterations: int = 1,
+        relationship_cb=None,
+    ) -> List[BenchResult]:
+        results = []
+        if relationship_cb is None:
+            relationship_cb = combinations
+        for it in range(iterations):
+            for input_group in relationship_cb(input_vars, group_size):
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+                if iterations > 1:
+                    title += f" iteration:{it}"
+                res = self.plot_sweep(
+                    title=title,
+                    input_vars=input_group,
+                    result_vars=result_vars,
+                    const_vars=const_vars,
+                    run_cfg=run_cfg,
+                    plot=True,
+                )
+                if optimise_var is not None:
+                    const_vars = res.get_optimal_inputs(optimise_var, True)
+                results.append(res)
+        return results
+
     def plot_sweep(
         self,
-        title: str,
+        title: str = None,
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
@@ -220,6 +281,8 @@ class Bench(BenchPlotServer):
         Returns:
             BenchResult: A class with all the data used to generate the results and the results
         """
+        if title is None:
+            title = "Sweeping " + " vs ".join([i.name for i in input_vars])
 
         if self.worker_class_instance is not None:
             if input_vars is None:
