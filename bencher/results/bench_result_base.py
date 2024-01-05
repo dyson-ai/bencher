@@ -141,16 +141,20 @@ class BenchResultBase(OptunaResult):
         return indicies
 
     def get_optimal_inputs(
-        self, result_var: ParametrizedSweep, keep_existing_consts: bool = True
-    ) -> Tuple[ParametrizedSweep, Any]:
+        self,
+        result_var: ParametrizedSweep,
+        keep_existing_consts: bool = True,
+        as_dict: bool = False,
+    ) -> Tuple[ParametrizedSweep, Any] | dict[ParametrizedSweep, Any]:
         """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
 
         Args:
             result_var (bch.ParametrizedSweep): Optimal values of this result variable
             keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
+            as_dict (bool): return value as a dictionary
 
         Returns:
-            Tuple[bch.ParametrizedSweep, Any]: Tuples of variable name and optimal values
+            Tuple[bch.ParametrizedSweep, Any]|[ParametrizedSweep, Any]: Tuples of variable name and optimal values
         """
         da = self.get_optimal_value_indices(result_var)
         if keep_existing_consts:
@@ -169,6 +173,8 @@ class BenchResultBase(OptunaResult):
                 output.append((iv, max(da.coords[iv.name].values[()])))
 
             logging.info(f"Maximum value of {iv.name}: {output[-1][1]}")
+        if as_dict:
+            return dict(output)
         return output
 
     def describe_sweep(self):

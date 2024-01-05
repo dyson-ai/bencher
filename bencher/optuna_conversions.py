@@ -14,7 +14,6 @@ from bencher.bench_cfg import BenchCfg
 
 from bencher.variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep
 from bencher.variables.time import TimeSnapshot, TimeEvent
-from bencher.variables.results import OptDir
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 
@@ -33,9 +32,8 @@ def optuna_grid_search(bench_cfg: BenchCfg) -> optuna.Study:
     for iv in bench_cfg.all_vars:
         search_space[iv.name] = iv.values(bench_cfg.debug)
     directions = []
-    for rv in bench_cfg.result_vars:
-        if rv.direction != OptDir.none:
-            directions.append(rv.direction)
+    for rv in bench_cfg.optuna_targets(True):
+        directions.append(rv.direction)
 
     study = optuna.create_study(
         sampler=optuna.samplers.GridSampler(search_space),
@@ -76,9 +74,8 @@ def summarise_trial(trial: optuna.trial, bench_cfg: BenchCfg) -> List[str]:
     for k, v in trial.params.items():
         output.append(f"{sep}{sep}{k}:{v}")
     output.append(f"{sep}Results:")
-    for it, rv in enumerate(bench_cfg.result_vars):
-        if rv.direction != OptDir.none:
-            output.append(f"{sep}{sep}{rv.name}:{trial.values[it]}")
+    for it, rv in enumerate(bench_cfg.optuna_targets()):
+        output.append(f"{sep}{sep}{rv}:{trial.values[it]}")
     return output
 
 
