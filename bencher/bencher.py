@@ -249,7 +249,7 @@ class Bench(BenchPlotServer):
 
     def plot_sweep(
         self,
-        title: str,
+        title: str=None,
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
@@ -281,6 +281,8 @@ class Bench(BenchPlotServer):
         Returns:
             BenchResult: A class with all the data used to generate the results and the results
         """
+        if title is None:
+            title = "Sweeping " + " vs ".join([i.name for i in input_vars])
 
         if self.worker_class_instance is not None:
             if input_vars is None:
