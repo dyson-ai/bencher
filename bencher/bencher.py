@@ -249,7 +249,7 @@ class Bench(BenchPlotServer):
 
     def plot_sweep(
         self,
-        title: str=None,
+        title: str = None,
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,

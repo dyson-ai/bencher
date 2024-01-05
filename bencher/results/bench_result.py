@@ -40,7 +40,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
     def to_auto(
         self,
         plot_list: List[callable] = None,
-        remove_plots:List[callable] =None,
+        remove_plots: List[callable] = None,
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
