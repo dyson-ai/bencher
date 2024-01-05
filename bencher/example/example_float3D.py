@@ -90,7 +90,11 @@ def example_floats3D(
         ],
         description="""This example shows how to sample 3 floating point variables and plot a volumetric representation of the results.  The benchmark function returns the distance to the origin""",
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
+        plot=False,
     )
+
+    # bench.report.append(bench.get_result().to_volume())
+    bench.report.append(bench.get_result().to_vtk())
 
     return bench
 
