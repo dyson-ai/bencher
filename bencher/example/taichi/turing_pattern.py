@@ -167,6 +167,9 @@ if __name__ == "__main__":
 
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du], plot=False)
 
+    bench.report.append(bench.get_result().to_auto())
+
+
     bench.report.append(bench.get_result().to_volume())
 
     # bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du])
