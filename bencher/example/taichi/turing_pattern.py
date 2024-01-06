@@ -1,21 +1,22 @@
 import numpy as np
+import math
 import taichi as ti
 import taichi.math as tm
 from video_writer import VideoWriter
-
 import vedo
 from vedo import Volume
 from vedo.applications import Slicer3DPlotter, IsosurfaceBrowser
 from copy import deepcopy
 import bencher as bch
-
+import panel as pn
+import pyvista as pv
 
 # https://www.degeneratestate.org/posts/2017/May/05/turing-patterns/
 
 ti.init(arch=ti.vulkan)
 
 
-W, H = 300, 300
+W, H = 200, 200
 pixels = ti.Vector.field(3, ti.f32, shape=(W, H))
 
 # Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
@@ -93,20 +94,25 @@ npgrip = []
 
 from vedo import dataurl, Plotter, Mesh, Video
 
+def wiggle_camera(self, scale=1, callback=None):
+    import math
 
-# plt = Plotter(bg='beige', bg2='lb', axes=10, offscreen=False, interactive=0)
+    dist = self.dist
+    yaw = self.yaw
+    pitch = self.pitch
+    target = self.target
 
-# plt += Mesh(dataurl+"spider.ply").rotate(-90).texture(dataurl+'textures/leather.jpg')
-# plt += __doc__
+    for y in np.arange(0, 6.28, 0.1):
+        self.set_camera(
+            distance=dist,
+            yaw=yaw + math.sin(y) * scale,
+            pitch=pitch + math.cos(y) * scale,
+            target=target,
+        )
 
-# # Open a video file and force it to last 3 seconds in total
 
-# #############################################################
-# # Any rendering loop goes here, e.g.:
-# for i in range(80):
-#     print(i)
-#     plt.show(elevation=1, azimuth=2)  # render the scene
-#     video.add_frame()                  # add individual frame
+
+
 
 
 class SweepTuring(bch.ParametrizedSweep):
@@ -127,6 +133,11 @@ class SweepTuring(bch.ParametrizedSweep):
 
     bitrate = bch.FloatSweep(default=1000, bounds=(100, 2000))
 
+    duration = bch.FloatSweep(default=40)
+
+    record_volume_vid = bch.BoolSweep(default=False)
+    # resolution = bch.IntSweep(default=100)
+
     # Du = bch.FloatSweep(default=0.160,bounds=(0.08,0.40))
     # Dv = bch.FloatSweep(default=0.08,bounds=(0.04,0.10))
     # feed = bch.FloatSweep(default=0.06,bounds=(0.06,0.18))
@@ -134,8 +145,7 @@ class SweepTuring(bch.ParametrizedSweep):
 
     vid = bch.ResultVideo()
     vol_vid = bch.ResultVideo()
-    # img = bch.ResultImage()
-    # con = bch.ResultVolume()
+    ref = bch.ResultReference()
 
     def __call__(self, **kwargs):
         global uv
@@ -145,125 +155,91 @@ class SweepTuring(bch.ParametrizedSweep):
         gui = ti.GUI("turing", res=W)
         vr = VideoWriter(gui)
         self.vid = bch.gen_video_path("turing")
-        self.vol_vid= bch.gen_video_path("turing_vol",".mp4")
-        video = Video(self.vol_vid, fps=30, backend='ffmpeg') 
-        print()
-
-        plt = Plotter( axes=7,offscreen=False, interactive=0)
-        plt.azimuth(-45)
-
-        stacked_volume = np.empty(shape=(300,300,30))
+        if self.record_volume_vid:
+            self.vol_vid= bch.gen_video_path("turing_vol",".mp4")
+            video = Video(self.vol_vid, fps=30, backend='ffmpeg') 
+            plt = Plotter( axes=7,offscreen=False, interactive=0,size=(600,600))
+            plt.azimuth(-45)
+        stacked_volume = np.empty(shape=(W,H,self.duration))
         substeps = 60
         i=0
-        for frame in range(stacked_volume.shape[2]):
-            for _ in range(substeps):
-                compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
-                i += 1
-            render()
+        for frame in range(self.duration):
             vr.update_gui(pixels)
             gui.set_image(pixels)
             get_val()
             stacked_volume[:,:,frame]= values.to_numpy().squeeze()
-            vol = Volume(stacked_volume)
-            vol.mode(self.rendermode).cmap("jet")
-            # vedo.applications.RayCastPlotter()
-
-            
-            plt.add(vol)
-            plt.show()
-            video.add_frame()
+            if self.record_volume_vid:
+                vol = Volume(stacked_volume)
+                vol.mode(self.rendermode).cmap("jet")
+                plt.add(vol)
+                scale=0.25
+                camera_lerp = bch.lerp(frame,0,self.duration,0,math.pi*2)
+                plt.camera.Azimuth(math.sin(camera_lerp) * scale)
+                plt.camera.Elevation(math.cos(camera_lerp) * scale)
+                plt.show()
+                video.add_frame()
             gui.show()
+            for _ in range(substeps):
+                compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
+                i += 1
+            render()
 
-        plt.close()
-        video.close()
+        self.ref = bch.ResultReference(stacked_volume,container=pyvista_volume_container)
         vr.write(self.vid, self.bitrate)
 
-        # gui.destroy()
+        if self.record_volume_vid:
+            plt.close()
+            video.close()
         gui.close()
         return super().__call__()
 
 
-if __name__ == "__main__":
-    # SweepTuring().__call__()
-    # print(npgrip)
-    # np1 = np.stack(npgrip).squeeze()
-    # print(np1)
-    # print(np1.shape)
-    # vol = Volume(np1)
-    # settings.default_backend="k3d"
-    # plt = Slicer3DPlotter(
-    #     vol,
-    #     cmaps=("gist_ncar_r", "jet", "Spectral_r", "hot_r", "bone_r"),
-    #     use_slider3d=True,
-    #     bg="white",
-    #     bg2="blue9",
-    #     draggable=True,
-    # )
-    # plt.show()
-    # is1 =vol.isosurface()
-    # is2 = vol.slice_plane()
-    # vedo.show([is2],N=2)
 
-    # vedo.show(vol)
-    # IsosurfaceBrowser(Plotter) instance:
-    # iso = IsosurfaceBrowser(vol, use_gpu=True)
-    # iso.show()
-    # plt.add()
-    # plt.show(axes=7, bg2='lb').close()
+def pyvista_volume_container(npdat,**kwargs):
+    # vol = pv.wrap(npdat)
+    # pn.extension('vtk')
+    # return pn.pane.VTKVolume(npdat, display_slices=True)
+    plotter = pv.Plotter()
+    vol = pv.wrap(npdat)
+    plotter.add_volume(vol)
+    # plotter.add_volume_clip_plane(vol)
+
+    return pn.panel(plotter.ren_win, orientation_widget=True, **kwargs)
+
+if __name__ == "__main__":
 
     run_cfg = bch.BenchRunCfg()
-    run_cfg.level = 2
+    run_cfg.level = 4
     run_cfg.use_sample_cache = True
-    run_cfg.run_tag = "3"
+    run_cfg.run_tag = "13"
     bench = SweepTuring().to_bench(run_cfg)
 
     SweepTuring.param.Du.bounds = [0.13, 0.19]
+
+    plot_kwargs = dict(width=600,height=600)
     # SweepTuring.param.Dv.bounds = [0.08, 0.09]
 
-    bench.plot_sweep("turing", input_vars=[SweepTuring.param.feed])
-
-    # bench.report.append(bench.get_result().to_auto())
-
-    # bench.report.append(bench.get_result().to_volume())
-
-    # bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du])
-    # bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du], plot=False)
-
-    bench.report.show()
-    exit()
-
-    import panel as pn
-
-    # row = []
     row = pn.Row()
-    # row.append(bench.get_result().to_dataset())
-    row.append(bench.get_result().to_video())
-    # row.append(bench.get_result().to_video())
+    bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du],plot=False)
+    # bench.report.append(bench.get_result().to_auto(**plot_kwargs))
 
     SweepTuring.param.Du.default = 0.145
-
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.Dv], plot=False)
-    # row.append(bench.get_result().to_dataset())
-    row.append(bench.get_result().to_video())
+    # bench.report.append(bench.get_result().to_auto(**plot_kwargs))
 
     SweepTuring.param.Dv.default = 0.07
-
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.feed], plot=False)
-    # row.append(bench.get_result().to_dataset())
-    row.append(bench.get_result().to_video())
+    bench.report.append(bench.get_result().to_auto(**plot_kwargs))
 
-    # row.append(bench.get_result().to_dataset())
-
-    # merged =
-
-    # bench.report.append(pn.Row(row))
+    # row.append(bench.get_result().to_auto(**plot_kwargs))
 
     SweepTuring.param.feed.default = 0.07
-
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.kill], plot=False)
-    row.append(bench.get_result().to_video())
+    # bench.report.append(bench.get_result().to_auto(**plot_kwargs))
+    # row.append(bench.get_result().to_auto(**plot_kwargs))
 
-    bench.report.append(row)
+
+    # bench.report.append(row)
 
     bench.report.show()
 

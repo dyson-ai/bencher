@@ -282,7 +282,15 @@ class Bench(BenchPlotServer):
             BenchResult: A class with all the data used to generate the results and the results
         """
         if title is None:
-            title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+            if input_vars is not None:
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+            elif const_vars is not None:
+                title = "Values" + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+            else:
+                raise Exception("you must pass a title")
+        
+            
+            
 
         if self.worker_class_instance is not None:
             if input_vars is None:
@@ -326,9 +334,11 @@ class Bench(BenchPlotServer):
 
         if run_cfg.level > 0:
             inputs = []
-            for i in input_vars:
-                inputs.append(i.with_level(run_cfg.level))
-            input_vars = inputs
+            print(input_vars)
+            if len(input_vars)>0:
+                for i in input_vars:
+                    inputs.append(i.with_level(run_cfg.level))
+                input_vars = inputs
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):

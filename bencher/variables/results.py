@@ -1,6 +1,7 @@
 from enum import auto
-from typing import List
+from typing import List,Callable,Any
 
+import panel as pn
 import param
 from param import Number
 from strenum import StrEnum
@@ -137,9 +138,11 @@ class ResultContainer(param.Parameter):
 
 
 class ResultReference(param.Parameter):
+    """Use this class to save arbitrary objects that are not picklable or native to panel.  You can pass a container callback that takes the object and returns a panel pane to be displayed 
+    """
     __slots__ = ["units", "obj","container"]
 
-    def __init__(self, obj=None, default=None, units="container",container:callable=None, **params):
+    def __init__(self, obj:Any=None,container:Callable[Any,pn.pane.panel]=None, default:Any=None, units:str="container", **params):        
         super().__init__(default=default, **params)
         self.units = units
         self.obj = obj

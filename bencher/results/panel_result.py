@@ -71,14 +71,23 @@ class PanelResult(BenchResultBase):
 
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
         # todo this is really horrible, need to improve
+        dim =None
         if isinstance(da_ds, xr.Dataset):
             dim = list(da_ds.keys())[0]
             da = da_ds[dim]
         else:
             da = da_ds
+
         for k in da.coords.keys():
             dim = k
             break
+
+        if dim is None:
+            return da_ds.values.squeeze().item()
+            pass  
+        print(da_ds)
+        print("item",da_ds.values.squeeze())
+
         return da.expand_dims(dim).values[0]
 
     def ds_to_container(
