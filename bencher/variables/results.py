@@ -137,12 +137,13 @@ class ResultContainer(param.Parameter):
 
 
 class ResultReference(param.Parameter):
-    __slots__ = ["units", "obj"]
+    __slots__ = ["units", "obj","container"]
 
-    def __init__(self, obj=None, default=None, units="container", **params):
+    def __init__(self, obj=None, default=None, units="container",container:callable=None, **params):
         super().__init__(default=default, **params)
         self.units = units
         self.obj = obj
+        self.container = container
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
