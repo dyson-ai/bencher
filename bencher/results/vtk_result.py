@@ -1,5 +1,4 @@
 import panel as pn
-import plotly.graph_objs as go
 from typing import Optional
 import xarray as xr
 
@@ -9,16 +8,16 @@ from bencher.plotting.plot_filter import VarRange
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultVar
 
-# import vtk
+import vtk
+
 # from vtkmodules.vtkCommonDataModel import vtkImageData
 
 
 # import vtk
 import numpy as np
-# from vtk.util import numpy_support
+from vtk.util import numpy_support
 
-pn.extension('vtk')
-
+pn.extension("vtk")
 
 
 def numpy_array_as_vtk_image_data(source_numpy_array):
@@ -90,9 +89,70 @@ class VTKResult(BenchResultBase):
         )
 
     def to_vtk_da(
-        self, dataset: xr.Dataset, result_var: Parameter, width=600, height=600
+        self, dataset: xr.Dataset, result_var: Parameter, width=600, height=600, **kwargs
     ) -> Optional[pn.pane.Plotly]:
-        
+        import pyvista as pv
+
+        plotter = pv.Plotter()
+        # plotter.camera_position = [
+        #     [565, -340, 219],
+        #     [47, 112, 52],
+        #     [0, 0, 1],
+        # ]
+        npdat = dataset[result_var.name].data
+
+        x = self.plt_cnt_cfg.float_vars[0]
+        y = self.plt_cnt_cfg.float_vars[1]
+        z = self.plt_cnt_cfg.float_vars[2]
+
+        from vedo import dataurl, Volume
+        from vedo.applications import IsosurfaceBrowser
+
+        vol = Volume(dataurl + "head.vti")
+
+        vol = Volume(npdat)
+
+        plt = IsosurfaceBrowser(vol, use_gpu=True, c="gold")
+
+        # plt.show(axes=7, bg2='lb').close()
+
+        # vtkim = numpy_array_as_vtk_image_data(dataset[result_var.name].data)
+
+        # plotter.add_volume(head)
+        # plotter.add_volume(vtkim)
+        # head = pv.ImageData(npdat)
+        # npdat*= (255.0/npdat.max())
+        # head =pv.wrap(npdat)
+        pv_vol = pv.ImageData(dimensions=npdat.shape)
+        pv_vol["values"] = npdat.ravel(order="F")
+        # if isinstance(dataset, pyvista.pyvista_ndarray):
+        # this gets rid of pesky VTK reference since we're raveling this
+        # dataset = np.array(dataset, copy=False)
+        # mesh['values'] = dataset.ravel(order='F')
+        pv_vol.active_scalars_name = "values"
+
+        print(pv_vol.bounds)
+
+        # pv_vol.bounds = (x.bounds[0],x.bounds[1],y.bounds[0],y.bounds[1],z.bounds[0],z.bounds[1])
+
+        print(pv_vol)
+        # head.cell_data["values"] = npdat.flatten(order="F")
+        # print(type(head))
+        # plotter.add_volume_clip_plane(head)
+        # plotter.add_volume(pv_vol,shade=True)
+        # plotter.add_mesh_clip_plane(pv_vol)
+
+        plotter.add_volume(pv_vol)
+
+        import vtk
+
+        plotter.add_mesh_slice(
+            pv_vol, assign_to_axis="z", interaction_event=vtk.vtkCommand.InteractionEvent
+        )
+        # plotter.show()
+        volume_pan = pn.panel(plotter.ren_win, orientation_widget=True, width=width, height=height)
+        return volume_pan
+
         import vtk
         from vtk.util.colors import tomato
 
@@ -124,20 +184,43 @@ class VTKResult(BenchResultBase):
         renWin = vtk.vtkRenderWindow()
         renWin.AddRenderer(ren)
 
+        vtkim = numpy_array_as_vtk_image_data(dataset[result_var.name].data)
+
+        ren.AddActor(vtkim)
+
         # Add the actors to the renderer, set the background and size
         ren.AddActor(cylinderActor)
         ren.SetBackground(0.1, 0.2, 0.4)
 
         geom_pane = pn.pane.VTK(renWin, width=500, height=500)
         return geom_pane
-        
-        # import pyvista as pv
-        # from pyvista import examples
 
-        # # Download a volumetric dataset
-        # vol = examples.download_head()
-        # volume = pn.pane.VTKVolume(vol, height=600, sizing_mode='stretch_width', display_slices=True)
-        # return volume
+        import numpy as np
+
+        data_matrix = np.zeros([75, 75, 75], dtype=np.uint8)
+        data_matrix[0:35, 0:35, 0:35] = 50
+        data_matrix[25:55, 25:55, 25:55] = 100
+        data_matrix[45:74, 45:74, 45:74] = 150
+
+        return pn.pane.VTKVolume(
+            data_matrix,
+            width=800,
+            height=600,
+            spacing=(3, 2, 1),
+            interpolation="nearest",
+            edge_gradient=0,
+            sampling=0,
+        )
+
+        import pyvista as pv
+        from pyvista import examples
+
+        # Download a volumetric dataset
+        vol = examples.download_head()
+        volume = pn.pane.VTKVolume(
+            vol, height=600, sizing_mode="stretch_width", display_slices=True
+        )
+        return volume
         """Given a benchCfg generate a 3D surface plot
         Returns:
             pn.pane.Plotly: A 3d volume plot as a holoview in a pane
@@ -148,7 +231,6 @@ class VTKResult(BenchResultBase):
         opacity = 0.1
         meandf = dataset[result_var.name].to_dataframe().reset_index()
 
-
         data_matrix = np.zeros([75, 75, 75], dtype=np.uint8)
         data_matrix[0:35, 0:35, 0:35] = 50
         data_matrix[25:55, 25:55, 25:55] = 100
@@ -157,15 +239,21 @@ class VTKResult(BenchResultBase):
         data_matrix = dataset[result_var.name].data
 
         print("loading vtk")
+        pn.extension("vtk")
 
-
-        return pn.pane.VTKVolume(data_matrix, width=800, height=600, spacing=(3,2,1), interpolation='nearest', edge_gradient=0, sampling=0)
+        return pn.pane.VTKVolume(
+            data_matrix,
+            width=800,
+            height=600,
+            spacing=(3, 2, 1),
+            interpolation="nearest",
+            edge_gradient=0,
+            sampling=0,
+        )
 
         # vtkim = vtkImageData()
 
         # vtkim.SetFieldData()
-
-        # vtkim = numpy_array_as_vtk_image_data(dataset[result_var.name].data)
 
         # return
 

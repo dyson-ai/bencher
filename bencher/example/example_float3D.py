@@ -85,13 +85,15 @@ def example_floats3D(
         input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
         result_vars=[
             VolumeResult.param.value,
-            VolumeResult.param.occupancy,
-            VolumeResult.param.interesting,
+            # VolumeResult.param.occupancy,
+            # VolumeResult.param.interesting,
         ],
         description="""This example shows how to sample 3 floating point variables and plot a volumetric representation of the results.  The benchmark function returns the distance to the origin""",
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
         plot=False,
     )
+
+    bench.report.append(bench.get_result().to_auto())
 
     # bench.report.append(bench.get_result().to_volume())
     bench.report.append(bench.get_result().to_vtk())
@@ -101,5 +103,5 @@ def example_floats3D(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.level = 3
+    ex_run_cfg.level = 6
     example_floats3D(ex_run_cfg).report.show()

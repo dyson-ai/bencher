@@ -3,11 +3,17 @@ import taichi as ti
 import taichi.math as tm
 from video_writer import VideoWriter
 
+import vedo
+from vedo import Volume
+from vedo.applications import Slicer3DPlotter, IsosurfaceBrowser
+from copy import deepcopy
+import bencher as bch
+
+
 # https://www.degeneratestate.org/posts/2017/May/05/turing-patterns/
 
 ti.init(arch=ti.vulkan)
 
-from copy import deepcopy
 
 W, H = 300, 300
 pixels = ti.Vector.field(3, ti.f32, shape=(W, H))
@@ -82,7 +88,25 @@ def get_val():
         values[i, j] = uv[0, i, j].y
 
 
-import bencher as bch
+npgrip = []
+
+
+from vedo import dataurl, Plotter, Mesh, Video
+
+
+# plt = Plotter(bg='beige', bg2='lb', axes=10, offscreen=False, interactive=0)
+
+# plt += Mesh(dataurl+"spider.ply").rotate(-90).texture(dataurl+'textures/leather.jpg')
+# plt += __doc__
+
+# # Open a video file and force it to last 3 seconds in total
+
+# #############################################################
+# # Any rendering loop goes here, e.g.:
+# for i in range(80):
+#     print(i)
+#     plt.show(elevation=1, azimuth=2)  # render the scene
+#     video.add_frame()                  # add individual frame
 
 
 class SweepTuring(bch.ParametrizedSweep):
@@ -99,6 +123,8 @@ class SweepTuring(bch.ParametrizedSweep):
     feed = bch.FloatSweep(default=0.06, bounds=(0.03, 0.07))
     kill = bch.FloatSweep(default=0.062, bounds=(0.060, 0.064))
 
+    rendermode = bch.IntSweep(default=0,bounds=(0,4))
+
     bitrate = bch.FloatSweep(default=1000, bounds=(100, 2000))
 
     # Du = bch.FloatSweep(default=0.160,bounds=(0.08,0.40))
@@ -107,8 +133,9 @@ class SweepTuring(bch.ParametrizedSweep):
     # kill = bch.FloatSweep(default=0.062,bounds=(0.051,0.062))
 
     vid = bch.ResultVideo()
-    img = bch.ResultImage()
-    con = bch.ResultVolume()
+    vol_vid = bch.ResultVideo()
+    # img = bch.ResultImage()
+    # con = bch.ResultVolume()
 
     def __call__(self, **kwargs):
         global uv
@@ -117,37 +144,38 @@ class SweepTuring(bch.ParametrizedSweep):
 
         gui = ti.GUI("turing", res=W)
         vr = VideoWriter(gui)
+        self.vid = bch.gen_video_path("turing")
+        self.vol_vid= bch.gen_video_path("turing_vol",".mp4")
+        video = Video(self.vol_vid, fps=30, backend='ffmpeg') 
+        print()
 
+        plt = Plotter( axes=7,offscreen=False, interactive=0)
+        plt.azimuth(-45)
+
+        stacked_volume = np.empty(shape=(300,300,30))
         substeps = 60
-
-        for i in range(100):
+        i=0
+        for frame in range(stacked_volume.shape[2]):
             for _ in range(substeps):
                 compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
                 i += 1
             render()
             vr.update_gui(pixels)
-            # import PIL
-            # PIL.save()
             gui.set_image(pixels)
-            # print(pixels)
-
-            # self.img = gui.get_image()
-            img = gui.get_image()
-
-            # print(img.shape)
-            # print(img[0] + img[1])
             get_val()
-            # print(values)
+            stacked_volume[:,:,frame]= values.to_numpy().squeeze()
+            vol = Volume(stacked_volume)
+            vol.mode(self.rendermode).cmap("jet")
+            # vedo.applications.RayCastPlotter()
 
-            self.con = values
-
-            # print(uv[0]+uv[0])
-            # exit()
-            # self.con =
-
+            
+            plt.add(vol)
+            plt.show()
+            video.add_frame()
             gui.show()
 
-        self.vid = bch.gen_video_path("turing")
+        plt.close()
+        video.close()
         vr.write(self.vid, self.bitrate)
 
         # gui.destroy()
@@ -156,21 +184,47 @@ class SweepTuring(bch.ParametrizedSweep):
 
 
 if __name__ == "__main__":
+    # SweepTuring().__call__()
+    # print(npgrip)
+    # np1 = np.stack(npgrip).squeeze()
+    # print(np1)
+    # print(np1.shape)
+    # vol = Volume(np1)
+    # settings.default_backend="k3d"
+    # plt = Slicer3DPlotter(
+    #     vol,
+    #     cmaps=("gist_ncar_r", "jet", "Spectral_r", "hot_r", "bone_r"),
+    #     use_slider3d=True,
+    #     bg="white",
+    #     bg2="blue9",
+    #     draggable=True,
+    # )
+    # plt.show()
+    # is1 =vol.isosurface()
+    # is2 = vol.slice_plane()
+    # vedo.show([is2],N=2)
+
+    # vedo.show(vol)
+    # IsosurfaceBrowser(Plotter) instance:
+    # iso = IsosurfaceBrowser(vol, use_gpu=True)
+    # iso.show()
+    # plt.add()
+    # plt.show(axes=7, bg2='lb').close()
+
     run_cfg = bch.BenchRunCfg()
     run_cfg.level = 2
     run_cfg.use_sample_cache = True
-    run_cfg.run_tag = "1"
+    run_cfg.run_tag = "3"
     bench = SweepTuring().to_bench(run_cfg)
 
     SweepTuring.param.Du.bounds = [0.13, 0.19]
     # SweepTuring.param.Dv.bounds = [0.08, 0.09]
 
-    bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du], plot=False)
+    bench.plot_sweep("turing", input_vars=[SweepTuring.param.feed])
 
-    bench.report.append(bench.get_result().to_auto())
+    # bench.report.append(bench.get_result().to_auto())
 
-
-    bench.report.append(bench.get_result().to_volume())
+    # bench.report.append(bench.get_result().to_volume())
 
     # bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du])
     # bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du], plot=False)
