@@ -18,5 +18,3 @@ class VideoWriter:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(self.images, fps=30)
         # clip = clip.add_mask().rotate(90)
         clip.write_videofile(file, bitrate=f"{bitrate}k")
-
- 

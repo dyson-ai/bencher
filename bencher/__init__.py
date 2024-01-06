@@ -26,7 +26,7 @@ from .utils import (
     gen_path,
     gen_image_path,
     gen_video_path,
-    lerp
+    lerp,
 )
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams

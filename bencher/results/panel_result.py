@@ -71,7 +71,7 @@ class PanelResult(BenchResultBase):
 
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
         # todo this is really horrible, need to improve
-        dim =None
+        dim = None
         if isinstance(da_ds, xr.Dataset):
             dim = list(da_ds.keys())[0]
             da = da_ds[dim]
@@ -84,9 +84,9 @@ class PanelResult(BenchResultBase):
 
         if dim is None:
             return da_ds.values.squeeze().item()
-            pass  
+            pass
         print(da_ds)
-        print("item",da_ds.values.squeeze())
+        print("item", da_ds.values.squeeze())
 
         return da.expand_dims(dim).values[0]
 
@@ -98,13 +98,13 @@ class PanelResult(BenchResultBase):
             ref = self.object_index[val]
             val = ref.obj
             if ref.container is not None:
-                return ref.container(val,**kwargs)
+                return ref.container(val, **kwargs)
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
 
     def to_panes(
-        self, result_var: Parameter = None, target_dimension: int = 0,container=None, **kwargs
+        self, result_var: Parameter = None, target_dimension: int = 0, container=None, **kwargs
     ) -> Optional[pn.pane.panel]:
         if container is None:
             container = pn.pane.panel

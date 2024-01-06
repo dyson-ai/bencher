@@ -105,9 +105,12 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
         return (*rgb, alpha)
     return rgb
 
-def lerp(value, input_low:float, input_high:float, output_low:float, output_high:float):
+
+def lerp(value, input_low: float, input_high: float, output_low: float, output_high: float):
     input_low = float(input_low)
-    return output_low + ((float(value) - input_low) / (float(input_high) - input_low)) * (float(output_high) - output_low)
+    return output_low + ((float(value) - input_low) / (float(input_high) - input_low)) * (
+        float(output_high) - output_low
+    )
 
 
 def color_tuple_to_css(color: tuple[float, float, float]) -> str:

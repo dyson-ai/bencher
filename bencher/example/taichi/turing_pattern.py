@@ -3,13 +3,13 @@ import math
 import taichi as ti
 import taichi.math as tm
 from video_writer import VideoWriter
-import vedo
 from vedo import Volume
-from vedo.applications import Slicer3DPlotter, IsosurfaceBrowser
 from copy import deepcopy
 import bencher as bch
 import panel as pn
 import pyvista as pv
+from vedo import Plotter, Video
+
 
 # https://www.degeneratestate.org/posts/2017/May/05/turing-patterns/
 
@@ -92,8 +92,6 @@ def get_val():
 npgrip = []
 
 
-from vedo import dataurl, Plotter, Mesh, Video
-
 def wiggle_camera(self, scale=1, callback=None):
     import math
 
@@ -111,10 +109,6 @@ def wiggle_camera(self, scale=1, callback=None):
         )
 
 
-
-
-
-
 class SweepTuring(bch.ParametrizedSweep):
     # Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
     # Du, Dv, feed, kill = 0.210, 0.105, 0.018, 0.051
@@ -129,7 +123,7 @@ class SweepTuring(bch.ParametrizedSweep):
     feed = bch.FloatSweep(default=0.06, bounds=(0.03, 0.07))
     kill = bch.FloatSweep(default=0.062, bounds=(0.060, 0.064))
 
-    rendermode = bch.IntSweep(default=0,bounds=(0,4))
+    rendermode = bch.IntSweep(default=0, bounds=(0, 4))
 
     bitrate = bch.FloatSweep(default=1000, bounds=(100, 2000))
 
@@ -156,24 +150,24 @@ class SweepTuring(bch.ParametrizedSweep):
         vr = VideoWriter(gui)
         self.vid = bch.gen_video_path("turing")
         if self.record_volume_vid:
-            self.vol_vid= bch.gen_video_path("turing_vol",".mp4")
-            video = Video(self.vol_vid, fps=30, backend='ffmpeg') 
-            plt = Plotter( axes=7,offscreen=False, interactive=0,size=(600,600))
+            self.vol_vid = bch.gen_video_path("turing_vol", ".mp4")
+            video = Video(self.vol_vid, fps=30, backend="ffmpeg")
+            plt = Plotter(axes=7, offscreen=False, interactive=0, size=(600, 600))
             plt.azimuth(-45)
-        stacked_volume = np.empty(shape=(W,H,self.duration))
+        stacked_volume = np.empty(shape=(W, H, self.duration))
         substeps = 60
-        i=0
+        i = 0
         for frame in range(self.duration):
             vr.update_gui(pixels)
             gui.set_image(pixels)
             get_val()
-            stacked_volume[:,:,frame]= values.to_numpy().squeeze()
+            stacked_volume[:, :, frame] = values.to_numpy().squeeze()
             if self.record_volume_vid:
                 vol = Volume(stacked_volume)
                 vol.mode(self.rendermode).cmap("jet")
                 plt.add(vol)
-                scale=0.25
-                camera_lerp = bch.lerp(frame,0,self.duration,0,math.pi*2)
+                scale = 0.25
+                camera_lerp = bch.lerp(frame, 0, self.duration, 0, math.pi * 2)
                 plt.camera.Azimuth(math.sin(camera_lerp) * scale)
                 plt.camera.Elevation(math.cos(camera_lerp) * scale)
                 plt.show()
@@ -184,7 +178,7 @@ class SweepTuring(bch.ParametrizedSweep):
                 i += 1
             render()
 
-        self.ref = bch.ResultReference(stacked_volume,container=pyvista_volume_container)
+        self.ref = bch.ResultReference(stacked_volume, container=pyvista_volume_container)
         vr.write(self.vid, self.bitrate)
 
         if self.record_volume_vid:
@@ -194,8 +188,7 @@ class SweepTuring(bch.ParametrizedSweep):
         return super().__call__()
 
 
-
-def pyvista_volume_container(npdat,**kwargs):
+def pyvista_volume_container(npdat, **kwargs):
     # vol = pv.wrap(npdat)
     # pn.extension('vtk')
     # return pn.pane.VTKVolume(npdat, display_slices=True)
@@ -206,8 +199,8 @@ def pyvista_volume_container(npdat,**kwargs):
 
     return pn.panel(plotter.ren_win, orientation_widget=True, **kwargs)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()
     run_cfg.level = 4
     run_cfg.use_sample_cache = True
@@ -216,11 +209,11 @@ if __name__ == "__main__":
 
     SweepTuring.param.Du.bounds = [0.13, 0.19]
 
-    plot_kwargs = dict(width=600,height=600)
+    plot_kwargs = dict(width=600, height=600)
     # SweepTuring.param.Dv.bounds = [0.08, 0.09]
 
     row = pn.Row()
-    bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du],plot=False)
+    bench.plot_sweep("turing", input_vars=[SweepTuring.param.Du], plot=False)
     # bench.report.append(bench.get_result().to_auto(**plot_kwargs))
 
     SweepTuring.param.Du.default = 0.145
@@ -237,7 +230,6 @@ if __name__ == "__main__":
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.kill], plot=False)
     # bench.report.append(bench.get_result().to_auto(**plot_kwargs))
     # row.append(bench.get_result().to_auto(**plot_kwargs))
-
 
     # bench.report.append(row)
 

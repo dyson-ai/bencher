@@ -13,13 +13,19 @@ if __name__ == "__main__":
     SweepTuring.param.Dv.bounds = None
     SweepTuring.param.feed.bounds = None
     SweepTuring.param.kill.bounds = None
-    SweepTuring.param.record_volume_vid=True
+    SweepTuring.param.record_volume_vid = True
 
-    res =bench.plot_sweep(input_vars=[], const_vars=[SweepTuring.param.Du.with_const(0.117),SweepTuring.param.Dv.with_const(0.0835),SweepTuring.param.feed.with_const(0.029),SweepTuring.param.kill.with_const(0.065)],plot=False)
+    res = bench.plot_sweep(
+        input_vars=[],
+        const_vars=[
+            SweepTuring.param.Du.with_const(0.117),
+            SweepTuring.param.Dv.with_const(0.0835),
+            SweepTuring.param.feed.with_const(0.029),
+            SweepTuring.param.kill.with_const(0.065),
+        ],
+        plot=False,
+    )
 
-    bench.report.append(res.to_auto(width=600,height=600))
-
+    bench.report.append(res.to_auto(width=600, height=600))
 
     bench.report.show()
-
-

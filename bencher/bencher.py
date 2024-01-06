@@ -288,9 +288,6 @@ class Bench(BenchPlotServer):
                 title = "Values" + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
             else:
                 raise Exception("you must pass a title")
-        
-            
-            
 
         if self.worker_class_instance is not None:
             if input_vars is None:
@@ -335,7 +332,7 @@ class Bench(BenchPlotServer):
         if run_cfg.level > 0:
             inputs = []
             print(input_vars)
-            if len(input_vars)>0:
+            if len(input_vars) > 0:
                 for i in input_vars:
                     inputs.append(i.with_level(run_cfg.level))
                 input_vars = inputs
