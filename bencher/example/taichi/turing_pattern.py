@@ -10,13 +10,11 @@ import panel as pn
 import pyvista as pv
 from vedo import Plotter, Video
 
-
 # https://www.degeneratestate.org/posts/2017/May/05/turing-patterns/
 
 ti.init(arch=ti.vulkan)
 
-
-W, H = 200, 200
+W, H = 100, 100
 
 pixels = ti.Vector.field(3, ti.f32, shape=(W, H))
 uv_grid = np.zeros((2, W, H, 2), dtype=np.float32)
@@ -31,11 +29,6 @@ values = ti.Vector.field(1, ti.f32, shape=(W, H))
 
 
 palette = ti.Vector.field(4, ti.f32, shape=(5,))
-# palette[0] = [0, 0, 0, 0]  # [0.0, 0.0, 0.0, 0.31372549]
-# palette[1] = [0, 1, 0, 0.2]  # [1.0, 0.1843, 0.53333333, 0.376470588]
-# palette[2] = [1.0, 1.0, 0.0, 0.2078431373]  # [0.854901961, 1.0, 0.5333333, 0.3882353]
-# palette[3] = [1, 0, 0, 0.4]  # [0.376471, 1.0, 0.47843, 0.39215686]
-# palette[4] = [1.0, 1.0, 1.0, 0.6]
 palette[0] = [0.0, 0.0, 0.0, 0.3137]
 palette[1] = [1.0, 0.1843, 0.53333, 0.37647]
 palette[2] = [0.8549, 1.0, 0.53333, 0.388]
@@ -87,13 +80,6 @@ def get_val():
 
 @ti.data_oriented
 class SweepTuring(bch.ParametrizedSweep):
-    # Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
-    # Du, Dv, feed, kill = 0.210, 0.105, 0.018, 0.051
-
-    # Du = bch.FloatSweep(default=0.160,bounds=(0.1,0.2))
-    # Dv = bch.FloatSweep(default=0.080,bounds=(0.05,0.09))
-    # feed = bch.FloatSweep(default=0.06,bounds=(0.06,0.18))
-    # kill = bch.FloatSweep(default=0.062,bounds=(0.051,0.062))
 
     Du = bch.FloatSweep(default=0.160, bounds=(0.08, 0.40))
     Dv = bch.FloatSweep(default=0.08, bounds=(0.04, 0.10))
@@ -107,12 +93,7 @@ class SweepTuring(bch.ParametrizedSweep):
     duration = bch.FloatSweep(default=40)
 
     record_volume_vid = bch.BoolSweep(default=False)
-    # resolution = bch.IntSweep(default=100)
-
-    # Du = bch.FloatSweep(default=0.160,bounds=(0.08,0.40))
-    # Dv = bch.FloatSweep(default=0.08,bounds=(0.04,0.10))
-    # feed = bch.FloatSweep(default=0.06,bounds=(0.06,0.18))
-    # kill = bch.FloatSweep(default=0.062,bounds=(0.051,0.062))
+    resolution = bch.IntSweep(default=50,bounds=(10,200))
 
     vid = bch.ResultVideo()
     ref = bch.ResultReference()
@@ -132,10 +113,11 @@ class SweepTuring(bch.ParametrizedSweep):
             video = Video(self.vol_vid, fps=30, backend="ffmpeg")
             plt = Plotter(axes=7, offscreen=False, interactive=0, size=(600, 600))
             plt.azimuth(-45)
-        stacked_volume = np.empty(shape=(W, H, self.duration))
+        stacked_volume = np.zeros(shape=(W, H, self.duration))
         substeps = 60
         i = 0
         for frame in range(self.duration):
+            i = frame
             vr.update_gui(pixels)
             gui.set_image(pixels)
             get_val()
