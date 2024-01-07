@@ -315,7 +315,9 @@ class Bench(BenchPlotServer):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
         for i in range(len(const_vars)):
             # consts come as tuple pairs
-            const_vars[i][0] = self.convert_vars_to_params(const_vars[i][0], "const")
+            cv_list = list(const_vars[i])
+            cv_list[0] = self.convert_vars_to_params(cv_list[0], "const")
+            const_vars[i] = cv_list
 
         if run_cfg is None:
             if self.run_cfg is None:
