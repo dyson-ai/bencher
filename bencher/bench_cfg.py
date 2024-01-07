@@ -164,8 +164,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
-    plot_size= param.Integer(default=None)
-
+    plot_size = param.Integer(default=None)
 
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
