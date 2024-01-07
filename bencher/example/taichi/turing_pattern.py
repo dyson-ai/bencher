@@ -84,6 +84,8 @@ def get_val():
         values[i, j] = uv[0, i, j].y
 
 
+
+@ti.data_oriented
 class SweepTuring(bch.ParametrizedSweep):
     # Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
     # Du, Dv, feed, kill = 0.210, 0.105, 0.018, 0.051
