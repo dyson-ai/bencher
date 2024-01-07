@@ -12,72 +12,6 @@ from vedo import Plotter, Video
 
 # https://www.degeneratestate.org/posts/2017/May/05/turing-patterns/
 
-ti.init(arch=ti.vulkan)
-
-W, H = 100, 100
-
-pixels = ti.Vector.field(3, ti.f32, shape=(W, H))
-uv_grid = np.zeros((2, W, H, 2), dtype=np.float32)
-uv_grid[0, :, :, 0] = 1.0
-rand_rows = np.random.choice(range(W), 50)
-rand_cols = np.random.choice(range(H), 50)
-uv_grid[0, rand_rows, rand_cols, 1] = 1.0
-uv = ti.Vector.field(2, ti.f32, shape=(2, W, H))
-uv_deep = deepcopy(uv_grid)
-uv.from_numpy(uv_grid)
-values = ti.Vector.field(1, ti.f32, shape=(W, H))
-
-
-palette = ti.Vector.field(4, ti.f32, shape=(5,))
-palette[0] = [0.0, 0.0, 0.0, 0.3137]
-palette[1] = [1.0, 0.1843, 0.53333, 0.37647]
-palette[2] = [0.8549, 1.0, 0.53333, 0.388]
-palette[3] = [0.376, 1.0, 0.478, 0.392]
-palette[4] = [1.0, 1.0, 1.0, 1]
-
-
-@ti.kernel
-def compute(phase: int, Du: float, Dv: float, feed: float, kill: float):
-    for i, j in ti.ndrange(W, H):
-        cen = uv[phase, i, j]
-        lapl = (
-            uv[phase, i + 1, j]
-            + uv[phase, i, j + 1]
-            + uv[phase, i - 1, j]
-            + uv[phase, i, j - 1]
-            - 4.0 * cen
-        )
-        du = Du * lapl[0] - cen[0] * cen[1] * cen[1] + feed * (1 - cen[0])
-        dv = Dv * lapl[1] + cen[0] * cen[1] * cen[1] - (feed + kill) * cen[1]
-        val = cen + 0.5 * tm.vec2(du, dv)
-        uv[1 - phase, i, j] = val
-
-
-@ti.kernel
-def render():
-    for i, j in pixels:
-        value = uv[0, i, j].y
-        color = tm.vec3(0)
-        if value <= palette[0].w:
-            color = palette[0].xyz
-
-        for k in range(4):
-            c0 = palette[k]
-            c1 = palette[k + 1]
-            if c0.w < value < c1.w:
-                a = (value - c0.w) / (c1.w - c0.w)
-                color = tm.mix(c0.xyz, c1.xyz, a)
-
-        pixels[i, j] = color
-
-
-@ti.kernel
-def get_val():
-    for i, j in pixels:
-        values[i, j] = uv[0, i, j].y
-
-
-
 @ti.data_oriented
 class SweepTuring(bch.ParametrizedSweep):
 
@@ -93,19 +27,87 @@ class SweepTuring(bch.ParametrizedSweep):
     duration = bch.FloatSweep(default=40)
 
     record_volume_vid = bch.BoolSweep(default=False)
-    resolution = bch.IntSweep(default=50,bounds=(10,200))
+    resolution = bch.IntSweep(default=100,bounds=(10,200))
 
     vid = bch.ResultVideo()
     ref = bch.ResultReference()
     vol_vid = bch.ResultVideo()
 
+    def setup(self):
+        ti.init(arch=ti.vulkan)
+
+        self.pixels = ti.Vector.field(3, ti.f32, shape=(self.resolution, self.resolution))
+        self.uv = ti.Vector.field(2, ti.f32, shape=(2, self.resolution, self.resolution))
+        self.values = ti.Vector.field(1, ti.f32, shape=(self.resolution, self.resolution))
+
+
+        uv_grid = np.zeros((2, self.resolution, self.resolution, 2), dtype=np.float32)
+        uv_grid[0, :, :, 0] = 1.0
+        rand_rows = np.random.choice(range(self.resolution), 50)
+        rand_cols = np.random.choice(range(self.resolution), 50)
+        uv_grid[0, rand_rows, rand_cols, 1] = 1.0
+
+        palette = ti.Vector.field(4, ti.f32, shape=(5,))
+        palette[0] = [0.0, 0.0, 0.0, 0.3137]
+        palette[1] = [1.0, 0.1843, 0.53333, 0.37647]
+        palette[2] = [0.8549, 1.0, 0.53333, 0.388]
+        palette[3] = [0.376, 1.0, 0.478, 0.392]
+        palette[4] = [1.0, 1.0, 1.0, 1]
+
+        self.palette = palette
+        # uv_deep = deepcopy(uv_grid)
+        self.uv.from_numpy(uv_grid)
+
+
+
+    @ti.kernel
+    def compute(self,phase: int, Du: float, Dv: float, feed: float, kill: float):
+        for i, j in ti.ndrange(self.resolution, self.resolution):
+            cen = self.uv[phase, i, j]
+            lapl = (
+                self.uv[phase, i + 1, j]
+                + self.uv[phase, i, j + 1]
+                + self.uv[phase, i - 1, j]
+                + self.uv[phase, i, j - 1]
+                - 4.0 * cen
+            )
+            du = Du * lapl[0] - cen[0] * cen[1] * cen[1] + feed * (1 - cen[0])
+            dv = Dv * lapl[1] + cen[0] * cen[1] * cen[1] - (feed + kill) * cen[1]
+            val = cen + 0.5 * tm.vec2(du, dv)
+            self.uv[1 - phase, i, j] = val
+
+
+    @ti.kernel
+    def render(self):
+        for i, j in self.pixels:
+            value = self.uv[0, i, j].y
+            color = tm.vec3(0)
+            if value <= self.palette[0].w:
+                color = self.palette[0].xyz
+
+            for k in range(4):
+                c0 = self.palette[k]
+                c1 = self.palette[k + 1]
+                if c0.w < value < c1.w:
+                    a = (value - c0.w) / (c1.w - c0.w)
+                    color = tm.mix(c0.xyz, c1.xyz, a)
+
+            self.pixels[i, j] = color
+
+
+    @ti.kernel
+    def get_val(self):
+        for i, j in self.pixels:
+            self.values[i, j] = self.uv[0, i, j].y
+
 
     def __call__(self, **kwargs):
-        global uv
+        # global uv
         self.update_params_from_kwargs(**kwargs)
-        uv.from_numpy(deepcopy(uv_grid))
+        self.setup()
+        # uv.from_numpy(deepcopy(uv_grid))
 
-        gui = ti.GUI("turing", res=W)
+        gui = ti.GUI("turing", res=self.resolution)
         vr = VideoWriter(gui)
         self.vid = bch.gen_video_path("turing")
         if self.record_volume_vid:
@@ -113,15 +115,15 @@ class SweepTuring(bch.ParametrizedSweep):
             video = Video(self.vol_vid, fps=30, backend="ffmpeg")
             plt = Plotter(axes=7, offscreen=False, interactive=0, size=(600, 600))
             plt.azimuth(-45)
-        stacked_volume = np.zeros(shape=(W, H, self.duration))
+        stacked_volume = np.zeros(shape=(self.resolution, self.resolution, self.duration))
         substeps = 60
         i = 0
         for frame in range(self.duration):
             i = frame
-            vr.update_gui(pixels)
-            gui.set_image(pixels)
-            get_val()
-            stacked_volume[:, :, frame] = values.to_numpy().squeeze()
+            vr.update_gui(self.pixels)
+            gui.set_image(self.pixels)
+            self.get_val()
+            stacked_volume[:, :, frame] = self.values.to_numpy().squeeze()
             if self.record_volume_vid:
                 vol = Volume(stacked_volume)
                 vol.mode(self.rendermode).cmap("jet")
@@ -134,9 +136,9 @@ class SweepTuring(bch.ParametrizedSweep):
                 video.add_frame()
             gui.show()
             for _ in range(substeps):
-                compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
+                self.compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
                 i += 1
-            render()
+            self.render()
 
         self.ref = bch.ResultReference(stacked_volume, container=pyvista_volume_container)
         vr.write(self.vid, self.bitrate)
@@ -145,6 +147,13 @@ class SweepTuring(bch.ParametrizedSweep):
             plt.close()
             video.close()
         gui.close()
+
+        del self.uv
+        del self.pixels
+        del stacked_volume
+        del self.values
+        del gui
+        del vr
         return super().__call__()
 
 
