@@ -345,9 +345,6 @@ class Bench(BenchPlotServer):
                 raise Exception("you must pass a title")
        
 
-        # print("rv",result_vars)
-        # exit()
-
         if run_cfg.level > 0:
             inputs = []
             print(input_vars)

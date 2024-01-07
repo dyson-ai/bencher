@@ -166,9 +166,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     plot_size= param.Integer(default=None)
 
-    # input_vars = param.List(None)
-    # result_vars = param.List(None)
-    # const_vars = param.List(None)
 
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
