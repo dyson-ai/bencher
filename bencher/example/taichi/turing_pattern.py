@@ -17,12 +17,8 @@ ti.init(arch=ti.vulkan)
 
 
 W, H = 200, 200
+
 pixels = ti.Vector.field(3, ti.f32, shape=(W, H))
-
-# Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
-# Du, Dv, feed, kill = 0.210, 0.105, 0.018, 0.051
-
-# def setup_grid()
 uv_grid = np.zeros((2, W, H, 2), dtype=np.float32)
 uv_grid[0, :, :, 0] = 1.0
 rand_rows = np.random.choice(range(W), 50)
@@ -31,7 +27,6 @@ uv_grid[0, rand_rows, rand_cols, 1] = 1.0
 uv = ti.Vector.field(2, ti.f32, shape=(2, W, H))
 uv_deep = deepcopy(uv_grid)
 uv.from_numpy(uv_grid)
-
 values = ti.Vector.field(1, ti.f32, shape=(W, H))
 
 
@@ -89,26 +84,6 @@ def get_val():
         values[i, j] = uv[0, i, j].y
 
 
-npgrip = []
-
-
-def wiggle_camera(self, scale=1, callback=None):
-    import math
-
-    dist = self.dist
-    yaw = self.yaw
-    pitch = self.pitch
-    target = self.target
-
-    for y in np.arange(0, 6.28, 0.1):
-        self.set_camera(
-            distance=dist,
-            yaw=yaw + math.sin(y) * scale,
-            pitch=pitch + math.cos(y) * scale,
-            target=target,
-        )
-
-
 class SweepTuring(bch.ParametrizedSweep):
     # Du, Dv, feed, kill = 0.160, 0.080, 0.060, 0.062
     # Du, Dv, feed, kill = 0.210, 0.105, 0.018, 0.051
@@ -138,8 +113,9 @@ class SweepTuring(bch.ParametrizedSweep):
     # kill = bch.FloatSweep(default=0.062,bounds=(0.051,0.062))
 
     vid = bch.ResultVideo()
-    vol_vid = bch.ResultVideo()
     ref = bch.ResultReference()
+    vol_vid = bch.ResultVideo()
+
 
     def __call__(self, **kwargs):
         global uv
