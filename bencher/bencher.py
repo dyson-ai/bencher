@@ -281,13 +281,7 @@ class Bench(BenchPlotServer):
         Returns:
             BenchResult: A class with all the data used to generate the results and the results
         """
-        if title is None:
-            if input_vars is not None:
-                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
-            elif const_vars is not None:
-                title = "Values" + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
-            else:
-                raise Exception("you must pass a title")
+       
 
         if self.worker_class_instance is not None:
             if input_vars is None:
@@ -315,6 +309,17 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
+
+        if title is None:
+            if len(input_vars) >0:
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+            elif len(const_vars)>0:
+                title = "Constant Value"
+                if len(const_vars)>1:
+                    title += "es" 
+                title +=": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+            else:
+                raise Exception("you must pass a title")
 
         if run_cfg is None:
             if self.run_cfg is None:
