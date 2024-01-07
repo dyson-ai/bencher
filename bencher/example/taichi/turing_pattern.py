@@ -30,10 +30,14 @@ class SweepTuring(bch.ParametrizedSweep):
 
 
     record_volume_vid = bch.BoolSweep(default=False)
+
+    headless = False
+
     resolution = bch.IntSweep(default=100,bounds=(10,200))
 
+
     vid = bch.ResultVideo()
-    ref = bch.ResultReference()
+    voxel = bch.ResultReference()
     vol_vid = bch.ResultVideo()
 
     def setup(self):
@@ -46,6 +50,7 @@ class SweepTuring(bch.ParametrizedSweep):
 
         uv_grid = np.zeros((2, self.resolution, self.resolution, 2), dtype=np.float32)
         uv_grid[0, :, :, 0] = 1.0
+        np.random.seed(42)
         rand_rows = np.random.choice(range(self.resolution), 50)
         rand_cols = np.random.choice(range(self.resolution), 50)
         uv_grid[0, rand_rows, rand_cols, 1] = 1.0
@@ -107,7 +112,7 @@ class SweepTuring(bch.ParametrizedSweep):
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         self.setup()
-        gui = ti.GUI("turing", res=self.resolution)
+        gui = ti.GUI("turing", res=self.resolution,show_gui=not self.headless)
         vr = VideoWriter(gui)
         self.vid = bch.gen_video_path("turing")
         if self.record_volume_vid:
@@ -134,13 +139,15 @@ class SweepTuring(bch.ParametrizedSweep):
                 plt.camera.Elevation(math.cos(camera_lerp) * scale)
                 plt.show()
                 video.add_frame()
+                plt.clear()
+
             gui.show()
             for _ in range(substeps):
                 self.compute(i % 2, self.Du, self.Dv, self.feed, self.kill)
                 i += 1
             self.render()
 
-        self.ref = bch.ResultReference(stacked_volume, container=pyvista_volume_container)
+        self.voxel = bch.ResultReference(stacked_volume, container=pyvista_volume_container)
         vr.write(self.vid, self.bitrate)
 
         if self.record_volume_vid:

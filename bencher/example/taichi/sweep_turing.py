@@ -7,12 +7,17 @@ if __name__ == "__main__":
     run_cfg.level = 4
     run_cfg.use_sample_cache = True
     run_cfg.run_tag = "sweep_turing_1"
-    bench = SweepTuring().to_bench(run_cfg)
+    run_cfg.plot_size=200
 
-    result_vars = [SweepTuring.param.vid]
+    turing = SweepTuring()
+    turing.headless = True
+    bench = turing.to_bench(run_cfg)
+
+    kwargs = dict(result_vars=["vid"],const_vars=[["duration",25],["resolution",200]])
+
 
     bench.plot_sweep(
-        input_vars=[SweepTuring.param.Du, SweepTuring.param.Dv], result_vars=result_vars
+        input_vars=[SweepTuring.param.Du, SweepTuring.param.Dv], **kwargs
     )
 
     SweepTuring.param.Du.bounds = [0.13, 0.19]
@@ -25,7 +30,7 @@ if __name__ == "__main__":
     SweepTuring.param.Du.default = 0.176
     SweepTuring.param.Dv.default = 0.0825
     bench.plot_sweep(
-        input_vars=[SweepTuring.param.feed, SweepTuring.param.kill], result_vars=result_vars
+        input_vars=[SweepTuring.param.feed, SweepTuring.param.kill], **kwargs
     )
 
     SweepTuring.param.Du.default = 0.176
@@ -35,7 +40,7 @@ if __name__ == "__main__":
     SweepTuring.param.kill.default = 0.064
 
     bench.plot_sweep(
-        input_vars=[SweepTuring.param.Du, SweepTuring.param.Dv], result_vars=result_vars
+        input_vars=[SweepTuring.param.Du, SweepTuring.param.Dv], **kwargs
     )
 
     SweepTuring.param.Du.bounds = None
@@ -57,7 +62,7 @@ if __name__ == "__main__":
     #         box("feed", 0.03, wid),
     #         box("kill", 0.064, wid),
     #     ],
-    #     result_vars=result_vars,
+    #     **kwargs,
     # )
     # bench.plot_sweep(
     #     input_vars=[
@@ -66,7 +71,7 @@ if __name__ == "__main__":
     #         box("feed", 0.03, wid),
     #         box("kill", 0.06, 0.001),
     #     ],
-    #     result_vars=result_vars,
+    #     **kwargs,
     # )
     # bench.plot_sweep(
     #     input_vars=[
@@ -75,14 +80,14 @@ if __name__ == "__main__":
     #         box("feed", 0.03, wid),
     #         box("kill", 0.06, 0.001),
     #     ],
-    #     result_vars=result_vars,
+    #     **kwargs,
     # )
 
     wid = 0.001
     run_cfg.level = 3
 
     # bench.plot_sweep(
-    #     input_vars=[box("Du", 0.176, wid), box("Dv", 0.00725, 0.001), box("feed", 0.03, wid)],result_vars=result_vars
+    #     input_vars=[box("Du", 0.176, wid), box("Dv", 0.00725, 0.001), box("feed", 0.03, wid)],**kwargs
     # )
 
     # bench.plot_sweep("turing",input_vars=[SweepTuring.param.feed,SweepTuring.param.Dv])

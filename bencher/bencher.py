@@ -310,16 +310,13 @@ class Bench(BenchPlotServer):
             else:
                 const_vars = deepcopy(const_vars)
 
-        if title is None:
-            if len(input_vars) >0:
-                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
-            elif len(const_vars)>0:
-                title = "Constant Value"
-                if len(const_vars)>1:
-                    title += "es" 
-                title +=": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
-            else:
-                raise Exception("you must pass a title")
+        for i in range(len(input_vars)):
+            input_vars[i] =self.convert_vars_to_params(input_vars[i], "input")
+        for i in range(len(result_vars)):
+            result_vars[i] =self.convert_vars_to_params(result_vars[i], "result")
+        for i in range(len(const_vars)):
+            # consts come as tuple pairs
+            const_vars[i][0]= self.convert_vars_to_params(const_vars[i][0], "const")
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -333,6 +330,23 @@ class Bench(BenchPlotServer):
             run_cfg.use_cache = True
 
         self.last_run_cfg = run_cfg
+
+       
+
+        if title is None:
+            if len(input_vars) >0:
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+            elif len(const_vars)>0:
+                title = "Constant Value"
+                if len(const_vars)>1:
+                    title += "es" 
+                title +=": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+            else:
+                raise Exception("you must pass a title")
+       
+
+        # print("rv",result_vars)
+        # exit()
 
         if run_cfg.level > 0:
             inputs = []
@@ -351,13 +365,7 @@ class Bench(BenchPlotServer):
                         const_vars.remove(c)
                         logging.info(f"removing {i.name} from constants")
 
-        for i in input_vars:
-            self.check_var_is_a_param(i, "input")
-        for i in result_vars:
-            self.check_var_is_a_param(i, "result")
-        for i in const_vars:
-            # consts come as tuple pairs
-            self.check_var_is_a_param(i[0], "const")
+      
 
         result_hmaps = []
         result_vars_only = []
@@ -443,7 +451,7 @@ class Bench(BenchPlotServer):
         self.results.append(bench_res)
         return bench_res
 
-    def check_var_is_a_param(self, variable: param.Parameter, var_type: str):
+    def convert_vars_to_params(self, variable: param.Parameter, var_type: str):
         """check that a variable is a subclass of param
 
         Args:
@@ -453,10 +461,13 @@ class Bench(BenchPlotServer):
         Raises:
             TypeError: the input variable type is not a param.
         """
+        if isinstance(variable,str):
+            variable = self.worker_class_instance.param.objects(instance=False)[variable]             
         if not isinstance(variable, param.Parameter):
             raise TypeError(
                 f"You need to use {var_type}_vars =[{self.worker_input_cfg}.param.your_variable], instead of {var_type}_vars =[{self.worker_input_cfg}.your_variable]"
             )
+        return variable
 
     def cache_results(self, bench_res: BenchResult, bench_cfg_hash: int) -> None:
         with Cache("cachedir/benchmark_inputs", size_limit=self.cache_size) as c:

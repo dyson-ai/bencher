@@ -164,6 +164,12 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
+    plot_size= param.Integer(default=None)
+
+    # input_vars = param.List(None)
+    # result_vars = param.List(None)
+    # const_vars = param.List(None)
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
         """create a BenchRunCfg by parsing command line arguments

@@ -81,13 +81,8 @@ class PanelResult(BenchResultBase):
         for k in da.coords.keys():
             dim = k
             break
-
         if dim is None:
             return da_ds.values.squeeze().item()
-            pass
-        print(da_ds)
-        print("item", da_ds.values.squeeze())
-
         return da.expand_dims(dim).values[0]
 
     def ds_to_container(

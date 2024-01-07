@@ -74,6 +74,9 @@ class BenchResult(VTKResult, PlotlyResult, HoloviewResult):
         Returns:
             pn.pane: A panel containing plot results
         """
+        if self.bench_cfg.plot_size is not None:
+            kwargs["width"] = self.bench_cfg.plot_size
+            kwargs["height"] = self.bench_cfg.plot_size
         plot_cols = pn.Column()
         plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))
