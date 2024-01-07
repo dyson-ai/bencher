@@ -2,14 +2,13 @@ from __future__ import annotations
 from typing import List
 import panel as pn
 
-from bencher.results.vtk_result import VTKResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.results.bench_result_base import EmptyContainer
 
 
-class BenchResult(VTKResult, PlotlyResult, HoloviewResult):
+class BenchResult( PlotlyResult, HoloviewResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
