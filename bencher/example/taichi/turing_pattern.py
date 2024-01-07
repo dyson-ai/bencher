@@ -26,6 +26,9 @@ class SweepTuring(bch.ParametrizedSweep):
 
     duration = bch.FloatSweep(default=40)
 
+    video_wiggle = bch.FloatSweep(default=0.02)
+
+
     record_volume_vid = bch.BoolSweep(default=False)
     resolution = bch.IntSweep(default=100,bounds=(10,200))
 
@@ -102,11 +105,8 @@ class SweepTuring(bch.ParametrizedSweep):
 
 
     def __call__(self, **kwargs):
-        # global uv
         self.update_params_from_kwargs(**kwargs)
         self.setup()
-        # uv.from_numpy(deepcopy(uv_grid))
-
         gui = ti.GUI("turing", res=self.resolution)
         vr = VideoWriter(gui)
         self.vid = bch.gen_video_path("turing")
@@ -128,7 +128,7 @@ class SweepTuring(bch.ParametrizedSweep):
                 vol = Volume(stacked_volume)
                 vol.mode(self.rendermode).cmap("jet")
                 plt.add(vol)
-                scale = 0.25
+                scale = self.video_wiggle
                 camera_lerp = bch.lerp(frame, 0, self.duration, 0, math.pi * 2)
                 plt.camera.Azimuth(math.sin(camera_lerp) * scale)
                 plt.camera.Elevation(math.cos(camera_lerp) * scale)
@@ -144,16 +144,12 @@ class SweepTuring(bch.ParametrizedSweep):
         vr.write(self.vid, self.bitrate)
 
         if self.record_volume_vid:
-            plt.close()
+            # plt.close()
+            plt.close_window()
             video.close()
         gui.close()
 
-        del self.uv
-        del self.pixels
-        del stacked_volume
-        del self.values
-        del gui
-        del vr
+        
         return super().__call__()
 
 

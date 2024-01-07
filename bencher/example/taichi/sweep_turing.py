@@ -6,7 +6,7 @@ if __name__ == "__main__":
     run_cfg = bch.BenchRunCfg()
     run_cfg.level = 4
     run_cfg.use_sample_cache = True
-    run_cfg.run_tag = "sweep_turing"
+    run_cfg.run_tag = "sweep_turing_1"
     bench = SweepTuring().to_bench(run_cfg)
 
     result_vars = [SweepTuring.param.vid]
@@ -38,11 +38,6 @@ if __name__ == "__main__":
         input_vars=[SweepTuring.param.Du, SweepTuring.param.Dv], result_vars=result_vars
     )
 
-    # bench.report.show()
-    # exit()
-
-    # bench.plot_sweep("turing",)
-
     SweepTuring.param.Du.bounds = None
     SweepTuring.param.Dv.bounds = None
     SweepTuring.param.feed.bounds = None
@@ -53,35 +48,35 @@ if __name__ == "__main__":
         var.name = name
         return var
 
-    wid = 0.001
-    run_cfg.level = 2
-    bench.plot_sweep(
-        input_vars=[
-            box("Du", 0.176, wid),
-            box("Dv", 0.0825, wid),
-            box("feed", 0.03, wid),
-            box("kill", 0.064, wid),
-        ],
-        result_vars=result_vars,
-    )
-    bench.plot_sweep(
-        input_vars=[
-            box("Du", 0.176, wid),
-            box("Dv", 0.0825, wid),
-            box("feed", 0.03, wid),
-            box("kill", 0.06, 0.001),
-        ],
-        result_vars=result_vars,
-    )
-    bench.plot_sweep(
-        input_vars=[
-            box("Du", 0.176, wid),
-            box("Dv", 0.00725, 0.001),
-            box("feed", 0.03, wid),
-            box("kill", 0.06, 0.001),
-        ],
-        result_vars=result_vars,
-    )
+    # wid = 0.001
+    # run_cfg.level = 2
+    # bench.plot_sweep(
+    #     input_vars=[
+    #         box("Du", 0.176, wid),
+    #         box("Dv", 0.0825, wid),
+    #         box("feed", 0.03, wid),
+    #         box("kill", 0.064, wid),
+    #     ],
+    #     result_vars=result_vars,
+    # )
+    # bench.plot_sweep(
+    #     input_vars=[
+    #         box("Du", 0.176, wid),
+    #         box("Dv", 0.0825, wid),
+    #         box("feed", 0.03, wid),
+    #         box("kill", 0.06, 0.001),
+    #     ],
+    #     result_vars=result_vars,
+    # )
+    # bench.plot_sweep(
+    #     input_vars=[
+    #         box("Du", 0.176, wid),
+    #         box("Dv", 0.00725, 0.001),
+    #         box("feed", 0.03, wid),
+    #         box("kill", 0.06, 0.001),
+    #     ],
+    #     result_vars=result_vars,
+    # )
 
     wid = 0.001
     run_cfg.level = 3

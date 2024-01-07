@@ -9,27 +9,27 @@ if __name__ == "__main__":
     run_cfg.run_tag = "best_2"
     bench = SweepTuring().to_bench(run_cfg)
 
-    # bench.plot_sweep(input_vars=["feed","Dv"])
-    bench.plot_sweep(input_vars=[SweepTuring.param.Dv],const_vars=[SweepTuring.param.feed.with_const(0.03)],plot=False)
+    bench.worker_class_instance.param.record_volume_vid=True
+    # SweepTuring().param.record_volume_vid=True
 
-    # SweepTuring.param.Du.bounds = None
-    # SweepTuring.param.Dv.bounds = None
-    # SweepTuring.param.feed.bounds = None
-    # SweepTuring.param.kill.bounds = None
-    # SweepTuring.param.record_volume_vid = True
+    # bench.plot_sweep(input_vars=["feed","Dv"])
+    bench.plot_sweep(input_vars=[SweepTuring.param.feed],const_vars=[SweepTuring.param.feed.with_const(0.03),(SweepTuring.param.record_volume_vid,True)],plot=False)
+
+
 
     # v_list=[]
-    # v_list.append([0.16,0.8,0.06,0.062])
-    # v_list.append([0.175,0.835,0.031,0.059])
-    # v_list.append([0.176,0.825,0.06,0.061])
-    # v_list.append([0.16,0.85,0.03,0.062])
-
-    # # res = bench.plot_sweep(
-    # #         input_vars=[],           
-    # #         plot=False,
-    # #     )
+    # v_list.append([0.16,0.08,0.06,0.062])
+    # v_list.append([0.175,0.0835,0.031,0.059])
+    # v_list.append([0.176,0.0825,0.06,0.061])
+    # v_list.append([0.16,0.085,0.03,0.062])
 
     # for v in v_list:
+
+    #     SweepTuring.param.Du.bounds = None
+    #     SweepTuring.param.Dv.bounds = None
+    #     SweepTuring.param.feed.bounds = None
+    #     SweepTuring.param.kill.bounds = None
+    #     SweepTuring.param.record_volume_vid = True
 
     #     # res = bench.plot_sweep(
     #     #     input_vars=[],
@@ -43,12 +43,12 @@ if __name__ == "__main__":
     #     # )
     #     print("vistli",v)
 
-    #     SweepTuring.param.Du.default = v[0]
-    #     SweepTuring.param.Dv.default = v[1]
-    #     SweepTuring.param.feed.default = v[2]
-    #     SweepTuring.param.kill.default = v[3]
+    #     # SweepTuring.param.Du.default = v[0]
+    #     # SweepTuring.param.Dv.default = v[1]
+    #     # SweepTuring.param.feed.default = v[2]
+    #     # SweepTuring.param.kill.default = v[3]
 
-    #     res = bench.plot_sweep("lol",
+    #     res = bench.plot_sweep(
     #         input_vars=[],
     #         const_vars=[
     #             SweepTuring.param.Du.with_const(v[0]),

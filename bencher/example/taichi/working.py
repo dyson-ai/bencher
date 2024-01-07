@@ -9,5 +9,7 @@ if __name__ == "__main__":
 
     SweepTuring.param.Du.bounds = [0.13, 0.19]
 
+    SweepTuring.param.record_volume_vid.default = True
+
     bench.plot_sweep("turing", input_vars=[SweepTuring.param.feed])
     bench.report.show()
