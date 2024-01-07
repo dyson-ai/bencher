@@ -339,7 +339,7 @@ class Bench(BenchPlotServer):
                     title += "es"
                 title += ": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
             else:
-                raise Exception("you must pass a title")
+                raise RuntimeError("you must pass a title, or define inputs or consts")
 
         if run_cfg.level > 0:
             inputs = []
