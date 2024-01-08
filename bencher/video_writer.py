@@ -1,4 +1,6 @@
-from bencher import gen_video_path
+from bencher import gen_video_path, gen_image_path
+from PIL import Image
+import numpy as np
 
 
 class VideoWriter:
@@ -15,11 +17,6 @@ class VideoWriter:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(self.images, fps=30)
         clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
         return self.filename
-
-
-from bencher import gen_image_path
-from PIL import Image
-import numpy as np
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):
