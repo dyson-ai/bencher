@@ -63,23 +63,21 @@ class BenchResult(PlotlyResult, HoloviewResult):
             )
         return row.pane
 
-    def set_plot_size(self,**kwargs) -> dict:
-        if not "width" in kwargs:
+    def set_plot_size(self, **kwargs) -> dict:
+        if "width" not in kwargs:
             if self.bench_cfg.plot_size is not None:
                 kwargs["width"] = self.bench_cfg.plot_size
-            #specific width overrrides general size    
+            # specific width overrrides general size
             if self.bench_cfg.plot_width is not None:
                 kwargs["width"] = self.bench_cfg.plot_width
 
-        if not "height" in kwargs:
+        if "height" not in kwargs:
             if self.bench_cfg.plot_size is not None:
                 kwargs["height"] = self.bench_cfg.plot_size
-            #specific height overrrides general size    
+            # specific height overrrides general size
             if self.bench_cfg.plot_height is not None:
                 kwargs["height"] = self.bench_cfg.plot_height
         return kwargs
-
-
 
     def to_auto_plots(self, **kwargs) -> List[pn.panel]:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
@@ -90,7 +88,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
         Returns:
             pn.pane: A panel containing plot results
         """
-       
+
         plot_cols = pn.Column()
         plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))

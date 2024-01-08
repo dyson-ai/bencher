@@ -13,5 +13,5 @@ class VideoWriter:
         import moviepy.video.io.ImageSequenceClip
 
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(self.images, fps=30)
-        clip.write_videofile(self.filename, bitrate=f"{bitrate}k",logger =None)
+        clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
         return self.filename
