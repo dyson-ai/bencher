@@ -217,6 +217,7 @@ class Bench(BenchPlotServer):
 
     def sweep_sequential(
         self,
+        title="",
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
@@ -231,11 +232,11 @@ class Bench(BenchPlotServer):
             relationship_cb = combinations
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
-                title = "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
+                title_gen = title+ "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
                 if iterations > 1:
-                    title += f" iteration:{it}"
+                    title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
-                    title=title,
+                    title=title_gen,
                     input_vars=list(input_group),
                     result_vars=result_vars,
                     const_vars=const_vars,
