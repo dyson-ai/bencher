@@ -164,7 +164,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
-    plot_size = param.Integer(default=None)
+    plot_size = param.Integer(default=None,doc="Sets the width and height of the plot")
+    plot_width = param.Integer(default=None,doc="Sets with width of the plots, this will ovverride the plot_size parameter")
+    plot_height = param.Integer(default=None,doc="Sets the height of the plot, this will ovverride the plot_size parameter")
+
 
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
