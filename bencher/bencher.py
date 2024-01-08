@@ -342,8 +342,8 @@ class Bench(BenchPlotServer):
             elif len(const_vars) > 0:
                 title = "Constant Value"
                 if len(const_vars) > 1:
-                    title += "es"
-                title += ": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+                    title += "s"
+                title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars])
             else:
                 raise RuntimeError("you must pass a title, or define inputs or consts")
 
@@ -448,8 +448,8 @@ class Bench(BenchPlotServer):
         self.results.append(bench_res)
         return bench_res
 
-    def get_name(self,var):
-        if isinstance(var,param.Parameter):
+    def get_name(self, var):
+        if isinstance(var, param.Parameter):
             return var.name
         return var
 
