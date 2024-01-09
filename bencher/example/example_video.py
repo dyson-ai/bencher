@@ -16,6 +16,7 @@ class TuringPattern(bch.ParametrizedSweep):
     dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
     video = bch.ResultVideo()
+    score = bch.ResultVar()
 
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
@@ -71,6 +72,7 @@ class TuringPattern(bch.ParametrizedSweep):
         print(f"saving {len(artists)} frames")
         ani.save(path)
         self.video = path
+        self.score = self.alpha + self.beta
         return super().__call__()
 
 
@@ -91,8 +93,35 @@ def example_video(
     return bench
 
 
+def example_video_tap(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    tp = TuringPattern()
+
+    run_cfg.use_sample_cache = True
+    # run_cfg.use_optuna = True
+    run_cfg.auto_plot = False
+    run_cfg.run_tag = "3"
+    bench = tp.to_bench(run_cfg=run_cfg, report=report)
+
+    res = bench.plot_sweep(
+        "phase",
+        input_vars=["alpha", "beta"],
+        # result_vars=["video","score"],
+        run_cfg=run_cfg,
+    )
+
+    bench.report.append(res.describe_sweep())
+    bench.report.append(res.to_heatmap_container_tap_ds(tp.param.score, tp.param.video))
+    # bench.report.append(b)
+
+    return bench
+
+
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
 
-    example_video(run_cfg_ex).report.show()
+    # example_video(run_cfg_ex).report.show()
+
+    example_video_tap(run_cfg_ex).report.show()

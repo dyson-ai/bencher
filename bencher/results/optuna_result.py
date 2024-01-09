@@ -1,5 +1,7 @@
 from __future__ import annotations
 from typing import List
+from copy import deepcopy
+
 import numpy as np
 import optuna
 import panel as pn
@@ -330,3 +332,6 @@ class OptunaResult:
     #         for it, rv in enumerate(bench_cfg.result_vars):
     #             bench_cfg.ds[rv.name].loc[t.params] = t.values[it]
     #     return bench_cfg
+
+    def deep(self):
+        return deepcopy(self)        
