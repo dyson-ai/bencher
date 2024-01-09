@@ -132,7 +132,7 @@ class ParametrizedSweep(Parameterized):
         assert isinstance(override_defaults, list)
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)
-        return override_defaults + [(i, i.default) for i in inp]
+        return override_defaults + [[i, i.default] for i in inp]
 
     @classmethod
     def get_results_only(cls) -> List[Parameter]:

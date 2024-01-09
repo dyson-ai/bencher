@@ -164,6 +164,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="The function can be run serially or in parallel with different futures executors",
     )
 
+    plot_size = param.Integer(default=None)
+
     @staticmethod
     def from_cmd_line() -> BenchRunCfg:  # pragma: no cover
         """create a BenchRunCfg by parsing command line arguments
@@ -424,12 +426,15 @@ class BenchCfg(BenchRunCfg):
             col.append(pn.pane.Markdown("## Results:"))
         return col
 
-    def optuna_targets(self) -> List[str]:
-        target_names = []
+    def optuna_targets(self, as_var=False) -> List[str]:
+        targets = []
         for rv in self.result_vars:
-            if rv.direction != OptDir.none:
-                target_names.append(rv.name)
-        return target_names
+            if hasattr(rv, "direction") and rv.direction != OptDir.none:
+                if as_var:
+                    targets.append(rv)
+                else:
+                    targets.append(rv.name)
+        return targets
 
 
 class DimsCfg:

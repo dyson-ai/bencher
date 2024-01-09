@@ -7,10 +7,6 @@ from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.results.bench_result_base import EmptyContainer
 
-# from bencher.results.heatmap_result import HeatMapResult
-
-# from bencher.results.seaborn_result import SeabornResult
-
 
 class BenchResult(PlotlyResult, HoloviewResult):
 
@@ -40,12 +36,16 @@ class BenchResult(PlotlyResult, HoloviewResult):
     def to_auto(
         self,
         plot_list: List[callable] = None,
+        remove_plots: List[callable] = None,
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
+        if remove_plots is not None:
+            for p in remove_plots:
+                plot_list.remove(p)
 
         row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:
@@ -73,6 +73,9 @@ class BenchResult(PlotlyResult, HoloviewResult):
         Returns:
             pn.pane: A panel containing plot results
         """
+        if self.bench_cfg.plot_size is not None:
+            kwargs["width"] = self.bench_cfg.plot_size
+            kwargs["height"] = self.bench_cfg.plot_size
         plot_cols = pn.Column()
         plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))

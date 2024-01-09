@@ -13,6 +13,7 @@ from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
 from bencher.results.float_formatter import FormatFloat
+from bencher.plotting.plot_filter import VarRange, PlotFilter
 import panel as pn
 
 
@@ -140,16 +141,20 @@ class BenchResultBase(OptunaResult):
         return indicies
 
     def get_optimal_inputs(
-        self, result_var: ParametrizedSweep, keep_existing_consts: bool = True
-    ) -> Tuple[ParametrizedSweep, Any]:
+        self,
+        result_var: ParametrizedSweep,
+        keep_existing_consts: bool = True,
+        as_dict: bool = False,
+    ) -> Tuple[ParametrizedSweep, Any] | dict[ParametrizedSweep, Any]:
         """Get a list of tuples of optimal variable names and value pairs, that can be fed in as constant values to subsequent parameter sweeps
 
         Args:
             result_var (bch.ParametrizedSweep): Optimal values of this result variable
             keep_existing_consts (bool): Include any const values that were defined as part of the parameter sweep
+            as_dict (bool): return value as a dictionary
 
         Returns:
-            Tuple[bch.ParametrizedSweep, Any]: Tuples of variable name and optimal values
+            Tuple[bch.ParametrizedSweep, Any]|[ParametrizedSweep, Any]: Tuples of variable name and optimal values
         """
         da = self.get_optimal_value_indices(result_var)
         if keep_existing_consts:
@@ -168,6 +173,8 @@ class BenchResultBase(OptunaResult):
                 output.append((iv, max(da.coords[iv.name].values[()])))
 
             logging.info(f"Maximum value of {iv.name}: {output[-1][1]}")
+        if as_dict:
+            return dict(output)
         return output
 
     def describe_sweep(self):
@@ -245,6 +252,44 @@ class BenchResultBase(OptunaResult):
                     )
                 )
         return row.get()
+
+    def filter(
+        self,
+        plot_callback: callable,
+        plot_filter=None,
+        float_range: VarRange = VarRange(0, None),
+        cat_range: VarRange = VarRange(0, None),
+        vector_len: VarRange = VarRange(1, 1),
+        result_vars: VarRange = VarRange(1, 1),
+        panel_range: VarRange = VarRange(0, 0),
+        repeats_range: VarRange = VarRange(1, None),
+        input_range: VarRange = VarRange(1, None),
+        reduce: ReduceType = ReduceType.AUTO,
+        target_dimension: int = 2,
+        result_var: ResultVar = None,
+        result_types=None,
+        **kwargs,
+    ):
+        plot_filter = PlotFilter(
+            float_range=float_range,
+            cat_range=cat_range,
+            vector_len=vector_len,
+            result_vars=result_vars,
+            panel_range=panel_range,
+            repeats_range=repeats_range,
+            input_range=input_range,
+        )
+        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, plot_callback.__name__)
+        if matches_res.overall:
+            return self.map_plot_panes(
+                plot_callback=plot_callback,
+                hv_dataset=self.to_hv_dataset(reduce=reduce),
+                target_dimension=target_dimension,
+                result_var=result_var,
+                result_types=result_types,
+                **kwargs,
+            )
+        return matches_res.to_panel()
 
     def to_panes_multi_panel(
         self,
