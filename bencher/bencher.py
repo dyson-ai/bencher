@@ -232,7 +232,9 @@ class Bench(BenchPlotServer):
             relationship_cb = combinations
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
-                title_gen = title+ "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
+                title_gen = (
+                    title + "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
+                )
                 if iterations > 1:
                     title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
