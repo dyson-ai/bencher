@@ -5,6 +5,8 @@ from .bench_plot_server import BenchPlotServer
 from .variables.sweep_base import hash_sha1
 from .variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep, SweepBase
 from .variables.time import TimeSnapshot
+
+from .variables.inputs import box
 from .variables.results import (
     ResultVar,
     ResultVec,
@@ -14,9 +16,11 @@ from .variables.results import (
     ResultString,
     ResultContainer,
     ResultReference,
+    ResultVolume,
     OptDir,
     curve,
 )
+
 from .plotting.plot_filter import VarRange, PlotFilter
 from .utils import (
     hmap_canonical_input,
@@ -25,6 +29,7 @@ from .utils import (
     gen_path,
     gen_image_path,
     gen_video_path,
+    lerp,
 )
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams

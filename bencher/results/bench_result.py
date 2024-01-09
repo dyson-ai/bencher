@@ -7,10 +7,6 @@ from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.results.bench_result_base import EmptyContainer
 
-# from bencher.results.heatmap_result import HeatMapResult
-
-# from bencher.results.seaborn_result import SeabornResult
-
 
 class BenchResult(PlotlyResult, HoloviewResult):
 
@@ -77,6 +73,9 @@ class BenchResult(PlotlyResult, HoloviewResult):
         Returns:
             pn.pane: A panel containing plot results
         """
+        if self.bench_cfg.plot_size is not None:
+            kwargs["width"] = self.bench_cfg.plot_size
+            kwargs["height"] = self.bench_cfg.plot_size
         plot_cols = pn.Column()
         plot_cols.append(self.to_sweep_summary(name="Plots View"))
         plot_cols.append(self.to_auto(**kwargs))
