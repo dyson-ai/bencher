@@ -1,6 +1,6 @@
 from __future__ import annotations
 import logging
-from typing import List, Optional
+from typing import List, Optional, Any
 import panel as pn
 import holoviews as hv
 from param import Parameter
@@ -173,13 +173,27 @@ class HoloviewResult(PanelResult):
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")
 
-    def to_heatmap(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_heatmap(
+        self,
+        result_var: Parameter = None,
+        tap_var=None,
+        tap_container=None,
+        target_dimension=2,
+        **kwargs,
+    ) -> Optional[pn.panel]:
+        if tap_var is None:
+            heatmap_cb = self.to_heatmap_ds
+        else:
+            heatmap_cb = partial(
+                self.to_heatmap_container_tap_ds, result_var_plot=tap_var, container=tap_container
+            )
+
         return self.filter(
-            self.to_heatmap_ds,
+            heatmap_cb,
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
-            target_dimension=2,
+            target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
             **kwargs,
@@ -199,6 +213,54 @@ class HoloviewResult(PanelResult):
             time_args = self.time_widget(title)
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
+
+    def get_nearest_coords1(self, val: Any, coords) -> Any:
+        if isinstance(val, (int, float)):
+            return min(coords.data, key=lambda x_: abs(x_ - val))
+        return val
+
+    def to_heatmap_container_tap_ds(
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        result_var_plot: Parameter,
+        container: pn.pane.panel = pn.pane.panel,
+        **kwargs,
+    ) -> pn.Row:
+        htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover", "tap"], **kwargs)
+        htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
+
+        container_instance = container(**kwargs)
+        title = pn.pane.Markdown("Selected: None")
+
+        def tap_plot(x, y):
+            x_nearest = self.get_nearest_coords1(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name]
+            )
+            y_nearest = self.get_nearest_coords1(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name]
+            )
+
+            kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
+            kwargs[self.bench_cfg.input_vars[1].name] = y_nearest
+
+            for d, k in zip(htmap.kdims, htmap.current_key):
+                kwargs[d.name] = k
+
+            ds = dataset[result_var_plot.name]
+            val = ds.sel(**kwargs)
+            item = self.zero_dim_da_to_val(val)
+            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kwargs.items()])
+            container_instance.object = item
+            if hasattr(container, "autoplay"):  # container is a video, set to autoplay
+                container_instance.paused = False
+                container_instance.time = 0
+                container_instance.loop = True
+                container_instance.autoplay = True
+
+        htmap_posxy.add_subscriber(tap_plot)
+        bound_plot = pn.Column(title, container_instance)
+        return pn.Row(htmap, bound_plot)
 
     def to_error_bar(self) -> hv.Bars:
         return self.to_hv_dataset(ReduceType.REDUCE).to(hv.ErrorBars)
@@ -312,7 +374,9 @@ class HoloviewResult(PanelResult):
     #     return matches.to_panel()
 
     def to_scatter_jitter(
-        self, result_var: Parameter = None, **kwargs  # pylint: disable=unused-argument
+        self,
+        result_var: Parameter = None,
+        **kwargs,  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
         return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
 

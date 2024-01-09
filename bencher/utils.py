@@ -7,6 +7,8 @@ import math
 from colorsys import hsv_to_rgb
 from pathlib import Path
 from uuid import uuid4
+from functools import partial
+from typing import Callable, Any
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -129,3 +131,13 @@ def gen_video_path(video_name: str, extension: str = ".webm") -> str:
 
 def gen_image_path(image_name: str, filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
+
+
+def callable_name(any_callable: Callable[..., Any]) -> str:
+    if isinstance(any_callable, partial):
+        return any_callable.func.__name__
+
+    try:
+        return any_callable.__name__
+    except AttributeError:
+        return str(any_callable)
