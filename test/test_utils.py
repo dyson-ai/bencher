@@ -107,7 +107,7 @@ class TestBencherUtils(unittest.TestCase):
         self.assertEqual(result, "original_function")
 
     # The function returns the name of a given callable function.
-    def test_returns_name_of_callable_function(self):
+    def test_returns_name_of_callable_function(self) -> None:
         # Arrange
         def my_function():
             pass
@@ -117,3 +117,6 @@ class TestBencherUtils(unittest.TestCase):
 
         # Assert
         self.assertEqual(result, "my_function")
+
+    def test_callable_name_incorrect(self) -> None:
+        self.assertEqual(callable_name("lol"), "lol")
