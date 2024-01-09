@@ -244,8 +244,9 @@ class HoloviewResult(PanelResult):
             kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
             kwargs[self.bench_cfg.input_vars[1].name] = y_nearest
 
-            for d, k in zip(htmap.kdims, htmap.current_key):
-                kwargs[d.name] = k
+            if hasattr(htmap, "current_key"):
+                for d, k in zip(htmap.kdims, htmap.current_key):
+                    kwargs[d.name] = k
 
             ds = dataset[result_var_plot.name]
             val = ds.sel(**kwargs)
