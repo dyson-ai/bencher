@@ -214,11 +214,10 @@ class HoloviewResult(PanelResult):
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
-    def get_nearest_coords1(self,val:Any,coords) -> Any:
-        if isinstance(val,(int,float)):
-            return min(coords.data, key=lambda x_:abs(x_-val))
+    def get_nearest_coords1(self, val: Any, coords) -> Any:
+        if isinstance(val, (int, float)):
+            return min(coords.data, key=lambda x_: abs(x_ - val))
         return val
-
 
     def to_heatmap_container_tap_ds(
         self,
@@ -235,29 +234,29 @@ class HoloviewResult(PanelResult):
         title = pn.pane.Markdown("Selected: None")
 
         def tap_plot(x, y):
-
-            x_nearest = self.get_nearest_coords1(x,dataset.coords[self.bench_cfg.input_vars[0].name])
-            y_nearest = self.get_nearest_coords1(y,dataset.coords[self.bench_cfg.input_vars[1].name])
+            x_nearest = self.get_nearest_coords1(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name]
+            )
+            y_nearest = self.get_nearest_coords1(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name]
+            )
 
             kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
             kwargs[self.bench_cfg.input_vars[1].name] = y_nearest
 
-            for d,k in zip(htmap.kdims,htmap.current_key):
+            for d, k in zip(htmap.kdims, htmap.current_key):
                 kwargs[d.name] = k
 
             ds = dataset[result_var_plot.name]
             val = ds.sel(**kwargs)
             item = self.zero_dim_da_to_val(val)
-            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k,v in kwargs.items()])
+            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kwargs.items()])
             container_instance.object = item
-            try:
+            if hasattr(container, "autoplay"):  # container is a video, set to autoplay
                 container_instance.paused = False
                 container_instance.time = 0
                 container_instance.loop = True
-                container_instance.autoplay=True
-            except:
-                pass
-            
+                container_instance.autoplay = True
 
         htmap_posxy.add_subscriber(tap_plot)
         bound_plot = pn.Column(title, container_instance)
