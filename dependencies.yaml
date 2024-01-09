@@ -12,11 +12,11 @@ pip:
   - buildrun: diskcache
   - buildrun: optuna
   - buildrun: pandas>=2.0
-  - buildrun: panel==1.2.3
-  - buildrun: param==1.13.0
+  - buildrun: panel
+  - buildrun: param
   - buildrun: hvplot
   - buildrun: strenum
-  - buildrun: xarray<=2023.8.0
+  - buildrun: xarray
   - buildrun: plotly
   - buildrun: seaborn
   - buildrun: matplotlib
