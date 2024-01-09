@@ -4,7 +4,7 @@ import numpy as np
 
 
 class VideoWriter:
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: str = "vid") -> None:
         self.images = []
         self.filename = gen_video_path(filename)
 
@@ -13,6 +13,10 @@ class VideoWriter:
 
     def write(self, bitrate: int = 1500) -> str:
         import moviepy.video.io.ImageSequenceClip
+
+        if len(self.images[0].shape) == 2:
+            for i in range(len(self.images)):
+                self.images[i] =  np.expand_dims(self.images[i],2)
 
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(self.images, fps=30)
         clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)

@@ -2,6 +2,7 @@ import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import ArtistAnimation
+import panel as pn
 
 
 # code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
@@ -58,20 +59,24 @@ class TuringPattern(bch.ParametrizedSweep):
         fig, ax = plt.subplots(frameon=False, figsize=(2, 2))
         fig.set_tight_layout(True)
         ax.set_axis_off()
+        from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-        artists = []
+        canvas = FigureCanvasAgg(fig)
+
+        vid_writer = bch.VideoWriter()
 
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
-                artists.append([ax.imshow(U)])
+                ax.clear()
+                ax.imshow(U)
+                plt.draw()
+                canvas.draw()
+                # Get the RGB image as a NumPy array
+                vid_writer.append(np.asarray(canvas.renderer.buffer_rgba()))
 
-        ani = ArtistAnimation(fig=fig, artists=artists, interval=60, blit=True)
-        path = bch.gen_video_path("turing", ".mp4")
-        # path = self.gen_path("turing", "vid", ".gif")
-        print(f"saving {len(artists)} frames")
-        ani.save(path)
-        self.video = path
+        self.video = vid_writer.write()
+
         self.score = self.alpha + self.beta
         return super().__call__()
 
@@ -98,7 +103,7 @@ def example_video_tap(
 ) -> bch.Bench:
     tp = TuringPattern()
 
-    run_cfg.use_sample_cache = True
+    run_cfg.use_sample_cache = False
     # run_cfg.use_optuna = True
     run_cfg.auto_plot = False
     run_cfg.run_tag = "3"
@@ -112,8 +117,9 @@ def example_video_tap(
     )
 
     bench.report.append(res.describe_sweep())
-    bench.report.append(res.to_heatmap_container_tap_ds(tp.param.score, tp.param.video))
-    # bench.report.append(b)
+    bench.report.append(
+        res.to_heatmap(tp.param.score, tap_var=tp.param.video, tap_container=pn.pane.Video)
+    )
 
     return bench
 
