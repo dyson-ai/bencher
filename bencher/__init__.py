@@ -38,4 +38,4 @@ from .results.panel_result import PanelResult
 from .results.holoview_result import ReduceType, HoloviewResult
 from .bench_report import BenchReport
 from .job import Executors
-from .video_writer import VideoWriter
+from .video_writer import VideoWriter, add_image

@@ -200,7 +200,7 @@ class Bench(BenchPlotServer):
         run_cfg: BenchRunCfg = None,
         plot: bool = False,
     ) -> BenchResult:
-        title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+        title = "Sweeping " + " vs ".join([self.get_name(i) for i in input_vars])
         return self.plot_sweep(
             title,
             input_vars=input_vars,
@@ -217,6 +217,7 @@ class Bench(BenchPlotServer):
 
     def sweep_sequential(
         self,
+        title="",
         input_vars: List[ParametrizedSweep] = None,
         result_vars: List[ParametrizedSweep] = None,
         const_vars: List[ParametrizedSweep] = None,
@@ -231,12 +232,14 @@ class Bench(BenchPlotServer):
             relationship_cb = combinations
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
-                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
+                title_gen = (
+                    title + "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
+                )
                 if iterations > 1:
-                    title += f" iteration:{it}"
+                    title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
-                    title=title,
-                    input_vars=input_group,
+                    title=title_gen,
+                    input_vars=list(input_group),
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
@@ -313,6 +316,10 @@ class Bench(BenchPlotServer):
             input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
         for i in range(len(result_vars)):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
+
+        if isinstance(const_vars, dict):
+            const_vars = list(const_vars.items())
+
         for i in range(len(const_vars)):
             # consts come as tuple pairs
             cv_list = list(const_vars[i])
@@ -338,8 +345,8 @@ class Bench(BenchPlotServer):
             elif len(const_vars) > 0:
                 title = "Constant Value"
                 if len(const_vars) > 1:
-                    title += "es"
-                title += ": " + " ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+                    title += "s"
+                title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars])
             else:
                 raise RuntimeError("you must pass a title, or define inputs or consts")
 
@@ -443,6 +450,11 @@ class Bench(BenchPlotServer):
             self.report.append_result(bench_res)
         self.results.append(bench_res)
         return bench_res
+
+    def get_name(self, var):
+        if isinstance(var, param.Parameter):
+            return var.name
+        return var
 
     def convert_vars_to_params(self, variable: param.Parameter, var_type: str):
         """check that a variable is a subclass of param
