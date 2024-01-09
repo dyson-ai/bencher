@@ -203,9 +203,6 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
         if len(dataset.dims) >= 2:
-            # dims = [d for d in da.sizes]
-            # x = dims[0]
-            # y = dims[1]
             x = self.plt_cnt_cfg.float_vars[0].name
             y = self.plt_cnt_cfg.float_vars[1].name
             C = result_var.name
@@ -235,18 +232,18 @@ class HoloviewResult(PanelResult):
             y_nearest = get_nearest_coords1D(
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
-
-            kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
-            kwargs[self.bench_cfg.input_vars[1].name] = y_nearest
+            kdims={}
+            kdims[self.bench_cfg.input_vars[0].name] = x_nearest
+            kdims[self.bench_cfg.input_vars[1].name] = y_nearest
 
             if hasattr(htmap, "current_key"):
                 for d, k in zip(htmap.kdims, htmap.current_key):
-                    kwargs[d.name] = k
+                    kdims[d.name] = k
 
             ds = dataset[result_var_plot.name]
-            val = ds.sel(**kwargs)
+            val = ds.sel(**kdims)
             item = self.zero_dim_da_to_val(val)
-            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kwargs.items()])
+            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
             container_instance.object = item
             if hasattr(container, "autoplay"):  # container is a video, set to autoplay
                 container_instance.paused = False
