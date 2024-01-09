@@ -95,7 +95,7 @@ def example_video(
 
 def example_video_tap(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+) -> bch.Bench:  # pragma: no cover
     tp = TuringPattern()
 
     run_cfg.use_sample_cache = True

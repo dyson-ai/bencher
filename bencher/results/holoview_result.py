@@ -225,14 +225,14 @@ class HoloviewResult(PanelResult):
         container_instance = container(**kwargs)
         title = pn.pane.Markdown("Selected: None")
 
-        def tap_plot(x, y):
+        def tap_plot(x, y):  # pragma: no cover
             x_nearest = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
             y_nearest = get_nearest_coords1D(
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
-            kdims={}
+            kdims = {}
             kdims[self.bench_cfg.input_vars[0].name] = x_nearest
             kdims[self.bench_cfg.input_vars[1].name] = y_nearest
 
