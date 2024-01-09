@@ -6,6 +6,7 @@ from bencher.utils import (
     int_to_col,
     get_nearest_coords1D,
     callable_name,
+    lerp,
 )
 from functools import partial
 import xarray as xr
@@ -120,3 +121,28 @@ class TestBencherUtils(unittest.TestCase):
 
     def test_callable_name_incorrect(self) -> None:
         self.assertEqual(callable_name("lol"), "lol")
+
+    def test_lerp(self):
+        # Given valid input values, the function should return the expected output.
+        result = lerp(5, 0, 10, 0, 100)
+        self.assertEqual(result, 50)
+
+        # When the input value is equal to the input_low, the function should return output_low.
+        result = lerp(0, 0, 10, 0, 100)
+        self.assertEqual(result, 0)
+
+        # When the input value is equal to the input_high, the function should return output_high.
+        result = lerp(10, 0, 10, 0, 100)
+        self.assertEqual(result, 100)
+
+        # When the input value is None, the function should raise a TypeError.
+        with self.assertRaises(TypeError):
+            lerp(None, 0, 10, 0, 100)
+
+        # When the input_low is None, the function should raise a TypeError.
+        with self.assertRaises(TypeError):
+            lerp(5, None, 10, 0, 100)
+
+        # When the input_high is None, the function should raise a TypeError.
+        with self.assertRaises(TypeError):
+            lerp(5, 0, None, 0, 100)
