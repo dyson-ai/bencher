@@ -335,7 +335,7 @@ class OptunaResult:
 
     def deep(self):
         return deepcopy(self)
-    
+
     def set_plot_size(self, **kwargs) -> dict:
         if "width" not in kwargs:
             if self.bench_cfg.plot_size is not None:
