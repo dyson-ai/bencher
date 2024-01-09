@@ -57,6 +57,12 @@ def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> di
     return cd2
 
 
+def get_nearest_coords1D(val: Any, coords) -> Any:
+    if isinstance(val, (int, float)):
+        return min(coords, key=lambda x_: abs(x_ - val))
+    return val
+
+
 def hash_sha1(var: any) -> str:
     """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
     return hashlib.sha1(str(var).encode("ASCII")).hexdigest()

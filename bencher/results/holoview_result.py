@@ -8,7 +8,7 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords
+from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
@@ -214,11 +214,6 @@ class HoloviewResult(PanelResult):
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
-    def get_nearest_coords1(self, val: Any, coords) -> Any:
-        if isinstance(val, (int, float)):
-            return min(coords.data, key=lambda x_: abs(x_ - val))
-        return val
-
     def to_heatmap_container_tap_ds(
         self,
         dataset: xr.Dataset,
@@ -234,11 +229,11 @@ class HoloviewResult(PanelResult):
         title = pn.pane.Markdown("Selected: None")
 
         def tap_plot(x, y):
-            x_nearest = self.get_nearest_coords1(
-                x, dataset.coords[self.bench_cfg.input_vars[0].name]
+            x_nearest = get_nearest_coords1D(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-            y_nearest = self.get_nearest_coords1(
-                y, dataset.coords[self.bench_cfg.input_vars[1].name]
+            y_nearest = get_nearest_coords1D(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
 
             kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
