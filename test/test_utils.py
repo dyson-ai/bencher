@@ -1,7 +1,13 @@
 import bencher as bch
 import unittest
-from bencher.utils import get_nearest_coords, capitalise_words, int_to_col
-
+from bencher.utils import (
+    get_nearest_coords,
+    capitalise_words,
+    int_to_col,
+    get_nearest_coords1D,
+    callable_name,
+)
+from functools import partial
 import xarray as xr
 
 
@@ -81,3 +87,33 @@ class TestBencherUtils(unittest.TestCase):
     def test_int_to_col(self):
         self.assertEqual(int_to_col(0), (0.95, 0.475, 0.475))
         self.assertEqual(int_to_col(0, alpha=1), (0.95, 0.475, 0.475, 1))
+
+    def test_nearest_coords(self):
+        self.assertEqual(get_nearest_coords1D(1, [0, 1, 2]), 1)
+        self.assertEqual(get_nearest_coords1D(100, [0, 1, 2]), 2)
+        self.assertEqual(get_nearest_coords1D("b", ["a", "b", "c"]), "b")
+
+    def test_returns_name_of_original_function_for_partial_function(self):
+        # Arrange
+        def original_function():
+            pass
+
+        partial_function = partial(original_function)
+
+        # Act
+        result = callable_name(partial_function)
+
+        # Assert
+        self.assertEqual(result, "original_function")
+
+    # The function returns the name of a given callable function.
+    def test_returns_name_of_callable_function(self):
+        # Arrange
+        def my_function():
+            pass
+
+        # Act
+        result = callable_name(my_function)
+
+        # Assert
+        self.assertEqual(result, "my_function")

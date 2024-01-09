@@ -5,7 +5,7 @@ import xarray as xr
 from param import Parameter
 import holoviews as hv
 from functools import partial
-from bencher.utils import int_to_col, color_tuple_to_css
+from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
@@ -241,6 +241,8 @@ class BenchResultBase(OptunaResult):
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
         row = EmptyContainer(pn.Row())
+
+        # kwargs= self.set_plot_size(**kwargs)
         for rv in self.get_results_var_list(result_var):
             if result_types is None or isinstance(rv, result_types):
                 row.append(
@@ -279,7 +281,7 @@ class BenchResultBase(OptunaResult):
             repeats_range=repeats_range,
             input_range=input_range,
         )
-        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, plot_callback.__name__)
+        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, callable_name(plot_callback))
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
@@ -300,6 +302,8 @@ class BenchResultBase(OptunaResult):
         **kwargs,
     ):
         dims = len(hv_dataset.dimensions())
+        if target_dimension is None:
+            target_dimension = dims
         return self._to_panes_da(
             hv_dataset.data,
             plot_callback=plot_callback,

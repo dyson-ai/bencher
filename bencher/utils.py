@@ -7,6 +7,8 @@ import math
 from colorsys import hsv_to_rgb
 from pathlib import Path
 from uuid import uuid4
+from functools import partial
+from typing import Callable, Any
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -53,6 +55,12 @@ def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> di
         if collapse_list and isinstance(cd2[k], list):
             cd2[k] = cd2[k][0]  # select the first item in the list
     return cd2
+
+
+def get_nearest_coords1D(val: Any, coords) -> Any:
+    if isinstance(val, (int, float)):
+        return min(coords, key=lambda x_: abs(x_ - val))
+    return val
 
 
 def hash_sha1(var: any) -> str:
@@ -129,3 +137,12 @@ def gen_video_path(video_name: str, extension: str = ".webm") -> str:
 
 def gen_image_path(image_name: str, filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
+
+
+def callable_name(any_callable: Callable[..., Any]) -> str:
+    if isinstance(any_callable, partial):
+        return any_callable.func.__name__
+    try:
+        return any_callable.__name__
+    except AttributeError:
+        return str(any_callable)

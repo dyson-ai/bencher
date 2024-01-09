@@ -72,7 +72,7 @@ class EnumSweep(SweepSelector):
     __slots__ = shared_slots
 
     def __init__(
-        self, enum_type: Enum | List[Enum], units="", samples=None, samples_debug=2, **params
+        self, enum_type: Enum | List[Enum], units=" ", samples=None, samples_debug=2, **params
     ):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = isinstance(enum_type, list)
