@@ -5,7 +5,7 @@ import xarray as xr
 from param import Parameter
 import holoviews as hv
 from functools import partial
-from bencher.utils import int_to_col, color_tuple_to_css,callable_name
+from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.variables.results import OptDir
@@ -252,8 +252,6 @@ class BenchResultBase(OptunaResult):
                     )
                 )
         return row.get()
-
-    
 
     def filter(
         self,

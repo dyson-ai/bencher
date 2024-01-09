@@ -334,4 +334,4 @@ class OptunaResult:
     #     return bench_cfg
 
     def deep(self):
-        return deepcopy(self)        
+        return deepcopy(self)
