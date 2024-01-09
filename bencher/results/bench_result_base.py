@@ -241,6 +241,8 @@ class BenchResultBase(OptunaResult):
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
         row = EmptyContainer(pn.Row())
+
+        # kwargs= self.set_plot_size(**kwargs)
         for rv in self.get_results_var_list(result_var):
             if result_types is None or isinstance(rv, result_types):
                 row.append(

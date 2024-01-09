@@ -1,6 +1,6 @@
 from __future__ import annotations
 import logging
-from typing import List, Optional, Any
+from typing import List, Optional
 import panel as pn
 import holoviews as hv
 from param import Parameter
@@ -8,7 +8,7 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords
+from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
@@ -203,9 +203,6 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
         if len(dataset.dims) >= 2:
-            # dims = [d for d in da.sizes]
-            # x = dims[0]
-            # y = dims[1]
             x = self.plt_cnt_cfg.float_vars[0].name
             y = self.plt_cnt_cfg.float_vars[1].name
             C = result_var.name
@@ -213,11 +210,6 @@ class HoloviewResult(PanelResult):
             time_args = self.time_widget(title)
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
-
-    def get_nearest_coords1(self, val: Any, coords) -> Any:
-        if isinstance(val, (int, float)):
-            return min(coords.data, key=lambda x_: abs(x_ - val))
-        return val
 
     def to_heatmap_container_tap_ds(
         self,
@@ -233,25 +225,25 @@ class HoloviewResult(PanelResult):
         container_instance = container(**kwargs)
         title = pn.pane.Markdown("Selected: None")
 
-        def tap_plot(x, y):
-            x_nearest = self.get_nearest_coords1(
-                x, dataset.coords[self.bench_cfg.input_vars[0].name]
+        def tap_plot(x, y):  # pragma: no cover
+            x_nearest = get_nearest_coords1D(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-            y_nearest = self.get_nearest_coords1(
-                y, dataset.coords[self.bench_cfg.input_vars[1].name]
+            y_nearest = get_nearest_coords1D(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
+            kdims = {}
+            kdims[self.bench_cfg.input_vars[0].name] = x_nearest
+            kdims[self.bench_cfg.input_vars[1].name] = y_nearest
 
-            kwargs[self.bench_cfg.input_vars[0].name] = x_nearest
-            kwargs[self.bench_cfg.input_vars[1].name] = y_nearest
-
-            if hasattr(htmap,"current_key"):
+            if hasattr(htmap, "current_key"):
                 for d, k in zip(htmap.kdims, htmap.current_key):
-                    kwargs[d.name] = k
+                    kdims[d.name] = k
 
             ds = dataset[result_var_plot.name]
-            val = ds.sel(**kwargs)
+            val = ds.sel(**kdims)
             item = self.zero_dim_da_to_val(val)
-            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kwargs.items()])
+            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
             container_instance.object = item
             if hasattr(container, "autoplay"):  # container is a video, set to autoplay
                 container_instance.paused = False

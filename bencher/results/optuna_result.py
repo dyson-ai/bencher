@@ -333,5 +333,22 @@ class OptunaResult:
     #             bench_cfg.ds[rv.name].loc[t.params] = t.values[it]
     #     return bench_cfg
 
-    def deep(self):
+    def deep(self) -> OptunaResult:  # pragma: no cover
+        """Return a deep copy of these results"""
         return deepcopy(self)
+
+    def set_plot_size(self, **kwargs) -> dict:
+        if "width" not in kwargs:
+            if self.bench_cfg.plot_size is not None:
+                kwargs["width"] = self.bench_cfg.plot_size
+            # specific width overrrides general size
+            if self.bench_cfg.plot_width is not None:
+                kwargs["width"] = self.bench_cfg.plot_width
+
+        if "height" not in kwargs:
+            if self.bench_cfg.plot_size is not None:
+                kwargs["height"] = self.bench_cfg.plot_size
+            # specific height overrrides general size
+            if self.bench_cfg.plot_height is not None:
+                kwargs["height"] = self.bench_cfg.plot_height
+        return kwargs
