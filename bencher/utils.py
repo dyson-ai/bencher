@@ -142,7 +142,6 @@ def gen_image_path(image_name: str, filetype=".png") -> str:
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
         return any_callable.func.__name__
-
     try:
         return any_callable.__name__
     except AttributeError:

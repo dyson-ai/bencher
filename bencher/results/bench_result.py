@@ -47,7 +47,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
             for p in remove_plots:
                 plot_list.remove(p)
 
-        # kwargs = self.set_plot_size(**kwargs)
+        kwargs = self.set_plot_size(**kwargs)
 
         row = EmptyContainer(pn.Row())
         for plot_callback in plot_list:

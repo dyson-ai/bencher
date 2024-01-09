@@ -333,7 +333,8 @@ class OptunaResult:
     #             bench_cfg.ds[rv.name].loc[t.params] = t.values[it]
     #     return bench_cfg
 
-    def deep(self):
+    def deep(self) -> OptunaResult:  # pragma: no cover
+        """Return a deep copy of these results"""
         return deepcopy(self)
 
     def set_plot_size(self, **kwargs) -> dict:
