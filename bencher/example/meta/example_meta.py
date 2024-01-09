@@ -100,20 +100,21 @@ class BenchMeta(bch.ParametrizedSweep):
         run_cfg.level = self.level
         run_cfg.repeats = self.sample_with_repeats
         run_cfg.over_time = self.sample_over_time
+        run_cfg.plot_size = 500
 
         bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
 
         inputs_vars_float = [
-            BenchableObject.param.float1,
-            BenchableObject.param.float2,
-            BenchableObject.param.float3,
-            BenchableObject.param.sigma,
+            "float1",
+            "float2",
+            "float3",
+            "sigma",
         ]
 
         inputs_vars_cat = [
-            BenchableObject.param.noisy,
-            BenchableObject.param.noise_distribution,
-            BenchableObject.param.negate_output,
+            "noisy",
+            "noise_distribution",
+            "negate_output",
         ]
 
         input_vars = (
@@ -131,7 +132,7 @@ class BenchMeta(bch.ParametrizedSweep):
         )
 
         self.plots = bch.ResultReference()
-        self.plots.obj = res.to_auto(width=500, height=300)
+        self.plots.obj = res.to_auto()
 
         # self.plots.obj = res.to_heatmap_multi()
 
