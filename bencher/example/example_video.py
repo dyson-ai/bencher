@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import ArtistAnimation
 import panel as pn
 
 
@@ -12,7 +11,7 @@ class TuringPattern(bch.ParametrizedSweep):
     tau = bch.FloatSweep(default=0.1, bounds=(0.01, 0.5))
     k = bch.FloatSweep(default=-0.005, bounds=(-0.01, 0.01))
 
-    size = bch.IntSweep(default=50, bounds=(30, 200), doc="size of the 2D grid")
+    size = bch.IntSweep(default=30, bounds=(30, 200), doc="size of the 2D grid")
     time = bch.FloatSweep(default=20.0, bounds=(1, 100), doc="total time of simulation")
     dt = bch.FloatSweep(default=0.001, doc="simulation time step")
 
@@ -59,21 +58,14 @@ class TuringPattern(bch.ParametrizedSweep):
         fig, ax = plt.subplots(frameon=False, figsize=(2, 2))
         fig.set_tight_layout(True)
         ax.set_axis_off()
-        from matplotlib.backends.backend_agg import FigureCanvasAgg
-
-        canvas = FigureCanvasAgg(fig)
-
         vid_writer = bch.VideoWriter()
-
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
-                ax.clear()
                 ax.imshow(U)
-                plt.draw()
-                canvas.draw()
-                # Get the RGB image as a NumPy array
-                vid_writer.append(np.asarray(canvas.renderer.buffer_rgba()))
+                fig.canvas.draw()
+                rgb = np.array(fig.canvas.renderer.buffer_rgba())
+                vid_writer.append(rgb)
 
         self.video = vid_writer.write()
 
@@ -129,5 +121,4 @@ if __name__ == "__main__":
     run_cfg_ex.level = 2
 
     # example_video(run_cfg_ex).report.show()
-
     example_video_tap(run_cfg_ex).report.show()
