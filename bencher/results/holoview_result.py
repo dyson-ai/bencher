@@ -220,36 +220,47 @@ class HoloviewResult(PanelResult):
         **kwargs,
     ) -> pn.Row:
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover", "tap"], **kwargs)
-        htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
+        htmap_posxy = hv.streams.PointerXY(source=htmap, x=0, y=0)
 
         container_instance = container(**kwargs)
         title = pn.pane.Markdown("Selected: None")
 
+        nearest = dict(x=None, y=None)
+
         def tap_plot(x, y):  # pragma: no cover
-            x_nearest = get_nearest_coords1D(
+            x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-            y_nearest = get_nearest_coords1D(
+            y_nearest_new = get_nearest_coords1D(
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
-            kdims = {}
-            kdims[self.bench_cfg.input_vars[0].name] = x_nearest
-            kdims[self.bench_cfg.input_vars[1].name] = y_nearest
+            update = False
+            if x_nearest_new != nearest["x"]:
+                nearest["x"] = x_nearest_new
+                update = True
+            if y_nearest_new != nearest["y"]:
+                nearest["y"] = y_nearest_new
+                update = True
 
-            if hasattr(htmap, "current_key"):
-                for d, k in zip(htmap.kdims, htmap.current_key):
-                    kdims[d.name] = k
+            if update:
+                kdims = {}
+                kdims[self.bench_cfg.input_vars[0].name] = nearest["x"]
+                kdims[self.bench_cfg.input_vars[1].name] = nearest["y"]
 
-            ds = dataset[result_var_plot.name]
-            val = ds.sel(**kdims)
-            item = self.zero_dim_da_to_val(val)
-            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-            container_instance.object = item
-            if hasattr(container, "autoplay"):  # container is a video, set to autoplay
-                container_instance.paused = False
-                container_instance.time = 0
-                container_instance.loop = True
-                container_instance.autoplay = True
+                if hasattr(htmap, "current_key"):
+                    for d, k in zip(htmap.kdims, htmap.current_key):
+                        kdims[d.name] = k
+
+                ds = dataset[result_var_plot.name]
+                val = ds.sel(**kdims)
+                item = self.zero_dim_da_to_val(val)
+                title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+                container_instance.object = item
+                if hasattr(container, "autoplay"):  # container is a video, set to autoplay
+                    container_instance.paused = False
+                    container_instance.time = 0
+                    container_instance.loop = True
+                    container_instance.autoplay = True
 
         htmap_posxy.add_subscriber(tap_plot)
         bound_plot = pn.Column(title, container_instance)

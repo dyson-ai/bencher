@@ -74,6 +74,7 @@ def example_image(
             input_vars=s,
             result_vars=[BenchPolygons.param.polygon],
         )
+        bench.report.append(bench.get_result().to_panes())
 
     return bench
 
