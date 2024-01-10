@@ -7,6 +7,7 @@ from bencher.utils import (
     get_nearest_coords1D,
     callable_name,
     lerp,
+    listify,
 )
 from functools import partial
 import xarray as xr
@@ -146,3 +147,8 @@ class TestBencherUtils(unittest.TestCase):
         # When the input_high is None, the function should raise a TypeError.
         with self.assertRaises(TypeError):
             lerp(5, 0, None, 0, 100)
+
+    def test_listify(self):
+        obj = "a"
+        self.assertEqual([obj], listify(obj))
+        self.assertEqual([obj], listify([obj]))
