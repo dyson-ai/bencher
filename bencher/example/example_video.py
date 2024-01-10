@@ -119,6 +119,7 @@ def example_video_tap(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
+    run_cfg_ex.use_sample_cache=True
 
     # example_video(run_cfg_ex).report.show()
     example_video_tap(run_cfg_ex).report.show()
