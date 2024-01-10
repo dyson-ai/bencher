@@ -17,6 +17,7 @@ class TuringPattern(bch.ParametrizedSweep):
 
     video = bch.ResultVideo()
     score = bch.ResultVar()
+    img = bch.ResultImage()
 
     def laplacian(self, Z, dx):
         Ztop = Z[0:-2, 1:-1]
@@ -59,6 +60,7 @@ class TuringPattern(bch.ParametrizedSweep):
         fig.set_tight_layout(True)
         ax.set_axis_off()
         vid_writer = bch.VideoWriter()
+        rbg = None
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
@@ -66,6 +68,8 @@ class TuringPattern(bch.ParametrizedSweep):
                 fig.canvas.draw()
                 rgb = np.array(fig.canvas.renderer.buffer_rgba())
                 vid_writer.append(rgb)
+
+        self.img = bch.add_image(rgb)
 
         self.video = vid_writer.write()
 
@@ -95,7 +99,7 @@ def example_video_tap(
 ) -> bch.Bench:  # pragma: no cover
     tp = TuringPattern()
 
-    run_cfg.use_sample_cache = False
+    # run_cfg.use_sample_cache = False
     # run_cfg.use_optuna = True
     run_cfg.auto_plot = False
     run_cfg.run_tag = "3"
@@ -105,13 +109,12 @@ def example_video_tap(
         "phase",
         input_vars=["alpha", "beta"],
         # result_vars=["video","score"],
+        # result_vars=["score"],
         run_cfg=run_cfg,
     )
 
     bench.report.append(res.describe_sweep())
-    bench.report.append(
-        res.to_heatmap(tp.param.score, tap_var=tp.param.video, tap_container=pn.pane.Video)
-    )
+    bench.report.append(res.to_heatmap())
 
     return bench
 
@@ -119,7 +122,9 @@ def example_video_tap(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
-    run_cfg_ex.use_sample_cache=True
+    run_cfg_ex.use_sample_cache = True
+    run_cfg_ex.only_hash_tag = True
+
 
     # example_video(run_cfg_ex).report.show()
     example_video_tap(run_cfg_ex).report.show()

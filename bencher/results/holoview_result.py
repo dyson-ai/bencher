@@ -13,7 +13,7 @@ from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
-from bencher.variables.results import ResultVar
+from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
 
 hv.extension("bokeh", "plotly")
@@ -177,15 +177,18 @@ class HoloviewResult(PanelResult):
         self,
         result_var: Parameter = None,
         tap_var=None,
-        tap_container=None,
+        tap_container: pn.pane.panel = None,
         target_dimension=2,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
+            tap_var = self.plt_cnt_cfg.panel_vars
+
+        if len(tap_var) == 0:
             heatmap_cb = self.to_heatmap_ds
         else:
             heatmap_cb = partial(
-                self.to_heatmap_container_tap_ds, result_var_plot=tap_var, container=tap_container
+                self.to_heatmap_container_tap_ds, result_var_plots=tap_var, container=tap_container
             )
 
         return self.filter(
@@ -193,6 +196,7 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(2, None),
             cat_range=VarRange(0, None),
             input_range=VarRange(1, None),
+            panel_range=VarRange(0, None),
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
@@ -211,18 +215,30 @@ class HoloviewResult(PanelResult):
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
+    def result_var_to_container(self, result_var):
+        if isinstance(result_var, ResultImage):
+            return pn.pane.PNG
+        if isinstance(result_var, ResultVideo):
+            return pn.pane.Video
+        return pn.pane.panel
+
     def to_heatmap_container_tap_ds(
         self,
         dataset: xr.Dataset,
         result_var: Parameter,
-        result_var_plot: Parameter,
+        result_var_plots: List[Parameter] = None,
         container: pn.pane.panel = pn.pane.panel,
         **kwargs,
     ) -> pn.Row:
-        htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover", "tap"], **kwargs)
+        htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
         htmap_posxy = hv.streams.PointerXY(source=htmap, x=0, y=0)
 
-        container_instance = container(**kwargs)
+        if not isinstance(result_var_plots, list):
+            result_var_plots = [result_var_plots]
+        if container is None:
+            containers = [self.result_var_to_container(rv) for rv in result_var_plots]
+
+        cont_instances = [c(**kwargs) for c in containers]
         title = pn.pane.Markdown("Selected: None")
 
         nearest = dict(x=None, y=None)
@@ -250,20 +266,20 @@ class HoloviewResult(PanelResult):
                 if hasattr(htmap, "current_key"):
                     for d, k in zip(htmap.kdims, htmap.current_key):
                         kdims[d.name] = k
-
-                ds = dataset[result_var_plot.name]
-                val = ds.sel(**kdims)
-                item = self.zero_dim_da_to_val(val)
-                title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-                container_instance.object = item
-                if hasattr(container, "autoplay"):  # container is a video, set to autoplay
-                    container_instance.paused = False
-                    container_instance.time = 0
-                    container_instance.loop = True
-                    container_instance.autoplay = True
+                for rv, cont in zip(result_var_plots, cont_instances):
+                    ds = dataset[rv.name]
+                    val = ds.sel(**kdims)
+                    item = self.zero_dim_da_to_val(val)
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+                    cont.object = item
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
+                        cont.paused = False
+                        cont.time = 0
+                        cont.loop = True
+                        cont.autoplay = True
 
         htmap_posxy.add_subscriber(tap_plot)
-        bound_plot = pn.Column(title, container_instance)
+        bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
 
     def to_error_bar(self) -> hv.Bars:

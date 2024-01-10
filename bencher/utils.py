@@ -135,7 +135,7 @@ def gen_video_path(video_name: str, extension: str = ".webm") -> str:
     return gen_path(video_name, "vid", extension)
 
 
-def gen_image_path(image_name: str, filetype=".webp") -> str:
+def gen_image_path(image_name: str, filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
 
 

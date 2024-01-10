@@ -1,7 +1,7 @@
 from __future__ import annotations
 import param
 from bencher.bench_cfg import BenchCfg
-from bencher.variables.results import PANEL_TYPES
+from bencher.variables.results import PANEL_TYPES, ResultVideo
 
 from bencher.variables.inputs import IntSweep, FloatSweep, BoolSweep, EnumSweep, StringSweep
 from bencher.variables.time import TimeSnapshot
@@ -61,6 +61,8 @@ class PltCntCfg(param.Parameterized):
 
         for rv in bench_cfg.result_vars:
             if isinstance(rv, PANEL_TYPES):
+                plt_cnt_cfg.panel_vars.append(rv)
+            if isinstance(rv, ResultVideo):
                 plt_cnt_cfg.panel_vars.append(rv)
 
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
