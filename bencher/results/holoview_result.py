@@ -8,7 +8,7 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D
+from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D,listify    
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
@@ -183,6 +183,9 @@ class HoloviewResult(PanelResult):
     ) -> Optional[pn.panel]:
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
+        else:
+            if not isinstance(tap_var,list):
+                tap_var = [tap_var]
 
         if len(tap_var) == 0:
             heatmap_cb = self.to_heatmap_ds
@@ -232,11 +235,12 @@ class HoloviewResult(PanelResult):
     ) -> pn.Row:
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
         htmap_posxy = hv.streams.PointerXY(source=htmap, x=0, y=0)
-
-        if not isinstance(result_var_plots, list):
-            result_var_plots = [result_var_plots]
+        # hv.streams
+        result_var_plots = listify(result_var_plots)
         if container is None:
             containers = [self.result_var_to_container(rv) for rv in result_var_plots]
+        else:
+            containers = listify(container)
 
         cont_instances = [c(**kwargs) for c in containers]
         title = pn.pane.Markdown("Selected: None")
@@ -244,6 +248,7 @@ class HoloviewResult(PanelResult):
         nearest = dict(x=None, y=None)
 
         def tap_plot(x, y):  # pragma: no cover
+            # print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
