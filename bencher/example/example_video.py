@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
-import panel as pn
 
 
 # code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
@@ -60,7 +59,6 @@ class TuringPattern(bch.ParametrizedSweep):
         fig.set_tight_layout(True)
         ax.set_axis_off()
         vid_writer = bch.VideoWriter()
-        rbg = None
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
@@ -124,7 +122,6 @@ if __name__ == "__main__":
     run_cfg_ex.level = 2
     run_cfg_ex.use_sample_cache = True
     run_cfg_ex.only_hash_tag = True
-
 
     # example_video(run_cfg_ex).report.show()
     example_video_tap(run_cfg_ex).report.show()
