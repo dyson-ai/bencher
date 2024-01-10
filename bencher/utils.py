@@ -146,3 +146,11 @@ def callable_name(any_callable: Callable[..., Any]) -> str:
         return any_callable.__name__
     except AttributeError:
         return str(any_callable)
+
+
+def listify(obj) -> list:
+    """Take an object and turn it into a list if its not already a list"""
+    if isinstance(obj, list):
+        return obj
+    else:
+        return [obj]
