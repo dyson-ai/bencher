@@ -8,7 +8,7 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D,listify    
+from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D, listify
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
@@ -184,7 +184,7 @@ class HoloviewResult(PanelResult):
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
         else:
-            if not isinstance(tap_var,list):
+            if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
         if len(tap_var) == 0:
