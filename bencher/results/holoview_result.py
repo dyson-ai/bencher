@@ -242,6 +242,8 @@ class HoloviewResult(PanelResult):
             containers = listify(container)
 
         cont_instances = [c(**kwargs) for c in containers]
+
+        
         title = pn.pane.Markdown("Selected: None")
 
         state = dict(x=None, y=None,update=False)
