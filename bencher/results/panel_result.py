@@ -37,36 +37,38 @@ class PanelResult(BenchResultBase):
                 xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
             )
 
-            def play_vid(_):  # pragma: no cover
-                for r in vid_p:
-                    r.paused = False
-                    r.loop = False
+            if len(vid_p)>1:
+                def play_vid(_):  # pragma: no cover
+                    for r in vid_p:
+                        r.paused = False
+                        r.loop = False
 
-            def pause_vid(_):  # pragma: no cover
-                for r in vid_p:
-                    r.paused = True
+                def pause_vid(_):  # pragma: no cover
+                    for r in vid_p:
+                        r.paused = True
 
-            def reset_vid(_):  # pragma: no cover
-                for r in vid_p:
-                    r.paused = False
-                    r.time = 0
+                def reset_vid(_):  # pragma: no cover
+                    for r in vid_p:
+                        r.paused = False
+                        r.time = 0
 
-            def loop_vid(_):  # pragma: no cover
-                for r in vid_p:
-                    r.paused = False
-                    r.time = 0
-                    r.loop = True
+                def loop_vid(_):  # pragma: no cover
+                    for r in vid_p:
+                        r.paused = False
+                        r.time = 0
+                        r.loop = True
 
-            button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
-            buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
-            buttons = pn.Row()
+                button_names = ["Play Videos", "Pause Videos", "Loop Videos", "Reset Videos"]
+                buttom_cb = [play_vid, pause_vid, reset_vid, loop_vid]
+                buttons = pn.Row()
 
-            for name, cb in zip(button_names, buttom_cb):
-                button = pn.widgets.Button(name=name)
-                pn.bind(cb, button, watch=True)
-                buttons.append(button)
+                for name, cb in zip(button_names, buttom_cb):
+                    button = pn.widgets.Button(name=name)
+                    pn.bind(cb, button, watch=True)
+                    buttons.append(button)
 
-            return pn.Column(buttons, panes)
+                return pn.Column(buttons, panes)
+            return pn.Column(panes)
         return None
 
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:

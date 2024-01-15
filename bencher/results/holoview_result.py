@@ -263,9 +263,11 @@ class HoloviewResult(PanelResult):
         dataset: xr.Dataset,
         result_var: Parameter,
         result_var_plots: List[Parameter] = None,
-        container: pn.pane.panel = pn.pane.panel,
+        container: pn.pane.panel = None,
         **kwargs,
     ) -> pn.Row:
+       
+
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
         result_var_plots, cont_instances = self.setup_results_and_containers(
             result_var_plots, container
@@ -275,7 +277,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot(x, y):  # pragma: no cover
-            print(f"moved {x}{y}")
+            # print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
