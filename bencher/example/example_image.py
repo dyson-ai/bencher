@@ -84,13 +84,21 @@ def example_image(
 
 
 def simple():
-    bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=2))
+    bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
 
     # bench.plot_sweep(input_vars=["sides","color","radius"])
 
-    res = bench.sweep(input_vars=["sides", "radius", "linewidth"])
+    # res = bench.sweep(input_vars=["sides", "radius"])
 
-    bench.report.append(res.to_heatmap(target_dimension=3))
+    # bench.report.append(res.to_heatmap(target_dimension=3))
+
+    # res = bench.plot_sweep(input_vars=["sides"],result_vars=["area"])
+    res = bench.plot_sweep(input_vars=["sides"])
+
+
+    # bench.report.append(res.to_line(target_dimension=1))
+
+
 
     return bench
 

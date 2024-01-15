@@ -124,14 +124,35 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def to_line(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_line(
+        self,
+        result_var: Parameter = None,
+        tap_var=None,
+        tap_container: pn.pane.panel = None,
+        target_dimension=2,
+        **kwargs,
+    ) -> Optional[pn.panel]:
+        if tap_var is None:
+            tap_var = self.plt_cnt_cfg.panel_vars
+        else:
+            if not isinstance(tap_var, list):
+                tap_var = [tap_var]
+
+        if len(tap_var) == 0:
+            heatmap_cb = self.to_line_ds
+        else:
+            heatmap_cb = partial(
+                self.to_line_tap_ds, result_var_plots=tap_var, container=tap_container
+            )
+
         return self.filter(
-            self.to_line_ds,
+            heatmap_cb,
             float_range=VarRange(1, 1),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
+            panel_range=VarRange(0, None),
             reduce=ReduceType.SQUEEZE,
-            target_dimension=2,
+            target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
             **kwargs,
@@ -147,6 +168,62 @@ class HoloviewResult(PanelResult):
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
+
+    def to_line_tap_ds(
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        result_var_plots: List[Parameter] = None,
+        container: pn.pane.panel = pn.pane.panel,
+        **kwargs,
+    ) -> pn.Row:
+        htmap = self.to_line_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
+        result_var_plots, cont_instances = self.setup_results_and_containers(
+            result_var_plots, container
+        )
+        title = pn.pane.Markdown("Selected: None")
+
+        state = dict(x=None, y=None, update=False)
+
+        def tap_plot(x, y):  # pragma: no cover
+            # print(f"moved {x},{y}")
+            x_nearest_new = get_nearest_coords1D(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
+            )
+
+            if x_nearest_new != state["x"]:
+                state["x"] = x_nearest_new
+                state["update"] = True
+
+            if state["update"]:
+                kdims = {}
+                kdims[self.bench_cfg.input_vars[0].name] = state["x"]
+
+                if hasattr(htmap, "current_key"):
+                    for d, k in zip(htmap.kdims, htmap.current_key):
+                        kdims[d.name] = k
+                for rv, cont in zip(result_var_plots, cont_instances):
+                    ds = dataset[rv.name]
+                    val = ds.sel(**kdims)
+                    item = self.zero_dim_da_to_val(val)
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+                    cont.object = item
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
+                        cont.paused = False
+                        cont.time = 0
+                        cont.loop = True
+                        cont.autoplay = True
+                state["update"] = False
+
+        def on_exit(x, y):  # pragma: no cover
+            state["update"] = True
+
+        htmap_posxy = hv.streams.PointerXY(source=htmap)
+        htmap_posxy.add_subscriber(tap_plot)
+        ls = hv.streams.MouseLeave(source=htmap)
+        ls.add_subscriber(on_exit)
+        bound_plot = pn.Column(title, *cont_instances)
+        return pn.Row(htmap, bound_plot)
 
     def to_curve(self, result_var: Parameter = None, **kwargs):
         return self.filter(
@@ -225,6 +302,16 @@ class HoloviewResult(PanelResult):
             return pn.pane.Video
         return pn.pane.panel
 
+    def setup_results_and_containers(self, result_var_plots, container, **kwargs):
+        result_var_plots = listify(result_var_plots)
+        if container is None:
+            containers = [self.result_var_to_container(rv) for rv in result_var_plots]
+        else:
+            containers = listify(container)
+
+        cont_instances = [c(**kwargs) for c in containers]
+        return result_var_plots, cont_instances
+
     def to_heatmap_container_tap_ds(
         self,
         dataset: xr.Dataset,
@@ -234,16 +321,9 @@ class HoloviewResult(PanelResult):
         **kwargs,
     ) -> pn.Row:
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
-
-        result_var_plots = listify(result_var_plots)
-        if container is None:
-            containers = [self.result_var_to_container(rv) for rv in result_var_plots]
-        else:
-            containers = listify(container)
-
-        cont_instances = [c(**kwargs) for c in containers]
-
-        
+        result_var_plots, cont_instances = self.setup_results_and_containers(
+            result_var_plots, container
+        )
         title = pn.pane.Markdown("Selected: None")
 
         state = dict(x=None, y=None, update=False)
