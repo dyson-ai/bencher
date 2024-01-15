@@ -20,12 +20,16 @@ class BenchPolygons(bch.ParametrizedSweep):
     color = bch.StringSweep(["red", "green", "blue"])
     polygon = bch.ResultImage()
     hmap = bch.ResultHmap()
+    area = bch.ResultVar()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         points = polygon_points(self.radius, self.sides)
         self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
+
+        side_length = 2 * self.radius * math.sin(math.pi / self.sides)
+        self.area = (self.sides * side_length**2) / (4 * math.tan(math.pi / self.sides))
         return super().__call__()
 
     def points_to_polygon_png(self, points: list[float], filename: str):
@@ -79,5 +83,21 @@ def example_image(
     return bench
 
 
+def simple():
+    bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=2))
+
+    # bench.plot_sweep(input_vars=["sides","color","radius"])
+
+    res =bench.sweep(input_vars=["sides","radius","linewidth"])
+
+    bench.report.append(res.to_heatmap(target_dimension=3))
+
+
+    return bench
+
+
 if __name__ == "__main__":
+    simple().report.show()
+    exit()
+
     example_image(bch.BenchRunCfg(level=2)).report.show()
