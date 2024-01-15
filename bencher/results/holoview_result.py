@@ -343,13 +343,18 @@ class HoloviewResult(PanelResult):
 
         state = dict(x=None, y=None, update=False)
 
-        def tap_plot(x):  # pragma: no cover
+        def tap_plot(x,y):  # pragma: no cover
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-
+            y_nearest_new = get_nearest_coords1D(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+            )
             if x_nearest_new != state["x"]:
                 state["x"] = x_nearest_new
+                state["update"] = True
+            if y_nearest_new != state["y"]:
+                state["y"] = y_nearest_new
                 state["update"] = True
 
             if state["update"]:
