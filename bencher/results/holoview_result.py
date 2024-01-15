@@ -234,7 +234,7 @@ class HoloviewResult(PanelResult):
         **kwargs,
     ) -> pn.Row:
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
-       
+
         result_var_plots = listify(result_var_plots)
         if container is None:
             containers = [self.result_var_to_container(rv) for rv in result_var_plots]
@@ -244,7 +244,7 @@ class HoloviewResult(PanelResult):
         cont_instances = [c(**kwargs) for c in containers]
         title = pn.pane.Markdown("Selected: None")
 
-        state = dict(x=None, y=None,update=False)
+        state = dict(x=None, y=None, update=False)
 
         def tap_plot(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
@@ -255,7 +255,7 @@ class HoloviewResult(PanelResult):
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
             if x_nearest_new != state["x"]:
-                state["x"] = x_nearest_new    
+                state["x"] = x_nearest_new
                 state["update"] = True
             if y_nearest_new != state["y"]:
                 state["y"] = y_nearest_new
@@ -282,12 +282,12 @@ class HoloviewResult(PanelResult):
                         cont.autoplay = True
                 state["update"] = False
 
-        def on_exit(x,y):
+        def on_exit(x, y):  # pragma: no cover
             state["update"] = True
 
-        def cb1(x,y):
+        def cb1(x, y):
             print("cb2")
-       
+
         htmap_posxy = hv.streams.PointerXY(source=htmap, x=0, y=0)
         htmap_posxy.add_subscriber(tap_plot)
         ls = hv.streams.MouseLeave(source=htmap)
