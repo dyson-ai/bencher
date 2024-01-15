@@ -95,10 +95,7 @@ def simple():
     # res = bench.plot_sweep(input_vars=["sides"],result_vars=["area"])
     res = bench.plot_sweep(input_vars=["sides"])
 
-
     # bench.report.append(res.to_line(target_dimension=1))
-
-
 
     return bench
 

@@ -169,61 +169,7 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
-    def to_line_tap_ds(
-        self,
-        dataset: xr.Dataset,
-        result_var: Parameter,
-        result_var_plots: List[Parameter] = None,
-        container: pn.pane.panel = pn.pane.panel,
-        **kwargs,
-    ) -> pn.Row:
-        htmap = self.to_line_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
-        result_var_plots, cont_instances = self.setup_results_and_containers(
-            result_var_plots, container
-        )
-        title = pn.pane.Markdown("Selected: None")
-
-        state = dict(x=None, y=None, update=False)
-
-        def tap_plot(x, y):  # pragma: no cover
-            # print(f"moved {x},{y}")
-            x_nearest_new = get_nearest_coords1D(
-                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
-            )
-
-            if x_nearest_new != state["x"]:
-                state["x"] = x_nearest_new
-                state["update"] = True
-
-            if state["update"]:
-                kdims = {}
-                kdims[self.bench_cfg.input_vars[0].name] = state["x"]
-
-                if hasattr(htmap, "current_key"):
-                    for d, k in zip(htmap.kdims, htmap.current_key):
-                        kdims[d.name] = k
-                for rv, cont in zip(result_var_plots, cont_instances):
-                    ds = dataset[rv.name]
-                    val = ds.sel(**kdims)
-                    item = self.zero_dim_da_to_val(val)
-                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-                    cont.object = item
-                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
-                        cont.paused = False
-                        cont.time = 0
-                        cont.loop = True
-                        cont.autoplay = True
-                state["update"] = False
-
-        def on_exit(x, y):  # pragma: no cover
-            state["update"] = True
-
-        htmap_posxy = hv.streams.PointerXY(source=htmap)
-        htmap_posxy.add_subscriber(tap_plot)
-        ls = hv.streams.MouseLeave(source=htmap)
-        ls.add_subscriber(on_exit)
-        bound_plot = pn.Column(title, *cont_instances)
-        return pn.Row(htmap, bound_plot)
+    # def
 
     def to_curve(self, result_var: Parameter = None, **kwargs):
         return self.filter(
@@ -378,6 +324,61 @@ class HoloviewResult(PanelResult):
         # htmap.kdims[0].param.watch(cb1)
         # ls2.add_subscriber(cb1)
 
+        bound_plot = pn.Column(title, *cont_instances)
+        return pn.Row(htmap, bound_plot)
+
+    def to_line_tap_ds(
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        result_var_plots: List[Parameter] = None,
+        container: pn.pane.panel = pn.pane.panel,
+        **kwargs,
+    ) -> pn.Row:
+        htmap = self.to_line_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
+        result_var_plots, cont_instances = self.setup_results_and_containers(
+            result_var_plots, container
+        )
+        title = pn.pane.Markdown("Selected: None")
+
+        state = dict(x=None, y=None, update=False)
+
+        def tap_plot(x):  # pragma: no cover
+            x_nearest_new = get_nearest_coords1D(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
+            )
+
+            if x_nearest_new != state["x"]:
+                state["x"] = x_nearest_new
+                state["update"] = True
+
+            if state["update"]:
+                kdims = {}
+                kdims[self.bench_cfg.input_vars[0].name] = state["x"]
+
+                if hasattr(htmap, "current_key"):
+                    for d, k in zip(htmap.kdims, htmap.current_key):
+                        kdims[d.name] = k
+                for rv, cont in zip(result_var_plots, cont_instances):
+                    ds = dataset[rv.name]
+                    val = ds.sel(**kdims)
+                    item = self.zero_dim_da_to_val(val)
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+                    cont.object = item
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
+                        cont.paused = False
+                        cont.time = 0
+                        cont.loop = True
+                        cont.autoplay = True
+                state["update"] = False
+
+        def on_exit(x, y):  # pragma: no cover
+            state["update"] = True
+
+        htmap_posxy = hv.streams.PointerX(source=htmap)
+        htmap_posxy.add_subscriber(tap_plot)
+        ls = hv.streams.MouseLeave(source=htmap)
+        ls.add_subscriber(on_exit)
         bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
 
