@@ -37,7 +37,8 @@ class PanelResult(BenchResultBase):
                 xr_dataset, result_var, plot_callback=plot_callback, target_dimension=0
             )
 
-            if len(vid_p)>1:
+            if len(vid_p) > 1:
+
                 def play_vid(_):  # pragma: no cover
                     for r in vid_p:
                         r.paused = False

@@ -266,8 +266,6 @@ class HoloviewResult(PanelResult):
         container: pn.pane.panel = None,
         **kwargs,
     ) -> pn.Row:
-       
-
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
         result_var_plots, cont_instances = self.setup_results_and_containers(
             result_var_plots, container
