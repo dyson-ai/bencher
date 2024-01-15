@@ -247,7 +247,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot(x, y):  # pragma: no cover
-            # print(f"moved {x}{y}")
+            print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
@@ -285,10 +285,7 @@ class HoloviewResult(PanelResult):
         def on_exit(x, y):  # pragma: no cover
             state["update"] = True
 
-        def cb1(x, y):
-            print("cb2")
-
-        htmap_posxy = hv.streams.PointerXY(source=htmap, x=0, y=0)
+        htmap_posxy = hv.streams.PointerXY(source=htmap)
         htmap_posxy.add_subscriber(tap_plot)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
