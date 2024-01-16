@@ -58,8 +58,14 @@ def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> di
 
 
 def get_nearest_coords1D(val: Any, coords) -> Any:
+    print(val)
     if isinstance(val, (int, float)):
         return min(coords, key=lambda x_: abs(x_ - val))
+    else:
+        for i in coords:
+            if val == i:
+                return i
+
     return val
 
 

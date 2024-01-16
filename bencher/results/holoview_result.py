@@ -347,19 +347,26 @@ class HoloviewResult(PanelResult):
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-            y_nearest_new = get_nearest_coords1D(
-                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
-            )
+           
             if x_nearest_new != state["x"]:
                 state["x"] = x_nearest_new
                 state["update"] = True
-            if y_nearest_new != state["y"]:
-                state["y"] = y_nearest_new
-                state["update"] = True
+            
+            if self.plt_cnt_cfg.inputs_cnt>1:
+                y_nearest_new = get_nearest_coords1D(
+                    y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+                )
+                if y_nearest_new != state["y"]:
+                    state["y"] = y_nearest_new
+                    state["update"] = True
 
             if state["update"]:
                 kdims = {}
                 kdims[self.bench_cfg.input_vars[0].name] = state["x"]
+                if self.plt_cnt_cfg.inputs_cnt>1:
+                    kdims[self.bench_cfg.input_vars[1].name] = state["y"]
+
+
 
                 if hasattr(htmap, "current_key"):
                     for d, k in zip(htmap.kdims, htmap.current_key):
@@ -380,7 +387,7 @@ class HoloviewResult(PanelResult):
         def on_exit(x, y):  # pragma: no cover
             state["update"] = True
 
-        htmap_posxy = hv.streams.PointerX(source=htmap)
+        htmap_posxy = hv.streams.PointerXY(source=htmap)
         htmap_posxy.add_subscriber(tap_plot)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
