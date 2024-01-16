@@ -85,6 +85,7 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
+            panel_range=VarRange(0,None),
             reduce=ReduceType.SQUEEZE,
             target_dimension=2,
             result_var=result_var,
@@ -219,9 +220,9 @@ class HoloviewResult(PanelResult):
 
         return self.filter(
             heatmap_cb,
-            float_range=VarRange(2, None),
+            float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
-            input_range=VarRange(1, None),
+            input_range=VarRange(2, None),
             panel_range=VarRange(0, None),
             target_dimension=target_dimension,
             result_var=result_var,
@@ -233,8 +234,8 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
         if len(dataset.dims) >= 2:
-            x = self.plt_cnt_cfg.float_vars[0].name
-            y = self.plt_cnt_cfg.float_vars[1].name
+            x = self.bench_cfg.input_vars[0].name
+            y = self.bench_cfg.input_vars[1].name
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
