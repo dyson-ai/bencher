@@ -58,14 +58,11 @@ def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> di
 
 
 def get_nearest_coords1D(val: Any, coords) -> Any:
-    print(val)
     if isinstance(val, (int, float)):
         return min(coords, key=lambda x_: abs(x_ - val))
-    else:
-        for i in coords:
-            if val == i:
-                return i
-
+    for i in coords:
+        if val == i:
+            return i
     return val
 
 
@@ -158,5 +155,4 @@ def listify(obj) -> list:
     """Take an object and turn it into a list if its not already a list"""
     if isinstance(obj, list):
         return obj
-    else:
-        return [obj]
+    return [obj]
