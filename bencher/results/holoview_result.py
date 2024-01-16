@@ -275,7 +275,7 @@ class HoloviewResult(PanelResult):
 
         state = dict(x=None, y=None, update=False)
 
-        def tap_plot(x, y):  # pragma: no cover
+        def tap_plot_heatmap(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
@@ -315,7 +315,7 @@ class HoloviewResult(PanelResult):
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
-        htmap_posxy.add_subscriber(tap_plot)
+        htmap_posxy.add_subscriber(tap_plot_heatmap)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
 
@@ -344,7 +344,10 @@ class HoloviewResult(PanelResult):
 
         state = dict(x=None, y=None, update=False)
 
-        def tap_plot(x,y):  # pragma: no cover
+        def tap_plot_line(x,y):  # pragma: no cover
+            print(f"{x},{y}")
+
+
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
@@ -381,8 +384,8 @@ class HoloviewResult(PanelResult):
         def on_exit(x, y):  # pragma: no cover
             state["update"] = True
 
-        htmap_posxy = hv.streams.PointerX(source=htmap)
-        htmap_posxy.add_subscriber(tap_plot)
+        htmap_posxy = hv.streams.Selection1D(source=htmap)
+        htmap_posxy.add_subscriber(tap_plot_line)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
         bound_plot = pn.Column(title, *cont_instances)
