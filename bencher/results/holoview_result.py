@@ -85,6 +85,7 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
+            panel_range=VarRange(0, None),
             reduce=ReduceType.SQUEEZE,
             target_dimension=2,
             result_var=result_var,
@@ -219,9 +220,9 @@ class HoloviewResult(PanelResult):
 
         return self.filter(
             heatmap_cb,
-            float_range=VarRange(2, None),
+            float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
-            input_range=VarRange(1, None),
+            input_range=VarRange(2, None),
             panel_range=VarRange(0, None),
             target_dimension=target_dimension,
             result_var=result_var,
@@ -233,8 +234,8 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
         if len(dataset.dims) >= 2:
-            x = self.plt_cnt_cfg.float_vars[0].name
-            y = self.plt_cnt_cfg.float_vars[1].name
+            x = self.bench_cfg.input_vars[0].name
+            y = self.bench_cfg.input_vars[1].name
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
@@ -274,7 +275,7 @@ class HoloviewResult(PanelResult):
 
         state = dict(x=None, y=None, update=False)
 
-        def tap_plot(x, y):  # pragma: no cover
+        def tap_plot_heatmap(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
@@ -314,7 +315,7 @@ class HoloviewResult(PanelResult):
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
-        htmap_posxy.add_subscriber(tap_plot)
+        htmap_posxy.add_subscriber(tap_plot_heatmap)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
 
@@ -343,16 +344,18 @@ class HoloviewResult(PanelResult):
 
         state = dict(x=None, y=None, update=False)
 
-        def tap_plot(x,y):  # pragma: no cover
+        def tap_plot_line(x, y):  # pragma: no cover
+            print(f"{x},{y}")
+
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-           
+
             if x_nearest_new != state["x"]:
                 state["x"] = x_nearest_new
                 state["update"] = True
-            
-            if self.plt_cnt_cfg.inputs_cnt>1:
+
+            if self.plt_cnt_cfg.inputs_cnt > 1:
                 y_nearest_new = get_nearest_coords1D(
                     y, dataset.coords[self.bench_cfg.input_vars[1].name].data
                 )
@@ -363,10 +366,8 @@ class HoloviewResult(PanelResult):
             if state["update"]:
                 kdims = {}
                 kdims[self.bench_cfg.input_vars[0].name] = state["x"]
-                if self.plt_cnt_cfg.inputs_cnt>1:
+                if self.plt_cnt_cfg.inputs_cnt > 1:
                     kdims[self.bench_cfg.input_vars[1].name] = state["y"]
-
-
 
                 if hasattr(htmap, "current_key"):
                     for d, k in zip(htmap.kdims, htmap.current_key):
@@ -388,7 +389,7 @@ class HoloviewResult(PanelResult):
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
-        htmap_posxy.add_subscriber(tap_plot)
+        htmap_posxy.add_subscriber(tap_plot_line)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
         bound_plot = pn.Column(title, *cont_instances)
