@@ -427,8 +427,7 @@ class BenchCfg(BenchRunCfg):
         if self.description is not None and description:
             col.append(self.to_description())
         if describe_sweep:
-            col.append(pn.pane.Markdown("## Data Collection Parameters:"))
-            col.append(self.describe_sweep())
+            col.append(pn.Accordion(("Data Collection Parameters", self.describe_sweep())))
         if results_suffix:
             col.append(pn.pane.Markdown("## Results:"))
         return col
