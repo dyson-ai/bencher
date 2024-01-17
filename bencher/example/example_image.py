@@ -94,7 +94,10 @@ def simple():
     # bench.report.append(res.to_heatmap(target_dimension=3))
 
     # res = bench.plot_sweep(input_vars=["sides"],result_vars=["area"])
-    bench.plot_sweep(input_vars=["sides", "color"])
+    # bench.plot_sweep(input_vars=["sides", "color"])
+
+    bench.plot_sweep(input_vars=["sides","radius"])
+
 
     # bench.report.append(res.to_line(target_dimension=1))
 

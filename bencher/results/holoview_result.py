@@ -277,12 +277,20 @@ class HoloviewResult(PanelResult):
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
+
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
             y_nearest_new = get_nearest_coords1D(
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
+
+            xv = self.bench_cfg.input_vars[0].name
+            yv = self.bench_cfg.input_vars[1].name
+            nearest = get_nearest_coords(dataset, **{xv: x, yv: y})
+            # print(nearest)
+            # print(x_nearest_new,y_nearest_new)
+
             if x_nearest_new != state["x"]:
                 state["x"] = x_nearest_new
                 state["update"] = True
@@ -340,6 +348,16 @@ class HoloviewResult(PanelResult):
 
         def tap_plot_line(x, y):  # pragma: no cover
             print(f"{x},{y}")
+
+            print(dataset)
+
+            xv = self.bench_cfg.input_vars[0].name
+            yv = self.bench_cfg.input_vars[1].name
+
+            kwargs = {xv: x, yv: y}
+
+            nearest = get_nearest_coords(dataset, **kwargs)
+            print(nearest)
 
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
