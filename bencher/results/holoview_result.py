@@ -311,19 +311,13 @@ class HoloviewResult(PanelResult):
                         cont.autoplay = True
                 state["update"] = False
 
-        def on_exit(x, y):  # pragma: no cover pylint disable: unused-argument
+        def on_exit(x, y):  # pragma: no cover # pylint disable: unused-argument
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
         htmap_posxy.add_subscriber(tap_plot_heatmap)
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
-
-        # ls2 =hv.streams.Params(source=htmap)
-
-        # print(htmap.param.params())
-        # htmap.kdims[0].param.watch(cb1)
-        # ls2.add_subscriber(cb1)
 
         bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
