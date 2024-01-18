@@ -202,7 +202,7 @@ class HoloviewResult(PanelResult):
     def to_heatmap_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
-        if len(dataset.dims) >= 2:
+        if len(dataset.sizes) >= 2:
             x = self.plt_cnt_cfg.float_vars[0].name
             y = self.plt_cnt_cfg.float_vars[1].name
             C = result_var.name

@@ -206,7 +206,7 @@ class BenchResultBase(OptunaResult):
 
         if isinstance(dataset, xr.DataArray):
             tit = [dataset.name]
-            for d in dataset.dims:
+            for d in dataset.sizes.keys():
                 tit.append(d)
         else:
             tit = [result_var.name]
