@@ -139,9 +139,10 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-        if len(tap_var) == 0:
+      
+        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt>1:
             heatmap_cb = self.to_line_ds
-        else:
+        else:         
             heatmap_cb = partial(
                 self.to_line_tap_ds, result_var_plots=tap_var, container=tap_container
             )
@@ -276,7 +277,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
-            # print(f"moved {x}{y}")
+            print(f"moved {x}{y}")
 
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
@@ -285,9 +286,9 @@ class HoloviewResult(PanelResult):
                 y, dataset.coords[self.bench_cfg.input_vars[1].name].data
             )
 
-            xv = self.bench_cfg.input_vars[0].name
-            yv = self.bench_cfg.input_vars[1].name
-            nearest = get_nearest_coords(dataset, **{xv: x, yv: y})
+            # xv = self.bench_cfg.input_vars[0].name
+            # yv = self.bench_cfg.input_vars[1].name
+            # nearest = get_nearest_coords(dataset, **{xv: x, yv: y})
             # print(nearest)
             # print(x_nearest_new,y_nearest_new)
 
@@ -299,7 +300,7 @@ class HoloviewResult(PanelResult):
                 state["update"] = True
 
             if state["update"]:
-                kdims = {}
+                kdims = {}  
                 kdims[self.bench_cfg.input_vars[0].name] = state["x"]
                 kdims[self.bench_cfg.input_vars[1].name] = state["y"]
 
