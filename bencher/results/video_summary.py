@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 import panel as pn
 import xarray as xr
 from param import Parameter
@@ -17,7 +17,7 @@ import param
 
 class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
-        self, result_var: Parameter = None, input_order=None, **kwargs
+        self, result_var: Parameter = None, input_order: List[str] = None, **kwargs
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
@@ -38,7 +38,7 @@ class VideoSummaryResult(BenchResultBase):
         return matches_res.to_panel()
 
     def to_video_summary_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, input_order=None, **kwargs
+        self, dataset: xr.Dataset, result_var: Parameter, input_order: List[str] = None, **kwargs
     ):
         vr = VideoWriter()
         da = dataset[result_var.name]
