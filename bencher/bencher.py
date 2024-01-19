@@ -227,6 +227,7 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
+        plot=True,
     ) -> List[BenchResult]:
         results = []
         if relationship_cb is None:
@@ -242,7 +243,7 @@ class Bench(BenchPlotServer):
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
-                    plot=False,
+                    plot=plot,
                 )
 
                 if optimise_var is not None:

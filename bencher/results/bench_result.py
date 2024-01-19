@@ -7,7 +7,7 @@ from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
-
+from bencher.utils import listify
 
 class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
 
@@ -42,6 +42,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
         **kwargs,
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
+        plot_list = listify(plot_list)
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()

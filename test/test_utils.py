@@ -153,3 +153,5 @@ class TestBencherUtils(unittest.TestCase):
         self.assertEqual([obj], listify(obj))
         self.assertEqual([obj], listify([obj]))
         self.assertEqual([obj], listify((obj)))
+        self.assertEqual(None,listify( None))
+
