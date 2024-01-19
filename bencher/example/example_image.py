@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import math
-import holoviews as hv
 import matplotlib.pyplot as plt
 
 
@@ -19,12 +18,12 @@ class BenchPolygons(bch.ParametrizedSweep):
     linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
     color = bch.StringSweep(["red", "green", "blue"])
     polygon = bch.ResultImage()
-    hmap = bch.ResultHmap()
+    # hmap = bch.ResultHmap()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         points = polygon_points(self.radius, self.sides)
-        self.hmap = hv.Curve(points)
+        # self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
         return super().__call__()
 
@@ -82,18 +81,18 @@ def example_image(
     return bench
 
 
-def example_image_vid(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
-    bench = BenchPolygons().to_bench(run_cfg, report)
-
-    bench.plot_sweep(input_vars=["sides", "radius", "color"])
-
-    return bench
+# def example_image_vid(
+#     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+# ) -> bch.Bench:
+#     bench = BenchPolygons().to_bench(run_cfg, report)
+#     bench.plot_sweep(input_vars=["sides", "radius", "color"])
+#     return bench
 
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = True
+    ex_run_cfg.debug = True
+    ex_run_cfg.repeats = 2
     # example_image_vid(ex_run_cfg).report.show()
-    example_image(bch.BenchRunCfg(level=2)).report.show()
+    example_image(ex_run_cfg).report.show()

@@ -2,7 +2,7 @@ from typing import Optional
 import panel as pn
 import xarray as xr
 from param import Parameter
-from bencher.results.bench_result_base import BenchResultBase
+from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import (
     ResultImage,
 )
@@ -18,21 +18,22 @@ class VideoSummaryResult(BenchResultBase):
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             panel_range=VarRange(1, None),
+            # repeats_range=VarRange(1,1)
         )
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_summary_ds)
         )
         if matches_res.overall:
-            result_types = [ResultImage]
-            ds = self.to_dataset()
+            ds = self.to_dataset(ReduceType.SQUEEZE)
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
-                if result_types is None or isinstance(rv, ResultImage):
+                if isinstance(rv, ResultImage):
                     row.append(self.to_video_summary_ds(ds, rv, **kwargs))
             return row
         return matches_res.to_panel()
 
     def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
+        print(dataset)
         vr = VideoWriter()
         da = dataset[result_var.name]
         df = da.to_dataframe()
