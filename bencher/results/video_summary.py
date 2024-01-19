@@ -33,7 +33,6 @@ class VideoSummaryResult(BenchResultBase):
         return matches_res.to_panel()
 
     def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
-        print(dataset)
         vr = VideoWriter()
         da = dataset[result_var.name]
         df = da.to_dataframe()
