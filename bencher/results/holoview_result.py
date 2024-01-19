@@ -350,15 +350,22 @@ class HoloviewResult(PanelResult):
         def tap_plot_line(x, y):  # pragma: no cover
             print(f"{x},{y}")
 
-            print(dataset)
+            # print(dataset)
 
-            xv = self.bench_cfg.input_vars[0].name
-            yv = self.bench_cfg.input_vars[1].name
+            # xv = self.bench_cfg.input_vars[0].name
+            # yv = self.bench_cfg.input_vars[1].name
 
-            kwargs = {xv: x, yv: y}
+            # x_nearest_new = get_nearest_coords1D(
+            #     x, dataset.coords[self.bench_cfg.input_vars[0].name].data
+            # )
+            # y_nearest_new = get_nearest_coords1D(
+            #     y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+            # )
 
-            nearest = get_nearest_coords(dataset, **kwargs)
-            print(nearest)
+            # kwargs = {xv: x, yv: y}
+
+            # nearest = get_nearest_coords(dataset, **kwargs)
+            # print(nearest)
 
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
