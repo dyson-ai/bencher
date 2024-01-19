@@ -87,7 +87,9 @@ if __name__ == "__main__":
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        bench.plot_sweep(input_vars=["sides", "radius", "color"])
+        res = bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=False)
+        bench.report.append(res.to_video_summary())
+        bench.report.append(res.to_video_summary(input_order=reversed(res.bench_cfg.input_vars)))
         return bench
 
     ex_run_cfg = bch.BenchRunCfg()
