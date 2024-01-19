@@ -1,3 +1,4 @@
+from bencher.utils import params_to_str
 from typing import Optional, List
 import panel as pn
 import xarray as xr
@@ -12,7 +13,6 @@ from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
 import itertools
-import param
 
 
 class VideoSummaryResult(BenchResultBase):
@@ -55,14 +55,7 @@ class VideoSummaryResult(BenchResultBase):
         if input_order is None:
             input_order = list(da.dims)
         else:
-            new = []
-            for i in input_order:
-                if isinstance(i, param.Parameter):
-                    new.append(i.name)
-                else:
-                    new.append(input_order)
-            input_order = new
-
+            input_order = params_to_str(input_order)
         if reverse:
             input_order = list(reversed(input_order))
 

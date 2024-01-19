@@ -8,7 +8,8 @@ from colorsys import hsv_to_rgb
 from pathlib import Path
 from uuid import uuid4
 from functools import partial
-from typing import Callable, Any
+from typing import Callable, Any,List
+import param
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -155,3 +156,13 @@ def listify(obj) -> list:
     if isinstance(obj, tuple):
         return list(obj)
     return [obj]
+
+
+def get_name(var):
+    if isinstance(var, param.Parameter):
+        return var.name
+    return var
+
+
+def params_to_str(self, param_list: List[param.Parameter]):
+    return [self.get_name(i) for i in param_list]
