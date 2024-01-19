@@ -1,3 +1,4 @@
+from bencher.utils import params_to_str
 from typing import Optional, List
 import panel as pn
 import xarray as xr
@@ -12,12 +13,15 @@ from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
 import itertools
-import param
 
 
 class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
-        self, result_var: Parameter = None, input_order: List[str] = None, reverse=True, **kwargs
+        self,
+        result_var: Parameter = None,
+        input_order: List[str] = None,
+        reverse: bool = True,
+        **kwargs,
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
@@ -42,7 +46,7 @@ class VideoSummaryResult(BenchResultBase):
         dataset: xr.Dataset,
         result_var: Parameter,
         input_order: List[str] = None,
-        reverse=True,
+        reverse: bool = True,
         **kwargs,
     ):
         vr = VideoWriter()
@@ -51,14 +55,7 @@ class VideoSummaryResult(BenchResultBase):
         if input_order is None:
             input_order = list(da.dims)
         else:
-            new = []
-            for i in input_order:
-                if isinstance(i, param.Parameter):
-                    new.append(i.name)
-                else:
-                    new.append(input_order)
-            input_order = new
-
+            input_order = params_to_str(input_order)
         if reverse:
             input_order = list(reversed(input_order))
 
@@ -76,4 +73,5 @@ class VideoSummaryResult(BenchResultBase):
         vr.write_png()
         vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
         vid.paused = False
+        # return pn.pane(pn.Markdown() vid
         return vid

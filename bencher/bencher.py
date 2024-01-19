@@ -32,6 +32,7 @@ from bencher.variables.results import (
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.job import Job, FutureCache, JobFuture, Executors
+from bencher.utils import params_to_str
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -200,7 +201,7 @@ class Bench(BenchPlotServer):
         run_cfg: BenchRunCfg = None,
         plot: bool = False,
     ) -> BenchResult:
-        title = "Sweeping " + " vs ".join([self.get_name(i) for i in input_vars])
+        title = "Sweeping " + " vs ".join(params_to_str(input_vars))
         return self.plot_sweep(
             title,
             input_vars=input_vars,
@@ -232,9 +233,7 @@ class Bench(BenchPlotServer):
             relationship_cb = combinations
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
-                title_gen = (
-                    title + "Sweeping " + " vs ".join([self.get_name(i) for i in input_group])
-                )
+                title_gen = title + "Sweeping " + " vs ".join(params_to_str(input_group))
                 if iterations > 1:
                     title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
@@ -243,8 +242,9 @@ class Bench(BenchPlotServer):
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
-                    plot=True,
+                    plot=False,
                 )
+
                 if optimise_var is not None:
                     const_vars = res.get_optimal_inputs(optimise_var, True)
                 results.append(res)
@@ -450,11 +450,6 @@ class Bench(BenchPlotServer):
             self.report.append_result(bench_res)
         self.results.append(bench_res)
         return bench_res
-
-    def get_name(self, var):
-        if isinstance(var, param.Parameter):
-            return var.name
-        return var
 
     def convert_vars_to_params(self, variable: param.Parameter, var_type: str):
         """check that a variable is a subclass of param
