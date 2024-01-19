@@ -334,7 +334,8 @@ class BenchCfg(BenchRunCfg):
         )
         all_vars = self.input_vars + self.result_vars
         for v in all_vars:
-            hash_val = hash_sha1((hash_val, v.hash_persistent()))
+            if hasattr(v,"hash_persistent"):
+                hash_val = hash_sha1((hash_val, v.hash_persistent()))
 
         for v in self.const_vars:
             hash_val = hash_sha1((v[0].hash_persistent(), hash_sha1(v[1])))
