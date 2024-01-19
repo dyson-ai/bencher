@@ -11,10 +11,14 @@ from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
+import itertools
+import param
 
 
 class VideoSummaryResult(BenchResultBase):
-    def to_video_summary(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_video_summary(
+        self, result_var: Parameter = None, input_order=None, **kwargs
+    ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
@@ -29,22 +33,38 @@ class VideoSummaryResult(BenchResultBase):
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, ResultImage):
-                    row.append(self.to_video_summary_ds(ds, rv, **kwargs))
+                    row.append(self.to_video_summary_ds(ds, rv, input_order, **kwargs))
             return row
         return matches_res.to_panel()
 
-    def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
+    def to_video_summary_ds(
+        self, dataset: xr.Dataset, result_var: Parameter, input_order=None, **kwargs
+    ):
         vr = VideoWriter()
         da = dataset[result_var.name]
-        df = da.to_dataframe()
-        names = list(da.dims)
-        for index, row in df.iterrows():
+
+        if input_order is None:
+            input_order = list(da.dims)
+        else:
+            new = []
+            for i in input_order:
+                if isinstance(i, param.Parameter):
+                    new.append(i.name)
+                else:
+                    new.append(input_order)
+            input_order = new
+
+        inputs_produc = [da.coords[i].values for i in input_order]
+
+        for index in itertools.product(*inputs_produc):
+            lookup = dict(zip(input_order, index))
+            val = da.loc[lookup].item()
             index = listify(index)
             for i in range(len(index)):
                 if isinstance(index[i], (int, float)):
                     index[i] = FormatFloat()(index[i])
-            label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
-            vr.append_png(row.values[0], label)
+            label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
+            vr.append_png(val, label)
         vr.write_png()
         vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
         vid.paused = False
