@@ -28,7 +28,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
             HoloviewResult.to_heatmap,
             PlotlyResult.to_volume,
             PanelResult.to_video,
-            PanelResult.to_panes,
+            # PanelResult.to_panes,
         ]
 
     @staticmethod

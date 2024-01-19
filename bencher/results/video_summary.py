@@ -73,4 +73,5 @@ class VideoSummaryResult(BenchResultBase):
         vr.write_png()
         vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
         vid.paused = False
+        # return pn.pane(pn.Markdown() vid
         return vid

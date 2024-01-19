@@ -242,8 +242,9 @@ class Bench(BenchPlotServer):
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
-                    plot=True,
+                    plot=False,
                 )
+
                 if optimise_var is not None:
                     const_vars = res.get_optimal_inputs(optimise_var, True)
                 results.append(res)
