@@ -9,7 +9,6 @@ class VideoWriter:
     def __init__(self, filename: str = "vid") -> None:
         self.images = []
         self.pngs = []
-        self.labels = []
         self.filename = gen_video_path(filename)
 
     def append(self, img):
@@ -29,7 +28,6 @@ class VideoWriter:
 
     def append_png(self, png, label=None):
         if label is not None:
-            self.labels.append(label)
             image = Image.open(png)
             padding = 20
             new_img = Image.new("RGB", (image.size[0], image.size[1] + padding), (255, 255, 255))

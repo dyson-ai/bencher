@@ -87,16 +87,13 @@ def example_image_vid(
 ) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
 
-    res = bench.plot_sweep(input_vars=["sides", "radius", "color"])
-
-    # bench.report.append(res.to_sweep_summary())
-    bench.report.append(res.to_video_summary())
+    bench.plot_sweep(input_vars=["sides", "radius", "color"])
 
     return bench
 
 
 if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg()
-    run_cfg.use_sample_cache = True
-    example_image_vid(run_cfg).report.show()
+    ex_run_cfg = bch.BenchRunCfg()
+    ex_run_cfg.use_sample_cache = True
+    example_image_vid(ex_run_cfg).report.show()
     # example_image(bch.BenchRunCfg(level=2)).report.show()

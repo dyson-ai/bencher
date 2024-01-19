@@ -35,7 +35,6 @@ class VideoSummaryResult(BenchResultBase):
     def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         vr = VideoWriter()
         da = dataset[result_var.name]
-        print(da)
         df = da.to_dataframe()
         names = [i for i in da.dims]
         for index, row in df.iterrows():
