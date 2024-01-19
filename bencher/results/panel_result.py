@@ -112,45 +112,4 @@ class PanelResult(BenchResultBase):
             **kwargs,
         )
 
-    # def to_video_summary(self):
-    #     return self.filter(
-    #         self.to_video_summary_ds,
-    #         # float_range=VarRange(2, None),
-    #         # cat_range=VarRange(0, None),
-    #         # input_range=VarRange(1, None),
-    #         # target_dimension=target_dimension,
-    #         result_var=result_var,
-    #         result_types=(ResultImage),
-    #         **kwargs,
-    #     )
-
-    # def to_video_summary(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
-    #     plot_filter = PlotFilter(
-    #         float_range=VarRange(0, None),
-    #         cat_range=VarRange(0, None),
-    #         panel_range=VarRange(1, None),
-    #     )
-    #     matches_res = plot_filter.matches_result(
-    #         self.plt_cnt_cfg, callable_name(self.to_video_summary)
-    #     )
-    #     if matches_res.overall:
-    #         result_types = [ResultImage]
-    #         ds = self.to_dataset()
-    #         row = pn.Row()
-    #         for rv in self.get_results_var_list(result_var):
-    #             if result_types is None or isinstance(rv, ResultImage):
-    #                 row.append(self.to_video_summary_ds(ds, rv))
-    #         return row
-    #     return matches_res.to_panel()
-
-    # def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
-    #     vr = VideoWriter()
-    #     da = dataset[result_var.name]
-    #     print(da)
-    #     df = da.to_dataframe()
-    #     names = [i for i in da.dims]
-    #     for index, row in df.iterrows():
-    #         label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
-    #         vr.append_png(row.values[0], label)
-    #     vr.write_png()
-    #     return pn.pane.Video(vr.filename)
+   

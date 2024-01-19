@@ -8,7 +8,7 @@ from bencher.variables.results import (
 )
 
 from bencher.plotting.plot_filter import VarRange, PlotFilter
-from bencher.utils import callable_name
+from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 
 
@@ -38,7 +38,10 @@ class VideoSummaryResult(BenchResultBase):
         df = da.to_dataframe()
         names = [i for i in da.dims]
         for index, row in df.iterrows():
+            index = listify(index)
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
             vr.append_png(row.values[0], label)
         vr.write_png()
-        return pn.pane.Video(vr.filename)
+        vid = pn.pane.Video(vr.filename, loop=True)
+        vid.paused = False
+        return vid

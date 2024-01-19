@@ -40,11 +40,18 @@ class VideoWriter:
         else:
             self.pngs.append(png)
 
-    def write_png(self, bitrate: int = 1500):
+    def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
+        if frame_time is None:
+            fps = len(self.pngs) / target_duration
+            fps = max(fps, 1)  # never slower that 2 seconds per frame (0.5fps)
+        else:
+            fps = 1.0 / frame_time
+
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
-            self.pngs, fps=30, with_mask=False
+            self.pngs, fps=fps, with_mask=False
         )
-        clip.write_videofile(self.filename, bitrate=f"{bitrate}k", fps=30, logger=None)
+
+        clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):

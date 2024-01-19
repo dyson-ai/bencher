@@ -95,5 +95,5 @@ def example_image_vid(
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = True
-    example_image_vid(ex_run_cfg).report.show()
-    # example_image(bch.BenchRunCfg(level=2)).report.show()
+    # example_image_vid(ex_run_cfg).report.show()
+    example_image(bch.BenchRunCfg(level=2)).report.show()
