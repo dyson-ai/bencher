@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 import panel as pn
 import xarray as xr
 from param import Parameter
@@ -17,7 +17,7 @@ import param
 
 class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
-        self, result_var: Parameter = None, input_order=None, **kwargs
+        self, result_var: Parameter = None, input_order: List[str] = None, reverse=False, **kwargs
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
@@ -33,12 +33,17 @@ class VideoSummaryResult(BenchResultBase):
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, ResultImage):
-                    row.append(self.to_video_summary_ds(ds, rv, input_order, **kwargs))
+                    row.append(self.to_video_summary_ds(ds, rv, input_order,reverse, **kwargs))
             return row
         return matches_res.to_panel()
 
     def to_video_summary_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, input_order=None, **kwargs
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        input_order: List[str] = None,
+        reverse=False,
+        **kwargs,
     ):
         vr = VideoWriter()
         da = dataset[result_var.name]
@@ -53,6 +58,9 @@ class VideoSummaryResult(BenchResultBase):
                 else:
                     new.append(input_order)
             input_order = new
+
+        if reverse:
+            input_order = list(reversed(input_order))
 
         inputs_produc = [da.coords[i].values for i in input_order]
 
