@@ -33,7 +33,7 @@ class VideoSummaryResult(BenchResultBase):
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, ResultImage):
-                    row.append(self.to_video_summary_ds(ds, rv, input_order,reverse, **kwargs))
+                    row.append(self.to_video_summary_ds(ds, rv, input_order, reverse, **kwargs))
             return row
         return matches_res.to_panel()
 
