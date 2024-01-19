@@ -14,7 +14,7 @@ def polygon_points(radius: float, sides: int):
 
 class BenchPolygons(bch.ParametrizedSweep):
     sides = bch.IntSweep(default=3, bounds=(3, 5))
-    radius = bch.FloatSweep(default=1, bounds=(1, 2))
+    radius = bch.FloatSweep(default=1, bounds=(0.2, 1))
     linewidth = bch.FloatSweep(default=1, bounds=(1, 10))
     linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
     color = bch.StringSweep(["red", "green", "blue"])
@@ -40,9 +40,13 @@ class BenchPolygons(bch.ParametrizedSweep):
             linestyle=self.linestyle,
             color=self.color,
         )
+        ax.set_xlim(-1, 1)
+        ax.set_ylim(-1, 1)
+
         ax.set_aspect("equal")
         fig.add_axes(ax)
         fig.savefig(filename, dpi=50)
+
         return filename
 
 
@@ -78,5 +82,21 @@ def example_image(
     return bench
 
 
+def example_image_vid(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    bench = BenchPolygons().to_bench(run_cfg, report)
+
+    res = bench.plot_sweep(input_vars=["sides", "radius", "color"])
+
+    # bench.report.append(res.to_sweep_summary())
+    bench.report.append(res.to_video_summary())
+
+    return bench
+
+
 if __name__ == "__main__":
-    example_image(bch.BenchRunCfg(level=2)).report.show()
+    run_cfg = bch.BenchRunCfg()
+    run_cfg.use_sample_cache = True
+    example_image_vid(run_cfg).report.show()
+    # example_image(bch.BenchRunCfg(level=2)).report.show()
