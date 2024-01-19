@@ -43,7 +43,7 @@ class VideoWriter:
     def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
         if frame_time is None:
             fps = len(self.pngs) / target_duration
-            fps = max(fps, 1)  # never slower that 2 seconds per frame (0.5fps)
+            fps = max(fps, 1)  # never slower that 1 seconds per frame
         else:
             fps = 1.0 / frame_time
 
