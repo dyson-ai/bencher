@@ -28,7 +28,7 @@ class VideoSummaryResult(BenchResultBase):
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if result_types is None or isinstance(rv, ResultImage):
-                    row.append(self.to_video_summary_ds(ds, rv))
+                    row.append(self.to_video_summary_ds(ds, rv, **kwargs))
             return row
         return matches_res.to_panel()
 
@@ -36,12 +36,12 @@ class VideoSummaryResult(BenchResultBase):
         vr = VideoWriter()
         da = dataset[result_var.name]
         df = da.to_dataframe()
-        names = [i for i in da.dims]
+        names = list(da.dims)
         for index, row in df.iterrows():
             index = listify(index)
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
             vr.append_png(row.values[0], label)
         vr.write_png()
-        vid = pn.pane.Video(vr.filename, loop=True)
+        vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
         vid.paused = False
         return vid

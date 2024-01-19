@@ -111,5 +111,3 @@ class PanelResult(BenchResultBase):
             result_types=PANEL_TYPES,
             **kwargs,
         )
-
-   
