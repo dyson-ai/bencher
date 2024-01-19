@@ -10,6 +10,7 @@ from bencher.variables.results import (
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
+from bencher.results.float_formatter import FormatFloat
 
 
 class VideoSummaryResult(BenchResultBase):
@@ -39,6 +40,9 @@ class VideoSummaryResult(BenchResultBase):
         names = list(da.dims)
         for index, row in df.iterrows():
             index = listify(index)
+            for i in range(len(index)):
+                if isinstance(index[i], (int, float)):
+                    index[i] = FormatFloat()(index[i])
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
             vr.append_png(row.values[0], label)
         vr.write_png()

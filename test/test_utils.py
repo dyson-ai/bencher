@@ -152,4 +152,4 @@ class TestBencherUtils(unittest.TestCase):
         obj = "a"
         self.assertEqual([obj], listify(obj))
         self.assertEqual([obj], listify([obj]))
-        self.assertEqual((obj), listify((obj)))
+        self.assertEqual([obj], listify((obj)))
