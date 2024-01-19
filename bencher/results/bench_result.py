@@ -2,13 +2,14 @@ from __future__ import annotations
 from typing import List
 import panel as pn
 
+from bencher.results.bench_result_base import EmptyContainer
+from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
-from bencher.results.bench_result_base import EmptyContainer
 
 
-class BenchResult(PlotlyResult, HoloviewResult):
+class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
@@ -26,6 +27,7 @@ class BenchResult(PlotlyResult, HoloviewResult):
             HoloviewResult.to_heatmap,
             PlotlyResult.to_volume,
             PanelResult.to_video,
+            VideoSummaryResult.to_video_summary,
             PanelResult.to_panes,
         ]
 
