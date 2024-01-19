@@ -107,21 +107,18 @@ def simple():
     return bench
 
 
-# def example_image_vid(
-#     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-# ) -> bch.Bench:
-#     bench = BenchPolygons().to_bench(run_cfg, report)
-#     bench.plot_sweep(input_vars=["sides", "radius", "color"])
-#     return bench
-
-
 if __name__ == "__main__":
-    simple().report.show()
-    exit()
+
+    def example_image_vid(
+        run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    ) -> bch.Bench:
+        bench = BenchPolygons().to_bench(run_cfg, report)
+        bench.plot_sweep(input_vars=["sides", "radius", "color"])
+        return bench
 
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = True
-    ex_run_cfg.debug = True
-    ex_run_cfg.repeats = 2
-    # example_image_vid(ex_run_cfg).report.show()
-    example_image(ex_run_cfg).report.show()
+    # ex_run_cfg.debug = True
+    # ex_run_cfg.repeats = 2
+    example_image_vid(ex_run_cfg).report.show()
+    # example_image(ex_run_cfg).report.show()

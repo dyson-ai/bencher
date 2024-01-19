@@ -153,6 +153,8 @@ def callable_name(any_callable: Callable[..., Any]) -> str:
 
 def listify(obj) -> list:
     """Take an object and turn it into a list if its not already a list"""
-    if isinstance(obj, (list, tuple)):
+    if isinstance(obj, list):
         return obj
+    if isinstance(obj, tuple):
+        return list(obj)
     return [obj]
