@@ -15,7 +15,7 @@ from bencher.variables.results import ResultVar
 from bencher.results.float_formatter import FormatFloat
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 import panel as pn
-
+from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -215,7 +215,7 @@ class BenchResultBase(OptunaResult):
         return " vs ".join(tit)
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
-        return self.bench_cfg.result_vars if result_var is None else [result_var]
+        return self.bench_cfg.result_vars if result_var is None else listify(result_var)
 
     def map_plots(
         self,
