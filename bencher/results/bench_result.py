@@ -44,6 +44,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
         plot_list = listify(plot_list)
+        remove_plots = listify(remove_plots)
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
