@@ -316,7 +316,7 @@ class BenchResultBase(OptunaResult):
     def _to_panes_da(
         self,
         dataset: xr.Dataset,
-        plot_callback=pn.pane.panel,
+        plot_callback: callable = None,
         target_dimension=1,
         horizontal=False,
         result_var=None,

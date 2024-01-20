@@ -10,6 +10,7 @@ from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
+from bencher.results.video_result import VideoControls
 
 
 class VideoSummaryResult(BenchResultBase):
@@ -28,7 +29,8 @@ class VideoSummaryResult(BenchResultBase):
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_summary_ds)
         )
-        print(matches_res.matches_info)
+
+        # video_controls = VideoControls()
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
             row = pn.Row()
@@ -44,6 +46,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter,
         input_order: List[str] = None,
         reverse: bool = True,
+        video_controls: VideoControls = None,
         **kwargs,
     ):
         vr = VideoWriter()
@@ -68,6 +71,7 @@ class VideoSummaryResult(BenchResultBase):
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
             vr.append_file(val, label)
         vr.write_png()
-        vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
-        vid.paused = False
+        if video_controls is None:
+            video_controls = VideoControls()
+        vid = video_controls.video_container(vr.filename)
         return vid

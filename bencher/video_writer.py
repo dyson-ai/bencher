@@ -60,7 +60,7 @@ class VideoWriter:
 
                     # otherwise ffmpeg complains that the file is not getting read. We don't need the file just the size
                     with warnings.catch_warnings():
-                        # warnings.simplefilter(action="ignore")
+                        warnings.simplefilter(action="ignore")
                         labeled_video_clip.write_videofile(new_path, remove_temp=True, logger=None)
                     self.video_files.append(new_path)
         else:
