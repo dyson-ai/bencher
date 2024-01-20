@@ -1,12 +1,10 @@
-from PIL import Image, ImageDraw
 import numpy as np
 import moviepy.video.io.ImageSequenceClip
 from pathlib import Path
 from .utils import gen_video_path, gen_image_path
 import moviepy
-from moviepy.editor import VideoFileClip
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, ImageClip, ImageSequenceClip
-from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import VideoFileClip, ImageClip, ImageSequenceClip
+from PIL import Image, ImageDraw
 from moviepy.editor import clips_array, concatenate_videoclips
 
 

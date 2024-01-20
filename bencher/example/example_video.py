@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
-import panel as pn
 
 
 # code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/

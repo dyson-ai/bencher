@@ -52,7 +52,6 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
             for p in remove_plots:
                 plot_list.remove(p)
 
-
         kwargs = self.set_plot_size(**kwargs)
 
         row = EmptyContainer(pn.Row())
