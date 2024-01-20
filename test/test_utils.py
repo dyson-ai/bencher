@@ -148,6 +148,7 @@ class TestBencherUtils(unittest.TestCase):
         with self.assertRaises(TypeError):
             lerp(5, 0, None, 0, 100)
 
+    def test_listify(self):
         obj = "a"
         self.assertEqual([obj], listify(obj))
         self.assertEqual([obj], listify([obj]))
