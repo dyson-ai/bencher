@@ -28,6 +28,7 @@ class VideoSummaryResult(BenchResultBase):
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_summary_ds)
         )
+        print(matches_res.matches_info)
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
             row = pn.Row()
