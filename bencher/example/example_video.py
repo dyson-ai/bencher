@@ -1,7 +1,6 @@
 import bencher as bch
 import numpy as np
 import matplotlib.pyplot as plt
-import panel as pn
 
 
 # code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
@@ -93,24 +92,10 @@ def example_video(
 def example_video_tap(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:  # pragma: no cover
-    tp = TuringPattern()
-
-    run_cfg.use_sample_cache = False
-    # run_cfg.use_optuna = True
-    run_cfg.auto_plot = False
-    run_cfg.run_tag = "3"
-    bench = tp.to_bench(run_cfg=run_cfg, report=report)
-
-    res = bench.plot_sweep(
-        "phase",
+    bench = TuringPattern().to_bench(run_cfg=run_cfg, report=report)
+    bench.plot_sweep(
         input_vars=["alpha", "beta"],
         # result_vars=["video","score"],
-        run_cfg=run_cfg,
-    )
-
-    bench.report.append(res.describe_sweep())
-    bench.report.append(
-        res.to_heatmap(tp.param.score, tap_var=tp.param.video, tap_container=pn.pane.Video)
     )
 
     return bench
@@ -119,6 +104,7 @@ def example_video_tap(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
+    run_cfg_ex.use_sample_cache = True
 
     # example_video(run_cfg_ex).report.show()
     example_video_tap(run_cfg_ex).report.show()
