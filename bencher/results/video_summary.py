@@ -73,5 +73,5 @@ class VideoSummaryResult(BenchResultBase):
         vr.write_png()
         if video_controls is None:
             video_controls = VideoControls()
-        vid = video_controls.video_container(vr.filename)
+        vid = video_controls.video_container(vr.filename, **kwargs)
         return vid

@@ -1,5 +1,4 @@
 from typing import Optional, Any
-from pathlib import Path
 from functools import partial
 import panel as pn
 import xarray as xr
@@ -7,8 +6,6 @@ from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.results.video_result import VideoControls
 from bencher.variables.results import (
-    ResultVideo,
-    ResultContainer,
     ResultReference,
     PANEL_TYPES,
 )
@@ -18,7 +15,8 @@ class PanelResult(BenchResultBase):
     def to_video(self, result_var: Parameter = None, **kwargs):
         vc = VideoControls()
         return pn.Column(
-            vc.video_controls(), self.to_panes(result_var=result_var, container=vc.video_container)
+            vc.video_controls(),
+            self.to_panes(result_var=result_var, container=vc.video_container, **kwargs),
         )
 
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
