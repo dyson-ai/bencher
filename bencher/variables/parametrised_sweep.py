@@ -125,7 +125,7 @@ class ParametrizedSweep(Parameterized):
         return item.name != p_name
 
     @classmethod
-    def get_input_defaults(cls, override_defaults=None) -> List[Tuple[Parameter, Any]]:
+    def get_input_defaults(cls, override_defaults: List = None) -> List[Tuple[Parameter, Any]]:
         inp = cls.get_inputs_only()
         if override_defaults is None:
             override_defaults = []

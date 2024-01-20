@@ -1,4 +1,5 @@
-from typing import Optional
+from bencher.utils import params_to_str
+from typing import Optional, List
 import panel as pn
 import xarray as xr
 from param import Parameter
@@ -11,10 +12,17 @@ from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
+import itertools
 
 
 class VideoSummaryResult(BenchResultBase):
-    def to_video_summary(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_video_summary(
+        self,
+        result_var: Parameter = None,
+        input_order: List[str] = None,
+        reverse: bool = True,
+        **kwargs,
+    ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
@@ -29,23 +37,41 @@ class VideoSummaryResult(BenchResultBase):
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, ResultImage):
-                    row.append(self.to_video_summary_ds(ds, rv, **kwargs))
+                    row.append(self.to_video_summary_ds(ds, rv, input_order, reverse, **kwargs))
             return row
         return matches_res.to_panel()
 
-    def to_video_summary_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
+    def to_video_summary_ds(
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        input_order: List[str] = None,
+        reverse: bool = True,
+        **kwargs,
+    ):
         vr = VideoWriter()
         da = dataset[result_var.name]
-        df = da.to_dataframe()
-        names = list(da.dims)
-        for index, row in df.iterrows():
+
+        if input_order is None:
+            input_order = list(da.dims)
+        else:
+            input_order = params_to_str(input_order)
+        if reverse:
+            input_order = list(reversed(input_order))
+
+        inputs_produc = [da.coords[i].values for i in input_order]
+
+        for index in itertools.product(*inputs_produc):
+            lookup = dict(zip(input_order, index))
+            val = da.loc[lookup].item()
             index = listify(index)
             for i in range(len(index)):
                 if isinstance(index[i], (int, float)):
                     index[i] = FormatFloat()(index[i])
-            label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(names, index)))
-            vr.append_png(row.values[0], label)
+            label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
+            vr.append_png(val, label)
         vr.write_png()
         vid = pn.pane.Video(vr.filename, loop=True, **kwargs)
         vid.paused = False
+        # return pn.pane(pn.Markdown() vid
         return vid
