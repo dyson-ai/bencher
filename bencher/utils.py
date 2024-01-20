@@ -8,7 +8,7 @@ from colorsys import hsv_to_rgb
 from pathlib import Path
 from uuid import uuid4
 from functools import partial
-from typing import Callable, Any,List
+from typing import Callable, Any, List
 import param
 
 
@@ -164,5 +164,5 @@ def get_name(var):
     return var
 
 
-def params_to_str( param_list: List[param.Parameter]):
+def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]

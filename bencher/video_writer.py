@@ -44,7 +44,7 @@ class VideoWriter:
         if frame_time is None:
             fps = len(self.pngs) / target_duration
             fps = max(fps, 1)  # never slower that 1 seconds per frame
-            fps = min(fps,30)
+            fps = min(fps, 30)
         else:
             fps = 1.0 / frame_time
 

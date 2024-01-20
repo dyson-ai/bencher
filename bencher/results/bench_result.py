@@ -9,6 +9,7 @@ from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.utils import listify
 
+
 class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
