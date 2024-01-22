@@ -12,7 +12,7 @@ def polygon_points(radius: float, sides: int):
 
 
 class BenchPolygons(bch.ParametrizedSweep):
-    sides = bch.IntSweep(default=3, bounds=(3,7 ))
+    sides = bch.IntSweep(default=3, bounds=(3, 7))
     radius = bch.FloatSweep(default=1, bounds=(0.2, 1))
     linewidth = bch.FloatSweep(default=1, bounds=(1, 10))
     linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
@@ -113,22 +113,18 @@ if __name__ == "__main__":
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        res = bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=False)
-        bench.report.append(res.to_video_summary())
-        bench.report.append(res.to_video_summary(reverse=False))
+        bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=True)
         return bench
 
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        res_list = bench.sweep_sequential(input_vars=["radius", "sides","linewidth", "color"], group_size=3)
+        res_list = bench.sweep_sequential(
+            input_vars=["radius", "sides", "linewidth", "color"], group_size=3
+        )
         for r in res_list:
-            bench.report.append(r.to_title())
             bench.report.append(r.to_video_summary())
-
-        # bench.report.append(res.to_video_summary())
-        # bench.report.append(res.to_video_summary(reverse=False))
         return bench
 
     # def example_image_pairs()
@@ -137,7 +133,7 @@ if __name__ == "__main__":
     ex_run_cfg.use_sample_cache = True
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
-    ex_run_cfg.level=6
+    ex_run_cfg.level = 3
     # example_image_vid(ex_run_cfg).report.show()
     example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

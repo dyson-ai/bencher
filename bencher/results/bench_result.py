@@ -9,6 +9,7 @@ from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.utils import listify
 
+
 class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
 
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
@@ -27,8 +28,8 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
             HoloviewResult.to_line,
             HoloviewResult.to_heatmap,
             PlotlyResult.to_volume,
-            PanelResult.to_video,
-            # PanelResult.to_panes,
+            # PanelResult.to_video,
+            PanelResult.to_panes,
         ]
 
     @staticmethod
@@ -43,6 +44,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
     ) -> List[pn.panel]:
         self.plt_cnt_cfg.print_debug = False
         plot_list = listify(plot_list)
+        remove_plots = listify(remove_plots)
 
         if plot_list is None:
             plot_list = BenchResult.default_plot_callbacks()
