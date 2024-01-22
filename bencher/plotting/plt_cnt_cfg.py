@@ -62,8 +62,6 @@ class PltCntCfg(param.Parameterized):
         for rv in bench_cfg.result_vars:
             if isinstance(rv, PANEL_TYPES):
                 plt_cnt_cfg.panel_vars.append(rv)
-            if isinstance(rv, ResultVideo):
-                plt_cnt_cfg.panel_vars.append(rv)
 
         plt_cnt_cfg.float_cnt = len(plt_cnt_cfg.float_vars)
         plt_cnt_cfg.cat_cnt = len(plt_cnt_cfg.cat_vars)
