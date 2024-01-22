@@ -19,7 +19,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter = None,
         input_order: List[str] = None,
         reverse: bool = True,
-        result_types = (ResultImage ),
+        result_types=(ResultImage,),
         **kwargs,
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
