@@ -5,7 +5,7 @@ import panel as pn
 import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.results import ResultImage, ResultVideo
+from bencher.variables.results import ResultImage
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
