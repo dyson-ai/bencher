@@ -76,10 +76,10 @@ class VideoWriter:
 
         if len(self.image_files) > 0:
             clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
-            clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
+            clip.write_videofile(self.filename, bitrate=f"{bitrate}k")
         if len(self.video_files) > 0:
             clip = concatenate_videoclips([VideoFileClip(f) for f in self.video_files])
-            clip.write_videofile(self.filename, logger=None)
+            clip.write_videofile(self.filename)
             # clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
 
 
