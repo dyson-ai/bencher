@@ -101,6 +101,12 @@
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
+			"label": "first time install",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"
@@ -129,7 +135,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		},		
+		},
 	],
 	"inputs": [
 		{
