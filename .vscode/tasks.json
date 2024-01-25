@@ -8,13 +8,13 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
-			"label": "autoformat and commit",
+			"label": "autoformat, commit and push",
 			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
 			"type": "shell",
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true"
+			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true && git push"
 		},
 		{
 			"label": "pylint",
@@ -55,14 +55,13 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "check CI and commit",
+			"label": "check CI, commit and push",
 			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
 			"type": "shell",
 			"dependsOn": [
 				"git pull origin main",
 				"check CI",
-				"autoformat and commit",
-				"git push"
+				"autoformat, commit and push",
 			],
 			"dependsOrder": "sequence",
 		},
@@ -101,6 +100,12 @@
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
+			"label": "first time install",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
+		},
+		{
 			"label": "flit install",
 			"type": "shell",
 			"command": "flit install --symlink"
@@ -129,7 +134,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		},		
+		},
 	],
 	"inputs": [
 		{
