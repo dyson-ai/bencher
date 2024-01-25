@@ -8,13 +8,13 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
-			"label": "autoformat and commit",
+			"label": "autoformat, commit and push",
 			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
 			"type": "shell",
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true"
+			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true && git push"
 		},
 		{
 			"label": "pylint",
@@ -61,8 +61,7 @@
 			"dependsOn": [
 				"git pull origin main",
 				"check CI",
-				"autoformat and commit",
-				"git push"
+				"autoformat, commit and push",
 			],
 			"dependsOrder": "sequence",
 		},
