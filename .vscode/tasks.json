@@ -8,13 +8,13 @@
 			"command": "ruff . --fix && black ."
 		},
 		{
-			"label": "autoformat and commit",
+			"label": "autoformat, commit and push",
 			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
 			"type": "shell",
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true"
+			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true && git push"
 		},
 		{
 			"label": "pylint",
@@ -55,14 +55,13 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "check CI and commit",
+			"label": "check CI, commit and push",
 			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
 			"type": "shell",
 			"dependsOn": [
 				"git pull origin main",
 				"check CI",
-				"autoformat and commit",
-				"git push"
+				"autoformat, commit and push",
 			],
 			"dependsOrder": "sequence",
 		},
@@ -89,13 +88,19 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "pull updates from template repo",
+			"label": "update from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
-			"command": "git config --global pull.rebase false; git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'feat: pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
+			"command": "git config --global pull.rebase false; git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main && git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'feat: pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
 			"label": "rename template project name",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
+		},
+		{
+			"label": "first time install",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
@@ -129,7 +134,7 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
-		},		
+		},
 	],
 	"inputs": [
 		{
