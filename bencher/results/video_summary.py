@@ -5,7 +5,7 @@ import panel as pn
 import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.results import ResultImage, ResultVideo
+from bencher.variables.results import ResultImage
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
@@ -19,6 +19,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter = None,
         input_order: List[str] = None,
         reverse: bool = True,
+        result_types=(ResultImage,),
         **kwargs,
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
@@ -35,7 +36,7 @@ class VideoSummaryResult(BenchResultBase):
             ds = self.to_dataset(ReduceType.SQUEEZE)
             row = pn.Row()
             for rv in self.get_results_var_list(result_var):
-                if isinstance(rv, (ResultImage, ResultVideo)):
+                if isinstance(rv, result_types):
                     row.append(self.to_video_summary_ds(ds, rv, input_order, reverse, **kwargs))
             return row
         return matches_res.to_panel()
