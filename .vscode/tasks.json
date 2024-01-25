@@ -111,6 +111,25 @@
 			"command": "flit publish"
 		},
 		{
+			"label": "setup: host",
+			"type": "shell",
+			"command": "./scripts/setup_host.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			  }
+		},
+		// {
+		// 	"label": "setup: host",
+		// 	"type": "shell",
+		// 	"command": "pip install rocker;"
+		// },
+		{
+			"label": "launch container",
+			"type": "shell",
+			"command": "rocker --x11 --user --home --pull --name mycont ubuntu:22.04"
+		},
+		{
 			"label": "set <cfg> from active file; sa",
 			"type": "shell",
 			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
