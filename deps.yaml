@@ -1,0 +1,8 @@
+apt_base:
+  - git
+  - git-lfs
+  - python3-pip
+
+pip_base:
+  - flit
+  - pip #updates to latest pip
