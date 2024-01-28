@@ -1,4 +1,5 @@
 """Example of how to perform a parameter sweep for categorical variables"""
+
 import bencher as bch
 
 

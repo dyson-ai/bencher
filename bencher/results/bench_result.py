@@ -11,7 +11,6 @@ from bencher.utils import listify
 
 
 class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
-
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
