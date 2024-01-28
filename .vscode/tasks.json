@@ -114,21 +114,7 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
-		},
-		{
-			"label": "setup: host",
-			"type": "shell",
-			"command": "./scripts/setup_host.sh",
-			"presentation": {
-				"reveal": "always",
-				"panel": "new"
-			  }
-		},
-		// {
-		// 	"label": "setup: host",
-		// 	"type": "shell",
-		// 	"command": "pip install rocker;"
-		// },
+		},		
 		{
 			"label": "launch container",
 			"type": "shell",
@@ -153,6 +139,22 @@
 				"kind": "build",
 				"isDefault": "True"
 			}
+		},
+		{
+			"label": "setup: host",
+			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
+			"type": "shell",
+			"command": "./scripts/setup_host.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			  }
+		},
+		{
+			"label": "launch container",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
+			"type": "shell",
+			"command": "scripts/launch_vscode.sh"
 		},
 	],
 	"inputs": [
