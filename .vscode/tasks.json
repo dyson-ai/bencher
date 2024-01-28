@@ -2,6 +2,26 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "set <cfg> from active file; sa",
+			"type": "shell",
+			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "run <cfg>",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		},
+		{
 			"label": "autoformat",
 			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
@@ -94,16 +114,21 @@
 			"command": "git config --global pull.rebase false; git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main && git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'feat: pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
 		},
 		{
-			"label": "rename template project name",
+			"label": "rename template project name and commit",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
-			"command": "scripts/rename_project.sh ${input:new_project_name}"
+			"command": "scripts/rename_project.sh ${input:new_project_name}; git commit -a -m 'rename project'"
 		},
 		{
-			"label": "first time install",
-			"detail": "Replaces all instances of the template project name with a new name. ",
+			"label": "first time setup of project",
+			"detail": "Pulls updates from the template repo and replaces all instances of the template project name with a new name.",
 			"type": "shell",
-			"command": "scripts/rename_project.sh ${input:new_project_name}"
+			"dependsOn": [
+				"update from template repo",
+				"rename template project name",
+				"update from template repo",				
+			],
+			"dependsOrder": "sequence",
 		},
 		{
 			"label": "flit install",
@@ -114,26 +139,22 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
+		},				
+		{
+			"label": "setup: host",
+			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
+			"type": "shell",
+			"command": "./scripts/setup_host.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			  }
 		},
 		{
-			"label": "set <cfg> from active file; sa",
+			"label": "launch container",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
 			"type": "shell",
-			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
-			"problemMatcher": [],
-			"group": {
-				"kind": "test",
-				"isDefault": "True"
-			}
-		},
-		{
-			"label": "run <cfg>",
-			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": "True"
-			}
+			"command": "scripts/launch_vscode.sh"
 		},
 	],
 	"inputs": [
