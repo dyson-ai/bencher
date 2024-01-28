@@ -1,4 +1,5 @@
 """A server for display plots of benchmark results"""
+
 import logging
 import os
 from typing import List, Tuple

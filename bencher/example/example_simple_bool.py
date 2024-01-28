@@ -1,4 +1,5 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
+
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
