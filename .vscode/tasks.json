@@ -100,9 +100,12 @@
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
-			"label": "first time install",
-			"detail": "Replaces all instances of the template project name with a new name. ",
+			"label": "first time setup of project",
+			"detail": "Pulls updates from the template repo and replaces all instances of the template project name with a new name.",
 			"type": "shell",
+			"dependsOn": [
+				"update from template repo",
+			],
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
