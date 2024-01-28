@@ -6,6 +6,3 @@ apt_base:
 pip_base:
   - flit
   - pip #updates to latest pip
-
-pip:
-  - pip
