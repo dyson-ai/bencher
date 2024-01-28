@@ -2,6 +2,26 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "set <cfg> from active file; sa",
+			"type": "shell",
+			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "run <cfg>",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		},
+		{
 			"label": "autoformat",
 			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
@@ -119,32 +139,7 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
-		},		
-		{
-			"label": "launch container",
-			"type": "shell",
-			"command": "rocker --x11 --user --home --pull --name mycont ubuntu:22.04"
-		},
-		{
-			"label": "set <cfg> from active file; sa",
-			"type": "shell",
-			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
-			"problemMatcher": [],
-			"group": {
-				"kind": "test",
-				"isDefault": "True"
-			}
-		},
-		{
-			"label": "run <cfg>",
-			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": "True"
-			}
-		},
+		},				
 		{
 			"label": "setup: host",
 			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
