@@ -70,9 +70,12 @@ class VideoSummaryResult(BenchResultBase):
                 if isinstance(index[i], (int, float)):
                     index[i] = FormatFloat()(index[i])
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
-            vr.append_file(val, label)
-        vr.write_png()
-        if video_controls is None:
-            video_controls = VideoControls()
-        vid = video_controls.video_container(vr.filename, **kwargs)
-        return vid
+            if val is not None:
+                vr.append_file(val, label)
+        fn =vr.write_png()
+        if fn is not None:
+            if video_controls is None:
+                video_controls = VideoControls()
+            vid = video_controls.video_container(fn, **kwargs)
+            return vid
+        return None
