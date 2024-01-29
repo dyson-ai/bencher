@@ -132,8 +132,6 @@ class ParametrizedSweep(Parameterized):
         if override_defaults is None:
             override_defaults = []
         assert isinstance(override_defaults, list)
-        for k, v in kwargs:
-            override_defaults.append()
 
         for p in override_defaults:
             inp = filter(partial(ParametrizedSweep.filter_fn, p_name=p[0].name), inp)

@@ -83,7 +83,7 @@ class VideoWriter:
             clip.write_videofile(self.filename)
             return self.filename
         return None
-            # clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
+        # clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):
