@@ -66,19 +66,31 @@ class VideoWriter:
         else:
             self.image_files.append(filepath)
 
-    def write_grid(self, row_len=None):
-        from more_itertools import chunked
-        cols = []
-        for chunk in chunked(self.image_files, row_len):
-            row = []
-            for i in chunk:
-                row.append(ImageClip(i, duration=0.1))
-            cols.append(row)
-        print(cols)
-        vid_array = clips_array(cols)
-
-        vid_array.write_videofile(self.filename, fps=30)
+    def write_grid2d(self, ndimage2d):
+        img_clip2d = []
+        print(ndimage2d.shape)
+        if len(ndimage2d.shape)==2:
+            ndimage2d = [ndimage2d]
+        for ndimage in ndimage2d:
+            img_clip = []
+            for img in ndimage:
+                paths = [Path(i).absolute().as_posix() for i in img]
+                img_clip.append(self.to_images_sequence(paths))
+            img_clip2d.append(img_clip)
+        vid_array = clips_array(img_clip2d)
+        self.write_video_raw(vid_array)
         return self.filename
+
+    def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None):
+        if isinstance(images, list) and len(images) > 0:
+            if frame_time is None:
+                fps = len(images) / target_duration
+                fps = max(fps, 1)  # never slower that 1 seconds per frame
+                fps = min(fps, 30)
+            else:
+                fps = 1.0 / frame_time
+            return ImageSequenceClip(images, fps=fps, with_mask=False)
+        return None
 
     def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
         if frame_time is None:
@@ -88,16 +100,22 @@ class VideoWriter:
         else:
             fps = 1.0 / frame_time
 
+        clip = None
         if len(self.image_files) > 0:
-            clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
-            clip.write_videofile(self.filename, bitrate=f"{bitrate}k")
-            return self.filename
+            clip = self.to_images_sequence(self.image_files)
         if len(self.video_files) > 0:
             clip = concatenate_videoclips([VideoFileClip(f) for f in self.video_files])
+        if clip is not None:
             clip.write_videofile(self.filename)
             return self.filename
         return None
-        # clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
+
+    def write_video_raw(
+        self,
+        file,
+        bitrate: int = 1500,
+    ) -> None:
+        file.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k")
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):

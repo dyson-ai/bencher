@@ -118,26 +118,60 @@ class VideoSummaryResult(BenchResultBase):
         **kwargs,
     ):
         vr = VideoWriter()
-        da = dataset[result_var.name]
 
-        if input_order is None:
-            input_order = list(da.dims)
-        else:
-            input_order = params_to_str(input_order)
-        if reverse:
-            input_order = list(reversed(input_order))
+        img_array = dataset[result_var.name].to_numpy()
 
-        inputs_produc = [da.coords[i].values for i in input_order]
+        fn = vr.write_grid2d(img_array)
 
-        for index in itertools.product(*inputs_produc):
-            lookup = dict(zip(input_order, index))
-            val = da.loc[lookup].item()
-            if val is not None:
-                vr.append_file(val)
-        fn = vr.write_grid(len(inputs_produc[0]))
         if fn is not None:
             if video_controls is None:
                 video_controls = VideoControls()
             vid = video_controls.video_container(fn, **kwargs)
             return vid
         return None
+
+    def _to_video_ds(
+        self,
+        dataset: xr.Dataset,
+        plot_callback: callable = None,
+        target_dimension=0,
+        result_var=None,
+        **kwargs,
+    ) -> pn.panel:
+        num_dims = len(dataset.sizes)
+        dims = list(d for d in dataset.sizes)
+
+        print("np")
+        print(dataset[result_var.name].to_numpy())
+
+        # exit()
+
+        # plot_callback = lambda x:x
+
+        time_dim_delta = 0
+        if self.bench_cfg.over_time:
+            time_dim_delta = 0
+
+        if num_dims > (target_dimension + time_dim_delta) and num_dims != 0:
+            dim_sel = dims[-1]
+            outer_container = []
+            for i in range(dataset.sizes[dim_sel]):
+                sliced = dataset.isel({dim_sel: i})
+
+                panes = self._to_video_ds(
+                    sliced,
+                    plot_callback=plot_callback,
+                    target_dimension=target_dimension,
+                    horizontal=len(sliced.sizes) <= target_dimension + 1,
+                    result_var=result_var,
+                )
+                width = num_dims - target_dimension
+
+                outer_container.append(panes)
+                # outer_container.append(pn.Row(inner_container, align="center"))
+            for c in outer_container:
+                c[0].width = max_len * 7
+        else:
+            return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
+
+        return outer_container
