@@ -82,6 +82,11 @@ class TestSweepBase(unittest.TestCase):
         class_defaults = AllSweepVars.get_input_defaults(
             [AllSweepVars.param.var_float.with_const(3)]
         )
+
+        class_defaults_over = AllSweepVars.get_input_defaults_override(var_float=3)
+
+        self.assertEqual(class_defaults, class_defaults_over)
+
         self.assertEqual(class_defaults[0][1], 3)
 
         # check that the defaults have not been modified
