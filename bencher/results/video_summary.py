@@ -84,8 +84,6 @@ class VideoSummaryResult(BenchResultBase):
     def to_video_grid(
         self,
         result_var: Parameter = None,
-        input_order: List[str] = None,
-        reverse: bool = True,
         result_types=(ResultImage,),
         **kwargs,
     ) -> Optional[pn.panel]:
