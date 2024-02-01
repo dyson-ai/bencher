@@ -2,19 +2,39 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "set <cfg> from active file; sa",
+			"type": "shell",
+			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "run <cfg>",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		},
+		{
 			"label": "autoformat",
 			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
 			"command": "ruff . --fix && black ."
 		},
 		{
-			"label": "autoformat and commit",
+			"label": "autoformat, commit and push",
 			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
 			"type": "shell",
 			"dependsOn": [
 				"autoformat"
 			],
-			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true"
+			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true && git push"
 		},
 		{
 			"label": "pylint",
@@ -55,14 +75,13 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "check CI and commit",
+			"label": "check CI, commit and push",
 			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
 			"type": "shell",
 			"dependsOn": [
 				"git pull origin main",
 				"check CI",
-				"autoformat and commit",
-				"git push"
+				"autoformat, commit and push",
 			],
 			"dependsOrder": "sequence",
 		},
@@ -89,16 +108,33 @@
 			"dependsOrder": "sequence",
 		},
 		{
-			"label": "pull updates from template repo",
+			"label": "update from template repo",
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
-			"command": "git config --global pull.rebase false; git remote add template https://github.com/blooop/python_template.git; git fetch --all;git checkout main; git pull origin main; git checkout -B feature/update_from_template; git pull; git merge template/main --allow-unrelated-histories -m 'feat: pull changes from remote template'; git remote remove template; git push origin feature/update_from_template"
+			"command": "scripts/update_from_template.sh"
 		},
 		{
-			"label": "rename template project name",
+			"label": "update from template repo keep ours",
+			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
+			"type": "shell",
+			"command": "scripts/update_from_template_ours.sh"
+		},
+		{
+			"label": "rename template project name and commit",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
-			"command": "scripts/rename_project.sh ${input:new_project_name}"
+			"command": "scripts/rename_project.sh ${input:new_project_name}; git commit -a -m 'rename project'"
+		},
+		{
+			"label": "first time setup of project",
+			"detail": "Pulls updates from the template repo and replaces all instances of the template project name with a new name.",
+			"type": "shell",
+			"dependsOn": [
+				"update from template repo",
+				"rename template project name and commit",
+				"update from template repo keep ours"
+			],
+			"dependsOrder": "sequence",
 		},
 		{
 			"label": "flit install",
@@ -109,27 +145,23 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
+		},				
+		{
+			"label": "setup: host",
+			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
+			"type": "shell",
+			"command": "./scripts/setup_host.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			  }
 		},
 		{
-			"label": "set <cfg> from active file; sa",
+			"label": "launch container",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
 			"type": "shell",
-			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
-			"problemMatcher": [],
-			"group": {
-				"kind": "test",
-				"isDefault": "True"
-			}
+			"command": "scripts/launch_vscode.sh"
 		},
-		{
-			"label": "run <cfg>",
-			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
-			"problemMatcher": [],
-			"group": {
-				"kind": "build",
-				"isDefault": "True"
-			}
-		},		
 	],
 	"inputs": [
 		{

@@ -113,7 +113,14 @@ if __name__ == "__main__":
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=True)
+        # res =bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=False)
+        # res =bench.plot_sweep(input_vars=["sides", "radius",  "linewidth","color"], plot=False)
+
+        res = bench.plot_sweep(input_vars=["sides", "radius", "linewidth"], plot=True)
+        bench.report.append(res.to_video_grid())
+
+        res = bench.plot_sweep(input_vars=["sides", "radius"], plot=True)
+        bench.report.append(res.to_video_grid())
         return bench
 
     def example_image_vid_sequential(
@@ -124,7 +131,9 @@ if __name__ == "__main__":
             input_vars=["radius", "sides", "linewidth", "color"], group_size=3
         )
         for r in res_list:
-            bench.report.append(r.to_video_summary())
+            # bench.report.append(r.to_video_summary())
+            bench.report.append(r.to_video_grid())
+
         return bench
 
     # def example_image_pairs()
@@ -134,6 +143,6 @@ if __name__ == "__main__":
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 3
-    # example_image_vid(ex_run_cfg).report.show()
-    example_image_vid_sequential(ex_run_cfg).report.show()
+    example_image_vid(ex_run_cfg).report.show()
+    # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

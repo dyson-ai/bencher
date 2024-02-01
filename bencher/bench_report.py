@@ -3,7 +3,6 @@ from typing import Callable
 import os
 import panel as pn
 from pathlib import Path
-import shutil
 import tempfile
 
 from threading import Thread
