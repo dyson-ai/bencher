@@ -69,7 +69,7 @@ class VideoWriter:
     def write_grid2d(self, ndimage2d):
         img_clip2d = []
         print(ndimage2d.shape)
-        if len(ndimage2d.shape)==2:
+        if len(ndimage2d.shape) == 2:
             ndimage2d = [ndimage2d]
         for ndimage in ndimage2d:
             img_clip = []
@@ -92,14 +92,7 @@ class VideoWriter:
             return ImageSequenceClip(images, fps=fps, with_mask=False)
         return None
 
-    def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
-        if frame_time is None:
-            fps = len(self.image_files) / target_duration
-            fps = max(fps, 1)  # never slower that 1 seconds per frame
-            fps = min(fps, 30)
-        else:
-            fps = 1.0 / frame_time
-
+    def write_png(self):
         clip = None
         if len(self.image_files) > 0:
             clip = self.to_images_sequence(self.image_files)

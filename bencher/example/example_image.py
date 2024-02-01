@@ -90,11 +90,10 @@ if __name__ == "__main__":
         # res =bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=False)
         # res =bench.plot_sweep(input_vars=["sides", "radius",  "linewidth","color"], plot=False)
 
-        res =bench.plot_sweep(input_vars=["sides", "radius","linewidth"], plot=True)
+        res = bench.plot_sweep(input_vars=["sides", "radius", "linewidth"], plot=True)
         bench.report.append(res.to_video_grid())
 
-
-        res =bench.plot_sweep(input_vars=["sides", "radius"], plot=True)
+        res = bench.plot_sweep(input_vars=["sides", "radius"], plot=True)
         bench.report.append(res.to_video_grid())
         return bench
 
