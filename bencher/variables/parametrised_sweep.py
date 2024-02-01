@@ -162,7 +162,7 @@ class ParametrizedSweep(Parameterized):
 
     @classmethod
     def get_inputs_as_dims(
-        self, compute_values=False, remove_dims: str | List[str] = None
+        self, compute_values=False, remove_dims: str | List[str] = None 
     ) -> List[hv.Dimension]:
         inputs = self.get_inputs_only()
 
