@@ -140,7 +140,7 @@ class ParametrizedSweep(Parameterized):
         return override_defaults + [[i, i.default] for i in inp]
 
     @classmethod
-    def get_input_defaults_override(cls, **kwargs) -> List[Tuple[Parameter, Any]]:
+    def get_input_defaults_override(cls, **kwargs) -> dict[str, Any]:
         inp = cls.get_inputs_only()
         defaults = {}
         for i in inp:
