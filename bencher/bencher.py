@@ -799,3 +799,7 @@ class Bench(BenchPlotServer):
 
     def get_result(self, index: int = -1) -> BenchResult:
         return self.results[index]
+
+    def publish(self, remote_callback: Callable) -> str:
+        branch_name = f"{self.bench_name}_{self.run_cfg.run_tag}"
+        return self.report.publish(remote_callback, branch_name=branch_name)

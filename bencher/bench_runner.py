@@ -103,7 +103,7 @@ class BenchRunner:
         for r in range(1, repeats + 1):
             for lvl in range(min_level, max_level + 1):
                 if grouped:
-                    report_level = BenchReport(self.name)
+                    report_level = BenchReport(f"{self.name}_{run_cfg.run_tag}")
 
                 for bch_fn in self.bench_fns:
                     run_lvl = deepcopy(run_cfg)

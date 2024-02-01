@@ -3,7 +3,8 @@ from typing import Callable
 import os
 import panel as pn
 from pathlib import Path
-import shutil
+import tempfile
+
 from threading import Thread
 
 from bencher.results.bench_result import BenchResult
@@ -137,23 +138,22 @@ class BenchReport(BenchPlotServer):
 
         remote, publish_url = remote_callback(branch_name)
 
-        directory = "tmpgit"
-        report_path = self.save(directory, filename="index.html", in_html_folder=False)
-        logging.info(f"created report at: {report_path.absolute()}")
+        with tempfile.TemporaryDirectory() as td:
+            directory = td
+            report_path = self.save(directory, filename="index.html", in_html_folder=False)
+            logging.info(f"created report at: {report_path.absolute()}")
 
-        cd_dir = f"cd {directory} &&"
+            cd_dir = f"cd {directory} &&"
 
-        os.system(f"{cd_dir} git init")
-        os.system(f"{cd_dir} git checkout -b {branch_name}")
-        os.system(f"{cd_dir} git add index.html")
-        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
-        os.system(f"{cd_dir} git remote add origin {remote}")
-        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+            os.system(f"{cd_dir} git init")
+            os.system(f"{cd_dir} git checkout -b {branch_name}")
+            os.system(f"{cd_dir} git add index.html")
+            os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+            os.system(f"{cd_dir} git remote add origin {remote}")
+            os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
 
         logging.info("Published report @")
         logging.info(publish_url)
-
-        shutil.rmtree(directory)
 
         return publish_url
 
