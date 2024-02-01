@@ -3,6 +3,7 @@ from typing import Optional, List
 import itertools
 import panel as pn
 import xarray as xr
+import numpy as np
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultImage
@@ -91,12 +92,11 @@ class VideoSummaryResult(BenchResultBase):
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             panel_range=VarRange(1, None),
+            input_range=VarRange(2, 3),
         )
         matches_res = plot_filter.matches_result(
-            self.plt_cnt_cfg, callable_name(self.to_video_summary_ds)
+            self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
         )
-
-        # video_controls = VideoControls()
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
             row = pn.Row()
@@ -110,12 +110,16 @@ class VideoSummaryResult(BenchResultBase):
         self,
         dataset: xr.Dataset,
         result_var: Parameter,
+        reverse=True,
         video_controls: VideoControls = None,
         **kwargs,
     ):
         vr = VideoWriter()
 
         img_array = dataset[result_var.name].to_numpy()
+        if reverse:
+            reversed_axes = list(reversed(range(len(img_array.shape))))
+            img_array = np.transpose(img_array, reversed_axes)
 
         fn = vr.write_grid2d(img_array)
 
