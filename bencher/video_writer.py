@@ -66,6 +66,20 @@ class VideoWriter:
         else:
             self.image_files.append(filepath)
 
+    def write_grid(self, row_len=None):
+        from more_itertools import chunked
+        cols = []
+        for chunk in chunked(self.image_files, row_len):
+            row = []
+            for i in chunk:
+                row.append(ImageClip(i, duration=0.1))
+            cols.append(row)
+        print(cols)
+        vid_array = clips_array(cols)
+
+        vid_array.write_videofile(self.filename, fps=30)
+        return self.filename
+
     def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
         if frame_time is None:
             fps = len(self.image_files) / target_duration
