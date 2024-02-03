@@ -168,7 +168,7 @@ class Bench(BenchPlotServer):
         # self.bench_cfg = BenchCfg()
 
         # Maybe put this in SweepCfg
-        # self.input_vars = []
+        self.input_vars = None
         self.result_vars = None
         self.const_vars = None
 
@@ -270,18 +270,27 @@ class Bench(BenchPlotServer):
                 logging.info(
                     "No input variables passed, using all param variables in bench class as inputs"
                 )
-                input_vars = self.worker_class_instance.get_inputs_only()
+                if self.input_vars is None:
+                    input_vars = self.worker_class_instance.get_inputs_only()
+                else:
+                    input_vars = self.input_vars
                 for i in input_vars:
                     logging.info(f"input var: {i.name}")
             if result_vars is None:
                 logging.info(
                     "No results variables passed, using all result variables in bench class:"
                 )
-                result_vars = self.worker_class_instance.get_results_only()
+                if self.result_vars is None:
+                    result_vars = self.worker_class_instance.get_results_only()
+                else:
+                    result_vars = self.result_vars
                 for r in result_vars:
                     logging.info(f"result var: {r.name}")
             if const_vars is None:
-                const_vars = self.worker_class_instance.get_input_defaults()
+                if self.const_vars is None:
+                    const_vars = self.worker_class_instance.get_input_defaults()
+                else:
+                    const_vars = self.const_vars
         else:
             if input_vars is None:
                 input_vars = []
