@@ -152,7 +152,6 @@ class VideoSummaryResult(BenchResultBase):
         dataset: xr.Dataset,
         plot_callback: callable = None,
         target_dimension=0,
-        target_render_dimension=1,
         horizontal=False,
         result_var=None,
         final=False,
@@ -182,7 +181,6 @@ class VideoSummaryResult(BenchResultBase):
                 label_val = sliced.coords[selected_dim].values.item()
                 inner_container = ComposableContainerVideo(
                     outer_container.name,
-                    width=num_dims - target_dimension,
                     var_name=selected_dim,
                     var_value=label_val,
                     horizontal=horizontal,
@@ -202,5 +200,4 @@ class VideoSummaryResult(BenchResultBase):
                 rendered = inner_container.render()
                 outer_container.append(rendered)
             return outer_container.render(concatenate=final)
-        else:
-            return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
+        return plot_callback(dataset=dataset, result_var=result_var, **kwargs)

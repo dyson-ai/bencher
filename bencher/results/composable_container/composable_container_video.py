@@ -17,15 +17,14 @@ class ComposableContainerVideo(ComposableContainerBase):
         name=None,
         var_name=None,
         var_value=None,
-        width=None,
         background_col: tuple[3] = (255, 255, 255),
         horizontal: bool = True,
-        **kwarg,
     ) -> None:
         super().__init__(horizontal)
         self.name = name
         self.container = []
         self.background_col = background_col
+        # self.width = width
 
         self.label = self.label_formatter(var_name, var_value)
         if self.label is not None:
@@ -39,7 +38,6 @@ class ComposableContainerVideo(ComposableContainerBase):
                 img = VideoWriter.label_image(obj, self.label)
                 self.container.append(ImageClip(np.array(img), duration=1.0))
             else:
-
                 self.container.append(ImageClip(obj, duration=1.0))
 
     def render(self, concatenate=False) -> CompositeVideoClip:

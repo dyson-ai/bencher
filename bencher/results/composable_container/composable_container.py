@@ -31,7 +31,7 @@ class ComposableContainerBase:
     # pass
 
     # @abc.abstractmethod()
-    def append(self, obj, method: ComposeType = None):
+    def append(self, obj):
         pass
         # if method is None:
         # method = self.compose_method
