@@ -188,34 +188,6 @@ class Bench(BenchPlotServer):
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
 
-    def sweep(
-        self,
-        input_vars: List[ParametrizedSweep] = None,
-        result_vars: List[ParametrizedSweep] = None,
-        const_vars: List[ParametrizedSweep] = None,
-        time_src: datetime = None,
-        description: str = None,
-        post_description: str = None,
-        pass_repeat: bool = False,
-        tag: str = "",
-        run_cfg: BenchRunCfg = None,
-        plot: bool = False,
-    ) -> BenchResult:
-        title = "Sweeping " + " vs ".join(params_to_str(input_vars))
-        return self.plot_sweep(
-            title,
-            input_vars=input_vars,
-            result_vars=result_vars,
-            const_vars=const_vars,
-            time_src=time_src,
-            description=description,
-            post_description=post_description,
-            pass_repeat=pass_repeat,
-            tag=tag,
-            run_cfg=run_cfg,
-            plot=plot,
-        )
-
     def sweep_sequential(
         self,
         title="",
