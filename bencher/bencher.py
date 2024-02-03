@@ -165,6 +165,13 @@ class Bench(BenchPlotServer):
 
         self.cache_size = int(100e9)  # default to 100gb
 
+        # self.bench_cfg = BenchCfg()
+
+        # Maybe put this in SweepCfg
+        # self.input_vars = []
+        self.result_vars = None
+        self.const_vars = None
+
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
 
@@ -364,7 +371,13 @@ class Bench(BenchPlotServer):
             title=title,
             pass_repeat=pass_repeat,
             tag=run_cfg.run_tag + tag,
+            auto_plot=plot,
         )
+        return self.run_sweep(bench_cfg, run_cfg, time_src)
+
+    def run_sweep(
+        self, bench_cfg: BenchCfg, run_cfg: BenchRunCfg, time_src: datetime
+    ) -> BenchResult:
         print("tag", bench_cfg.tag)
 
         bench_cfg.param.update(run_cfg.param.values())
@@ -419,7 +432,7 @@ class Bench(BenchPlotServer):
 
         bench_res.post_setup()
 
-        if plot and bench_res.bench_cfg.auto_plot:
+        if bench_cfg.auto_plot:
             self.report.append_result(bench_res)
         self.results.append(bench_res)
         return bench_res
