@@ -2,10 +2,16 @@ import numpy as np
 import moviepy.video.io.ImageSequenceClip
 from pathlib import Path
 from .utils import gen_video_path, gen_image_path
+
 import moviepy
-from moviepy.editor import VideoFileClip, ImageClip, ImageSequenceClip
+from moviepy.editor import (
+    VideoFileClip,
+    ImageClip,
+    ImageSequenceClip,
+    clips_array,
+    concatenate_videoclips,
+)
 from PIL import Image, ImageDraw
-from moviepy.editor import clips_array, concatenate_videoclips
 
 
 class VideoWriter:
@@ -103,12 +109,9 @@ class VideoWriter:
             return self.filename
         return None
 
-    def write_video_raw(
-        self,
-        file,
-        bitrate: int = 1500,
-    ) -> None:
-        file.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k")
+    def write_video_raw(self, file, bitrate: int = 1500, fps: int = 30) -> None:
+        file.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
+        return self.filename
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):
