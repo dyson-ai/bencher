@@ -1,5 +1,5 @@
 import panel as pn
-
+import numpy as np
 import moviepy
 from moviepy.editor import (
     VideoFileClip,
@@ -13,6 +13,7 @@ from moviepy.editor import (
 from PIL import Image, ImageDraw
 
 from bencher.results.composable_container.composable_container import ComposableContainerBase
+from bencher.video_writer import VideoWriter
 
 
 class ComposableContainerVideo(ComposableContainerBase):
@@ -27,39 +28,35 @@ class ComposableContainerVideo(ComposableContainerBase):
         **kwarg,
     ) -> None:
         super().__init__(horizontal)
-
         self.name = name
-
-        # self.container =
-
         self.container = []
-
-        # self.container = ""
         self.background_col = background_col
 
-        # if horizontal:
-        #     self.container = pn.Column(**container_args)
-        #     align = ("center", "center")
-        # else:
-        #     self.container = pn.Row(**container_args)
-        #     align = ("end", "center")
-
-        label = self.label_formatter(var_name, var_value)
-        if label is not None:
-            self.label_len = len(label)
-        #     side = pn.pane.Markdown(label, align=align)
-        #     self.append(side)
+        self.label = self.label_formatter(var_name, var_value)
+        if self.label is not None:
+            self.label_len = len(self.label)
 
     def append(self, obj):
         if isinstance(obj, VideoClip):
             self.container.append(obj)
         else:
-            self.container.append(ImageClip(obj, duration=1.0))
+            if self.label is not None:
+                img = VideoWriter.label_image(obj, self.label)
+                self.container.append(ImageClip(np.array(img), duration=1.0))
+            else:
+              
+
+                self.container.append(ImageClip(obj, duration=1.0))
 
     def render(self, concatenate=False) -> CompositeVideoClip:
         if concatenate:
             return concatenate_videoclips(self.container)
         if self.horizontal:
+            # if self.label is not None:
+            #     width =  self.label_len*6
+            #     img = VideoWriter.create_label(self.label, width=width)
+            #     side = ImageClip(np.array(img), duration=1.0)
+            #     self.container.insert(0, side)
             clips = [self.container]
         else:
             clips = [[c] for c in self.container]

@@ -1,10 +1,14 @@
 from dataclasses import dataclass
 import abc
+from enum import Enum, auto
 
 from bencher.results.float_formatter import FormatFloat
 
 
-# @dataclass
+class ComposeType(Enum):
+    right = auto()
+    down = auto()
+    stack = auto()
 
 
 class ComposableContainerBase:
@@ -19,18 +23,20 @@ class ComposableContainerBase:
         if var_value is not None:
             return f"{var_value}"
         return None
-        
 
     def __init__(self, horizontal: bool = True) -> None:
         self.horizontal: bool = horizontal
+        self.compose_method = ComposeType.right
         self.container = None
 
     # def __init__(self) -> None:
     # pass
 
     # @abc.abstractmethod()
-    def append(self, obj):
+    def append(self, obj, method: ComposeType = None):
         pass
+        # if method is None:
+        # method = self.compose_method
 
     def get_container(self):
         return self.container

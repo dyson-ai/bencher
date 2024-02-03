@@ -36,10 +36,32 @@ class VideoWriter:
         clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
         return self.filename
 
-    def create_label(self, label, width, height=20):
+    @staticmethod
+    def create_label(label, width, height=20):
         new_img = Image.new("RGB", (width, height), (255, 255, 255))
-        ImageDraw.Draw(new_img).text((0, 0), label, (0, 0, 0))
+        # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
+        ImageDraw.Draw(new_img).text((width/2., 0), label, (0, 0, 0),anchor="mt")
+
         return new_img
+
+    @staticmethod
+    def label_image(path: Path, label, padding=20) -> Path:
+        # new_path = path.with_name(path.stem + "_labelled" + path.suffix).as_posix()
+        image = Image.open(path)
+        new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
+        new_img.paste(image, (0, padding))
+        return new_img
+        # new_img.save(new_path)
+        # return new_path
+
+    # @staticmethod
+    # def label_image(path: Path, label, padding=20) -> Path:
+    #     new_path = path.with_name(path.stem + "_labelled" + path.suffix).as_posix()
+    #     image = Image.open(path)
+    #     new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
+    #     new_img.paste(image, (0, padding))
+    #     new_img.save(new_path)
+    #     return new_path
 
     def append_file(self, filepath, label=None):
         if label is not None:

@@ -128,51 +128,23 @@ class VideoSummaryResult(BenchResultBase):
     ):
         vr = VideoWriter()
 
-        img_array = dataset[result_var.name].to_numpy()
-        if reverse:
-            reversed_axes = list(reversed(range(len(img_array.shape))))
-            img_array = np.transpose(img_array, reversed_axes)
+        # img_array = dataset[result_var.name].to_numpy()
+        # if reverse:
+        #     reversed_axes = list(reversed(range(len(img_array.shape))))
+        #     img_array = np.transpose(img_array, reversed_axes)
 
-        # print(img_array)
+        cvc = self._to_video_panes_ds(
+            dataset,
+            self.plot_cb,
+            target_dimension=0,
+            horizontal=True,
+            result_var=result_var,
+            final=True,
+            reverse=True,
+            **kwargs,
+        )
 
-        # exit()
-
-        # comp = ComposableContainerVideo(horizontal=False)
-
-        # # for i in img_array:
-        # comp.append(img_array[0])
-
-        # cvc = comp.render()
-
-        # comp2 = ComposableContainerVideo(horizontal=True)
-
-        # comp2.append(cvc)
-        # comp2.append(img_array[1])
-
-        # cvc = comp2.render()
-
-        # comp.append()
-
-        # vid_array = [ImageClip(i, duration=1.0) for i in img_array]
-        # cvc = clips_array([vid_array, vid_array])
-
-        # cvc = clips_array([[cvc, cvc]])
-        # cvc = clips_array([[cvc], [cvc]])
-        # fn=cvc.write_videofile()
-
-        # exit()
-        # fn = img_array[0]
-        # fn = vr.write_grid2d(img_array)
-        cvc = self._to_video_panes_ds(dataset, self.plot_cb, 0, False, result_var,final=True, **kwargs)
-
-        # print("CVC",cvc)
-        # cvc = clips_array(cvc)
-        # exit()
-
-        print("cvc", cvc)
-        print("cvctyupe", type(cvc))
         fn = vr.write_video_raw(cvc)
-        print("fn", fn)
 
         if fn is not None:
             if video_controls is None:
@@ -191,33 +163,29 @@ class VideoSummaryResult(BenchResultBase):
         dataset: xr.Dataset,
         plot_callback: callable = None,
         target_dimension=0,
+        target_render_dimension=1,
         horizontal=False,
         result_var=None,
         final=False,
+        reverse=False,
         **kwargs,
     ) -> pn.panel:
-        # todo, when dealing with time and repeats, add feature to allow custom order of dimension recursion
-        ##todo remove recursion
         num_dims = len(dataset.sizes)
         dims = list(d for d in dataset.sizes)
-
-        print("")
-
-        print("ENTERING")
-        # print(dataset)
-        print("target", target_dimension)
-        print("numdims", num_dims)
-        print(f"dims {dims}")
+        if reverse:
+            dims = list(reversed(dims))
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
             print(f"selected dim {selected_dim}")
-            dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
+            dim_color = int_to_col(num_dims - 2, 0.05, 1.0)
 
             outer_container = ComposableContainerVideo(
                 name=" vs ".join(dims),
-                # background_col=dim_color,
+                background_col=dim_color,
                 horizontal=horizontal,
+                # var_name=selected_dim,
+                # var_value=label_val,
             )
             max_len = 0
             for i in range(dataset.sizes[selected_dim]):
@@ -225,9 +193,9 @@ class VideoSummaryResult(BenchResultBase):
                 label_val = sliced.coords[selected_dim].values.item()
                 inner_container = ComposableContainerVideo(
                     outer_container.name,
-                    # width=num_dims - target_dimension,
-                    # var_name=selected_dim,
-                    # var_value=label_val,
+                    width=num_dims - target_dimension,
+                    var_name=selected_dim,
+                    var_value=label_val,
                     horizontal=horizontal,
                 )
                 panes = self._to_video_panes_ds(
@@ -237,20 +205,13 @@ class VideoSummaryResult(BenchResultBase):
                     horizontal=len(sliced.sizes) <= target_dimension + 1,
                     result_var=result_var,
                 )
-
-                print(f"print append inner type {type(panes)}")
                 inner_container.append(panes)
 
-                # if inner_container.label_len > max_len:
-                # max_len = inner_container.label_len
+                if inner_container.label_len > max_len:
+                    max_len = inner_container.label_len
 
                 rendered = inner_container.render()
-                print(f"print append outer type {type(rendered)}")
-
                 outer_container.append(rendered)
-
+            return outer_container.render(concatenate=final)
         else:
-            print("plot callback")
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
-        print("final render")
-        return outer_container.render(concatenate=final)
