@@ -3,7 +3,6 @@ from typing import Optional, List
 import itertools
 import panel as pn
 import xarray as xr
-import numpy as np
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultImage
@@ -12,18 +11,8 @@ from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
 from bencher.results.video_result import VideoControls
-from bencher.utils import color_tuple_to_css, int_to_col
+from bencher.utils import int_to_col
 from bencher.results.composable_container.composable_container_video import ComposableContainerVideo
-
-
-from moviepy.editor import (
-    VideoFileClip,
-    ImageClip,
-    ImageSequenceClip,
-    CompositeVideoClip,
-    clips_array,
-    concatenate_videoclips,
-)
 
 
 class VideoSummaryResult(BenchResultBase):

@@ -1,12 +1,10 @@
-from typing import Optional, Any
+from typing import Optional
 from functools import partial
 import panel as pn
-import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.results.video_result import VideoControls
 from bencher.variables.results import (
-    ResultReference,
     PANEL_TYPES,
 )
 
@@ -18,8 +16,6 @@ class PanelResult(BenchResultBase):
             vc.video_controls(),
             self.to_panes(result_var=result_var, container=vc.video_container, **kwargs),
         )
-
-   
 
     def to_panes(
         self, result_var: Parameter = None, target_dimension: int = 0, container=None, **kwargs

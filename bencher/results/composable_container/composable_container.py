@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-import abc
 from enum import Enum, auto
 
 from bencher.results.float_formatter import FormatFloat

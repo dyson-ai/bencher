@@ -14,12 +14,10 @@ from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
-from bencher.results.float_formatter import FormatFloat
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 
 from bencher.variables.results import (
     ResultReference,
-    PANEL_TYPES,
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
@@ -377,7 +375,7 @@ class BenchResultBase(OptunaResult):
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
         return outer_container.container
-    
+
     def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
         # todo this is really horrible, need to improve
         dim = None

@@ -1,16 +1,11 @@
-import panel as pn
 import numpy as np
-import moviepy
 from moviepy.editor import (
-    VideoFileClip,
     ImageClip,
-    ImageSequenceClip,
     CompositeVideoClip,
     clips_array,
     concatenate_videoclips,
     VideoClip,
 )
-from PIL import Image, ImageDraw
 
 from bencher.results.composable_container.composable_container import ComposableContainerBase
 from bencher.video_writer import VideoWriter
@@ -44,7 +39,6 @@ class ComposableContainerVideo(ComposableContainerBase):
                 img = VideoWriter.label_image(obj, self.label)
                 self.container.append(ImageClip(np.array(img), duration=1.0))
             else:
-              
 
                 self.container.append(ImageClip(obj, duration=1.0))
 
