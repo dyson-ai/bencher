@@ -117,11 +117,6 @@ class VideoSummaryResult(BenchResultBase):
     ):
         vr = VideoWriter()
 
-        # img_array = dataset[result_var.name].to_numpy()
-        # if reverse:
-        #     reversed_axes = list(reversed(range(len(img_array.shape))))
-        #     img_array = np.transpose(img_array, reversed_axes)
-
         cvc = self._to_video_panes_ds(
             dataset,
             self.plot_cb,
@@ -129,7 +124,7 @@ class VideoSummaryResult(BenchResultBase):
             horizontal=True,
             result_var=result_var,
             final=True,
-            reverse=True,
+            reverse=reverse,
             **kwargs,
         )
 
