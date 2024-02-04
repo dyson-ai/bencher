@@ -103,6 +103,7 @@ class VideoWriter:
         self, video_clip: moviepy.video.VideoClip, bitrate: int = 2000, fps: int = 30
     ) -> str:
         video_clip.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
+        video_clip.close()
         return self.filename
 
 
