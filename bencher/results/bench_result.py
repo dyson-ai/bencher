@@ -35,6 +35,14 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
     def plotly_callbacks():
         return [HoloviewResult.to_surface, PlotlyResult.to_volume]
 
+    def plot(self) -> pn.panel:
+        """Plots the benchresult using the plot callbacks defined by the bench run
+
+        Returns:
+             pn.panel: A panel representation of the results
+        """
+        return pn.Column(*[cb(self) for cb in self.bench_cfg.plot_callbacks])
+
     def to_auto(
         self,
         plot_list: List[callable] = None,
@@ -67,7 +75,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
             )
         return row.pane
 
-    def to_auto_plots(self, **kwargs) -> List[pn.panel]:
+    def to_auto_plots(self, **kwargs) -> pn.panel:
         """Given the dataset result of a benchmark run, automatically dedeuce how to plot the data based on the types of variables that were sampled
 
         Args:

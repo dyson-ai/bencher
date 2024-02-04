@@ -87,29 +87,31 @@ if __name__ == "__main__":
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        # res =bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=False)
-        # res =bench.plot_sweep(input_vars=["sides", "radius",  "linewidth","color"], plot=False)
 
-        res = bench.plot_sweep(input_vars=["sides", "radius", "linewidth"], plot=False)
-        bench.report.append(res.to_video_grid())
+        bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
+        bench.add_plot_callback(bch.BenchResult.to_video_grid)
 
-        res = bench.plot_sweep(input_vars=["sides", "radius"], plot=False)
-        bench.report.append(res.to_video_grid())
+        bench.plot_sweep(input_vars=["sides"])
+        bench.plot_sweep(input_vars=["sides", "radius"])
+        bench.plot_sweep(input_vars=["sides", "radius", "linewidth"])
+        bench.plot_sweep(input_vars=["sides", "radius", "color"])
+        bench.plot_sweep(input_vars=["sides", "radius", "linewidth", "color"])
 
-        res = bench.plot_sweep(input_vars=["sides"], plot=False)
-        bench.report.append(res.to_video_grid())
         return bench
 
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        res_list = bench.sweep_sequential(
-            input_vars=["radius", "sides", "linewidth", "color"], group_size=3
-        )
-        for r in res_list:
-            # bench.report.append(r.to_video_summary())
-            bench.report.append(r.to_video_grid())
+        # bench.plot_callback = bch.BenchResult.to_auto_plots
+        # bench.plot_callbacks.append(bch.BenchResult.to_video_grid)
+        bench.add_plot_callback(bch.BenchResult.to_title)
+        bench.add_plot_callback(bch.BenchResult.to_video_grid)
+
+        bench.sweep_sequential(input_vars=["radius", "sides", "linewidth", "color"], group_size=3)
+        # for r in res_list:
+        # bench.report.append(r.to_video_summary())
+        # bench.report.append(r.to_video_grid())
 
         return bench
 
