@@ -24,16 +24,11 @@ class VideoWriter:
     def append(self, img):
         self.images.append(img)
 
-    def write(self, bitrate: int = 1500) -> str:
-        # todo
-        # if len(self.images[0.shape) == 2:
-        #     for i in range(len(self.images)):
-        #         self.images[i] = np.expand_dims(self.images[i], 2)
-
+    def write(self, bitrate: int = 2000) -> str:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
             self.images, fps=30, with_mask=False, load_images=True
         )
-        clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
+        self.write_video_raw(clip, bitrate=bitrate)
         return self.filename
 
     @staticmethod
@@ -82,21 +77,6 @@ class VideoWriter:
         else:
             self.image_files.append(filepath)
 
-    def write_grid2d(self, ndimage2d):
-        img_clip2d = []
-        print(ndimage2d.shape)
-        if len(ndimage2d.shape) == 2:
-            ndimage2d = [ndimage2d]
-        for ndimage in ndimage2d:
-            img_clip = []
-            for img in ndimage:
-                paths = [Path(i).absolute().as_posix() for i in img]
-                img_clip.append(self.to_images_sequence(paths))
-            img_clip2d.append(img_clip)
-        vid_array = clips_array(img_clip2d)
-        self.write_video_raw(vid_array)
-        return self.filename
-
     def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None):
         if isinstance(images, list) and len(images) > 0:
             if frame_time is None:
@@ -119,8 +99,10 @@ class VideoWriter:
             return self.filename
         return None
 
-    def write_video_raw(self, file, bitrate: int = 2000, fps: int = 30) -> None:
-        file.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
+    def write_video_raw(
+        self, video_clip: moviepy.video.VideoClip, bitrate: int = 2000, fps: int = 30
+    ) -> str:
+        video_clip.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
         return self.filename
 
 
