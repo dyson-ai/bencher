@@ -9,7 +9,7 @@ class ComposableContainerPanel(ComposableContainerBase):
         var_name: str = None,
         var_value: str = None,
         width: int = None,
-        background_col: tuple[3] = (255, 255, 255),
+        background_col: str = None,
         horizontal: bool = True,
     ) -> None:
         super().__init__(horizontal)
