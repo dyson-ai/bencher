@@ -34,8 +34,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             self.container.append(obj)
         else:
             if self.label is not None:
-                img = VideoWriter.label_image(obj, self.label)
-                img_obj = ImageClip(np.array(img))
+                img_obj = np.array(VideoWriter.label_image(obj, self.label))
             else:
                 img_obj = obj
             self.container.append(ImageClip(img_obj, duration=1.0))
