@@ -187,7 +187,20 @@ class FloatSweep(Number, SweepBase):
         return self.sample_values
 
 
-def box(name, center, width):
+def box(name, center, width,doc=None):
     var = FloatSweep(default=center, bounds=(center - width, center + width))
     var.name = name
+    var.doc = doc
     return var
+
+
+def float_sweep(name, min_val, max_val,doc=None):
+    var = FloatSweep(bounds=(min_val, max_val))
+    var.name = name
+    var.doc = doc
+    return var
+
+
+def int_sweep(name, min_val, max_val):
+    var = FloatSweep(bounds=(min_val, max_val))
+    var.name = name

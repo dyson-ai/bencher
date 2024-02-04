@@ -33,7 +33,7 @@ from bencher.variables.results import (
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.job import Job, FutureCache, JobFuture, Executors
-from bencher.utils import params_to_str
+from bencher.utils import params_to_str,listify
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -143,13 +143,18 @@ class Bench(BenchPlotServer):
             worker (Callable | ParametrizedSweep): A function that accepts a class of type (worker_input_config)
             worker_input_config (ParametrizedSweep): A class defining the parameters of the function.
         """
-        assert isinstance(bench_name, str)
-        self.bench_name = bench_name
-        self.worker = None
+        if isinstance(bench_name, Callable):
+            self.bench_name = bench_name.__name__
+            self.worker = bench_name
+        else:
+            # assert isinstance(bench_name, str)
+            self.bench_name = bench_name
+            self.worker = worker
+
         self.worker_class_instance = None
         self.worker_input_cfg = None
         self.worker_class_instance = None
-        self.set_worker(worker, worker_input_cfg)
+        self.set_worker(self.worker, worker_input_cfg)
         self.run_cfg = run_cfg
         if report is None:
             self.report = BenchReport(self.bench_name)
@@ -235,6 +240,34 @@ class Bench(BenchPlotServer):
                 results.append(res)
         return results
 
+    def sweep(
+        self,
+        input_vars: List[ParametrizedSweep] = None,
+        result_vars: List[ParametrizedSweep] = None,
+        const_vars: List[ParametrizedSweep] = None,
+        time_src: datetime = None,
+        description: str = None,
+        post_description: str = None,
+        pass_repeat: bool = False,
+        tag: str = "",
+        run_cfg: BenchRunCfg = None,
+        plot: bool = False,
+    ) -> BenchResult:
+        # title = "Sweeping " + " vs ".join(params_to_str(input_vars))
+        return self.plot_sweep(
+            "title",
+            input_vars=input_vars,
+            result_vars=result_vars,
+            const_vars=const_vars,
+            time_src=time_src,
+            description=description,
+            post_description=post_description,
+            pass_repeat=pass_repeat,
+            tag=tag,
+            run_cfg=run_cfg,
+            plot=plot,
+        )
+
     def plot_sweep(
         self,
         title: str = None,
@@ -307,6 +340,10 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
+
+        input_vars = listify(input_vars)
+        result_vars = listify(result_vars)
+
 
         for i in range(len(input_vars)):
             input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")

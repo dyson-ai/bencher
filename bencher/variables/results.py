@@ -174,3 +174,9 @@ class ResultVolume(param.Parameter):
 
 
 PANEL_TYPES = (ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+
+
+def result(name, units=""):
+    res = ResultVar(units=units)
+    res.name = name
+    return res
