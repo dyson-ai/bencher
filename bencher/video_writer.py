@@ -2,10 +2,16 @@ import numpy as np
 import moviepy.video.io.ImageSequenceClip
 from pathlib import Path
 from .utils import gen_video_path, gen_image_path
+
 import moviepy
-from moviepy.editor import VideoFileClip, ImageClip, ImageSequenceClip
+from moviepy.editor import (
+    VideoFileClip,
+    ImageClip,
+    ImageSequenceClip,
+    clips_array,
+    concatenate_videoclips,
+)
 from PIL import Image, ImageDraw
-from moviepy.editor import clips_array, concatenate_videoclips
 
 
 class VideoWriter:
@@ -18,21 +24,26 @@ class VideoWriter:
     def append(self, img):
         self.images.append(img)
 
-    def write(self, bitrate: int = 1500) -> str:
-        # todo
-        # if len(self.images[0.shape) == 2:
-        #     for i in range(len(self.images)):
-        #         self.images[i] = np.expand_dims(self.images[i], 2)
-
+    def write(self, bitrate: int = 2000) -> str:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
             self.images, fps=30, with_mask=False, load_images=True
         )
-        clip.write_videofile(self.filename, bitrate=f"{bitrate}k", logger=None)
+        self.write_video_raw(clip, bitrate=bitrate)
         return self.filename
 
-    def create_label(self, label, width, height=20):
+    @staticmethod
+    def create_label(label, width, height=20):
         new_img = Image.new("RGB", (width, height), (255, 255, 255))
-        ImageDraw.Draw(new_img).text((0, 0), label, (0, 0, 0))
+        # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
+        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt")
+
+        return new_img
+
+    @staticmethod
+    def label_image(path: Path, label, padding=20) -> Path:
+        image = Image.open(path)
+        new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
+        new_img.paste(image, (0, padding))
         return new_img
 
     def append_file(self, filepath, label=None):
@@ -66,24 +77,34 @@ class VideoWriter:
         else:
             self.image_files.append(filepath)
 
-    def write_png(self, bitrate: int = 1500, target_duration: float = 10.0, frame_time=None):
-        if frame_time is None:
-            fps = len(self.image_files) / target_duration
-            fps = max(fps, 1)  # never slower that 1 seconds per frame
-            fps = min(fps, 30)
-        else:
-            fps = 1.0 / frame_time
+    def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None):
+        if isinstance(images, list) and len(images) > 0:
+            if frame_time is None:
+                fps = len(images) / target_duration
+                fps = max(fps, 1)  # never slower that 1 seconds per frame
+                fps = min(fps, 30)
+            else:
+                fps = 1.0 / frame_time
+            return ImageSequenceClip(images, fps=fps, with_mask=False)
+        return None
 
+    def write_png(self):
+        clip = None
         if len(self.image_files) > 0:
-            clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
-            clip.write_videofile(self.filename, bitrate=f"{bitrate}k")
-            return self.filename
+            clip = self.to_images_sequence(self.image_files)
         if len(self.video_files) > 0:
             clip = concatenate_videoclips([VideoFileClip(f) for f in self.video_files])
+        if clip is not None:
             clip.write_videofile(self.filename)
             return self.filename
         return None
-        # clip = ImageSequenceClip(self.image_files, fps=fps, with_mask=False)
+
+    def write_video_raw(
+        self, video_clip: moviepy.video.VideoClip, bitrate: int = 2000, fps: int = 30
+    ) -> str:
+        video_clip.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
+        video_clip.close()
+        return self.filename
 
 
 def add_image(np_array: np.ndarray, name: str = "img"):

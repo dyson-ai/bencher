@@ -303,6 +303,11 @@ class BenchCfg(BenchRunCfg):
         doc="store the hash value of the config to avoid having to hash multiple times",
     )
 
+    plot_callbacks = param.List(
+        None,
+        doc="A callable that takes a BenchResult and returns panel representation of the results",
+    )
+
     def __init__(self, **params):
         super().__init__(**params)
         self.plot_lib = None

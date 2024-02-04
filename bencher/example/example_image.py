@@ -44,7 +44,7 @@ class BenchPolygons(bch.ParametrizedSweep):
 
         ax.set_aspect("equal")
         fig.add_axes(ax)
-        fig.savefig(filename, dpi=50)
+        fig.savefig(filename, dpi=30)
 
         return filename
 
@@ -54,24 +54,9 @@ def example_image(
 ) -> bch.Bench:
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
-    for s in [
-        [BenchPolygons.param.sides],
-        [BenchPolygons.param.sides, BenchPolygons.param.linewidth],
-        [BenchPolygons.param.sides, BenchPolygons.param.linewidth, BenchPolygons.param.linestyle],
-        [
-            BenchPolygons.param.sides,
-            BenchPolygons.param.linewidth,
-            BenchPolygons.param.linestyle,
-            BenchPolygons.param.color,
-        ],
-        [
-            BenchPolygons.param.sides,
-            BenchPolygons.param.linewidth,
-            BenchPolygons.param.linestyle,
-            BenchPolygons.param.color,
-            BenchPolygons.param.radius,
-        ],
-    ]:
+    sweep_vars = ["sides", "radius", "linewidth", "color"]
+    for i in range(1, len(sweep_vars)):
+        s = sweep_vars[:i]
         bench.plot_sweep(
             f"Polygons Sweeping {len(s)} Parameters",
             input_vars=s,
@@ -81,24 +66,26 @@ def example_image(
     return bench
 
 
-if __name__ == "__main__":
+def example_image_vid(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    bench = BenchPolygons().to_bench(run_cfg, report)
+    bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    bench.plot_sweep(input_vars=["sides"])
+    bench.plot_sweep(input_vars=["sides", "radius"])
+    return bench
 
-    def example_image_vid(
-        run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-    ) -> bch.Bench:
-        bench = BenchPolygons().to_bench(run_cfg, report)
-        bench.plot_sweep(input_vars=["sides", "radius", "color"], plot=True)
-        return bench
+
+if __name__ == "__main__":
 
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
-        res_list = bench.sweep_sequential(
-            input_vars=["radius", "sides", "linewidth", "color"], group_size=3
-        )
-        for r in res_list:
-            bench.report.append(r.to_video_summary())
+        bench.add_plot_callback(bch.BenchResult.to_title)
+        bench.add_plot_callback(bch.BenchResult.to_video_grid)
+        bench.sweep_sequential(input_vars=["radius", "sides", "linewidth", "color"], group_size=1)
         return bench
 
     # def example_image_pairs()

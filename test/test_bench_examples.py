@@ -16,7 +16,7 @@ from bencher.example.example_holosweep_tap import example_holosweep_tap
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
-from bencher.example.example_image import example_image
+from bencher.example.example_image import example_image, example_image_vid
 from bencher.example.example_video import example_video
 from bencher.example.meta.example_meta import example_meta
 from bencher.example.example_docs import example_docs
@@ -51,7 +51,8 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_publish_docs(self):
         report = example_docs(run_cfg=self.create_run_cfg())
-        report.save_index()
+        index = report.save_index(filename="index_tmp.html")
+        index.unlink()  # remove tmp index
 
     # def test_example_categorical(self) -> None:
     #     self.examples_asserts(example_categorical(self.create_run_cfg()))
@@ -106,6 +107,7 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_image(self) -> None:
         self.examples_asserts(example_image(self.create_run_cfg()))
+        self.examples_asserts(example_image_vid(self.create_run_cfg()))
 
     def test_example_video(self) -> None:
         self.examples_asserts(example_video(self.create_run_cfg()))

@@ -1,12 +1,10 @@
-from typing import Optional, Any
+from typing import Optional
 from functools import partial
 import panel as pn
-import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.results.video_result import VideoControls
 from bencher.variables.results import (
-    ResultReference,
     PANEL_TYPES,
 )
 
@@ -18,35 +16,6 @@ class PanelResult(BenchResultBase):
             vc.video_controls(),
             self.to_panes(result_var=result_var, container=vc.video_container, **kwargs),
         )
-
-    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
-        # todo this is really horrible, need to improve
-        dim = None
-        if isinstance(da_ds, xr.Dataset):
-            dim = list(da_ds.keys())[0]
-            da = da_ds[dim]
-        else:
-            da = da_ds
-
-        for k in da.coords.keys():
-            dim = k
-            break
-        if dim is None:
-            return da_ds.values.squeeze().item()
-        return da.expand_dims(dim).values[0]
-
-    def ds_to_container(
-        self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
-    ) -> Any:
-        val = self.zero_dim_da_to_val(dataset[result_var.name])
-        if isinstance(result_var, ResultReference):
-            ref = self.object_index[val]
-            val = ref.obj
-            if ref.container is not None:
-                return ref.container(val, **kwargs)
-        if container is not None:
-            return container(val, styles={"background": "white"}, **kwargs)
-        return val
 
     def to_panes(
         self, result_var: Parameter = None, target_dimension: int = 0, container=None, **kwargs
