@@ -46,22 +46,10 @@ class VideoWriter:
 
     @staticmethod
     def label_image(path: Path, label, padding=20) -> Path:
-        # new_path = path.with_name(path.stem + "_labelled" + path.suffix).as_posix()
         image = Image.open(path)
         new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
         new_img.paste(image, (0, padding))
         return new_img
-        # new_img.save(new_path)
-        # return new_path
-
-    # @staticmethod
-    # def label_image(path: Path, label, padding=20) -> Path:
-    #     new_path = path.with_name(path.stem + "_labelled" + path.suffix).as_posix()
-    #     image = Image.open(path)
-    #     new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
-    #     new_img.paste(image, (0, padding))
-    #     new_img.save(new_path)
-    #     return new_path
 
     def append_file(self, filepath, label=None):
         if label is not None:
@@ -131,7 +119,7 @@ class VideoWriter:
             return self.filename
         return None
 
-    def write_video_raw(self, file, bitrate: int = 1500, fps: int = 30) -> None:
+    def write_video_raw(self, file, bitrate: int = 2000, fps: int = 30) -> None:
         file.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
         return self.filename
 

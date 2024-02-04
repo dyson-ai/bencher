@@ -160,7 +160,7 @@ class VideoSummaryResult(BenchResultBase):
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
-            print(f"selected dim {selected_dim}")
+            # print(f"selected dim {selected_dim}")
             dim_color = int_to_col(num_dims - 2, 0.05, 1.0)
 
             outer_container = ComposableContainerVideo(
