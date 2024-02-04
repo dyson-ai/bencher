@@ -24,11 +24,11 @@ class VideoWriter:
     def append(self, img):
         self.images.append(img)
 
-    def write(self, bitrate: int = 2000) -> str:
+    def write(self) -> str:
         clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
             self.images, fps=30, with_mask=False, load_images=True
         )
-        self.write_video_raw(clip, bitrate=bitrate)
+        self.write_video_raw(clip)
         return self.filename
 
     @staticmethod
@@ -102,7 +102,14 @@ class VideoWriter:
     def write_video_raw(
         self, video_clip: moviepy.video.VideoClip, bitrate: int = 2000, fps: int = 30
     ) -> str:
-        video_clip.write_videofile(self.filename, codec="libvpx", bitrate=f"{bitrate}k", fps=fps)
+        video_clip.write_videofile(
+            self.filename,
+            codec="libvpx",
+            audio=False,
+            bitrate="0",
+            fps=fps,
+            ffmpeg_params=["-crf", "40"],
+        )
         video_clip.close()
         return self.filename
 

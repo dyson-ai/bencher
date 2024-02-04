@@ -85,7 +85,7 @@ if __name__ == "__main__":
         bench = BenchPolygons().to_bench(run_cfg, report)
         bench.add_plot_callback(bch.BenchResult.to_title)
         bench.add_plot_callback(bch.BenchResult.to_video_grid)
-        bench.sweep_sequential(input_vars=["radius", "sides", "linewidth", "color"], group_size=1)
+        bench.sweep_sequential(input_vars=["radius", "sides", "linewidth", "color"], group_size=4)
         return bench
 
     # def example_image_pairs()
