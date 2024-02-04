@@ -5,6 +5,7 @@ import bencher as bch
 # All the examples will be using the data structures and benchmark function defined in this file
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
+#     \w+\.param\.(\w+)(?!\.)
 
 def example_categorical(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
