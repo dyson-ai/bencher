@@ -1,5 +1,4 @@
 from enum import Enum, auto
-import abc
 from typing import Any
 from bencher.results.float_formatter import FormatFloat
 
@@ -40,7 +39,7 @@ class ComposableContainerBase:
     def __init__(self, horizontal: bool = True) -> None:
         self.horizontal: bool = horizontal
         self.compose_method = ComposeType.right
-        self.container = None
+        self.container = []
 
     def append(self, obj: Any) -> None:
         """Add an object to the container.  The relationship between the objects is defined by the ComposeType
