@@ -1,15 +1,15 @@
 import panel as pn
-from bencher.results.composable_container.composable_container import ComposableContainerBase
+from bencher.results.composable_container.composable_container_base import ComposableContainerBase
 
 
 class ComposableContainerPanel(ComposableContainerBase):
     def __init__(
         self,
-        name,
-        var_name=None,
-        var_value=None,
-        width=None,
-        background_col=None,
+        name: str = None,
+        var_name: str = None,
+        var_value: str = None,
+        width: int = None,
+        background_col: tuple[3] = (255, 255, 255),
         horizontal: bool = True,
     ) -> None:
         super().__init__(horizontal)
@@ -38,6 +38,3 @@ class ComposableContainerPanel(ComposableContainerBase):
             self.label_len = len(label)
             side = pn.pane.Markdown(label, align=align)
             self.append(side)
-
-    def append(self, obj):
-        self.container.append(obj)
