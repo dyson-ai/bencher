@@ -161,6 +161,9 @@ class VideoSummaryResult(BenchResultBase):
             selected_dim = dims[-1]
             # print(f"selected dim {selected_dim}")
             dim_color = int_to_col(num_dims - 2, 0.05, 1.0)
+            # sliced = dataset.isel({selected_dim: i})
+            # label_val = sliced.coords[selected_dim].values.item()
+
 
             outer_container = ComposableContainerVideo(
                 name=" vs ".join(dims),
