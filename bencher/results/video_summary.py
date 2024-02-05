@@ -139,7 +139,6 @@ class VideoSummaryResult(BenchResultBase):
 
     def plot_cb(self, dataset, result_var, **kwargs):
         val = self.ds_to_container(dataset, result_var, container=None, **kwargs)
-        # print(val)
         return val
 
     def _to_video_panes_ds(
