@@ -64,7 +64,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             out = clips_array(clips, bg_color=self.background_col)
 
         if self.label is not None:
-            label = ImageClip(np.array(VideoWriter.create_label(self.label, self.label_len * 6)))
+            label = ImageClip(np.array(VideoWriter.create_label(self.label)))
             con2 = ComposableContainerVideo(
                 background_col=self.background_col,
                 horizontal=not self.horizontal,
