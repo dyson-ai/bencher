@@ -291,8 +291,7 @@ class Bench(BenchPlotServer):
                     result_vars = self.worker_class_instance.get_results_only()
                 else:
                     result_vars = self.result_vars
-                for r in result_vars:
-                    logging.info(f"result var: {r.name}")
+                
             if const_vars is None:
                 if self.const_vars is None:
                     const_vars = self.worker_class_instance.get_input_defaults()
@@ -312,6 +311,9 @@ class Bench(BenchPlotServer):
             input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
         for i in range(len(result_vars)):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
+        
+        for r in result_vars:
+            logging.info(f"result var: {r.name}")
 
         if isinstance(const_vars, dict):
             const_vars = list(const_vars.items())
