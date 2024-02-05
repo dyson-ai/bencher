@@ -110,7 +110,7 @@ class VideoWriter:
             audio=False,
             bitrate="0",
             fps=fps,
-            ffmpeg_params=["-crf", "40"],
+            ffmpeg_params=["-crf", "34"],
         )
         video_clip.close()
         return self.filename
