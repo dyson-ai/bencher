@@ -37,7 +37,7 @@ class VideoWriter:
             width = len(label) * 8
         new_img = Image.new("RGB", (width, height), (255, 255, 255))
         # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
-        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt",font_size=12)
+        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt", font_size=12)
 
         return new_img
 
@@ -101,9 +101,7 @@ class VideoWriter:
             return self.filename
         return None
 
-    def write_video_raw(
-        self, video_clip: moviepy.video.VideoClip, bitrate: int = 2000, fps: int = 30
-    ) -> str:
+    def write_video_raw(self, video_clip: moviepy.video.VideoClip, fps: int = 30) -> str:
         video_clip.write_videofile(
             self.filename,
             codec="libvpx",

@@ -173,7 +173,7 @@ class Bench(BenchPlotServer):
         self.result_vars = None
         self.const_vars = None
         self.plot_callbacks = []
-        self.plot=True
+        self.plot = True
 
     def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel]) -> None:
         self.plot_callbacks.append(callback)
@@ -292,7 +292,7 @@ class Bench(BenchPlotServer):
                     result_vars = self.worker_class_instance.get_results_only()
                 else:
                     result_vars = self.result_vars
-                
+
             if const_vars is None:
                 if self.const_vars is None:
                     const_vars = self.worker_class_instance.get_input_defaults()
@@ -312,7 +312,7 @@ class Bench(BenchPlotServer):
             input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
         for i in range(len(result_vars)):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
-        
+
         for r in result_vars:
             logging.info(f"result var: {r.name}")
 
