@@ -6,7 +6,7 @@ from moviepy.editor import (
     clips_array,
     concatenate_videoclips,
     VideoClip,
-    VideoFileClip
+    VideoFileClip,
 )
 
 from bencher.results.composable_container.composable_container_base import ComposableContainerBase

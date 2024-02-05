@@ -100,7 +100,7 @@ class VideoWriter:
             clip.write_videofile(self.filename)
             return self.filename
         return None
-    
+
     def write_video_raw(self, video_clip: moviepy.video.VideoClip, fps: int = 30) -> str:
         video_clip.write_videofile(
             self.filename,

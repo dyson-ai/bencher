@@ -116,7 +116,6 @@ class VideoSummaryResult(BenchResultBase):
         video_controls: VideoControls = None,
         **kwargs,
     ) -> Optional[pn.pane.Video]:
-
         cvc = self._to_video_panes_ds(
             dataset,
             self.plot_cb,
