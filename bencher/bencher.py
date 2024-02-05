@@ -10,6 +10,7 @@ import xarray as xr
 from diskcache import Cache
 from contextlib import suppress
 from functools import partial
+import panel as pn
 
 from bencher.worker_job import WorkerJob
 
@@ -165,6 +166,17 @@ class Bench(BenchPlotServer):
 
         self.cache_size = int(100e9)  # default to 100gb
 
+        # self.bench_cfg = BenchCfg()
+
+        # Maybe put this in SweepCfg
+        self.input_vars = None
+        self.result_vars = None
+        self.const_vars = None
+        self.plot_callbacks = []
+
+    def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel]) -> None:
+        self.plot_callbacks.append(callback)
+
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
 
@@ -187,34 +199,6 @@ class Bench(BenchPlotServer):
                 self.worker = partial(worker_cfg_wrapper, worker, worker_input_cfg)
             logging.info(f"setting worker {worker}")
         self.worker_input_cfg = worker_input_cfg
-
-    def sweep(
-        self,
-        input_vars: List[ParametrizedSweep] = None,
-        result_vars: List[ParametrizedSweep] = None,
-        const_vars: List[ParametrizedSweep] = None,
-        time_src: datetime = None,
-        description: str = None,
-        post_description: str = None,
-        pass_repeat: bool = False,
-        tag: str = "",
-        run_cfg: BenchRunCfg = None,
-        plot: bool = False,
-    ) -> BenchResult:
-        title = "Sweeping " + " vs ".join(params_to_str(input_vars))
-        return self.plot_sweep(
-            title,
-            input_vars=input_vars,
-            result_vars=result_vars,
-            const_vars=const_vars,
-            time_src=time_src,
-            description=description,
-            post_description=post_description,
-            pass_repeat=pass_repeat,
-            tag=tag,
-            run_cfg=run_cfg,
-            plot=plot,
-        )
 
     def sweep_sequential(
         self,
@@ -264,6 +248,7 @@ class Bench(BenchPlotServer):
         tag: str = "",
         run_cfg: BenchRunCfg = None,
         plot: bool = True,
+        plot_callbacks=None,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
@@ -278,7 +263,8 @@ class Bench(BenchPlotServer):
             pass_repeat (bool,optional) By default do not pass the kwarg 'repeat' to the benchmark function.  Set to true if
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
-            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run and plotted
+            run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run
+            plot_callbacks: A list of plot callbacks to clal on the results
         Raises:
             ValueError: If a result variable is not set
 
@@ -291,18 +277,27 @@ class Bench(BenchPlotServer):
                 logging.info(
                     "No input variables passed, using all param variables in bench class as inputs"
                 )
-                input_vars = self.worker_class_instance.get_inputs_only()
+                if self.input_vars is None:
+                    input_vars = self.worker_class_instance.get_inputs_only()
+                else:
+                    input_vars = self.input_vars
                 for i in input_vars:
                     logging.info(f"input var: {i.name}")
             if result_vars is None:
                 logging.info(
                     "No results variables passed, using all result variables in bench class:"
                 )
-                result_vars = self.worker_class_instance.get_results_only()
+                if self.result_vars is None:
+                    result_vars = self.worker_class_instance.get_results_only()
+                else:
+                    result_vars = self.result_vars
                 for r in result_vars:
                     logging.info(f"result var: {r.name}")
             if const_vars is None:
-                const_vars = self.worker_class_instance.get_input_defaults()
+                if self.const_vars is None:
+                    const_vars = self.worker_class_instance.get_input_defaults()
+                else:
+                    const_vars = self.const_vars
         else:
             if input_vars is None:
                 input_vars = []
@@ -381,6 +376,12 @@ class Bench(BenchPlotServer):
                 "## Results Description\nPlease set post_description to explain these results"
             )
 
+        if plot_callbacks is None:
+            if len(self.plot_callbacks) == 0:
+                plot_callbacks = [BenchResult.to_auto_plots]
+            else:
+                plot_callbacks = self.plot_callbacks
+
         bench_cfg = BenchCfg(
             input_vars=input_vars,
             result_vars=result_vars_only,
@@ -392,7 +393,14 @@ class Bench(BenchPlotServer):
             title=title,
             pass_repeat=pass_repeat,
             tag=run_cfg.run_tag + tag,
+            auto_plot=plot,
+            plot_callbacks=plot_callbacks,
         )
+        return self.run_sweep(bench_cfg, run_cfg, time_src)
+
+    def run_sweep(
+        self, bench_cfg: BenchCfg, run_cfg: BenchRunCfg, time_src: datetime
+    ) -> BenchResult:
         print("tag", bench_cfg.tag)
 
         bench_cfg.param.update(run_cfg.param.values())
@@ -447,8 +455,9 @@ class Bench(BenchPlotServer):
 
         bench_res.post_setup()
 
-        if plot and bench_res.bench_cfg.auto_plot:
+        if bench_cfg.auto_plot:
             self.report.append_result(bench_res)
+
         self.results.append(bench_res)
         return bench_res
 

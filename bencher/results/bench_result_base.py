@@ -5,6 +5,8 @@ import xarray as xr
 from param import Parameter
 import holoviews as hv
 from functools import partial
+import panel as pn
+
 from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -12,10 +14,15 @@ from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
-from bencher.results.float_formatter import FormatFloat
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 import panel as pn
 from bencher.utils import listify
+
+from bencher.variables.results import (
+    ResultReference,
+)
+
+from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -333,29 +340,24 @@ class BenchResultBase(OptunaResult):
             time_dim_delta = 0
 
         if num_dims > (target_dimension + time_dim_delta) and num_dims != 0:
-            dim_sel = dims[-1]
+            selected_dim = dims[-1]
             # print(f"selected dim {dim_sel}")
-
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
-            background_col = dim_color
-            name = " vs ".join(dims)
-
-            container_args = {"name": name, "styles": {"background": background_col}}
-            outer_container = (
-                pn.Row(**container_args) if horizontal else pn.Column(**container_args)
+            outer_container = ComposableContainerPanel(
+                name=" vs ".join(dims), background_col=dim_color, horizontal=not horizontal
             )
-
             max_len = 0
-
-            for i in range(dataset.sizes[dim_sel]):
-                sliced = dataset.isel({dim_sel: i})
-
-                lable_val = sliced.coords[dim_sel].values.item()
-                if isinstance(lable_val, (int, float)):
-                    lable_val = FormatFloat()(lable_val)
-
-                label = f"{dim_sel}={lable_val}"
+            for i in range(dataset.sizes[selected_dim]):
+                sliced = dataset.isel({selected_dim: i})
+                label_val = sliced.coords[selected_dim].values.item()
+                inner_container = ComposableContainerPanel(
+                    outer_container.name,
+                    width=num_dims - target_dimension,
+                    var_name=selected_dim,
+                    var_value=label_val,
+                    horizontal=horizontal,
+                )
 
                 panes = self._to_panes_da(
                     sliced,
@@ -364,35 +366,46 @@ class BenchResultBase(OptunaResult):
                     horizontal=len(sliced.sizes) <= target_dimension + 1,
                     result_var=result_var,
                 )
-                width = num_dims - target_dimension
 
-                container_args = {
-                    "name": name,
-                    "styles": {"border-bottom": f"{width}px solid grey"},
-                }
-
-                if horizontal:
-                    inner_container = pn.Column(**container_args)
-                    align = ("center", "center")
-                else:
-                    inner_container = pn.Row(**container_args)
-                    align = ("end", "center")
-
-                label_len = len(label)
-                if label_len > max_len:
-                    max_len = label_len
-                side = pn.pane.Markdown(label, align=align)
-
-                inner_container.append(side)
+                if inner_container.label_len > max_len:
+                    max_len = inner_container.label_len
                 inner_container.append(panes)
-                outer_container.append(inner_container)
-                # outer_container.append(pn.Row(inner_container, align="center"))
-            for c in outer_container:
+                outer_container.append(inner_container.container)
+            for c in outer_container.container:
                 c[0].width = max_len * 7
         else:
             return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
 
-        return outer_container
+        return outer_container.container
+
+    def zero_dim_da_to_val(self, da_ds: xr.DataArray | xr.Dataset) -> Any:
+        # todo this is really horrible, need to improve
+        dim = None
+        if isinstance(da_ds, xr.Dataset):
+            dim = list(da_ds.keys())[0]
+            da = da_ds[dim]
+        else:
+            da = da_ds
+
+        for k in da.coords.keys():
+            dim = k
+            break
+        if dim is None:
+            return da_ds.values.squeeze().item()
+        return da.expand_dims(dim).values[0]
+
+    def ds_to_container(
+        self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
+    ) -> Any:
+        val = self.zero_dim_da_to_val(dataset[result_var.name])
+        if isinstance(result_var, ResultReference):
+            ref = self.object_index[val]
+            val = ref.obj
+            if ref.container is not None:
+                return ref.container(val, **kwargs)
+        if container is not None:
+            return container(val, styles={"background": "white"}, **kwargs)
+        return val
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self, **kwargs):
