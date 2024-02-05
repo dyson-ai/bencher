@@ -34,10 +34,10 @@ class VideoWriter:
     @staticmethod
     def create_label(label, width=None, height=20):
         if width is None:
-            width = len(label) * 6
+            width = len(label) * 8
         new_img = Image.new("RGB", (width, height), (255, 255, 255))
         # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
-        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt")
+        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt",font_size=12)
 
         return new_img
 
