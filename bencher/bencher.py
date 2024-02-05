@@ -173,6 +173,7 @@ class Bench(BenchPlotServer):
         self.result_vars = None
         self.const_vars = None
         self.plot_callbacks = []
+        self.plot=True
 
     def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel]) -> None:
         self.plot_callbacks.append(callback)
@@ -211,7 +212,7 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
-        plot=True,
+        plot=None,
     ) -> List[BenchResult]:
         results = []
         if relationship_cb is None:
@@ -247,7 +248,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot: bool = True,
+        plot: bool = None,
         plot_callbacks=None,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
@@ -323,6 +324,8 @@ class Bench(BenchPlotServer):
             cv_list = list(const_vars[i])
             cv_list[0] = self.convert_vars_to_params(cv_list[0], "const")
             const_vars[i] = cv_list
+        if plot is None:
+            plot = self.plot
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -331,6 +334,8 @@ class Bench(BenchPlotServer):
             else:
                 run_cfg = deepcopy(self.run_cfg)
                 logging.info("Copy run cfg from bench class")
+
+
 
         if run_cfg.only_plot:
             run_cfg.use_cache = True
@@ -379,7 +384,7 @@ class Bench(BenchPlotServer):
             )
 
         if plot_callbacks is None:
-            if len(self.plot_callbacks) == 0:
+            if self.plot_callbacks is not None and len(self.plot_callbacks) == 0:
                 plot_callbacks = [BenchResult.to_auto_plots]
             else:
                 plot_callbacks = self.plot_callbacks

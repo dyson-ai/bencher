@@ -41,7 +41,9 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
         Returns:
              pn.panel: A panel representation of the results
         """
-        return pn.Column(*[cb(self) for cb in self.bench_cfg.plot_callbacks])
+        if self.bench_cfg.plot_callbacks is not None:
+            return pn.Column(*[cb(self) for cb in self.bench_cfg.plot_callbacks])
+        return None
 
     def to_auto(
         self,
