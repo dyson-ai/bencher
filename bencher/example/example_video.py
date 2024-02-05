@@ -79,11 +79,14 @@ def example_video(
     # run_cfg.use_sample_cache = True
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
+    # bench.add_plot_callback(bch.BenchResult.to_auto)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    bench.add_plot_callback(bch.BenchResult.to_video_summary)
+
     bench.plot_sweep(
         "Turing patterns with different parameters",
-        input_vars=[TuringPattern.param.alpha, TuringPattern.param.beta],
-        # input_vars=[TuringPattern.param.alpha],
-        result_vars=[TuringPattern.param.video],
+        input_vars=["alpha", "beta"],
+        result_vars=["video"],
     )
 
     return bench
@@ -106,5 +109,5 @@ if __name__ == "__main__":
     run_cfg_ex.level = 2
     run_cfg_ex.use_sample_cache = True
 
-    # example_video(run_cfg_ex).report.show()
-    example_video_tap(run_cfg_ex).report.show()
+    example_video(run_cfg_ex).report.show()
+    # example_video_tap(run_cfg_ex).report.show()

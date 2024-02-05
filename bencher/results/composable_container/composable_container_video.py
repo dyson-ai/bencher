@@ -1,3 +1,4 @@
+from pathlib import Path
 import numpy as np
 from moviepy.editor import (
     ImageClip,
@@ -5,6 +6,7 @@ from moviepy.editor import (
     clips_array,
     concatenate_videoclips,
     VideoClip,
+    VideoFileClip
 )
 
 from bencher.results.composable_container.composable_container_base import ComposableContainerBase
@@ -41,11 +43,14 @@ class ComposableContainerVideo(ComposableContainerBase):
         if isinstance(obj, VideoClip):
             self.container.append(obj)
         else:
-            # if self.label is not None:
-            # img_obj = np.array(VideoWriter.label_image(obj, self.label))
-            # else:
-            # img_obj = obj
-            self.container.append(ImageClip(obj))
+            path = Path(obj)
+            match path.suffix:
+                case ".png" | ".jpg":
+                    self.container.append(ImageClip(obj))
+                case ".webm":
+                    self.container.append(VideoFileClip(obj))
+                case _:
+                    raise RuntimeError("Unsupport file type")
 
     def render(self, concatenate: bool = False) -> CompositeVideoClip:
         fps = len(self.container) / self.target_duration

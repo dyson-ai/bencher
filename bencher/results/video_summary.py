@@ -1,11 +1,11 @@
 from bencher.utils import params_to_str
-from typing import Optional, List
+from typing import Optional, List, Any
 import itertools
 import panel as pn
 import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.results import ResultImage
+from bencher.variables.results import ResultImage, ResultVideo
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
@@ -21,7 +21,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter = None,
         input_order: List[str] = None,
         reverse: bool = True,
-        result_types=(ResultImage,),
+        result_types=(ResultImage, ResultVideo),
         **kwargs,
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
@@ -73,6 +73,7 @@ class VideoSummaryResult(BenchResultBase):
                     index[i] = FormatFloat()(index[i])
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
             if val is not None:
+                print(val)
                 vr.append_file(val, label)
         fn = vr.write_png()
         if fn is not None:
@@ -86,7 +87,7 @@ class VideoSummaryResult(BenchResultBase):
     def to_video_grid(
         self,
         result_var: Parameter = None,
-        result_types=(ResultImage,),
+        result_types=(ResultImage, ResultVideo),
         **kwargs,
     ) -> Optional[pn.panel]:
         plot_filter = PlotFilter(
@@ -111,11 +112,10 @@ class VideoSummaryResult(BenchResultBase):
         self,
         dataset: xr.Dataset,
         result_var: Parameter,
-        reverse=True,
+        reverse: bool = True,
         video_controls: VideoControls = None,
         **kwargs,
-    ):
-        vr = VideoWriter()
+    ) -> Optional[pn.pane.Video]:
 
         cvc = self._to_video_panes_ds(
             dataset,
@@ -123,12 +123,12 @@ class VideoSummaryResult(BenchResultBase):
             target_dimension=0,
             horizontal=True,
             result_var=result_var,
-            final=True,
+            concat_time=isinstance(result_var, ResultImage),
             reverse=reverse,
             **kwargs,
         )
 
-        fn = vr.write_video_raw(cvc)
+        fn = VideoWriter().write_video_raw(cvc)
 
         if fn is not None:
             if video_controls is None:
@@ -137,9 +137,8 @@ class VideoSummaryResult(BenchResultBase):
             return vid
         return None
 
-    def plot_cb(self, dataset, result_var, **kwargs):
-        val = self.ds_to_container(dataset, result_var, container=None, **kwargs)
-        return val
+    def plot_cb(self, dataset: xr.Dataset, result_var: Parameter, **kwargs) -> Any:
+        return self.ds_to_container(dataset, result_var, container=None, **kwargs)
 
     def _to_video_panes_ds(
         self,
@@ -148,7 +147,7 @@ class VideoSummaryResult(BenchResultBase):
         target_dimension=0,
         horizontal=False,
         result_var=None,
-        final=False,
+        concat_time=False,
         reverse=False,
         **kwargs,
     ) -> pn.panel:
@@ -195,5 +194,5 @@ class VideoSummaryResult(BenchResultBase):
 
                 rendered = inner_container.render()
                 outer_container.append(rendered)
-            return outer_container.render(concatenate=final)
+            return outer_container.render(concatenate=concat_time)
         return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
