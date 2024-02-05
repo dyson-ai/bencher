@@ -24,6 +24,7 @@ class ComposableContainerVideo(ComposableContainerBase):
         self.name = name
         self.container = []
         self.background_col = background_col
+        self.target_duration = 10.
 
         self.label = self.label_formatter(var_name, var_value)
         if self.label is not None:
@@ -37,9 +38,14 @@ class ComposableContainerVideo(ComposableContainerBase):
                 img_obj = np.array(VideoWriter.label_image(obj, self.label))
             else:
                 img_obj = obj
-            self.container.append(ImageClip(img_obj, duration=1.0))
+            self.container.append(ImageClip(img_obj))
 
     def render(self, concatenate: bool = False) -> CompositeVideoClip:
+        fps = len(self.container) / self.target_duration
+        fps = max(fps, 1.0)  # never slower that 1 seconds per frame
+        fps = min(fps, 30.0)
+        for i in range(len(self.container)):
+            self.container[i].duration = 1.0 / fps
         if concatenate:
             return concatenate_videoclips(self.container)
         if self.horizontal:
