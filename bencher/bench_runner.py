@@ -114,6 +114,7 @@ class BenchRunner:
                         res = bch_fn(run_lvl, report_level)
                     else:
                         res = bch_fn(run_lvl, BenchReport())
+                        res.report.bench_name+= f"_{run_cfg.run_tag}"
                         self.show_publish(res.report, show, publish, save, debug)
                     self.results.append(res)
                 if grouped:
