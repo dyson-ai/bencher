@@ -160,3 +160,7 @@ cython_debug/
 #.idea/
 
 .vscode/active_file.cfg
+
+#COLCON
+install/**
+log/**
