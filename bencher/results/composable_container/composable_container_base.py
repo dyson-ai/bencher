@@ -10,9 +10,31 @@ class ComposeType(Enum):
     overlay = auto()  # overlay on top of the current container (alpha blending)
     sequence = auto()  # display the container after (in time)
 
+    def flip(self):
+        match self:
+            case ComposeType.right:
+                return ComposeType.down
+            case ComposeType.down:
+                return ComposeType.right
+            case _:
+                raise RuntimeError("cannot flip this type")
+
+    @staticmethod
+    def from_horizontal(horizontal: bool):
+        if horizontal:
+            return ComposeType.right
+        return ComposeType.down
+
 
 class ComposableContainerBase:
-    """A base class for renderer backends.  A composable renderr"""
+    """A base class for renderer backends.  A composable renderer"""
+
+    def __init__(
+        self, horizontal: bool = True, compose_method: ComposeType = ComposeType.right
+    ) -> None:
+        self.horizontal: bool = horizontal
+        self.compose_method = compose_method
+        self.container = []
 
     @staticmethod
     def label_formatter(var_name: str, var_value: int | float | str) -> str:
@@ -35,13 +57,6 @@ class ComposableContainerBase:
         if var_value is not None:
             return f"{var_value}"
         return None
-
-    def __init__(
-        self, horizontal: bool = True, compose_method: ComposeType = ComposeType.right
-    ) -> None:
-        self.horizontal: bool = horizontal
-        self.compose_method = compose_method
-        self.container = []
 
     def append(self, obj: Any) -> None:
         """Add an object to the container.  The relationship between the objects is defined by the ComposeType

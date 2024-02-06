@@ -71,7 +71,12 @@ def example_image_vid(
 ) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
     bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    # from functools import partial
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=-1)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=0)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=1)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid,time_sequence_dimension=2)
+
     bench.plot_sweep(input_vars=["sides"])
     bench.plot_sweep(input_vars=["radius", "sides"])
     bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
@@ -96,7 +101,7 @@ if __name__ == "__main__":
     ex_run_cfg.use_sample_cache = True
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
-    ex_run_cfg.level = 4
+    ex_run_cfg.level = 2
     example_image_vid(ex_run_cfg).report.show()
     # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

@@ -12,7 +12,11 @@ from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
 from bencher.results.video_result import VideoControls
 from bencher.utils import int_to_col
-from bencher.results.composable_container.composable_container_video import ComposableContainerVideo
+from bencher.results.composable_container.composable_container_video import (
+    ComposableContainerVideo,
+    ComposeType,
+)
+from copy import deepcopy
 
 
 class VideoSummaryResult(BenchResultBase):
@@ -112,21 +116,47 @@ class VideoSummaryResult(BenchResultBase):
         dataset: xr.Dataset,
         result_var: Parameter,
         reverse=True,
+        time_sequence_dimension=0,
         video_controls: VideoControls = None,
         **kwargs,
     ):
         vr = VideoWriter()
 
-        cvc = self._to_video_panes_ds(
-            dataset,
-            self.plot_cb,
-            target_dimension=0,
-            horizontal=True,
-            result_var=result_var,
-            final=True,
-            reverse=reverse,
-            **kwargs,
-        )
+        if True:
+
+            cvc = self._to_video_panes_ds(
+                dataset,
+                self.plot_cb,
+                target_dimension=0,
+                time_sequence_dimension=time_sequence_dimension,
+                compose_method=ComposeType.right,
+                result_var=result_var,
+                reverse=reverse,
+                **kwargs,
+            )
+        else:
+            da = dataset[result_var.name]
+            input_order = list(da.dims)
+            if reverse:
+                input_order = list(reversed(input_order))
+            inputs_produc = [da.coords[i].values for i in input_order]
+
+            ccv = ComposableContainerVideo(var_name="lol")
+
+            for index in itertools.product(*inputs_produc):
+                lookup = dict(zip(input_order, index))
+                val = da.loc[lookup].item()
+                if val is not None:
+                    ccv.append(val)
+            cvc = ccv.render(compose_method=ComposeType.right)
+            cvcd = ccv.render(compose_method=ComposeType.down)
+
+            ccv2 = ComposableContainerVideo(compose_method=ComposeType.sequence)
+            ccv2.append(cvc)
+            ccv2.append(cvcd)
+
+            cvc = ccv2.render()
+            print(cvc.duration)
 
         fn = vr.write_video_raw(cvc)
 
@@ -141,14 +171,36 @@ class VideoSummaryResult(BenchResultBase):
         val = self.ds_to_container(dataset, result_var, container=None, **kwargs)
         return val
 
+    def dataset_to_compose_list(
+        self, dataset, first_compose_method=ComposeType.right, time_sequence_dimension=0
+    ):
+        num_dims = len(dataset.sizes)
+        # print(dataset)
+        # print(dataset.sizes)
+        compose_method_list = [first_compose_method]
+        for i in range(num_dims - 1):
+            compose_method_list.append(ComposeType.flip(compose_method_list[-1]))
+
+        # print(compose_method_list)
+        # exit()
+        # compose_method_list.insert(0,ComposeType.sequence)
+        compose_method_list.append(ComposeType.sequence)
+
+        for i in range(time_sequence_dimension + 1):
+            compose_method_list[i] = ComposeType.sequence
+
+        return compose_method_list
+
     def _to_video_panes_ds(
         self,
         dataset: xr.Dataset,
         plot_callback: callable = None,
         target_dimension=0,
-        horizontal=False,
+        compose_method=ComposeType.right,
+        compose_method_list=None,
         result_var=None,
-        final=False,
+        time_sequence_dimension=0,
+        root_dimensions=None,
         reverse=False,
         **kwargs,
     ) -> pn.panel:
@@ -156,6 +208,19 @@ class VideoSummaryResult(BenchResultBase):
         dims = list(d for d in dataset.sizes)
         if reverse:
             dims = list(reversed(dims))
+
+        if root_dimensions is None:
+            root_dimensions = num_dims
+
+        if compose_method_list is None:
+            compose_method_list = self.dataset_to_compose_list(
+                dataset, compose_method, time_sequence_dimension=time_sequence_dimension
+            )
+            print("first compose")
+            print(compose_method_list)
+
+        compose_method_list_pop = deepcopy(compose_method_list)
+        compose_method = compose_method_list_pop.pop()
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
@@ -167,7 +232,7 @@ class VideoSummaryResult(BenchResultBase):
             outer_container = ComposableContainerVideo(
                 name=" vs ".join(dims),
                 background_col=dim_color,
-                horizontal=horizontal,
+                compose_method=compose_method,
                 # var_name=selected_dim,
                 # var_value=label_val,
             )
@@ -179,14 +244,17 @@ class VideoSummaryResult(BenchResultBase):
                     outer_container.name,
                     var_name=selected_dim,
                     var_value=label_val,
-                    horizontal=horizontal,
+                    compose_method=compose_method,
                 )
+
                 panes = self._to_video_panes_ds(
                     sliced,
                     plot_callback=plot_callback,
                     target_dimension=target_dimension,
-                    horizontal=len(sliced.sizes) <= target_dimension + 1,
+                    compose_method_list=compose_method_list_pop,
                     result_var=result_var,
+                    root_dimensions=root_dimensions,
+                    time_sequence_dimension=time_sequence_dimension,
                 )
                 inner_container.append(panes)
 
@@ -195,5 +263,18 @@ class VideoSummaryResult(BenchResultBase):
 
                 rendered = inner_container.render()
                 outer_container.append(rendered)
-            return outer_container.render(concatenate=final)
+            concat_with_time = (root_dimensions - num_dims) <= time_sequence_dimension
+            print(f"Num DIMS: {num_dims}, {dims}")
+            print(f"Distance from root: {root_dimensions - num_dims}")
+            print(
+                f"Distance from time_seq tim{root_dimensions - num_dims -time_sequence_dimension}"
+            )
+            print(f"Time seq: {time_sequence_dimension}")
+            print(f"Concat_time: {concat_with_time}")
+            concat_method = None
+            if concat_with_time:
+                concat_method = ComposeType.sequence
+            print(compose_method_list_pop)
+            print(f"rendering with {compose_method}")
+            return outer_container.render(compose_method)
         return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
