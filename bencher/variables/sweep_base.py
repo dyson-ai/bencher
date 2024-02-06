@@ -165,4 +165,3 @@ class SweepBase(param.Parameter):
         samples = [0, 1, 2, 3, 5, 9, 17, 33, 65, 129, 257, 513, 1025, 2049]
         out = self.with_sample_values(self.with_samples(samples[min(max_level, level)]).values())
         return out
-

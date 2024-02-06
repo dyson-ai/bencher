@@ -99,10 +99,10 @@ class BenchResultBase(OptunaResult):
             case ReduceType.SQUEEZE:
                 ds_out = ds.squeeze(drop=True)
         if level is not None:
-            coords_no_repeat ={}
-            for c,v in ds.coords.items():
+            coords_no_repeat = {}
+            for c, v in ds.coords.items():
                 if c != "repeat":
-                    coords_no_repeat[c] = with_level(v.to_numpy(),level)
+                    coords_no_repeat[c] = with_level(v.to_numpy(), level)
             return ds_out.sel(coords_no_repeat)
         return ds_out
 

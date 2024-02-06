@@ -18,13 +18,18 @@ class PanelResult(BenchResultBase):
         )
 
     def to_panes(
-        self, result_var: Parameter = None, target_dimension: int = 0, container=None,level:int=None, **kwargs
+        self,
+        result_var: Parameter = None,
+        target_dimension: int = 0,
+        container=None,
+        level: int = None,
+        **kwargs
     ) -> Optional[pn.pane.panel]:
         if container is None:
             container = pn.pane.panel
         return self.map_plot_panes(
             partial(self.ds_to_container, container=container),
-            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE,level=level),
+            hv_dataset=self.to_hv_dataset(ReduceType.SQUEEZE, level=level),
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=PANEL_TYPES,

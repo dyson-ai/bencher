@@ -54,7 +54,6 @@ class BenchPolygons(bch.ParametrizedSweep):
 def example_image(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-
     run_cfg.use_cache = False
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
