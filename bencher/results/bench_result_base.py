@@ -86,12 +86,12 @@ class BenchResultBase(OptunaResult):
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        ds = self.ds if result_var is None else self.ds[result_var.name]
+        ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
         match (reduce):
             case ReduceType.REDUCE:
-                ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
-                ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
+                ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
 
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
