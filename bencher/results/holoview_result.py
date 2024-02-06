@@ -139,10 +139,9 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-      
-        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt>1:
+        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1:
             heatmap_cb = self.to_line_ds
-        else:         
+        else:
             heatmap_cb = partial(
                 self.to_line_tap_ds, result_var_plots=tap_var, container=tap_container
             )
@@ -300,7 +299,7 @@ class HoloviewResult(PanelResult):
                 state["update"] = True
 
             if state["update"]:
-                kdims = {}  
+                kdims = {}
                 kdims[self.bench_cfg.input_vars[0].name] = state["x"]
                 kdims[self.bench_cfg.input_vars[1].name] = state["y"]
 
