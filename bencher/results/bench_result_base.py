@@ -97,10 +97,10 @@ class BenchResultBase(OptunaResult):
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
                 ds_out = ds_reduce_mean
             case ReduceType.SQUEEZE:
-                ds_out = ds.squeeze(drop=True)
+                ds_out = ds_out.squeeze(drop=True)
         if level is not None:
             coords_no_repeat = {}
-            for c, v in ds.coords.items():
+            for c, v in ds_out.coords.items():
                 if c != "repeat":
                     coords_no_repeat[c] = with_level(v.to_numpy(), level)
             return ds_out.sel(coords_no_repeat)
