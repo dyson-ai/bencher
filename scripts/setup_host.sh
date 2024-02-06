@@ -26,6 +26,10 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 #END OFFICIAL DOCKER INSTALL
 
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+
 #INSTALL NVIDIA DOCKER 
 #https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
@@ -41,3 +45,10 @@ sudo apt install git-lfs
 
 #Install rocker and rocker extensions which are used to launch the devcontainer
 pip install rocker off-your-rocker git+https://github.com/blooop/deps_rocker
+
+
+echo "testing docker install"
+
+docker run hello-world
+
+echo "you may need to restart your machine"
