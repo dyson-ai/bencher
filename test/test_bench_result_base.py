@@ -75,5 +75,5 @@ class TestBenchResultBase(unittest.TestCase):
         ds_filtered_types = res.select_level(ds_raw, 2, float)
         asserts(ds_filtered_types, [0, 4], ["a", "b", "c", "d", "e"])
 
-        ds_filtered_names = res.select_level(ds_raw, 2, all_levels_names="cat_var")
+        ds_filtered_names = res.select_level(ds_raw, 2, exclude_names="cat_var")
         asserts(ds_filtered_names, [0, 4], ["a", "b", "c", "d", "e"])
