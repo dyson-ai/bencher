@@ -1,5 +1,6 @@
 import unittest
 import bencher as bch
+import numpy as np
 
 from bencher.example.meta.example_meta import BenchableObject
 
@@ -39,3 +40,24 @@ class TestBenchResultBase(unittest.TestCase):
         )
 
         # bm.__call__(float_vars=1, sample_with_repeats=1)
+
+    def test_select_level(self):
+
+        class TestBench(bch.ParametrizedSweep):
+            float_var = bch.FloatSweep(default=0, bounds=[0, 5])
+            cat_var = bch.StringSweep(["a", "b", "c", "d", "e"])
+
+        bench = BenchableObject().to_bench()
+
+        res = bench.plot_sweep(
+            input_vars=["float_var", "cat_var"],
+            run_cfg=bch.BenchRunCfg(level=4)
+            plot=False,
+        )
+
+        ds_raw = res.to_dataset()
+
+        np.testing.assert_array_equal(ds_raw.coords["float_var"].to_numpy(),np.array([0,1,2,3,4,5]))
+
+
+

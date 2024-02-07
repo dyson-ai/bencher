@@ -19,5 +19,6 @@ def example_meta_float(
     return bench
 
 
+
 if __name__ == "__main__":
     example_meta_float().report.show()
