@@ -32,7 +32,7 @@ class VideoWriter:
         return self.filename
 
     @staticmethod
-    def create_label(label, width=None, height=20):
+    def create_label(label, width=None, height=14):
         if width is None:
             width = len(label) * 8
         new_img = Image.new("RGB", (width, height), (255, 255, 255))

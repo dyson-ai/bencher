@@ -10,6 +10,8 @@ import panel as pn
 from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.variables.inputs import with_level
+
 from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
@@ -54,7 +56,7 @@ class BenchResultBase(OptunaResult):
         return self.ds.count()
 
     def to_hv_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
@@ -67,11 +69,11 @@ class BenchResultBase(OptunaResult):
 
         if reduce == ReduceType.NONE:
             kdims = [i.name for i in self.bench_cfg.all_vars]
-            return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims)
-        return hv.Dataset(self.to_dataset(reduce, result_var))
+            return hv.Dataset(self.to_dataset(reduce, result_var, level), kdims=kdims)
+        return hv.Dataset(self.to_dataset(reduce, result_var, level))
 
     def to_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
     ) -> xr.Dataset:
         """Generate a summarised xarray dataset.
 
@@ -84,20 +86,25 @@ class BenchResultBase(OptunaResult):
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        ds = self.ds if result_var is None else self.ds[result_var.name]
+        ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
         match (reduce):
             case ReduceType.REDUCE:
-                ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
-                ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
+                ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
 
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
-                return ds_reduce_mean
+                ds_out = ds_reduce_mean
             case ReduceType.SQUEEZE:
-                return ds.squeeze(drop=True)
-            case _:
-                return ds
+                ds_out = ds_out.squeeze(drop=True)
+        if level is not None:
+            coords_no_repeat = {}
+            for c, v in ds_out.coords.items():
+                if c != "repeat":
+                    coords_no_repeat[c] = with_level(v.to_numpy(), level)
+            return ds_out.sel(coords_no_repeat)
+        return ds_out
 
     def get_optimal_vec(
         self,
