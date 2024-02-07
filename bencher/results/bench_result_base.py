@@ -23,6 +23,7 @@ from bencher.variables.results import (
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
+from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -105,9 +106,6 @@ class BenchResultBase(OptunaResult):
                     coords_no_repeat[c] = with_level(v.to_numpy(), level)
             return ds_out.sel(coords_no_repeat)
         return ds_out
-    
-    
-
 
     def get_optimal_vec(
         self,
@@ -414,9 +412,14 @@ class BenchResultBase(OptunaResult):
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
-    
+
     @staticmethod
-    def select_level(dataset:xr.Dataset,level:int,filter_types:List[type] = None,all_levels_names:List[str]=None)->xr.Dataset:
+    def select_level(
+        dataset: xr.Dataset,
+        level: int,
+        filter_types: List[type] = None,
+        all_levels_names: List[str] = None,
+    ) -> xr.Dataset:
         """Given a dataset, return a reduced dataset that only contains data from a specified level.  By default all types of variables are filtered at the specified level.  If you only want to get a reduced level for some types of data you can pass in filter types, You can also only filter specific variable names.
 
         Args:
@@ -442,9 +445,9 @@ class BenchResultBase(OptunaResult):
                 vals = v.to_numpy()
                 print(vals.dtype)
                 include = True
-                if filter_types is not None and not vals.dtype in filter_types:
+                if filter_types is not None and vals.dtype not in listify(filter_types):
                     include = False
-                if all_levels_names is not None and c in all_levels_names:
+                if all_levels_names is not None and c in listify(all_levels_names):
                     include = False
                 if include:
                     coords_no_repeat[c] = with_level(v.to_numpy(), level)

@@ -9,6 +9,7 @@ from bencher.variables.results import (
     PANEL_TYPES,
 )
 
+
 class PanelResult(BenchResultBase):
     def to_video(self, result_var: Parameter = None, **kwargs):
         vc = VideoControls()
@@ -18,13 +19,19 @@ class PanelResult(BenchResultBase):
         )
 
     def to_panes(
-        self, result_var: Parameter = None,hv_dataset=None, target_dimension: int = 0, container=None,level:int=None, **kwargs
+        self,
+        result_var: Parameter = None,
+        hv_dataset=None,
+        target_dimension: int = 0,
+        container=None,
+        level: int = None,
+        **kwargs
     ) -> Optional[pn.pane.panel]:
         if container is None:
             container = pn.pane.panel
         if hv_dataset is None:
-            hv_dataset = self.to_hv_dataset(ReduceType.SQUEEZE,level=level)
-        elif not isinstance(hv_dataset,hv.Dataset):
+            hv_dataset = self.to_hv_dataset(ReduceType.SQUEEZE, level=level)
+        elif not isinstance(hv_dataset, hv.Dataset):
             hv_dataset = hv.Dataset(hv_dataset)
         return self.map_plot_panes(
             partial(self.ds_to_container, container=container),
