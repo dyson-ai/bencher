@@ -23,6 +23,7 @@ from bencher.variables.results import (
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
+from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -411,6 +412,45 @@ class BenchResultBase(OptunaResult):
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
+
+    @staticmethod
+    def select_level(
+        dataset: xr.Dataset,
+        level: int,
+        include_types: List[type] = None,
+        exclude_names: List[str] = None,
+    ) -> xr.Dataset:
+        """Given a dataset, return a reduced dataset that only contains data from a specified level.  By default all types of variables are filtered at the specified level.  If you only want to get a reduced level for some types of data you can pass in a list of types to get filtered, You can also pass a list of variables names to exclude from getting filtered
+        Args:
+            dataset (xr.Dataset): dataset to filter
+            level (int): desired data resolution level
+            include_types (List[type], optional): Only filter data of these types. Defaults to None.
+            exclude_names (List[str], optional): Only filter data with these variable names. Defaults to None.
+
+        Returns:
+            xr.Dataset: A reduced dataset at the specified level
+
+        Example:  a dataset with float_var: [1,2,3,4,5] cat_var: [a,b,c,d,e]
+
+        select_level(ds,2) -> [1,5] [a,e]
+        select_level(ds,2,(float)) -> [1,5] [a,b,c,d,e]
+        select_level(ds,2,exclude_names=["cat_var]) -> [1,5] [a,b,c,d,e]
+
+        see test_bench_result_base.py -> test_select_level()
+        """
+        coords_no_repeat = {}
+        for c, v in dataset.coords.items():
+            if c != "repeat":
+                vals = v.to_numpy()
+                print(vals.dtype)
+                include = True
+                if include_types is not None and vals.dtype not in listify(include_types):
+                    include = False
+                if exclude_names is not None and c in listify(exclude_names):
+                    include = False
+                if include:
+                    coords_no_repeat[c] = with_level(v.to_numpy(), level)
+        return dataset.sel(coords_no_repeat)
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self, **kwargs):
