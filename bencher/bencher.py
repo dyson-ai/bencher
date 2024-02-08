@@ -312,9 +312,15 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
-
-        for i in range(len(input_vars)):
-            input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
+        if  isinstance(input_vars,dict):
+            processed_inputs =[]
+            for k,v in input_vars.items():
+                instance = self.convert_vars_to_params(k,"input").with_sample_values(v)
+                processed_inputs.append(instance)
+            input_vars = processed_inputs
+        else:
+            for i in range(len(input_vars)):
+                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
         for i in range(len(result_vars)):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
 
