@@ -87,8 +87,19 @@ class VideoSummaryResult(BenchResultBase):
         self,
         result_var: Parameter = None,
         result_types=(ResultImage,),
+        pane_collection: pn.pane = None,
         **kwargs,
     ) -> Optional[pn.panel]:
+        """Returns the results compiled into a video
+
+        Args:
+            result_var (Parameter, optional): The result var to plot. Defaults to None.
+            result_types (tuple, optional): The types of result var to convert to video. Defaults to (ResultImage,).
+            collection (pn.pane, optional): If there are multiple results, use this collection to stack them. Defaults to pn.Row().
+
+        Returns:
+            Optional[pn.panel]: a panel pane with a video of all results concatenated together
+        """
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
@@ -98,13 +109,16 @@ class VideoSummaryResult(BenchResultBase):
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
         )
+
+        if pane_collection is None:
+            pane_collection = pn.Row()
+
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
-            row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, result_types):
-                    row.append(self.to_video_grid_ds(ds, rv, **kwargs))
-            return row
+                    pane_collection.append(self.to_video_grid_ds(ds, rv, **kwargs))
+            return pane_collection
         return matches_res.to_panel()
 
     def to_video_grid_ds(
