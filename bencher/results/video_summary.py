@@ -93,12 +93,12 @@ class VideoSummaryResult(BenchResultBase):
         """Returns the results compiled into a video
 
         Args:
-            result_var (Parameter, optional): The reuslt var to plot. Defaults to None.
+            result_var (Parameter, optional): The result var to plot. Defaults to None.
             result_types (tuple, optional): The types of result var to convert to video. Defaults to (ResultImage,).
             collection (pn.pane, optional): If there are multiple results, use this collection to stack them. Defaults to pn.Row().
 
         Returns:
-            Optional[pn.panel]: _description_
+            Optional[pn.panel]: a panel pane with a video of all results concatenated together
         """
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
