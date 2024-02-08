@@ -249,11 +249,14 @@ class BenchResultBase(OptunaResult):
         target_dimension: int = 2,
         result_var: ResultVar = None,
         result_types=None,
-        pane_collection: pn.pane = pn.Row(),
+        pane_collection: pn.pane = None,
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
+
+        if pane_collection is None:
+            pane_collection = pn.Row()
 
         row = EmptyContainer(pane_collection)
 
@@ -285,7 +288,7 @@ class BenchResultBase(OptunaResult):
         target_dimension: int = 2,
         result_var: ResultVar = None,
         result_types=None,
-        pane_collection: pn.pane = pn.Row(),
+        pane_collection: pn.pane = None,
         **kwargs,
     ):
         plot_filter = PlotFilter(

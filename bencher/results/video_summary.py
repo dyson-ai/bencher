@@ -87,7 +87,7 @@ class VideoSummaryResult(BenchResultBase):
         self,
         result_var: Parameter = None,
         result_types=(ResultImage,),
-        pane_collection: pn.pane = pn.Row(),
+        pane_collection: pn.pane = None,
         **kwargs,
     ) -> Optional[pn.panel]:
         """Returns the results compiled into a video
@@ -109,6 +109,10 @@ class VideoSummaryResult(BenchResultBase):
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
         )
+
+        if pane_collection is None:
+            pane_collection = pn.Row()
+
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
             for rv in self.get_results_var_list(result_var):
