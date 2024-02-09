@@ -74,7 +74,8 @@ class VideoSummaryResult(BenchResultBase):
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
             if val is not None:
                 vr.append_file(val, label)
-        fn = vr.write_png()
+        fn = vr.write_png(**kwargs)
+        kwargs.pop("target_duration")
         if fn is not None:
             if video_controls is None:
                 video_controls = VideoControls()

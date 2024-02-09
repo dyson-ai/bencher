@@ -79,7 +79,8 @@ class VideoWriter:
         else:
             self.image_files.append(filepath)
 
-    def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None):
+    def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None, **kwargs):
+        target_duration = kwargs.pop(target_duration, target_duration)
         if isinstance(images, list) and len(images) > 0:
             if frame_time is None:
                 fps = len(images) / target_duration
@@ -90,10 +91,10 @@ class VideoWriter:
             return ImageSequenceClip(images, fps=fps, with_mask=False)
         return None
 
-    def write_png(self):
+    def write_png(self, **kwargs):
         clip = None
         if len(self.image_files) > 0:
-            clip = self.to_images_sequence(self.image_files)
+            clip = self.to_images_sequence(self.image_files, **kwargs)
         if len(self.video_files) > 0:
             clip = concatenate_videoclips([VideoFileClip(f) for f in self.video_files])
         if clip is not None:
