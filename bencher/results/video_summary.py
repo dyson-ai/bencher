@@ -128,6 +128,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter,
         reverse=True,
         video_controls: VideoControls = None,
+        target_duration: float = None,
         **kwargs,
     ):
         vr = VideoWriter()
@@ -140,6 +141,7 @@ class VideoSummaryResult(BenchResultBase):
             result_var=result_var,
             final=True,
             reverse=reverse,
+            target_duration=target_duration,
             **kwargs,
         )
 
@@ -165,6 +167,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var=None,
         final=False,
         reverse=False,
+        target_duration: float = None,
         **kwargs,
     ) -> pn.panel:
         num_dims = len(dataset.sizes)
@@ -183,6 +186,7 @@ class VideoSummaryResult(BenchResultBase):
                 name=" vs ".join(dims),
                 background_col=dim_color,
                 horizontal=horizontal,
+                target_duration=target_duration,
                 # var_name=selected_dim,
                 # var_value=label_val,
             )
@@ -195,6 +199,7 @@ class VideoSummaryResult(BenchResultBase):
                     var_name=selected_dim,
                     var_value=label_val,
                     horizontal=horizontal,
+                    target_duration=target_duration,
                 )
                 panes = self._to_video_panes_ds(
                     sliced,
