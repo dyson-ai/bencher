@@ -138,7 +138,7 @@ class SweepBase(param.Parameter):
             output.step = None  # pylint: disable = attribute-defined-outside-init
         return output
 
-    def with_sample_values(self, sample_values: int) -> SweepBase:
+    def with_sample_values(self, sample_values: list) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         try:

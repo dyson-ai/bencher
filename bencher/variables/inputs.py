@@ -191,3 +191,8 @@ def box(name, center, width):
     var = FloatSweep(default=center, bounds=(center - width, center + width))
     var.name = name
     return var
+
+
+def with_level(arr: list, level) -> list:
+    return IntSweep(sample_values=arr).with_level(level).values()
+    # return tmp.with_sample_values(arr).with_level(level).values()

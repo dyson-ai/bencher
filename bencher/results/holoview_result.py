@@ -130,6 +130,7 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(1, 1),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
+            panel_range=VarRange(0, None),
             reduce=ReduceType.SQUEEZE,
             target_dimension=2,
             result_var=result_var,
