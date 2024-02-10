@@ -70,6 +70,11 @@ class TestVarSweeps(unittest.TestCase):
             [100, 156, 212, 268, 325, 381, 437, 493, 550, 606, 662, 718, 775, 831, 887, 943, 1000],
         )
 
+    def test_int_loading(self):
+        int_sweep = IntSweep()
+
+        self.assertListEqual(int_sweep.values(), [0])
+
     def test_float_sweep(self):
         float_sweep = FloatSweep(bounds=[0, 1])
 
