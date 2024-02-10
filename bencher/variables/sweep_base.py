@@ -119,7 +119,7 @@ class SweepBase(param.Parameter):
 
         # TODO investigate why this stopped working after a holoviews update
         # if hasattr(self, "units"):
-            # params["unit"] = getattr(self, "units")
+        # params["unit"] = getattr(self, "units")
 
         return hv.Dimension(name_tuple, **params)
 
