@@ -117,7 +117,11 @@ class SweepBase(param.Parameter):
         if hasattr(self, "step"):
             params["step"] = getattr(self, "step")
 
-        return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
+        # TODO investigate why this stopped working after a holoviews update
+        # if hasattr(self, "units"):
+        # params["unit"] = getattr(self, "units")
+
+        return hv.Dimension(name_tuple, **params)
 
     def indices_to_samples(self, desires_num_samples, sample_values):
         indices = [
@@ -138,7 +142,7 @@ class SweepBase(param.Parameter):
             output.step = None  # pylint: disable = attribute-defined-outside-init
         return output
 
-    def with_sample_values(self, sample_values: int) -> SweepBase:
+    def with_sample_values(self, sample_values: list) -> SweepBase:
         output = deepcopy(self)
         # TODO set up class properly. Slightly complicated due to slots
         try:

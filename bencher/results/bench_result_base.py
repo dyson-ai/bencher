@@ -10,6 +10,8 @@ import panel as pn
 from bencher.utils import int_to_col, color_tuple_to_css, callable_name
 
 from bencher.variables.parametrised_sweep import ParametrizedSweep
+from bencher.variables.inputs import with_level
+
 from bencher.variables.results import OptDir
 from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
@@ -21,6 +23,7 @@ from bencher.variables.results import (
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
+from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -54,7 +57,7 @@ class BenchResultBase(OptunaResult):
         return self.ds.count()
 
     def to_hv_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
@@ -67,11 +70,11 @@ class BenchResultBase(OptunaResult):
 
         if reduce == ReduceType.NONE:
             kdims = [i.name for i in self.bench_cfg.all_vars]
-            return hv.Dataset(self.to_dataset(reduce, result_var), kdims=kdims)
-        return hv.Dataset(self.to_dataset(reduce, result_var))
+            return hv.Dataset(self.to_dataset(reduce, result_var, level), kdims=kdims)
+        return hv.Dataset(self.to_dataset(reduce, result_var, level))
 
     def to_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None
+        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
     ) -> xr.Dataset:
         """Generate a summarised xarray dataset.
 
@@ -84,20 +87,25 @@ class BenchResultBase(OptunaResult):
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        ds = self.ds if result_var is None else self.ds[result_var.name]
+        ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
         match (reduce):
             case ReduceType.REDUCE:
-                ds_reduce_mean = ds.mean(dim="repeat", keep_attrs=True)
-                ds_reduce_std = ds.std(dim="repeat", keep_attrs=True)
+                ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
 
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
-                return ds_reduce_mean
+                ds_out = ds_reduce_mean
             case ReduceType.SQUEEZE:
-                return ds.squeeze(drop=True)
-            case _:
-                return ds
+                ds_out = ds_out.squeeze(drop=True)
+        if level is not None:
+            coords_no_repeat = {}
+            for c, v in ds_out.coords.items():
+                if c != "repeat":
+                    coords_no_repeat[c] = with_level(v.to_numpy(), level)
+            return ds_out.sel(coords_no_repeat)
+        return ds_out
 
     def get_optimal_vec(
         self,
@@ -241,11 +249,16 @@ class BenchResultBase(OptunaResult):
         target_dimension: int = 2,
         result_var: ResultVar = None,
         result_types=None,
+        pane_collection: pn.pane = None,
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset()
-        row = EmptyContainer(pn.Row())
+
+        if pane_collection is None:
+            pane_collection = pn.Row()
+
+        row = EmptyContainer(pane_collection)
 
         # kwargs= self.set_plot_size(**kwargs)
         for rv in self.get_results_var_list(result_var):
@@ -275,6 +288,7 @@ class BenchResultBase(OptunaResult):
         target_dimension: int = 2,
         result_var: ResultVar = None,
         result_types=None,
+        pane_collection: pn.pane = None,
         **kwargs,
     ):
         plot_filter = PlotFilter(
@@ -294,6 +308,7 @@ class BenchResultBase(OptunaResult):
                 target_dimension=target_dimension,
                 result_var=result_var,
                 result_types=result_types,
+                pane_collection=pane_collection,
                 **kwargs,
             )
         return matches_res.to_panel()
@@ -404,6 +419,45 @@ class BenchResultBase(OptunaResult):
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
+
+    @staticmethod
+    def select_level(
+        dataset: xr.Dataset,
+        level: int,
+        include_types: List[type] = None,
+        exclude_names: List[str] = None,
+    ) -> xr.Dataset:
+        """Given a dataset, return a reduced dataset that only contains data from a specified level.  By default all types of variables are filtered at the specified level.  If you only want to get a reduced level for some types of data you can pass in a list of types to get filtered, You can also pass a list of variables names to exclude from getting filtered
+        Args:
+            dataset (xr.Dataset): dataset to filter
+            level (int): desired data resolution level
+            include_types (List[type], optional): Only filter data of these types. Defaults to None.
+            exclude_names (List[str], optional): Only filter data with these variable names. Defaults to None.
+
+        Returns:
+            xr.Dataset: A reduced dataset at the specified level
+
+        Example:  a dataset with float_var: [1,2,3,4,5] cat_var: [a,b,c,d,e]
+
+        select_level(ds,2) -> [1,5] [a,e]
+        select_level(ds,2,(float)) -> [1,5] [a,b,c,d,e]
+        select_level(ds,2,exclude_names=["cat_var]) -> [1,5] [a,b,c,d,e]
+
+        see test_bench_result_base.py -> test_select_level()
+        """
+        coords_no_repeat = {}
+        for c, v in dataset.coords.items():
+            if c != "repeat":
+                vals = v.to_numpy()
+                print(vals.dtype)
+                include = True
+                if include_types is not None and vals.dtype not in listify(include_types):
+                    include = False
+                if exclude_names is not None and c in listify(exclude_names):
+                    include = False
+                if include:
+                    coords_no_repeat[c] = with_level(v.to_numpy(), level)
+        return dataset.sel(coords_no_repeat)
 
     # MAPPING TO LOWER LEVEL BENCHCFG functions so they are available at a top level.
     def to_sweep_summary(self, **kwargs):

@@ -187,14 +187,14 @@ class FloatSweep(Number, SweepBase):
         return self.sample_values
 
 
-def box(name, center, width,doc=None):
+def box(name, center, width, doc=None):
     var = FloatSweep(default=center, bounds=(center - width, center + width))
     var.name = name
     var.doc = doc
     return var
 
 
-def float_sweep(name, min_val, max_val,doc=None):
+def float_sweep(name, min_val, max_val, doc=None):
     var = FloatSweep(bounds=(min_val, max_val))
     var.name = name
     var.doc = doc
@@ -204,3 +204,8 @@ def float_sweep(name, min_val, max_val,doc=None):
 def int_sweep(name, min_val, max_val):
     var = FloatSweep(bounds=(min_val, max_val))
     var.name = name
+
+
+def with_level(arr: list, level) -> list:
+    return IntSweep(sample_values=arr).with_level(level).values()
+    # return tmp.with_sample_values(arr).with_level(level).values()
