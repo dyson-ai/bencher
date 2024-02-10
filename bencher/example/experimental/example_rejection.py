@@ -102,7 +102,7 @@ run_cfg = bch.BenchRunCfg(repeats=5)
 run_cfg.level=6
 bench = Slopes().to_bench(run_cfg)
 
-# Slopes().to_gui()
+Slopes().to_gui()
 
 
 # bench.to_gui()
