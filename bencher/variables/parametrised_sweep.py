@@ -153,7 +153,7 @@ class ParametrizedSweep(Parameterized):
 
     @classmethod
     def get_results_only(cls) -> List[Parameter]:
-        """Return a list of input parameters
+        """Return a list of result parameters
 
         Returns:
             List[param.Parameter]: A list of result parameters
@@ -175,44 +175,29 @@ class ParametrizedSweep(Parameterized):
         return [iv.as_dim(compute_values) for iv in inputs]
 
     def to_dynamic_map(
-        self,
-        callback=None,
-        name=None,
-        remove_dims: str | List[str] = None,
-        result_var:str="hmap"
+        self, callback=None, name=None, remove_dims: str | List[str] = None, result_var: str = None
     ) -> hv.DynamicMap:
         if callback is None:
             callback = self.__call__
 
+        if result_var is None:
+            result_vars = self.get_input_and_results().results
+            for k, rv in result_vars.items():
+                if isinstance(rv, ResultHmap):
+                    result_var = k
+
         def callback_wrapper(**kwargs):
-            print(kwargs)
-            out = callback(**kwargs)["hmap"]
-            print(out)
-            return out
-        
-        d1 =self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims)
+            return callback(**kwargs)[result_var]
 
-        for d in d1:
-            print(d.range)
-
-
-
-        print("working",[hv.Dimension("phase", range=(0.5, 1)), hv.Dimension("freq", range=(0.5, 1.25))])
-
-        dmap = hv.DynamicMap(
+        return hv.DynamicMap(
             callback=callback_wrapper,
             kdims=self.get_inputs_as_dims(compute_values=False, remove_dims=remove_dims),
-            # kdims=[hv.Dimension("phase", range=(0.5, 1)), hv.Dimension("freq", range=(0.5, 1.25))],
             name=name,
         ).opts(shared_axes=False, framewise=True, width=1000, height=1000)
 
-        # dmap = dmap.redim.range(phase=(0., 1), freq=(0.5, 1.25))
-        return dmap
-
-
-    def to_gui(self,**kwargs):  # pragma: no cover
+    def to_gui(self, result_var: str = None, **kwargs):  # pragma: no cover
         main = pn.Row(
-            self.to_dynamic_map(**kwargs),
+            self.to_dynamic_map(result_var=result_var, **kwargs),
         )
         main.show()
 

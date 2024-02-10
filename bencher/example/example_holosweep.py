@@ -41,12 +41,11 @@ class PlotFunctions(bch.ParametrizedSweep):
 
     compute_fn = bch.EnumSweep(Function)
 
+    # RESULT VARS
     fn_output = bch.ResultVar(units="v", doc="sin of theta with some noise")
-
     out_sum = bch.ResultVar(units="v", doc="The sum")
-
-    hmap = bch.ResultReference()
-    hmap1 = bch.ResultHmap()
+    ref = bch.ResultReference()
+    holomap = bch.ResultHmap()
 
     def __call__(self, plot=True, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
@@ -56,8 +55,8 @@ class PlotFunctions(bch.ParametrizedSweep):
             0, noise
         )
 
-        self.hmap1 = self.plot_holo(plot)
-        self.hmap = bch.ResultReference(self.hmap1)
+        self.holomap = self.plot_holo(plot)
+        self.ref = bch.ResultReference(self.ref)
 
         return self.get_results_values_as_dict()
 
@@ -73,17 +72,11 @@ class PlotFunctions(bch.ParametrizedSweep):
 def example_holosweep(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    wv = PlotFunctions()
-
-    # run_cfg.use_optuna = True
-
-    bench = bch.Bench("waves", wv, run_cfg=run_cfg, report=report)
+    bench = PlotFunctions().to_bench(run_cfg, report)
 
     bench.plot_sweep(
-        "phase",
-        input_vars=[PlotFunctions.param.theta, PlotFunctions.param.freq],
-        result_vars=[PlotFunctions.param.fn_output, PlotFunctions.param.hmap],
-        # result_vars=[PlotFunctions.param.hmap],
+        input_vars=["theta", "freq"],
+        result_vars=["fn_output", "hmap"],
     )
 
     # print("best", res.get_best_trial_params(True))
@@ -97,13 +90,9 @@ def example_holosweep(
     # bench.report.append(res.to_holomap().layout())
     return bench
 
-def example_gui():
-    PlotFunctions().to_gui()
-
 
 if __name__ == "__main__":
-
-    example_gui()
+    PlotFunctions().to_gui()
     bench_run = bch.BenchRunner("bench_runner_test")
     bench_run.add_run(example_holosweep)
-    bench_run.run(level=3, show=True, use_cache=False)
+    bench_run.run(level=6, show=True, use_cache=False)
