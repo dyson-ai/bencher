@@ -69,12 +69,24 @@ class Slopes(bch.ParametrizedSweep):
         # self.curve *= hv.Text(**s.points[3].as_dict(),text=s.points[3].gradient(s.points[4]))
         self.hmap *= hv.Text(s.points[2].x, s.points[2].y, str(ratio))
 
-        self.hmap *= hv.Text(10, 10, "".join(["ADP (nmol) = ", str(adp_nmol)]))
-        self.hmap *= hv.Text(10, 11, "".join(["P:O ratio = ", str(po_ratio)]))
-        self.hmap *= hv.Text(10, 12, "".join(["Oxygen per au = ", str(oxygen_au)]))
-        self.hmap *= hv.Text(s.points[1].x, s.points[1].y, str(s.points[1].y))
-        self.hmap *= hv.Text(s.points[2].x +8, s.points[2].y, str(round(s.points[2].y, 4)))
-        self.hmap *= hv.Text(10, 15, "".join(["O diff = ", str(s.points[1].y - s.points[2].y)]))
+        # self.hmap *= hv.Text(10, 10, "".join(["ADP (nmol) = ", str(adp_nmol)]))
+        # self.hmap *= hv.Text(10, 11, "".join(["P:O ratio = ", str(po_ratio)]))
+        # self.hmap *= hv.Text(10, 12, "".join(["Oxygen per au = ", str(oxygen_au)]))
+        # self.hmap *= hv.Text(s.points[1].x, s.points[1].y, str(s.points[1].y))
+        # self.hmap *= hv.Text(s.points[2].x + 8, s.points[2].y, str(round(s.points[2].y, 4)))
+        # self.hmap *= hv.Text(10, 15, "".join(["O diff = ", str(s.points[1].y - s.points[2].y)]))
+
+        table_elements = []
+
+        def add_table(item, val):
+            table_elements.append((item, val))
+
+        add_table("ADP (nmol)", adp_nmol)
+        add_table("P:O ratio", po_ratio)
+        add_table("Oxygen per au", oxygen_au)
+        add_table("O diff", s.points[1].y - s.points[2].y)
+
+        self.hmap += hv.ItemTable(table_elements)
 
         return super().__call__()
 
@@ -99,7 +111,7 @@ class Slopes(bch.ParametrizedSweep):
 
 
 run_cfg = bch.BenchRunCfg(repeats=5)
-run_cfg.level=6
+run_cfg.level = 6
 bench = Slopes().to_bench(run_cfg)
 
 Slopes().to_gui()
