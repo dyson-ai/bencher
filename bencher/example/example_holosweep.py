@@ -97,8 +97,13 @@ def example_holosweep(
     # bench.report.append(res.to_holomap().layout())
     return bench
 
+def example_gui():
+    PlotFunctions().to_gui()
+
 
 if __name__ == "__main__":
+
+    example_gui()
     bench_run = bch.BenchRunner("bench_runner_test")
     bench_run.add_run(example_holosweep)
     bench_run.run(level=3, show=True, use_cache=False)
