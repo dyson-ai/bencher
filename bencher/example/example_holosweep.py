@@ -76,7 +76,7 @@ def example_holosweep(
 
     bench.plot_sweep(
         input_vars=["theta", "freq"],
-        result_vars=["fn_output", "hmap"],
+        result_vars=["fn_output", "holomap"],
     )
 
     # print("best", res.get_best_trial_params(True))
