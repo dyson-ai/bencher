@@ -11,11 +11,15 @@ from bencher.example.experimental.constrained_plotter import Stylus, Point
 
 from enum import auto
 from strenum import StrEnum
+import pandas as pd
 
 
 class Condition(StrEnum):
     control = auto()
     diseased = auto()
+
+
+overall = []
 
 
 class Slopes(bch.ParametrizedSweep):
@@ -28,6 +32,7 @@ class Slopes(bch.ParametrizedSweep):
 
     # RESULTS
     hmap = bch.ResultHmap()
+    table = bch.ResultContainer()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
@@ -77,22 +82,33 @@ class Slopes(bch.ParametrizedSweep):
         # self.hmap *= hv.Text(10, 15, "".join(["O diff = ", str(s.points[1].y - s.points[2].y)]))
 
         table_elements = []
+        table_el = []
+        table_cols = []
 
         def add_table(item, val):
             table_elements.append((item, val))
+            table_el.append(val)
+            table_cols.append(item)
 
         add_table("ADP (nmol)", adp_nmol)
         add_table("P:O ratio", po_ratio)
         add_table("Oxygen per au", oxygen_au)
         add_table("O diff", s.points[1].y - s.points[2].y)
+        add_table("valid", self.validate(s))
 
-        self.hmap += hv.ItemTable(table_elements)
+        # self.hmap +=
+        # self.table = hv.ItemTable(table_elements)
+
+        # table_elements
+
+        overall.append(pd.DataFrame([table_el], columns=table_cols))
 
         return super().__call__()
 
     def validate(self, plot: Stylus) -> bool:
         grad = plot.points[-1].gradient(plot.points[0])
         print(grad)
+        return uniform(0, 1) < 0.5
         return grad < -1.5
 
 
@@ -111,20 +127,25 @@ class Slopes(bch.ParametrizedSweep):
 
 
 run_cfg = bch.BenchRunCfg(repeats=5)
-run_cfg.level = 6
+run_cfg.level = 2
 bench = Slopes().to_bench(run_cfg)
 
-Slopes().to_gui()
-
-
-# bench.to_gui()
+# Slopes().to_gui()
 
 
 # res = bench.plot_sweep(input_vars=["condition"])
-res = bench.plot_sweep(input_vars=["x_delta3"])
+res = bench.plot_sweep(input_vars=["x_delta3"], plot=False)
+
+# print(overall)
+# bench.report.append(hv.Table(overall))
+
+overall_df = pd.concat(overall, ignore_index=True)
+bench.report.append(overall_df.loc[overall_df["valid"] == True])
+bench.report.append(overall_df)
 
 
 bench.report.append(res.to_holomap())
+
 
 # res =bench.plot_sweep(input_vars=["adp_nmol"],plot=False)
 
