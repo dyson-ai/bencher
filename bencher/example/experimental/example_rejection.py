@@ -134,7 +134,7 @@ class Slopes(bch.ParametrizedSweep):
 
 
 run_cfg = bch.BenchRunCfg(repeats=5)
-run_cfg.level = 4
+run_cfg.level = 3
 bench = Slopes().to_bench(run_cfg)
 
 # LIVE VIEW
