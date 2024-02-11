@@ -35,6 +35,7 @@ class Slopes(bch.ParametrizedSweep):
     # table = bch.ResultContainer()
     # ref = bch.ResultContainer()
     ref = bch.ResultReference()
+    valid = bch.ResultVar()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
@@ -71,6 +72,8 @@ class Slopes(bch.ParametrizedSweep):
         state3 = s.points[2].gradient(s.points[1])
         state4 = s.points[3].gradient(s.points[2])
         ratio = state3 / state4
+
+        self.valid = 1.0 if self.validate(s) else 0.0
 
         self.hmap = s.to_curve(self.validate(s))
         # self.curve *= hv.Text(**s.points[3].as_dict(),text=s.points[3].gradient(s.points[4]))
@@ -131,14 +134,21 @@ class Slopes(bch.ParametrizedSweep):
 
 
 run_cfg = bch.BenchRunCfg(repeats=5)
-run_cfg.level = 2
+run_cfg.level = 4
 bench = Slopes().to_bench(run_cfg)
 
+# LIVE VIEW
 # Slopes().to_gui()
 
 
 # res = bench.plot_sweep(input_vars=["condition"])
 res = bench.plot_sweep(input_vars=["x_delta3"])
+
+# Creates line plot of sweeping x_delta vs valid
+ds = res.to_hv_dataset(bch.ReduceType.NONE, Slopes.param.valid)
+bench.report.append(ds.to(hv.Curve).overlay())
+
+# bench.report.append(res.to_curve())
 
 # print(overall)
 # bench.report.append(hv.Table(overall))
