@@ -1,29 +1,8 @@
 import bencher as bch
-import param
 
 # bch.fl
 
 
-class BenchParameterBase:
-
-    def __init__(self, bounds=None, name=None, level=None, values=None):
-        self.name = name
-        self.level = level
-        self.bounds = None
-        self.sample_values = values
-
-    def values(self, level=None):
-        pass
-
-
-class IntSweep(BenchParameterBase):
-
-    def __init__(self, bounds=None, name=None, level=None, values=None):
-        super().__init__(bounds, name, level, values)
-
-    def values(self, level=None):
-
-        return super().values(level)
 
 
 def x_squared(x):
