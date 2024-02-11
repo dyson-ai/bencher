@@ -1,0 +1,242 @@
+import unittest
+from bencher.variables.inputs2 import IntSweep
+
+
+class TestInputSweeps(unittest.TestCase):
+
+    def test_int_sweep_01(self):
+        int_sweep = IntSweep()
+        self.assertEqual(int_sweep.get_default(), 0)
+        self.assertListEqual(int_sweep.get_values(), [0])
+
+        int_sweep = IntSweep(0)
+        self.assertEqual(int_sweep.get_default(), 0)
+        self.assertListEqual(int_sweep.get_values(), [0])
+
+        int_sweep = IntSweep(1)
+        self.assertEqual(int_sweep.get_default(), 1)
+        self.assertListEqual(int_sweep.get_values(), [0, 1])
+
+        int_sweep = IntSweep(2)
+        self.assertEqual(int_sweep.get_default(), 2)
+        self.assertListEqual(int_sweep.get_values(), [0, 1, 2])
+
+        # self.assertListEqual(int_sweep.get_values(level=2), [0, 1])
+        # self.assertListEqual(int_sweep.get_values(level=10), [0, 1])
+        # self.assertListEqual(int_sweep.get_values(samples=1), [0])
+        # self.assertListEqual(int_sweep.get_values(samples=10), [0, 1])
+
+    def test_int_sweep_two(self):
+
+        int_sweep = IntSweep(1, 2)
+        self.assertEqual(int_sweep.get_default(), 1)
+        self.assertListEqual(int_sweep.get_values(), [1, 2])
+
+        int_sweep = IntSweep(2, 1)
+        self.assertEqual(int_sweep.get_default(), 1)
+        self.assertListEqual(int_sweep.get_values(), [1, 2])
+
+    def test_int_sweep_02(self):
+        int_sweep = IntSweep(0)
+        self.assertEqual(int_sweep.get_default(), 0)
+        self.assertListEqual(int_sweep.get_values(), [0])
+
+    def test_int_sweep_03(self):
+        int_sweep = IntSweep(0)
+        self.assertEqual(int_sweep.get_default(), 0)
+        self.assertListEqual(int_sweep.get_values(), [0, 1, 2, 3])
+
+    def test_int_sweep_03(self):
+        int_sweep = IntSweep(3)
+        self.assertEqual(int_sweep.get_default(), 0)
+        self.assertListEqual(int_sweep.get_values(), [0, 1, 2, 3])
+
+
+if __name__ == "__main__":
+    TestInputSweeps().test_int_sweep_01()
+
+
+# def test_int_sweep_01(self):
+#     int_sweep = IntSweep(bounds=[0, 1])
+#     self.assertEqual(int_sweep.get_default(), 0)
+#     self.assertListEqual(int_sweep.values(), [0, 1])
+#     self.assertListEqual(int_sweep.values(), [0, 1])
+
+# def test_int_sweep_06(self):
+#     int_sweep = IntSweep(bounds=[0, 6])
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
+#     self.assertListEqual(int_sweep.values(True), [0, 6])
+
+# def test_int_sweep_06_debug_sampes(self):
+#     int_sweep = IntSweep(bounds=[0, 6], samples_debug=4)
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6])
+#     self.assertListEqual(int_sweep.values(True), [0, 2, 4, 6])
+
+# def test_int_sweep_10_debug_sampes(self):
+#     int_sweep = IntSweep(bounds=[0, 10])
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+#     self.assertListEqual(int_sweep.values(True), [0, 10])
+
+# def test_int_sweep_10_with_values_(self):
+#     int_sweep = IntSweep(bounds=[0, 10])
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertListEqual(int_sweep.values(False), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+#     self.assertListEqual(int_sweep.with_samples(3).values(True), [0, 10])
+#     self.assertListEqual(int_sweep.with_samples(3).values(False), [0, 5, 10])
+
+# def test_int_sweep_level_10_with_values_(self):
+#     int_sweep = IntSweep(bounds=[0, 10])
+#     self.assertListEqual(int_sweep.with_level(1).values(), [0])
+#     self.assertListEqual(int_sweep.with_level(2).values(), [0, 10])
+#     self.assertListEqual(int_sweep.with_level(3).values(), [0, 5, 10])
+#     self.assertListEqual(int_sweep.with_level(4).values(), [0, 2, 5, 7, 10])
+#     self.assertListEqual(int_sweep.with_level(5).values(), [0, 1, 2, 3, 5, 6, 7, 8, 10])
+#     self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+# def test_int_sweep_level_10_with_values_and_step(self):
+#     int_sweep = IntSweep(bounds=[0, 10], step=2, samples=4)
+#     self.assertListEqual(int_sweep.with_level(1).values(), [0])
+#     self.assertListEqual(int_sweep.with_level(2).values(), [0, 10])
+#     self.assertListEqual(int_sweep.with_level(3).values(), [0, 5, 10])
+#     self.assertListEqual(int_sweep.with_level(4).values(), [0, 2, 5, 7, 10])
+#     self.assertListEqual(int_sweep.with_level(5).values(), [0, 1, 2, 3, 5, 6, 7, 8, 10])
+#     self.assertListEqual(int_sweep.with_level(6).values(), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+# def test_int_sweep_level_1000_with_values_(self):
+#     int_sweep = IntSweep(default=100, bounds=[100, 1000])
+#     self.assertListEqual(int_sweep.with_level(1).values(), [100])
+#     self.assertListEqual(int_sweep.with_level(2).values(), [100, 1000])
+#     self.assertListEqual(int_sweep.with_level(3).values(), [100, 550, 1000])
+#     self.assertListEqual(int_sweep.with_level(4).values(), [100, 325, 550, 775, 1000])
+#     self.assertListEqual(
+#         int_sweep.with_level(5).values(), [100, 212, 325, 437, 550, 662, 775, 887, 1000]
+#     )
+#     self.assertListEqual(
+#         int_sweep.with_level(6).values(),
+#         [100, 156, 212, 268, 325, 381, 437, 493, 550, 606, 662, 718, 775, 831, 887, 943, 1000],
+#     )
+
+# def test_int_loading(self):
+#     int_sweep = IntSweep()
+
+#     self.assertListEqual(int_sweep.values(), [0])
+
+# def test_float_sweep(self):
+#     float_sweep = FloatSweep(bounds=[0, 1])
+
+#     self.assertListEqual(list(float_sweep.with_level(1).values()), [0.0])
+#     self.assertListEqual(list(float_sweep.with_level(2).values()), [0.0, 1.0])
+#     self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
+#     self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
+
+# def test_float_sweep_with_step(self):
+#     float_sweep = FloatSweep(bounds=[0, 1], step=0.01)
+
+#     self.assertListEqual(list(float_sweep.with_level(1).values()), [0.0])
+#     self.assertListEqual(list(float_sweep.with_level(2).values()), [0.0, 1.0])
+#     self.assertListEqual(list(float_sweep.with_level(3).values()), [0.0, 0.5, 1.0])
+#     self.assertListEqual(list(float_sweep.with_level(4).values()), [0.0, 0.25, 0.5, 0.75, 1.0])
+
+# def test_float_step(self):
+#     float_sweep = FloatSweep(bounds=[0, 1], step=0.1)
+
+#     self.assertListEqual(
+#         list(float_sweep.values()),
+#         [
+#             0.0,
+#             0.1,
+#             0.2,
+#             0.30000000000000004,
+#             0.4,
+#             0.5,
+#             0.6000000000000001,
+#             0.7000000000000001,
+#             0.8,
+#             0.9,
+#         ],
+#     )
+
+#     float_sweep2 = FloatSweep(bounds=[0, 0.9], step=0.1)
+#     # note that it does not return the upper bound of 0.9 even though it a multiple of 0.1
+#     self.assertListEqual(
+#         list(float_sweep2.values()),
+#         [
+#             0.0,
+#             0.1,
+#             0.2,
+#             0.30000000000000004,
+#             0.4,
+#             0.5,
+#             0.6000000000000001,
+#             0.7000000000000001,
+#             0.8,
+#         ],
+#     )
+
+# def test_enum_sweep_level(self):
+#     class Enum1(StrEnum):
+#         VAL1 = auto()
+#         VAL2 = auto()
+#         VAL3 = auto()
+#         VAL4 = auto()
+
+#     enum_sweep = EnumSweep(Enum1)
+
+#     self.assertListEqual(enum_sweep.with_level(1).values(), [Enum1.VAL1])
+
+#     self.assertListEqual(enum_sweep.with_level(2).values(), [Enum1.VAL1, Enum1.VAL4])
+
+#     self.assertListEqual(
+#         enum_sweep.with_level(3).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL4]
+#     )
+#     self.assertListEqual(
+#         enum_sweep.with_level(4).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
+#     )
+#     self.assertListEqual(
+#         enum_sweep.with_level(5).values(), [Enum1.VAL1, Enum1.VAL2, Enum1.VAL3, Enum1.VAL4]
+#     )
+
+# def test_bool_default(self) -> None:
+#     bool_sweep_true = BoolSweep(default=True)
+#     self.assertTrue(bool_sweep_true.default)
+
+#     bool_sweep_false = BoolSweep(default=False)
+#     self.assertFalse(bool_sweep_false.default)
+
+# def test_bool_sweep_level(self):
+#     bool_sweep = BoolSweep()
+
+#     self.assertListEqual(bool_sweep.with_level(1).values(), [True])
+#     self.assertListEqual(bool_sweep.with_level(2).values(), [True, False])
+#     self.assertListEqual(bool_sweep.with_level(3).values(), [True, False])
+
+# def test_string_sweep_level(self):
+#     string_sweep = StringSweep(["VAL1", "VAL2", "VAL3", "VAL4"])
+#     self.assertListEqual(string_sweep.with_level(1).values(), ["VAL1"])
+#     self.assertListEqual(string_sweep.with_level(2).values(), ["VAL1", "VAL4"])
+#     self.assertListEqual(string_sweep.with_level(3).values(), ["VAL1", "VAL2", "VAL4"])
+#     self.assertListEqual(string_sweep.with_level(4).values(), ["VAL1", "VAL2", "VAL3", "VAL4"])
+#     self.assertListEqual(string_sweep.with_level(5).values(), ["VAL1", "VAL2", "VAL3", "VAL4"])
+
+# @given(st.integers(min_value=1, max_value=10))
+# def test_int_sweep_samples(self, samples):
+#     int_sweep = IntSweep(bounds=[0, 10], samples=samples)
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertEqual(len(int_sweep.values(False)), samples)
+
+# @given(st.integers(min_value=1, max_value=10))
+# def test_int_sweep_debug_samples(self, samples_debug):
+#     int_sweep = IntSweep(bounds=[0, 10], samples_debug=samples_debug)
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertEqual(len(int_sweep.values(True)), samples_debug)
+
+# @pytest.mark.skip
+# @given(st.integers(min_value=1, max_value=10), st.integers(min_value=1, max_value=10))
+# def test_int_sweep_samples_all(self, samples, samples_debug):
+#     int_sweep = IntSweep(bounds=[0, 10], samples=samples)
+#     self.assertEqual(int_sweep.default, 0)
+#     self.assertEqual(len(int_sweep.values(False)), samples)
+#     self.assertEqual(len(int_sweep.values(True)), samples_debug)
