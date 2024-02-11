@@ -32,7 +32,9 @@ class Slopes(bch.ParametrizedSweep):
 
     # RESULTS
     hmap = bch.ResultHmap()
-    table = bch.ResultContainer()
+    # table = bch.ResultContainer()
+    # ref = bch.ResultContainer()
+    ref = bch.ResultReference()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
@@ -99,6 +101,8 @@ class Slopes(bch.ParametrizedSweep):
         # self.hmap +=
         # self.table = hv.ItemTable(table_elements)
 
+        self.ref = bch.ResultReference(self.hmap)
+
         # table_elements
 
         overall.append(pd.DataFrame([table_el], columns=table_cols))
@@ -134,7 +138,7 @@ bench = Slopes().to_bench(run_cfg)
 
 
 # res = bench.plot_sweep(input_vars=["condition"])
-res = bench.plot_sweep(input_vars=["x_delta3"], plot=False)
+res = bench.plot_sweep(input_vars=["x_delta3"])
 
 # print(overall)
 # bench.report.append(hv.Table(overall))
