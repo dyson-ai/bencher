@@ -11,12 +11,10 @@ from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
 # param and slots don't work easily with multiple inheritance so define here
-shared_slots = ["units", "samples", "samples_debug"]
+shared_slots = ["units", "samples"]
 
 
-def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, value=None
-) -> List[str]:
+def describe_variable(v: Parameterized, include_samples: bool, value=None) -> List[str]:
     """Generate a string description of a variable
 
     Args:
@@ -32,8 +30,8 @@ def describe_variable(
     sampling_str.append(f"{v.name}:")
     if include_samples:
         # sampling_str.append(f"{indent}{v.sampling_str(debug)}")
-        sampling_str.append(f"{indent}number of samples: {len(v.values(debug))}")
-        sampling_str.append(f"{indent}sample values: {[str(v) for v in v.values(debug)]}")
+        sampling_str.append(f"{indent}number of samples: {len(v.values())}")
+        sampling_str.append(f"{indent}sample values: {[str(v) for v in v.values()]}")
 
     if value is not None:
         sampling_str.append(f"{indent}value: {value}")
@@ -51,14 +49,13 @@ class SweepBase(param.Parameter):
     # def __init__(self, **params):
     # super().__init__(**params)
     # self.units = ""
-    # slots = ["units", "samples", "samples_debug"]
+    # slots = ["units", "samples"]
     # __slots__ = shared_slots
 
-    def values(self, debug: bool) -> List[Any]:
+    def values(
+        self,
+    ) -> List[Any]:
         """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
-
-        Args:
-            debug (bool): Return a reduced set of samples to enable fast debugging of a data generation and plotting pipeline. Ideally when debug is true, 2 samples will be returned
 
         Returns:
             List[Any]: A list of samples from the variable
@@ -67,22 +64,16 @@ class SweepBase(param.Parameter):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1(
-            (self.units, self.samples, self.samples_debug)  # pylint: disable=no-member
-        )
+        return hash_sha1((self.units, self.samples))  # pylint: disable=no-member
 
-    def sampling_str(self, debug=False) -> str:
-        """Generate a string representation of the of the sampling procedure
+    def sampling_str(self) -> str:
+        """Generate a string representation of the of the sampling procedure"""
 
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
-
-        samples = self.values(debug)
+        samples = self.values()
         object_str = ",".join([str(i) for i in samples])
         return f"Taking {len(samples)} samples from {self.name} with values: [{object_str}]"
 
-    def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
+    def as_slider(self) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider
 
         Args:
@@ -91,9 +82,9 @@ class SweepBase(param.Parameter):
         Returns:
             pn.widgets.slider.DiscreteSlider: A panel slider with the values() of the sweep variable
         """
-        return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values(debug)))
+        return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values()))
 
-    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+    def as_dim(self, compute_values=False) -> hv.Dimension:
         """Takes a sweep variable and turns it into a holoview dimension
 
         Returns:
@@ -104,14 +95,14 @@ class SweepBase(param.Parameter):
         params = {}
         if hasattr(self, "bounds") and self.bounds is not None:
             if compute_values:
-                params["values"] = self.values(debug)
+                params["values"] = self.values()
                 # params["range"] = tuple(self.bounds)
             else:
                 params["range"] = tuple(self.bounds)
                 params["default"] = self.default
 
         else:
-            params["values"] = self.values(debug)
+            params["values"] = self.values()
             params["default"] = self.default
 
         if hasattr(self, "step"):

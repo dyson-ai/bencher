@@ -11,7 +11,7 @@ class TimeBase(SweepBase, Selector):
 
     __slots__ = shared_slots
 
-    def values(self, debug=False) -> List[str]:
+    def values(self) -> List[str]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         # print(self.sampling_str(debug))
         return self.objects
@@ -27,7 +27,6 @@ class TimeSnapshot(TimeBase):
         datetime_src: datetime | str,
         units: str = "time",
         samples: int = None,
-        samples_debug: int = 2,
         **params,
     ):
         if isinstance(datetime_src, str):
@@ -44,7 +43,6 @@ class TimeSnapshot(TimeBase):
             self.samples = len(self.objects)
         else:
             self.samples = samples
-        self.samples_debug = min(self.samples, samples_debug)
 
 
 class TimeEvent(TimeBase):
@@ -57,7 +55,6 @@ class TimeEvent(TimeBase):
         time_event: str,
         units: str = "event",
         samples: int = None,
-        samples_debug: int = 2,
         **params,
     ):
         TimeBase.__init__(
@@ -71,4 +68,3 @@ class TimeEvent(TimeBase):
             self.samples = len(self.objects)
         else:
             self.samples = samples
-        self.samples_debug = min(self.samples, samples_debug)

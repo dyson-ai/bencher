@@ -573,7 +573,7 @@ class Bench(BenchPlotServer):
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
 
         for i in bench_cfg.all_vars:
-            logging.info(i.sampling_str(bench_cfg.debug))
+            logging.info(i.sampling_str())
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(
@@ -631,7 +631,6 @@ class Bench(BenchPlotServer):
             default=repeats,
             bounds=[1, repeats],
             samples=repeats,
-            samples_debug=2 if repeats > 2 else 1,
             units="repeats",
             doc="The number of times a sample was measured",
         )
