@@ -450,7 +450,7 @@ class DimsCfg:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
 
         self.dim_ranges = []
-        self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
+        self.dim_ranges = [i.values() for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]
         self.dim_ranges_str = [f"{s}\n" for s in self.dim_ranges]
