@@ -11,7 +11,7 @@ class SweepSelector(Selector, SweepBase):
 
     __slots__ = shared_slots
 
-    def __init__(self, units: str = "ul", samples: int = None,  **params):
+    def __init__(self, units: str = "ul", samples: int = None, **params):
         SweepBase.__init__(self)
         Selector.__init__(self, **params)
 
@@ -29,9 +29,7 @@ class SweepSelector(Selector, SweepBase):
 class BoolSweep(SweepSelector):
     """A class to reprsent a parameter sweep of bools"""
 
-    def __init__(
-        self, units: str = "ul", samples: int = None,default=True, **params
-    ):
+    def __init__(self, units: str = "ul", samples: int = None, default=True, **params):
         SweepSelector.__init__(
             self,
             units=units,
@@ -50,7 +48,6 @@ class StringSweep(SweepSelector):
         string_list: List[str],
         units: str = "",
         samples: int = None,
-        samples_debug: int = 2,
         **params,
     ):
         SweepSelector.__init__(
@@ -68,9 +65,7 @@ class EnumSweep(SweepSelector):
 
     __slots__ = shared_slots
 
-    def __init__(
-        self, enum_type: Enum | List[Enum], units=" ", samples=None, **params
-    ):
+    def __init__(self, enum_type: Enum | List[Enum], units=" ", samples=None, **params):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = isinstance(enum_type, list)
         selector_list = enum_type if list_of_enums else list(enum_type)
@@ -119,7 +114,7 @@ class IntSweep(Integer, SweepBase):
             else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         )
 
-        return self.indices_to_samples( self.samples, sample_values)
+        return self.indices_to_samples(self.samples, sample_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -147,9 +142,7 @@ class FloatSweep(Number, SweepBase):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(
-        self, units="ul", samples=10,  sample_values=None, step=None, **params
-    ):
+    def __init__(self, units="ul", samples=10, sample_values=None, step=None, **params):
         SweepBase.__init__(self)
         Number.__init__(self, step=step, **params)
 
@@ -164,9 +157,9 @@ class FloatSweep(Number, SweepBase):
             if "default" not in params:
                 self.default = sample_values[0]
 
-    def values(sel) -> List[float]:
+    def values(self) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        samps =  self.samples
+        samps = self.samples
         if self.sample_values is None:
             if self.step is None:
                 return np.linspace(self.bounds[0], self.bounds[1], samps)

@@ -54,11 +54,10 @@ class SweepBase(param.Parameter):
     # slots = ["units", "samples", "samples_debug"]
     # __slots__ = shared_slots
 
-    def values(self, debug: bool) -> List[Any]:
+    def values(
+        self,
+    ) -> List[Any]:
         """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
-
-        Args:
-            debug (bool): Return a reduced set of samples to enable fast debugging of a data generation and plotting pipeline. Ideally when debug is true, 2 samples will be returned
 
         Returns:
             List[Any]: A list of samples from the variable
@@ -71,18 +70,18 @@ class SweepBase(param.Parameter):
             (self.units, self.samples, self.samples_debug)  # pylint: disable=no-member
         )
 
-    def sampling_str(self, debug=False) -> str:
+    def sampling_str(self) -> str:
         """Generate a string representation of the of the sampling procedure
 
         Args:
             debug (bool): If true then self.samples_debug is used
         """
 
-        samples = self.values(debug)
+        samples = self.values()
         object_str = ",".join([str(i) for i in samples])
         return f"Taking {len(samples)} samples from {self.name} with values: [{object_str}]"
 
-    def as_slider(self, debug=False) -> pn.widgets.slider.DiscreteSlider:
+    def as_slider(self) -> pn.widgets.slider.DiscreteSlider:
         """given a sweep variable (self), return the range of values as a panel slider
 
         Args:
@@ -91,9 +90,9 @@ class SweepBase(param.Parameter):
         Returns:
             pn.widgets.slider.DiscreteSlider: A panel slider with the values() of the sweep variable
         """
-        return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values(debug)))
+        return pn.widgets.slider.DiscreteSlider(name=self.name, options=list(self.values()))
 
-    def as_dim(self, compute_values=False, debug=False) -> hv.Dimension:
+    def as_dim(self, compute_values=False) -> hv.Dimension:
         """Takes a sweep variable and turns it into a holoview dimension
 
         Returns:
@@ -104,14 +103,14 @@ class SweepBase(param.Parameter):
         params = {}
         if hasattr(self, "bounds"):
             if compute_values:
-                params["values"] = self.values(debug)
+                params["values"] = self.values()
                 # params["range"] = tuple(self.bounds)
             else:
                 params["range"] = tuple(self.bounds)
                 params["default"] = self.default
 
         else:
-            params["values"] = self.values(debug)
+            params["values"] = self.values()
             params["default"] = self.default
 
         if hasattr(self, "step"):
