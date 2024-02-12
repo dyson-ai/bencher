@@ -4,9 +4,79 @@ import pytest
 from bencher.variables.inputs import IntSweep, EnumSweep, StringSweep, BoolSweep, FloatSweep
 from enum import auto
 from strenum import StrEnum
+import numpy as np
 
 
 class TestVarSweeps(unittest.TestCase):
+
+    def test_int_sweep_1_arg(self):
+        int_sweep = IntSweep()
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(), [0])
+
+        int_sweep = IntSweep(0)
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(), [0])
+
+        int_sweep = IntSweep(1)
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(), [0, 1])
+
+        int_sweep = IntSweep(2)
+        self.assertEqual(int_sweep.default, 0)
+        self.assertListEqual(int_sweep.values(), [0, 1, 2])
+
+    def test_float_sweep_1_arg(self):
+        float_sweep = FloatSweep()
+        # self.assertEqual(float_sweep.default, 0)
+        # self.assertListEqual(float_sweep.values(), [0])
+
+        # float_sweep = FloatSweep(0)
+        # self.assertEqual(float_sweep.default, 0)
+        # self.assertListEqual(float_sweep.values(), np.array([0]))
+
+        float_sweep = FloatSweep(1)
+        self.assertEqual(float_sweep.default, 0)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0]))
+
+        float_sweep = FloatSweep(2)
+        self.assertEqual(float_sweep.default, 0)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 2.0]))
+
+        float_sweep = FloatSweep((0, 1))
+        self.assertEqual(float_sweep.default, 0)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0]))
+
+        float_sweep = FloatSweep([0, 1, 2])
+        self.assertEqual(float_sweep.default, 0)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0, 2.0]))
+
+        float_sweep = FloatSweep([-1, 1, 2])
+        self.assertEqual(float_sweep.default, 0)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([-1.0, 1.0, 2.0]))
+
+    @given(st.integers())
+    def test_int_sweep_samples(self, first_arg):
+        int_sweep = IntSweep(first_arg)
+        self.assertEqual(int_sweep.default, 0)
+
+    # def test_int_sweep_1_arg(self):
+    #     int_sweep = IntSweep()
+    #     self.assertEqual(int_sweep.default, 0)
+    #     self.assertListEqual(int_sweep.values(), [0])
+
+    #     int_sweep = IntSweep(0)
+    #     self.assertEqual(int_sweep.default, 0)
+    #     self.assertListEqual(int_sweep.values(), [0])
+
+    #     int_sweep = IntSweep(1)
+    #     self.assertEqual(int_sweep.default, 0)
+    #     self.assertListEqual(int_sweep.values(), [0, 1])
+
+    #     int_sweep = IntSweep(2)
+    #     self.assertEqual(int_sweep.default, 0)
+    #     self.assertListEqual(int_sweep.values(), [0, 1, 2])
+
     def test_int_sweep_01(self):
         int_sweep = IntSweep(bounds=[0, 1])
         self.assertEqual(int_sweep.default, 0)
@@ -174,3 +244,11 @@ class TestVarSweeps(unittest.TestCase):
         int_sweep = IntSweep(bounds=[0, 10], samples=samples)
         self.assertEqual(int_sweep.default, 0)
         self.assertEqual(len(int_sweep.values()), samples)
+
+
+if __name__ == "__main__":
+
+    tst = TestVarSweeps()
+    # tst.test_int_sweep_1_arg()
+    print("test")
+    tst.test_float_sweep_1_arg()

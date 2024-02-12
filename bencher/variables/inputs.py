@@ -86,20 +86,33 @@ class IntSweep(Integer, SweepBase):
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=None, sample_values=None, **params):
+    def __init__(
+        self,
+        first_arg=None,
+        default=None,
+        units="ul",
+        samples=None,
+        sample_values=None,
+        bounds=None,
+        **params,
+    ):
         SweepBase.__init__(self)
-        Integer.__init__(self, **params)
+        Integer.__init__(self, default=default, **params)
 
         self.units = units
+
+        first_arg_processing(self, first_arg)
 
         if sample_values is None:
             if samples is None:
                 if self.bounds is None:
-                    raise RuntimeError("You must define bounds for integer types")
+                    self.bounds = (0, 0)
                 self.samples = 1 + self.bounds[1] - self.bounds[0]
             else:
                 self.samples = samples
             self.sample_values = None
+            if self.default is None:
+                self.default = self.bounds[0]
         else:
             self.sample_values = sample_values
             self.samples = len(self.sample_values)
@@ -137,18 +150,60 @@ class IntSweep(Integer, SweepBase):
             )
 
 
+import builtins
+
+
+def first_arg_processing(self, first_arg=None):
+    print(type(first_arg))
+
+    if first_arg is not None:
+        match type(first_arg):
+            case builtins.float:
+                self.bounds = (0.0, first_arg)
+                self.default = self.bounds[0]
+            case builtins.int:
+                self.bounds = (0, first_arg)
+                self.default = self.bounds[0]
+            case builtins.tuple:
+                if len(first_arg) == 2:
+                    self.bounds = first_arg
+                    self.default = self.bounds[0]
+                else:
+                    raise RuntimeError(f"tuple bounds must be of length 2 not {len(first_arg)}")
+            case builtins.list:
+                self.sample_values = first_arg
+                self.bounds = (min(first_arg), max(first_arg))
+    else:
+        self.bounds = (0, 0)
+        self.default = self.bounds[0]
+
+    print(self.bounds)
+
+
 class FloatSweep(Number, SweepBase):
     """A class to represent a parameter sweep of floats"""
 
     __slots__ = shared_slots + ["sample_values"]
 
-    def __init__(self, units="ul", samples=10, sample_values=None, step=None, **params):
+    def __init__(
+        self,
+        first_arg=None,
+        units="ul",
+        samples=None,
+        sample_values=None,
+        step=None,
+        bounds=None,
+        **params,
+    ):
         SweepBase.__init__(self)
-        Number.__init__(self, step=step, **params)
+        Number.__init__(self, step=step, bounds=bounds, **params)
+
 
         self.units = units
-
         self.sample_values = sample_values
+        # print("first arg", first_arg)
+        first_arg_processing(self, first_arg)
+
 
         if sample_values is None:
             self.samples = samples
@@ -159,11 +214,10 @@ class FloatSweep(Number, SweepBase):
 
     def values(self) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        samps = self.samples
         if self.sample_values is None:
             if self.step is None:
+                samps = 2 if self.samples is None else self.samples
                 return np.linspace(self.bounds[0], self.bounds[1], samps)
-
             return np.arange(self.bounds[0], self.bounds[1], self.step)
         return self.sample_values
 
