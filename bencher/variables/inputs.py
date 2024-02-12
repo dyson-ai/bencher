@@ -1,5 +1,7 @@
 from enum import Enum
+import builtins
 from typing import List, Any
+
 
 import numpy as np
 from param import Integer, Number, Selector
@@ -84,7 +86,7 @@ class EnumSweep(SweepSelector):
 class IntSweep(Integer, SweepBase):
     """A class to reprsent a parameter sweep of ints"""
 
-    __slots__ = shared_slots + ["sample_values"]
+    __slots__ = shared_slots + ["sample_values", "step"]
 
     def __init__(
         self,
@@ -93,41 +95,38 @@ class IntSweep(Integer, SweepBase):
         units="ul",
         samples=None,
         sample_values=None,
+        step=None,
         bounds=None,
         **params,
     ):
         SweepBase.__init__(self)
-        Integer.__init__(self, default=default, **params)
+        Integer.__init__(self, default=default, bounds=bounds, step=step, **params)
 
         self.units = units
+        self.sample_values = sample_values
+        self.samples = samples
 
-        first_arg_processing(self, first_arg)
-
-        if sample_values is None:
-            if samples is None:
-                if self.bounds is None:
-                    self.bounds = (0, 0)
-                self.samples = 1 + self.bounds[1] - self.bounds[0]
-            else:
-                self.samples = samples
-            self.sample_values = None
-            if self.default is None:
-                self.default = self.bounds[0]
-        else:
-            self.sample_values = sample_values
-            self.samples = len(self.sample_values)
-            if "default" not in params:
-                self.default = sample_values[0]
+        first_arg_processing(self, first_arg, default=default)
 
     def values(self) -> List[int]:
-        """return all the values for a parameter sweep.  If debug is true return the  list"""
-        sample_values = (
-            self.sample_values
-            if self.sample_values is not None
-            else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
-        )
+        """return all the values for a parameter sweep."""
+        if self.sample_values is None:
+            if self.bounds is not None:
+                if self.step is None:
+                    samps = 2 if self.samples is None else self.samples
+                    return np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)
+                return np.arange(self.bounds[0], self.bounds[1], self.step, dtype=int)
+            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
+        return self.sample_values
 
-        return self.indices_to_samples(self.samples, sample_values)
+    # def values(self) -> List[int]:
+    # """return all the values for a parameter sweep.  If debug is true return the  list"""
+    # sample_values = (
+    #     self.sample_values
+    #     if self.sample_values is not None
+    #     else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
+    # )
+    # return self.indices_to_samples(self.samples, sample_values)
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -150,12 +149,8 @@ class IntSweep(Integer, SweepBase):
             )
 
 
-import builtins
-
-
-def first_arg_processing(self, first_arg=None):
-    print(type(first_arg))
-
+def first_arg_processing(self, first_arg=None, default=None):
+    # print(type(first_arg))
     if first_arg is not None:
         match type(first_arg):
             case builtins.float:
@@ -171,13 +166,19 @@ def first_arg_processing(self, first_arg=None):
                 else:
                     raise RuntimeError(f"tuple bounds must be of length 2 not {len(first_arg)}")
             case builtins.list:
+                print("herhe", default)
                 self.sample_values = first_arg
-                self.bounds = (min(first_arg), max(first_arg))
-    else:
-        self.bounds = (0, 0)
-        self.default = self.bounds[0]
+                if default is None:
+                    self.default = first_arg[0]
 
-    print(self.bounds)
+    if self.default is None:
+        if self.sample_values is not None:
+            self.default = self.sample_values[0]
+        elif self.bounds is not None:
+            self.default = self.bounds[0]
+        else:
+            # last resort
+            self.default = 0
 
 
 class FloatSweep(Number, SweepBase):
@@ -188,6 +189,7 @@ class FloatSweep(Number, SweepBase):
     def __init__(
         self,
         first_arg=None,
+        default=None,
         units="ul",
         samples=None,
         sample_values=None,
@@ -196,29 +198,22 @@ class FloatSweep(Number, SweepBase):
         **params,
     ):
         SweepBase.__init__(self)
-        Number.__init__(self, step=step, bounds=bounds, **params)
-
+        Number.__init__(self, default=default, step=step, bounds=bounds, **params)
 
         self.units = units
         self.sample_values = sample_values
-        # print("first arg", first_arg)
-        first_arg_processing(self, first_arg)
-
-
-        if sample_values is None:
-            self.samples = samples
-        else:
-            self.samples = len(self.sample_values)
-            if "default" not in params:
-                self.default = sample_values[0]
+        self.samples = samples
+        first_arg_processing(self, first_arg, default=default)
 
     def values(self) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         if self.sample_values is None:
-            if self.step is None:
-                samps = 2 if self.samples is None else self.samples
-                return np.linspace(self.bounds[0], self.bounds[1], samps)
-            return np.arange(self.bounds[0], self.bounds[1], self.step)
+            if self.bounds is not None:
+                if self.step is None:
+                    samps = 2 if self.samples is None else self.samples
+                    return np.linspace(self.bounds[0], self.bounds[1], samps)
+                return np.arange(self.bounds[0], self.bounds[1], self.step)
+            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
         return self.sample_values
 
 

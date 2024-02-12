@@ -3,7 +3,9 @@
 import bencher as bch
 
 # All the examples will be using the data structures and benchmark function defined in this file
-from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
+from bencher.example.benchmark_data import (
+    ExampleBenchCfg,
+)
 
 
 def example_1D_float(
@@ -11,19 +13,21 @@ def example_1D_float(
 ) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
-    bench = bch.Bench(
-        "benchmarking_example_float1D",
-        bench_function,
-        ExampleBenchCfgIn,
-        run_cfg=run_cfg,
-        report=report,
-    )
+    # bench = bch.Bench(
+    #     "benchmarking_example_float1D",
+    #     bench_function,
+    #     ExampleBenchCfgIn,
+    #     run_cfg=run_cfg,
+    #     report=report,
+    # )
+
+    bench = ExampleBenchCfg().to_bench(run_cfg, report)
 
     # here we sample the input variable theta and plot the value of output1. The (noisy) function is sampled 20 times so you can see the distribution
     bench.plot_sweep(
         title="Example 1D Float",
-        input_vars=[ExampleBenchCfgIn.param.theta],
-        result_vars=[ExampleBenchCfgOut.param.out_sin],
+        input_vars=["theta"],
+        result_vars=["out_sin"],
         description=example_1D_float.__doc__,
     )
 

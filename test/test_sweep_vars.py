@@ -8,7 +8,6 @@ import numpy as np
 
 
 class TestVarSweeps(unittest.TestCase):
-
     def test_int_sweep_1_arg(self):
         int_sweep = IntSweep()
         self.assertEqual(int_sweep.default, 0)
@@ -52,7 +51,7 @@ class TestVarSweeps(unittest.TestCase):
         np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0, 2.0]))
 
         float_sweep = FloatSweep([-1, 1, 2])
-        self.assertEqual(float_sweep.default, 0)
+        self.assertEqual(float_sweep.default, -1)
         np.testing.assert_array_equal(float_sweep.values(), np.array([-1.0, 1.0, 2.0]))
 
     @given(st.integers())
@@ -233,7 +232,7 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(string_sweep.with_level(5).values(), ["VAL1", "VAL2", "VAL3", "VAL4"])
 
     @given(st.integers(min_value=1, max_value=10))
-    def test_int_sweep_samples(self, samples):
+    def test_int_sweep_samples_min_max(self, samples):
         int_sweep = IntSweep(bounds=[0, 10], samples=samples)
         self.assertEqual(int_sweep.default, 0)
         self.assertEqual(len(int_sweep.values()), samples)
@@ -247,7 +246,6 @@ class TestVarSweeps(unittest.TestCase):
 
 
 if __name__ == "__main__":
-
     tst = TestVarSweeps()
     # tst.test_int_sweep_1_arg()
     print("test")
