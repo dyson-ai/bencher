@@ -80,7 +80,7 @@ class VideoWriter:
             self.image_files.append(filepath)
 
     def to_images_sequence(self, images, target_duration: float = 10.0, frame_time=None, **kwargs):
-        target_duration = kwargs.pop(target_duration, target_duration)
+        target_duration = kwargs.pop("target_duration", target_duration)
         if isinstance(images, list) and len(images) > 0:
             if frame_time is None:
                 fps = len(images) / target_duration
