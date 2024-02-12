@@ -26,7 +26,19 @@ class TestVarSweeps(unittest.TestCase):
         self.assertListEqual(int_sweep.values(), [0, 1, 2])
 
     def test_float_sweep_1_arg(self):
-        float_sweep = FloatSweep()
+        repeats=1
+        iv_repeat = IntSweep(
+            bounds=[1, repeats],
+            units="repeats",
+            doc="The number of times a sample was measured",
+        )
+
+        print(iv_repeat.name)
+        print(iv_repeat.values())
+
+
+
+        # float_sweep = FloatSweep()
         # self.assertEqual(float_sweep.default, 0)
         # self.assertListEqual(float_sweep.values(), [0])
 

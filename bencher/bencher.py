@@ -628,12 +628,12 @@ class Bench(BenchPlotServer):
             _type_: _description_
         """
         bench_cfg.iv_repeat = IntSweep(
-            default=repeats,
             bounds=[1, repeats],
-            samples=repeats,
             units="repeats",
             doc="The number of times a sample was measured",
         )
+
+        
         bench_cfg.iv_repeat.name = "repeat"
         extra_vars = [bench_cfg.iv_repeat]
 

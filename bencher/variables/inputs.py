@@ -83,7 +83,76 @@ class EnumSweep(SweepSelector):
             self.doc = enum_type.__doc__
 
 
-class IntSweep(Integer, SweepBase):
+class NumberSweep(SweepBase):
+
+    __slots__ = shared_slots + ["units", "samples", "sample_values", "default", "bounds", "step"]
+
+    def __init__(
+        self,
+        first_arg=None,
+        units="ul",
+        samples=None,
+        sample_values=None,
+        default=None,
+        bounds=None,
+        step=None,
+    ):
+        SweepBase.__init__(self)
+
+        self.units = units
+        self.sample_values = sample_values
+        self.samples = samples
+        self.default = default
+        self.bounds = bounds
+        self.step = step
+        print(first_arg)
+        self.first_arg_processing(first_arg)
+
+    def first_arg_processing(self, first_arg=None):
+        # print(type(first_arg))
+        if first_arg is not None:
+            match type(first_arg):
+                case builtins.float:
+                    self.bounds = (0.0, first_arg)
+                    self.default = self.bounds[0]
+                case builtins.int:
+                    self.bounds = (0, first_arg)
+                    self.default = self.bounds[0]
+                case builtins.tuple:
+                    if len(first_arg) == 2:
+                        self.bounds = first_arg
+                        self.default = self.bounds[0]
+                    else:
+                        raise RuntimeError(f"tuple bounds must be of length 2 not {len(first_arg)}")
+                case builtins.list:
+                    self.sample_values = first_arg
+                    if self.default is None:
+                        self.default = first_arg[0]
+
+        if self.default is None:
+            if self.sample_values is not None:
+                self.default = self.sample_values[0]
+            elif self.bounds is not None:
+                self.default = self.bounds[0]
+            else:
+                # last resort
+                self.default = 0
+
+        if self.sample_values is None and self.bounds is None:
+            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
+
+    def values(self, dtype) -> List[float]:
+        """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+        if self.sample_values is None:
+            if self.bounds is not None:
+                if self.step is None:
+                    samps = 2 if self.samples is None else self.samples
+                    return np.linspace(self.bounds[0], self.bounds[1], samps, dtype=dtype)
+                return np.arange(self.bounds[0], self.bounds[1], self.step, dtype=dtype)
+        return self.sample_values
+
+
+class IntSweep(NumberSweep):
     """A class to reprsent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values", "step"]
@@ -99,34 +168,29 @@ class IntSweep(Integer, SweepBase):
         bounds=None,
         **params,
     ):
-        SweepBase.__init__(self)
-        Integer.__init__(self, default=default, bounds=bounds, step=step, **params)
-
-        self.units = units
-        self.sample_values = sample_values
-        self.samples = samples
-
-        first_arg_processing(self, first_arg, default=default)
+        NumberSweep.__init__(
+            self,
+            units=units,
+            samples=samples,
+            sample_values=sample_values,
+            default=default,
+            step=step,
+            bounds=bounds,
+        )
 
     def values(self) -> List[int]:
         """return all the values for a parameter sweep."""
-        if self.sample_values is None:
-            if self.bounds is not None:
-                if self.step is None:
-                    samps = 2 if self.samples is None else self.samples
-                    return np.linspace(self.bounds[0], self.bounds[1], samps, dtype=int)
-                return np.arange(self.bounds[0], self.bounds[1], self.step, dtype=int)
-            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
-        return self.sample_values
+        return super().values(int)
 
-    # def values(self) -> List[int]:
-    # """return all the values for a parameter sweep.  If debug is true return the  list"""
-    # sample_values = (
-    #     self.sample_values
-    #     if self.sample_values is not None
-    #     else list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
-    # )
-    # return self.indices_to_samples(self.samples, sample_values)
+    # def values(self, dtype) -> List[float]:
+    #     """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+    #     if self.sample_values is None:
+    #         if self.bounds is not None:
+    #             if self.step is None:
+    #                 samps = 2 if self.samples is None else self.samples
+    #                 return np.linspace(self.bounds[0], self.bounds[1], samps, dtype=dtype)
+    #             return np.arange(self.bounds[0], self.bounds[1], self.step, dtype=dtype)
+    #     return self.sample_values
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_value(self, val, allow_None):
@@ -149,39 +213,7 @@ class IntSweep(Integer, SweepBase):
             )
 
 
-def first_arg_processing(self, first_arg=None, default=None):
-    # print(type(first_arg))
-    if first_arg is not None:
-        match type(first_arg):
-            case builtins.float:
-                self.bounds = (0.0, first_arg)
-                self.default = self.bounds[0]
-            case builtins.int:
-                self.bounds = (0, first_arg)
-                self.default = self.bounds[0]
-            case builtins.tuple:
-                if len(first_arg) == 2:
-                    self.bounds = first_arg
-                    self.default = self.bounds[0]
-                else:
-                    raise RuntimeError(f"tuple bounds must be of length 2 not {len(first_arg)}")
-            case builtins.list:
-                print("herhe", default)
-                self.sample_values = first_arg
-                if default is None:
-                    self.default = first_arg[0]
-
-    if self.default is None:
-        if self.sample_values is not None:
-            self.default = self.sample_values[0]
-        elif self.bounds is not None:
-            self.default = self.bounds[0]
-        else:
-            # last resort
-            self.default = 0
-
-
-class FloatSweep(Number, SweepBase):
+class FloatSweep(NumberSweep):
     """A class to represent a parameter sweep of floats"""
 
     __slots__ = shared_slots + ["sample_values"]
@@ -197,24 +229,19 @@ class FloatSweep(Number, SweepBase):
         bounds=None,
         **params,
     ):
-        SweepBase.__init__(self)
-        Number.__init__(self, default=default, step=step, bounds=bounds, **params)
-
-        self.units = units
-        self.sample_values = sample_values
-        self.samples = samples
-        first_arg_processing(self, first_arg, default=default)
+        NumberSweep.__init__(
+            self,
+            units=units,
+            samples=samples,
+            sample_values=sample_values,
+            default=default,
+            step=step,
+            bounds=bounds,
+        )
 
     def values(self) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        if self.sample_values is None:
-            if self.bounds is not None:
-                if self.step is None:
-                    samps = 2 if self.samples is None else self.samples
-                    return np.linspace(self.bounds[0], self.bounds[1], samps)
-                return np.arange(self.bounds[0], self.bounds[1], self.step)
-            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
-        return self.sample_values
+        return super().values(float)
 
 
 def box(name, center, width):
