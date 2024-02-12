@@ -102,7 +102,7 @@ class SweepBase(param.Parameter):
         name_tuple = (self.name, self.name)
 
         params = {}
-        if hasattr(self, "bounds"):
+        if hasattr(self, "bounds") and self.bounds is not None:
             if compute_values:
                 params["values"] = self.values(debug)
                 # params["range"] = tuple(self.bounds)
