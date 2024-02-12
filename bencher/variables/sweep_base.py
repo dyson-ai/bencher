@@ -102,7 +102,7 @@ class SweepBase(param.Parameter):
         name_tuple = (self.name, self.name)
 
         params = {}
-        if hasattr(self, "bounds"):
+        if hasattr(self, "bounds") and self.bounds is not None:
             if compute_values:
                 params["values"] = self.values(debug)
                 # params["range"] = tuple(self.bounds)
@@ -117,7 +117,11 @@ class SweepBase(param.Parameter):
         if hasattr(self, "step"):
             params["step"] = getattr(self, "step")
 
-        return hv.Dimension(name_tuple, unit=self.units, **params)  # pylint: disable=no-member
+        # TODO investigate why this stopped working after a holoviews update
+        # if hasattr(self, "units"):
+        # params["unit"] = getattr(self, "units")
+
+        return hv.Dimension(name_tuple, **params)
 
     def indices_to_samples(self, desires_num_samples, sample_values):
         indices = [
