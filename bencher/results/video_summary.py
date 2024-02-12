@@ -74,7 +74,8 @@ class VideoSummaryResult(BenchResultBase):
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
             if val is not None:
                 vr.append_file(val, label)
-        fn = vr.write_png()
+        fn = vr.write_png(**kwargs)
+        kwargs.pop("target_duration")
         if fn is not None:
             if video_controls is None:
                 video_controls = VideoControls()
@@ -127,6 +128,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter,
         reverse=True,
         video_controls: VideoControls = None,
+        target_duration: float = None,
         **kwargs,
     ):
         vr = VideoWriter()
@@ -139,6 +141,7 @@ class VideoSummaryResult(BenchResultBase):
             result_var=result_var,
             final=True,
             reverse=reverse,
+            target_duration=target_duration,
             **kwargs,
         )
 
@@ -164,6 +167,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var=None,
         final=False,
         reverse=False,
+        target_duration: float = None,
         **kwargs,
     ) -> pn.panel:
         num_dims = len(dataset.sizes)
@@ -182,6 +186,7 @@ class VideoSummaryResult(BenchResultBase):
                 name=" vs ".join(dims),
                 background_col=dim_color,
                 horizontal=horizontal,
+                target_duration=target_duration,
                 # var_name=selected_dim,
                 # var_value=label_val,
             )
@@ -194,6 +199,7 @@ class VideoSummaryResult(BenchResultBase):
                     var_name=selected_dim,
                     var_value=label_val,
                     horizontal=horizontal,
+                    target_duration=target_duration,
                 )
                 panes = self._to_video_panes_ds(
                     sliced,
