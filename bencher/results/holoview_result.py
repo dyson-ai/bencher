@@ -465,7 +465,7 @@ class HoloviewResult(PanelResult):
 
         kdims = []
         for i in self.bench_cfg.input_vars + [self.bench_cfg.iv_repeat]:
-            kdims.append(i.as_dim(compute_values=True, debug=self.bench_cfg.debug))
+            kdims.append(i.as_dim(compute_values=True))
 
         return hv.DynamicMap(cb, kdims=kdims)
 

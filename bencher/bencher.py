@@ -573,7 +573,7 @@ class Bench(BenchPlotServer):
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
 
         for i in bench_cfg.all_vars:
-            logging.info(i.sampling_str(bench_cfg.debug))
+            logging.info(i.sampling_str())
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(

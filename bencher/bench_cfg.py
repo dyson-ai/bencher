@@ -38,10 +38,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true each time the function is called it will plot a timeseries of historical and the latest result.",
     )
 
-    debug: bool = param.Boolean(
-        False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
-    )
-
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
     summarise_constant_inputs = param.Boolean(
@@ -333,7 +329,6 @@ class BenchCfg(BenchRunCfg):
                 hash_sha1(str(self.title)),
                 hash_sha1(self.over_time),
                 repeats_hash,
-                hash_sha1(self.debug),
                 hash_sha1(self.tag),
             )
         )
@@ -364,7 +359,7 @@ class BenchCfg(BenchRunCfg):
 
         benchmark_sampling_str.append("Input Variables:")
         for iv in self.input_vars:
-            benchmark_sampling_str.extend(describe_variable(iv, self.debug, True))
+            benchmark_sampling_str.extend(describe_variable(iv, True))
 
         if self.const_vars and (self.summarise_constant_inputs):
             benchmark_sampling_str.append("\nConstants:")
@@ -373,7 +368,7 @@ class BenchCfg(BenchRunCfg):
 
         benchmark_sampling_str.append("\nResult Variables:")
         for rv in self.result_vars:
-            benchmark_sampling_str.extend(describe_variable(rv, self.debug, False))
+            benchmark_sampling_str.extend(describe_variable(rv, False))
 
         print_meta = True
         # if len(self.meta_vars) == 1:
@@ -394,7 +389,7 @@ class BenchCfg(BenchRunCfg):
             benchmark_sampling_str.append(f"    parallel: {self.executor}")
 
             for mv in self.meta_vars:
-                benchmark_sampling_str.extend(describe_variable(mv, self.debug, True))
+                benchmark_sampling_str.extend(describe_variable(mv, True))
 
         benchmark_sampling_str.append("```")
 

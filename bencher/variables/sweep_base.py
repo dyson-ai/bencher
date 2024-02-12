@@ -14,9 +14,7 @@ from bencher.utils import hash_sha1
 shared_slots = ["units", "samples"]
 
 
-def describe_variable(
-    v: Parameterized, debug: bool, include_samples: bool, value=None
-) -> List[str]:
+def describe_variable(v: Parameterized, include_samples: bool, value=None) -> List[str]:
     """Generate a string description of a variable
 
     Args:
@@ -32,8 +30,8 @@ def describe_variable(
     sampling_str.append(f"{v.name}:")
     if include_samples:
         # sampling_str.append(f"{indent}{v.sampling_str(debug)}")
-        sampling_str.append(f"{indent}number of samples: {len(v.values(debug))}")
-        sampling_str.append(f"{indent}sample values: {[str(v) for v in v.values(debug)]}")
+        sampling_str.append(f"{indent}number of samples: {len(v.values())}")
+        sampling_str.append(f"{indent}sample values: {[str(v) for v in v.values()]}")
 
     if value is not None:
         sampling_str.append(f"{indent}value: {value}")
