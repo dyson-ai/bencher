@@ -11,7 +11,7 @@ from bencher.utils import hash_sha1
 
 # slots that are shared across all Sweep classes
 # param and slots don't work easily with multiple inheritance so define here
-shared_slots = ["units", "samples", "samples_debug"]
+shared_slots = ["units", "samples"]
 
 
 def describe_variable(
@@ -51,7 +51,7 @@ class SweepBase(param.Parameter):
     # def __init__(self, **params):
     # super().__init__(**params)
     # self.units = ""
-    # slots = ["units", "samples", "samples_debug"]
+    # slots = ["units", "samples"]
     # __slots__ = shared_slots
 
     def values(
@@ -66,16 +66,10 @@ class SweepBase(param.Parameter):
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
-        return hash_sha1(
-            (self.units, self.samples, self.samples_debug)  # pylint: disable=no-member
-        )
+        return hash_sha1((self.units, self.samples))  # pylint: disable=no-member
 
     def sampling_str(self) -> str:
-        """Generate a string representation of the of the sampling procedure
-
-        Args:
-            debug (bool): If true then self.samples_debug is used
-        """
+        """Generate a string representation of the of the sampling procedure"""
 
         samples = self.values()
         object_str = ",".join([str(i) for i in samples])
