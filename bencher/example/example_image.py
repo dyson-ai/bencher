@@ -82,7 +82,7 @@ def example_image_vid(
 ) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
     bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid,target_duration=1)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, target_duration=1)
     bench.plot_sweep(input_vars=["sides"])
     bench.plot_sweep(input_vars=["radius", "sides"])
     bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
