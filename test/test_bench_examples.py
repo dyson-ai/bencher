@@ -39,7 +39,7 @@ class TestBenchExamples(unittest.TestCase):
         cfg = bch.BenchRunCfg()
         if not self.generate_all:
             cfg.repeats = 2  # low number of repeats to reduce test time, but also test averaging and variance code
-            cfg.debug = True  # reduce size of param sweep so tests are faster
+            cfg.level = 2  # reduce size of param sweep so tests are faster
         cfg.clear_cache = True
         return cfg
 

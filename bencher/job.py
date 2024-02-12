@@ -80,7 +80,8 @@ class FutureCache:
         size_limit: int = int(20e9),  # 20 GB
         use_cache=True,
     ):
-        self.executor = Executors.factory(executor)
+        self.executor_type = executor
+        self.executor = None
         if use_cache:
             self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
@@ -110,6 +111,9 @@ class FutureCache:
 
         self.worker_fn_call_count += 1
 
+        if self.executor_type is not Executors.SERIAL:
+            if self.executor is None:
+                self.executor = Executors.factory(self.executor_type)
         if self.executor is not None:
             self.overwrite_msg(job, " starting parallel job...")
             return JobFuture(
@@ -148,9 +152,7 @@ class FutureCache:
             self.cache.close()
         if self.executor:
             self.executor.shutdown()
-
-    # def __del__(self):
-    #     self.close()
+            self.executor = None
 
     def stats(self) -> str:
         logging.info(f"job calls: {self.worker_wrapper_call_count}")
