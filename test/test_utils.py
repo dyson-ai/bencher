@@ -14,7 +14,7 @@ import xarray as xr
 
 
 class ExampleClass(bch.ParametrizedSweep):
-    iv1 = bch.FloatSweep()
+    iv1 = bch.FloatSweep((0, 1))
     rv1 = bch.ResultVar()
 
 
