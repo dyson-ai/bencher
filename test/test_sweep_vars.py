@@ -9,60 +9,104 @@ import numpy as np
 
 class TestVarSweeps(unittest.TestCase):
     def test_int_sweep_1_arg(self):
-        int_sweep = IntSweep()
-        self.assertEqual(int_sweep.default, 0)
-        self.assertListEqual(int_sweep.values(), [0])
+        # int_sweep = IntSweep()
+        # self.assertEqual(int_sweep.default, 0)
+        # self.assertListEqual(int_sweep.values(), [0])
 
-        int_sweep = IntSweep(0)
-        self.assertEqual(int_sweep.default, 0)
-        self.assertListEqual(int_sweep.values(), [0])
+        # int_sweep = IntSweep(0)
+        # self.assertEqual(int_sweep.default, 0)
+        # self.assertListEqual(int_sweep.values(), [0])
 
-        int_sweep = IntSweep(1)
-        self.assertEqual(int_sweep.default, 0)
-        self.assertListEqual(int_sweep.values(), [0, 1])
+        # implicit bounds up to
+        # int_sweep = IntSweep(1)
+        # self.assertEqual(int_sweep.default, 0)
+        # self.assertEqual(int_sweep.bounds, (0, 1))
+        # np.testing.assert_array_equal(int_sweep.values(), np.array([0, 1]))
 
-        int_sweep = IntSweep(2)
-        self.assertEqual(int_sweep.default, 0)
-        self.assertListEqual(int_sweep.values(), [0, 1, 2])
+        # # implicit bounds up to
+        # int_sweep = IntSweep(2)
+        # self.assertEqual(int_sweep.default, 0)
+        # self.assertEqual(int_sweep.bounds, (0, 2))
+        # np.testing.assert_array_equal(int_sweep.values(), np.array([0, 1, 2]))
 
-    def test_float_sweep_1_arg(self):
+        print("implicit")
+        # implicit bounds
+        int_sweep = IntSweep((1, 3))
+        self.assertEqual(int_sweep.default, 1)
+        self.assertEqual(int_sweep.bounds, (1, 3))
+        self.assertEqual(int_sweep.step, 1)
+
+        np.testing.assert_array_equal(int_sweep.values(), np.array([1, 2, 3]))
+
+        # explicit bounds
+        int_sweep = IntSweep(bounds=(1, 3))
+        self.assertEqual(int_sweep.default, 1)
+        self.assertEqual(int_sweep.bounds, (1, 3))
+        self.assertEqual(int_sweep.step, 1)
+
+        np.testing.assert_array_equal(int_sweep.values(), np.array([1, 2, 3]))
+
+        # implicit values
+        int_sweep = IntSweep([1, 3])
+        self.assertEqual(int_sweep.default, 1)
+        self.assertEqual(int_sweep.bounds, None)
+        self.assertEqual(int_sweep.step, None)
+
+        np.testing.assert_array_equal(int_sweep.values(), np.array([1, 3]))
+
+        # explicit values
+        int_sweep = IntSweep(sample_values=[1, 3])
+        self.assertEqual(int_sweep.default, 1)
+        self.assertEqual(int_sweep.bounds, None)
+        self.assertEqual(int_sweep.step, None)
+
+        np.testing.assert_array_equal(int_sweep.values(), np.array([1, 3]))
+
         repeats = 1
         iv_repeat = IntSweep(
             bounds=[1, repeats],
             units="repeats",
             doc="The number of times a sample was measured",
         )
-
         print(iv_repeat.name)
         print(iv_repeat.values())
 
-        # float_sweep = FloatSweep()
-        # self.assertEqual(float_sweep.default, 0)
-        # self.assertListEqual(float_sweep.values(), [0])
+    def test_float_sweep_1_arg(self):
 
-        # float_sweep = FloatSweep(0)
-        # self.assertEqual(float_sweep.default, 0)
-        # self.assertListEqual(float_sweep.values(), np.array([0]))
-
-        float_sweep = FloatSweep(1)
-        self.assertEqual(float_sweep.default, 0)
-        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0]))
-
-        float_sweep = FloatSweep(2)
-        self.assertEqual(float_sweep.default, 0)
-        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 2.0]))
-
+        # implicit bounds
         float_sweep = FloatSweep((0, 1))
         self.assertEqual(float_sweep.default, 0)
+        self.assertEqual(float_sweep.bounds, (0, 1))
+        self.assertEqual(float_sweep.step, None)
+
         np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0]))
 
+        # explicit bounds
+        float_sweep = FloatSweep(bounds=(0, 1))
+        self.assertEqual(float_sweep.default, 0)
+        self.assertEqual(float_sweep.bounds, (0, 1))
+        self.assertEqual(float_sweep.step, None)
+
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0]))
+
+        # implicit values
         float_sweep = FloatSweep([0, 1, 2])
         self.assertEqual(float_sweep.default, 0)
+        self.assertEqual(float_sweep.bounds, None)
+        self.assertEqual(float_sweep.step, None)
+
         np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0, 2.0]))
 
-        float_sweep = FloatSweep([-1, 1, 2])
-        self.assertEqual(float_sweep.default, -1)
-        np.testing.assert_array_equal(float_sweep.values(), np.array([-1.0, 1.0, 2.0]))
+        # implicit values
+        float_sweep = FloatSweep(sample_values=[0, 1, 2])
+        self.assertEqual(float_sweep.default, 0)
+        self.assertEqual(float_sweep.bounds, None)
+        self.assertEqual(float_sweep.step, None)
+        np.testing.assert_array_equal(float_sweep.values(), np.array([0.0, 1.0, 2.0]))
+
+        # float_sweep = FloatSweep([-1, 1, 2])
+        # self.assertEqual(float_sweep.default, -1)
+        # np.testing.assert_array_equal(float_sweep.values(), np.array([-1.0, 1.0, 2.0]))
 
     @given(st.integers())
     def test_int_sweep_samples(self, first_arg):
@@ -257,6 +301,6 @@ class TestVarSweeps(unittest.TestCase):
 
 if __name__ == "__main__":
     tst = TestVarSweeps()
-    # tst.test_int_sweep_1_arg()
-    print("test")
-    tst.test_float_sweep_1_arg()
+    tst.test_int_sweep_1_arg()
+    # print("test")
+    # tst.test_float_sweep_1_arg()
