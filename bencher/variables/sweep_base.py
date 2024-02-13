@@ -46,21 +46,22 @@ def describe_variable(v: Parameterized, include_samples: bool, value=None) -> Li
 
 
 class SweepBase(param.Parameter):
-    # def __init__(self, **params):
-    # super().__init__(**params)
+    def __init__(self, **params):
+        super().__init__(**params)
+
     # self.units = ""
     # slots = ["units", "samples"]
     # __slots__ = shared_slots
 
-    def values(
-        self,
-    ) -> List[Any]:
-        """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
+    # def values(
+    #     self,
+    # ) -> List[Any]:
+    #     """All sweep classes must implement this method. This generates sample values from based on the parameters bounds and sample number.
 
-        Returns:
-            List[Any]: A list of samples from the variable
-        """
-        raise NotImplementedError
+    #     Returns:
+    #         List[Any]: A list of samples from the variable
+    #     """
+    #     raise NotImplementedError
 
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""

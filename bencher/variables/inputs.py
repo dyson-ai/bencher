@@ -95,8 +95,9 @@ class NumberSweep(SweepBase):
         default=None,
         bounds=None,
         step=None,
+        **params,
     ):
-        SweepBase.__init__(self)
+        SweepBase.__init__(self, **params)
 
         self.units = units
         self.sample_values = sample_values
@@ -175,6 +176,7 @@ class IntSweep(NumberSweep):
             default=default,
             step=step,
             bounds=bounds,
+            **params,
         )
 
     def values(self) -> List[int]:
@@ -236,6 +238,7 @@ class FloatSweep(NumberSweep):
             default=default,
             step=step,
             bounds=bounds,
+            **params,
         )
 
     def values(self) -> List[float]:

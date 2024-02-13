@@ -30,7 +30,7 @@ class TimeSnapshot(TimeBase):
         **params,
     ):
         if isinstance(datetime_src, str):
-            TimeBase.__init__(self, [datetime_src], instantiate=True, **params)
+            TimeBase.__init__(self, objects=[datetime_src], instantiate=True, **params)
         else:
             TimeBase.__init__(
                 self,
