@@ -143,8 +143,8 @@ class NumberSweep(SweepBase):
             else:
                 self.default = 0
 
-        if self.sample_values is None and self.bounds is None:
-            raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
+        # if self.sample_values is None and self.bounds is None and self.default is None:
+        # raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
 
     def values_base(self, dtype) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
