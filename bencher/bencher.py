@@ -633,7 +633,6 @@ class Bench(BenchPlotServer):
             doc="The number of times a sample was measured",
         )
 
-        
         bench_cfg.iv_repeat.name = "repeat"
         extra_vars = [bench_cfg.iv_repeat]
 

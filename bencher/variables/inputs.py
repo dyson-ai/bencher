@@ -4,7 +4,7 @@ from typing import List, Any
 
 
 import numpy as np
-from param import Integer, Number, Selector
+from param import Selector
 from bencher.variables.sweep_base import SweepBase, shared_slots
 
 
@@ -84,7 +84,6 @@ class EnumSweep(SweepSelector):
 
 
 class NumberSweep(SweepBase):
-
     __slots__ = shared_slots + ["units", "samples", "sample_values", "default", "bounds", "step"]
 
     def __init__(
@@ -141,7 +140,7 @@ class NumberSweep(SweepBase):
         if self.sample_values is None and self.bounds is None:
             raise RuntimeWarning("you must define at least 1 of (bounds,sample_values)")
 
-    def values(self, dtype) -> List[float]:
+    def values_base(self, dtype) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
         if self.sample_values is None:
             if self.bounds is not None:
@@ -180,7 +179,7 @@ class IntSweep(NumberSweep):
 
     def values(self) -> List[int]:
         """return all the values for a parameter sweep."""
-        return super().values(int)
+        return self.values_base(int)
 
     # def values(self, dtype) -> List[float]:
     #     """return all the values for a parameter sweep.  If debug is true return a reduced list"""
@@ -192,25 +191,25 @@ class IntSweep(NumberSweep):
     #             return np.arange(self.bounds[0], self.bounds[1], self.step, dtype=dtype)
     #     return self.sample_values
 
-    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
-    def _validate_value(self, val, allow_None):
-        if callable(val):
-            return
+    # ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    # def _validate_value(self, val, allow_None):
+    #     if callable(val):
+    #         return
 
-        if allow_None and val is None:
-            return
+    #     if allow_None and val is None:
+    #         return
 
-        if not isinstance(val, (int, np.integer)):
-            raise ValueError(
-                "Integer parameter %r must be an integer, " "not type %r." % (self.name, type(val))
-            )
+    #     if not isinstance(val, (int, np.integer)):
+    #         raise ValueError(
+    #             "Integer parameter %r must be an integer, " "not type %r." % (self.name, type(val))
+    #         )
 
-    ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
-    def _validate_step(self, val, step):
-        if step is not None and not isinstance(step, (int, np.integer)):
-            raise ValueError(
-                "Step can only be None or an " "integer value, not type %r" % type(step)
-            )
+    # ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
+    # def _validate_step(self, val, step):
+    #     if step is not None and not isinstance(step, (int, np.integer)):
+    #         raise ValueError(
+    #             "Step can only be None or an " "integer value, not type %r" % type(step)
+    #         )
 
 
 class FloatSweep(NumberSweep):
@@ -241,7 +240,7 @@ class FloatSweep(NumberSweep):
 
     def values(self) -> List[float]:
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
-        return super().values(float)
+        return self.values_base(float)
 
 
 def box(name, center, width):

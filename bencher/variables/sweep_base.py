@@ -52,7 +52,6 @@ class SweepBase(param.Parameter):
     # slots = ["units", "samples"]
     # __slots__ = shared_slots
 
-
     def values(
         self,
     ) -> List[Any]:
