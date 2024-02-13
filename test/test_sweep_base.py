@@ -101,8 +101,8 @@ class TestSweepBase(unittest.TestCase):
         self.assertEqual(vals[0], 0)
         self.assertEqual(vals[1], 1)
 
-        defaults = AllSweepVars.param.var_float.values()
-        self.assertEqual(defaults[9], 10)
+        vals = AllSweepVars.param.var_float.values()
+        self.assertEqual(vals[1], 10)
 
         vals = AllSweepVars.param.var_enum.with_sample_values([PostprocessFn.negate]).values()
         self.assertEqual(len(vals), 1)
