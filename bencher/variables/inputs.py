@@ -106,7 +106,7 @@ class NumberSweep(SweepBase):
         self.bounds = bounds
 
         self.step = step
-        
+
         self.first_arg_processing(first_arg)
 
     def first_arg_processing(self, first_arg=None):
@@ -176,7 +176,6 @@ class IntSweep(NumberSweep):
         # if first_arg is None:
         # first_arg = [0]
 
-    
         NumberSweep.__init__(
             self,
             first_arg,
@@ -197,8 +196,9 @@ class IntSweep(NumberSweep):
     # return self.values_base(int)
 
     def values(self) -> List[float]:
-        dtype = int
         """return all the values for a parameter sweep.  If debug is true return a reduced list"""
+
+        dtype = int
         if self.sample_values is None:
             if self.bounds is not None:
                 if self.step is None:
@@ -255,7 +255,7 @@ class FloatSweep(NumberSweep):
         **params,
     ):
         # if first_arg is None:
-            # first_arg = [0.0]
+        # first_arg = [0.0]
         NumberSweep.__init__(
             self,
             first_arg,

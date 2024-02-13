@@ -72,7 +72,6 @@ class TestVarSweeps(unittest.TestCase):
         print(iv_repeat.values())
 
     def test_float_sweep_1_arg(self):
-
         # implicit bounds
         float_sweep = FloatSweep((0, 1))
         self.assertEqual(float_sweep.default, 0)
