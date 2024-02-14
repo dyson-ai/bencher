@@ -75,7 +75,7 @@ class VideoSummaryResult(BenchResultBase):
             if val is not None:
                 vr.append_file(val, label)
         fn = vr.write_png(**kwargs)
-        kwargs.pop("target_duration",None)
+        kwargs.pop("target_duration", None)
         if fn is not None:
             if video_controls is None:
                 video_controls = VideoControls()
