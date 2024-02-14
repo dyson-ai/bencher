@@ -175,8 +175,13 @@ class Bench(BenchPlotServer):
         self.plot_callbacks = []
         self.plot = True
 
-    def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel]) -> None:
-        self.plot_callbacks.append(callback)
+    def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel], **kwargs) -> None:
+        """Add a plotting callback that will be called on any result produced when calling a sweep funciton.  You can pass additional arguments to the plotting function with kwargs.  e.g.  add_plot_callback(bch.BenchResult.to_video_grid,)
+
+        Args:
+            callback (Callable[[BenchResult], pn.panel]): _description_
+        """
+        self.plot_callbacks.append(partial(callback, **kwargs))
 
     def set_worker(self, worker: Callable, worker_input_cfg: ParametrizedSweep = None) -> None:
         """Set the benchmark worker function and optionally the type the worker expects
@@ -568,7 +573,7 @@ class Bench(BenchPlotServer):
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
 
         for i in bench_cfg.all_vars:
-            logging.info(i.sampling_str(bench_cfg.debug))
+            logging.info(i.sampling_str())
 
         dims_cfg = DimsCfg(bench_cfg)
         function_inputs = list(
@@ -626,7 +631,6 @@ class Bench(BenchPlotServer):
             default=repeats,
             bounds=[1, repeats],
             samples=repeats,
-            samples_debug=2 if repeats > 2 else 1,
             units="repeats",
             doc="The number of times a sample was measured",
         )

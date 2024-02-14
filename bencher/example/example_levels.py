@@ -37,7 +37,7 @@ class RunWithLevel(bch.ParametrizedSweep):
 
         self.level_samples = int(
             pow(
-                len(bch.FloatSweep(bounds=[0, 1]).with_level(self.level).values(False)),
+                len(bch.FloatSweep(bounds=[0, 1]).with_level(self.level).values()),
                 self.dimensions,
             )
         )

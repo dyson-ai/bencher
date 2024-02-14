@@ -21,12 +21,13 @@ class ComposableContainerVideo(ComposableContainerBase):
         var_value: str = None,
         background_col: tuple[3] = (255, 255, 255),
         horizontal: bool = True,
+        target_duration: float = None,
     ) -> None:
         super().__init__(horizontal)
         self.name = name
         self.container = []
         self.background_col = background_col
-        self.target_duration = 10.0
+        self.target_duration = 10 if target_duration is None else target_duration
         self.var_name = var_name
 
         self.label = self.label_formatter(var_name, var_value)

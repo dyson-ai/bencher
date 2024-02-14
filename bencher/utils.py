@@ -150,7 +150,7 @@ def callable_name(any_callable: Callable[..., Any]) -> str:
 
 
 def listify(obj) -> list:
-    """Take an object and turn it into a list if its not already a list"""
+    """Take an object and turn it into a list if its not already a list.  However if the object is none, don't turn it into a list"""
     if obj is None:
         return None
     if isinstance(obj, list):
