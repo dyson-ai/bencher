@@ -182,7 +182,7 @@ class VideoSummaryResult(BenchResultBase):
 
         num_dims = len(dataset.sizes)
         if time_sequence_dimension == -1:  # use time sequence for everything
-            compose_method_list = [ComposeType.sequence] * (num_dims+1)
+            compose_method_list = [ComposeType.sequence] * (num_dims + 1)
         else:
             compose_method_list = [first_compose_method]
             for i in range(num_dims - 1):
