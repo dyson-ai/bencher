@@ -95,11 +95,18 @@ class ComposableContainerVideo(ComposableContainerBase):
         out = None
         # print(f"using compose type{render_cfg.compose_method}")
 
+        max_duration = 0.0
+
         for i in range(len(self.container)):
             if self.container[i].duration is None:  # only update image durations not video
                 self.container[i].duration = duration / float(len(self.container))
+            if self.container[i].duration > max_duration:
+                max_duration = self.container[i].duration
         match render_cfg.compose_method:
             case ComposeType.right | ComposeType.down:
+                for i in range(len(self.container)):
+                    self.container[i] = self.extend_clip(self.container[i], max_duration)
+
                 if render_cfg.compose_method == ComposeType.right:
                     clips = [self.container]
                 else:
@@ -150,3 +157,15 @@ class ComposableContainerVideo(ComposableContainerBase):
 
     def deep(self):
         return deepcopy(self)
+
+    def extend_clip(self, clip: VideoClip, desired_duration: float):
+        if clip.duration < desired_duration:
+            return concatenate_videoclips(
+                [
+                    clip,
+                    ImageClip(
+                        clip.get_frame(clip.duration), duration=desired_duration - clip.duration
+                    ),
+                ]
+            )
+        return clip
