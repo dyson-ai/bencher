@@ -1,7 +1,4 @@
 import bencher as bch
-import numpy as np
-import math
-import matplotlib.pyplot as plt
 from example_image import BenchPolygons
 
 
@@ -47,7 +44,7 @@ class BenchComposableContainerVideo(BenchComposableContainerImage):
 
 
 def example_composable_container_image(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     bench = BenchComposableContainerImage().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
@@ -57,7 +54,7 @@ def example_composable_container_image(
 
 
 def example_composable_container_video(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     bench = BenchComposableContainerVideo().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
@@ -70,7 +67,7 @@ if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = False
     # ex_run_cfg.level = 2
-    report = bch.BenchReport()
-    example_composable_container_image(ex_run_cfg, report=report)
-    example_composable_container_video(ex_run_cfg, report=report)
-    report.show()
+    ex_report = bch.BenchReport()
+    example_composable_container_image(ex_run_cfg, report=ex_report)
+    example_composable_container_video(ex_run_cfg, report=ex_report)
+    ex_report.show()
