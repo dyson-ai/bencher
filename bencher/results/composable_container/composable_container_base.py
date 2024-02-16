@@ -1,6 +1,7 @@
 from enum import Enum, auto
-from typing import Any
+from typing import Any, List
 from bencher.results.float_formatter import FormatFloat
+from dataclasses import dataclass, field
 
 
 # TODO enable these options
@@ -26,13 +27,13 @@ class ComposeType(Enum):
         return ComposeType.down
 
 
+@dataclass(kw_only=True)
 class ComposableContainerBase:
     """A base class for renderer backends.  A composable renderer"""
 
-    def __init__(self, horizontal: bool = True, compose_method: ComposeType = None) -> None:
-        self.horizontal: bool = horizontal
-        self.compose_method = compose_method if compose_method is not None else ComposeType.right
-        self.container = []
+    horizontal: bool = True
+    compose_method: ComposeType = ComposeType.right
+    container: List[Any] = field(default_factory=list)
 
     @staticmethod
     def label_formatter(var_name: str, var_value: int | float | str) -> str:

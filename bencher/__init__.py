@@ -25,7 +25,7 @@ from .results.composable_container.composable_container_base import (
     ComposeType,
     ComposableContainerBase,
 )
-from .results.composable_container.composable_container_video import ComposableContainerVideo
+from .results.composable_container.composable_container_video import ComposableContainerVideo,RenderCfg
 
 from .plotting.plot_filter import VarRange, PlotFilter
 from .utils import (

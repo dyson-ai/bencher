@@ -6,7 +6,7 @@ class BenchComposableContainerImage(BenchPolygons):
 
     compose_method = bch.EnumSweep(bch.ComposeType)
     labels = bch.BoolSweep()
-    num_frames = bch.IntSweep(default=5, bounds=[1, 10])
+    num_frames = bch.IntSweep(default=5, bounds=[1, 100])
     polygon_vid = bch.ResultVideo()
 
     def __call__(self, **kwargs):
@@ -17,16 +17,18 @@ class BenchComposableContainerImage(BenchPolygons):
         if self.labels:
             var_name = "sides"
             var_value = self.sides
-        vr = bch.ComposableContainerVideo(
-            target_duration=1,
-            compose_method=self.compose_method,
-            var_name=var_name,
-            var_value=var_value,
-        )
-        for i in range(5):
+        vr = bch.ComposableContainerVideo()
+        for i in range(self.num_frames):
             res = super().__call__(start_angle=i)
             vr.append(res["polygon"])
-        self.polygon_vid = vr.to_video()
+        self.polygon_vid = vr.to_video(
+            bch.RenderCfg(
+                compose_method=self.compose_method,
+                var_name=var_name,
+                var_value=var_value,
+                max_frame_duration=1.0 / 20,
+            )
+        )
         return self.get_results_values_as_dict()
 
 
@@ -34,12 +36,14 @@ class BenchComposableContainerVideo(BenchComposableContainerImage):
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        vr = bch.ComposableContainerVideo(target_duration=1, compose_method=self.compose_method)
+        vr = bch.ComposableContainerVideo()
         for i in range(3, 5):
-            res = super().__call__(compose_method=bch.ComposeType.sequence, sides=i)
+            res = super().__call__(compose_method=bch.ComposeType.sequence, sides=i, num_frames=5)
             vr.append(res["polygon_vid"])
 
-        self.polygon_vid = vr.to_video()
+        self.polygon_vid = vr.to_video(
+            bch.RenderCfg(target_duration=1, compose_method=self.compose_method)
+        )
         return self.get_results_values_as_dict()
 
 
@@ -48,7 +52,9 @@ def example_composable_container_image(
 ) -> bch.Bench:
     bench = BenchComposableContainerImage().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
-    # bench.add_plot_callback(bch.BenchResult.to_panes)
+    bench.add_plot_callback(bch.BenchResult.to_panes)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    bench.add_plot_callback(bch.BenchResult.to_video_summary)
     bench.plot_sweep(input_vars=["compose_method", "labels"])
     return bench
 
@@ -69,5 +75,5 @@ if __name__ == "__main__":
     # ex_run_cfg.level = 2
     ex_report = bch.BenchReport()
     example_composable_container_image(ex_run_cfg, report=ex_report)
-    example_composable_container_video(ex_run_cfg, report=ex_report)
+    # example_composable_container_video(ex_run_cfg, report=ex_report)
     ex_report.show()
