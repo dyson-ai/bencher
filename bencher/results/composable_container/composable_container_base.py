@@ -11,7 +11,6 @@ class ComposeType(Enum):
     sequence = auto()  # display the container after (in time)
     # overlay = auto()  # overlay on top of the current container (alpha blending)
 
-
     def flip(self):
         match self:
             case ComposeType.right:

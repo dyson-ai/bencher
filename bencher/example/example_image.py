@@ -86,7 +86,6 @@ def example_image_vid(
     bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
     # from functools import partial
     bench.add_plot_callback(bch.BenchResult.to_video_summary)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=-1)
     bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=0)
     bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=1)
     # bench.add_plot_callback(bch.BenchResult.to_video_grid,time_sequence_dimension=2)

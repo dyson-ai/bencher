@@ -1,15 +1,12 @@
-from bencher.utils import params_to_str
 from typing import Optional, List
-import itertools
 import panel as pn
 import xarray as xr
 from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultImage
 from bencher.plotting.plot_filter import VarRange, PlotFilter
-from bencher.utils import callable_name, listify
+from bencher.utils import callable_name
 from bencher.video_writer import VideoWriter
-from bencher.results.float_formatter import FormatFloat
 from bencher.results.video_result import VideoControls
 from bencher.results.composable_container.composable_container_video import (
     ComposableContainerVideo,
@@ -23,13 +20,16 @@ class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
         self,
         result_var: Parameter = None,
-        input_order: List[str] = None,
         reverse: bool = True,
         result_types=(ResultImage,),
         **kwargs,
     ) -> Optional[pn.panel]:
         return self.to_video_grid(
-            result_var=result_var, result_types=result_types, time_sequence_dimension=-1, **kwargs
+            result_var=result_var,
+            result_types=result_types,
+            time_sequence_dimension=-1,
+            reverse=reverse,
+            **kwargs,
         )
         # plot_filter = PlotFilter(
         #     float_range=VarRange(0, None),
@@ -96,6 +96,7 @@ class VideoSummaryResult(BenchResultBase):
         result_var: Parameter = None,
         result_types=(ResultImage,),
         pane_collection: pn.pane = None,
+        time_sequence_dimension=0,
         **kwargs,
     ) -> Optional[pn.panel]:
         """Returns the results compiled into a video
@@ -125,7 +126,11 @@ class VideoSummaryResult(BenchResultBase):
             ds = self.to_dataset(ReduceType.SQUEEZE)
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, result_types):
-                    pane_collection.append(self.to_video_grid_ds(ds, rv, **kwargs))
+                    pane_collection.append(
+                        self.to_video_grid_ds(
+                            ds, rv, time_sequence_dimension=time_sequence_dimension, **kwargs
+                        )
+                    )
             return pane_collection
         return matches_res.to_panel()
 
@@ -171,7 +176,7 @@ class VideoSummaryResult(BenchResultBase):
         dataset: xr.Dataset,
         first_compose_method: ComposeType = ComposeType.right,
         time_sequence_dimension: int = 0,
-    ):
+    ) -> List[ComposeType]:
         """ "Given a dataset, chose an order for composing the results.  By default will flip between rigth and down and the last dimension will be a time sequence.
 
         Args:
@@ -180,7 +185,7 @@ class VideoSummaryResult(BenchResultBase):
             time_sequence_dimension (int, optional): The dimension to start time sequencing instead of composing in space. Defaults to 0.
 
         Returns:
-            _type_: _description_
+            List[ComposeType]: A list of composition methods for composing the dataset result
         """
 
         num_dims = len(dataset.sizes)
@@ -224,8 +229,6 @@ class VideoSummaryResult(BenchResultBase):
             compose_method_list = self.dataset_to_compose_list(
                 dataset, compose_method, time_sequence_dimension=time_sequence_dimension
             )
-            print("first compose")
-            print(compose_method_list)
 
         compose_method_list_pop = deepcopy(compose_method_list)
         compose_method = compose_method_list_pop.pop()
@@ -262,16 +265,6 @@ class VideoSummaryResult(BenchResultBase):
                     )
                 )
                 outer_container.append(rendered)
-            concat_with_time = (root_dimensions - num_dims) <= time_sequence_dimension
-            print(f"Num DIMS: {num_dims}, {dims}")
-            print(f"Distance from root: {root_dimensions - num_dims}")
-            print(
-                f"Distance from time_seq tim{root_dimensions - num_dims -time_sequence_dimension}"
-            )
-            print(f"Time seq: {time_sequence_dimension}")
-            print(f"Concat_time: {concat_with_time}")
-            print(compose_method_list_pop)
-            print(f"rendering with {compose_method}")
             return outer_container.render(
                 RenderCfg(
                     compose_method=compose_method,
