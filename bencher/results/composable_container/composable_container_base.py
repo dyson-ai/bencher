@@ -7,7 +7,7 @@ from bencher.results.float_formatter import FormatFloat
 class ComposeType(Enum):
     right = auto()  # append the container to the right (creates a row)
     down = auto()  # append the container below (creates a column)
-    overlay = auto()  # overlay on top of the current container (alpha blending)
+    # overlay = auto()  # overlay on top of the current container (alpha blending)
     sequence = auto()  # display the container after (in time)
 
     def flip(self):
@@ -29,11 +29,9 @@ class ComposeType(Enum):
 class ComposableContainerBase:
     """A base class for renderer backends.  A composable renderer"""
 
-    def __init__(
-        self, horizontal: bool = True, compose_method: ComposeType = ComposeType.right
-    ) -> None:
+    def __init__(self, horizontal: bool = True, compose_method: ComposeType = None) -> None:
         self.horizontal: bool = horizontal
-        self.compose_method = compose_method
+        self.compose_method = compose_method if compose_method is not None else ComposeType.right
         self.container = []
 
     @staticmethod

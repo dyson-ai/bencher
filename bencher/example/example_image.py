@@ -4,10 +4,11 @@ import math
 import matplotlib.pyplot as plt
 
 
-def polygon_points(radius: float, sides: int):
+def polygon_points(radius: float, sides: int, start_angle: float):
     points = []
-    for ang in np.linspace(0, math.pi * 2, sides + 1):
-        points.append(([math.sin(ang) * radius, math.cos(ang) * radius]))
+    for ang in np.linspace(0, 360, sides + 1):
+        angle = math.radians(start_angle + ang)
+        points.append(([math.sin(angle) * radius, math.cos(angle) * radius]))
     return points
 
 
@@ -17,12 +18,13 @@ class BenchPolygons(bch.ParametrizedSweep):
     linewidth = bch.FloatSweep(default=1, bounds=(1, 10))
     linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
     color = bch.StringSweep(["red", "green", "blue"])
+    start_angle = bch.FloatSweep(default=0, bounds=[0, 360])
     polygon = bch.ResultImage()
     # hmap = bch.ResultHmap()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        points = polygon_points(self.radius, self.sides)
+        points = polygon_points(self.radius, self.sides, self.start_angle)
         # self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
         return super().__call__()
@@ -80,6 +82,7 @@ def example_image_vid(
     bench.plot_sweep(input_vars=["sides"])
     bench.plot_sweep(input_vars=["radius", "sides"])
     bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
+    bench.plot_sweep(input_vars=["radius", "sides", "linewidth", "color"])
 
     return bench
 

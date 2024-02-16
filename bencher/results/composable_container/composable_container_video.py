@@ -1,10 +1,12 @@
 import numpy as np
+from pathlib import Path
 from moviepy.editor import (
     ImageClip,
     CompositeVideoClip,
     clips_array,
     concatenate_videoclips,
     VideoClip,
+    VideoFileClip,
 )
 
 from bencher.results.composable_container.composable_container_base import (
@@ -21,15 +23,19 @@ class ComposableContainerVideo(ComposableContainerBase):
         var_name: str = None,
         var_value: str = None,
         background_col: tuple[3] = (255, 255, 255),
-        # horizontal: bool = True,
-        compose_method: ComposeType = ComposeType.right,
+        compose_method: ComposeType = None,
+        target_duration: float = None,
+        min_frame_duration: float = None,
     ) -> None:
-        # super().__init__(horizontal)
+        super().__init__(
+            compose_method=compose_method if compose_method is not None else ComposeType.sequence
+        )
         self.name = name
         self.container = []
         self.background_col = background_col
         # self.background_col = None
-        self.target_duration = 10.0
+        self.target_duration = float(target_duration) if target_duration is not None else 10.0
+        self.min_frame_duration = min_frame_duration if min_frame_duration is not None else 1.0
         self.var_name = var_name
         self.compose_method = compose_method
 
@@ -50,53 +56,61 @@ class ComposableContainerVideo(ComposableContainerBase):
         elif isinstance(obj, ComposableContainerVideo):
             self.container.append(obj.render())
         else:
+            path = Path(obj)
+            extension = str.lower(path.suffix)
+            if extension in [".jpg", ".jepg", ".png"]:
+                self.container.append(ImageClip(obj))
+            elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
+                print(obj)
+                self.container.append(VideoFileClip(obj))
+            else:
+                raise RuntimeWarning(f"unsupported filetype {extension}")
+
             # if self.label is not None:
             # img_obj = np.array(VideoWriter.label_image(obj, self.label))
             # else:
             # img_obj = obj
-            self.container.append(ImageClip(obj))
 
-    def render(self, compose_method: ComposeType = None) -> CompositeVideoClip:
+    def render(self, compose_method=None) -> CompositeVideoClip:
+        print(self.target_duration)
         fps = len(self.container) / self.target_duration
-        fps = max(fps, 1.0)  # never slower that 1 seconds per frame
+        fps = max(fps, self.min_frame_duration)  # never slower that 1 seconds per frame
         fps = min(fps, 30.0)
-
+        print("fps", fps)
         if compose_method is None:
             compose_method = self.compose_method
-
-        for i in range(len(self.container)):
-            self.container[i].duration = 1.0 / fps
-
-        for i in range(len(self.container)):
-            print(self.container[i].duration)
 
         out = None
         print(f"using compose type{compose_method}")
         match compose_method:
             case ComposeType.right:
                 out = clips_array([self.container], bg_color=self.background_col)
-                out.duration = fps * len(self.container)
-                # out.duration = len
+                out.duration = self.target_duration
             case ComposeType.down:
                 out = clips_array([[c] for c in self.container], bg_color=self.background_col)
-                out.duration = fps * len(self.container)
+                out.duration = self.target_duration
 
             case ComposeType.sequence:
                 # out = concatenate_videoclips(self.container,method="compose")
                 # out = concatenate_videoclips(self.container,bg_color=self.background_col)
-                out = concatenate_videoclips(self.container,bg_color=self.background_col,method="compose")
 
-            case ComposeType.overlay:
-                # for i in range(len(self.container)):
-                # self.container[i].alpha = 0.1
-                out = CompositeVideoClip(self.container)
-                out.duration = fps
+                for i in range(len(self.container)):
+                    self.container[i].duration = 1.0 / fps
+                out = concatenate_videoclips(
+                    self.container, bg_color=self.background_col, method="compose"
+                )
+                # out.duration = fps * len(self.container)
 
-                # out = con
+            # case ComposeType.overlay:
+            #     for i in range(len(self.container)):
+            #         self.container[i].alpha = 1./len(self.container)
+            #     out = CompositeVideoClip(self.container, bg_color=self.background_col)
+            #     out.duration = fps
             case _:
                 raise RuntimeError("This compose type is not supported4")
 
-        # print(out.duration)
+        print(out.duration)
+
         if self.label is not None:
             print("adding label")
             label = ImageClip(np.array(VideoWriter.create_label(self.label)))
@@ -104,9 +118,12 @@ class ComposableContainerVideo(ComposableContainerBase):
             if compose_method == ComposeType.down:
                 label_compose = ComposeType.right
             con2 = ComposableContainerVideo(
-                background_col=self.background_col, compose_method=label_compose
+                background_col=self.background_col, compose_method=label_compose,target_duration= out.duration
             )
             con2.append(label)
             con2.append(out)
             return con2.render()
         return out
+
+    def to_video(self) -> str:
+        return VideoWriter().write_video_raw(self.render())
