@@ -19,7 +19,6 @@ from bencher.results.composable_container.composable_container_base import (
 from bencher.video_writer import VideoWriter
 
 
-# @dataclass(kw_only=True)
 @dataclass()
 class RenderCfg:
 

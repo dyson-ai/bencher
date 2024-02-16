@@ -11,7 +11,6 @@ from bencher.utils import callable_name, listify
 from bencher.video_writer import VideoWriter
 from bencher.results.float_formatter import FormatFloat
 from bencher.results.video_result import VideoControls
-from bencher.utils import int_to_col
 from bencher.results.composable_container.composable_container_video import (
     ComposableContainerVideo,
     ComposeType,
@@ -165,22 +164,34 @@ class VideoSummaryResult(BenchResultBase):
         return val
 
     def dataset_to_compose_list(
-        self, dataset, first_compose_method=ComposeType.right, time_sequence_dimension=0
+        self,
+        dataset: xr.Dataset,
+        first_compose_method: ComposeType = ComposeType.right,
+        time_sequence_dimension: int = 0,
     ):
+        """ "Given a dataset, chose an order for composing the results.  By default will flip between rigth and down and the last dimension will be a time sequence.
+
+        Args:
+            dataset (xr.Dataset): the dataset to render
+            first_compose_method (ComposeType, optional): the direction of the first composition method. Defaults to ComposeType.right.
+            time_sequence_dimension (int, optional): The dimension to start time sequencing instead of composing in space. Defaults to 0.
+
+        Returns:
+            _type_: _description_
+        """
+
         num_dims = len(dataset.sizes)
-        # print(dataset)
-        # print(dataset.sizes)
-        compose_method_list = [first_compose_method]
-        for i in range(num_dims - 1):
-            compose_method_list.append(ComposeType.flip(compose_method_list[-1]))
+        if time_sequence_dimension == -1:  # use time sequence for everything
+            compose_method_list = [ComposeType.sequence] * (num_dims+1)
+        else:
+            compose_method_list = [first_compose_method]
+            for i in range(num_dims - 1):
+                compose_method_list.append(ComposeType.flip(compose_method_list[-1]))
 
-        # print(compose_method_list)
-        # exit()
-        # compose_method_list.insert(0,ComposeType.sequence)
-        compose_method_list.append(ComposeType.sequence)
+            compose_method_list.append(ComposeType.sequence)
 
-        for i in range(time_sequence_dimension + 1):
-            compose_method_list[i] = ComposeType.sequence
+            for i in range(time_sequence_dimension + 1):
+                compose_method_list[i] = ComposeType.sequence
 
         return compose_method_list
 
@@ -218,11 +229,6 @@ class VideoSummaryResult(BenchResultBase):
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
-            # print(f"selected dim {selected_dim}")
-            dim_color = int_to_col(num_dims - 2, 0.05, 1.0)
-            # sliced = dataset.isel({selected_dim: i})
-            # label_val = sliced.coords[selected_dim].values.item()
-
             outer_container = ComposableContainerVideo()
             max_len = 0
             for i in range(dataset.sizes[selected_dim]):

@@ -8,8 +8,9 @@ from dataclasses import dataclass, field
 class ComposeType(Enum):
     right = auto()  # append the container to the right (creates a row)
     down = auto()  # append the container below (creates a column)
-    # overlay = auto()  # overlay on top of the current container (alpha blending)
     sequence = auto()  # display the container after (in time)
+    # overlay = auto()  # overlay on top of the current container (alpha blending)
+
 
     def flip(self):
         match self:
