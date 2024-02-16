@@ -1,5 +1,6 @@
 from __future__ import annotations
 import numpy as np
+from copy import deepcopy
 from pathlib import Path
 from dataclasses import dataclass
 from moviepy.editor import (
@@ -18,22 +19,22 @@ from bencher.results.composable_container.composable_container_base import (
 from bencher.video_writer import VideoWriter
 
 
-@dataclass(kw_only=True)
+# @dataclass(kw_only=True)
+@dataclass()
 class RenderCfg:
 
+    compose_method: ComposeType = ComposeType.sequence
     var_name: str = None
     var_value: str = None
     background_col: tuple[3] = (255, 255, 255)
-    compose_method: ComposeType = ComposeType.sequence
-    target_duration: float = 10.0
+    duration: float = 10.0
+    duration_target: bool = True
     min_frame_duration: float = 1.0 / 30
     max_frame_duration: float = 1.0
 
 
 @dataclass
 class ComposableContainerVideo(ComposableContainerBase):
-
-    # render_args: RenderCfg = None
 
     def append(self, obj: VideoClip | ImageClip | str | np.ndarray) -> None:
         """Appends an image or video to the container
@@ -45,7 +46,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             RuntimeWarning: if file format is not recognised
         """
 
-        # print(f"append obj:  {isinstance(obj, VideoClip)} {type(obj)}, {obj}")
+        # print(f"append obj: {type(obj)}, {obj}")
         if isinstance(obj, VideoClip):
             self.container.append(obj)
         elif isinstance(obj, ComposableContainerVideo):
@@ -75,30 +76,38 @@ class ComposableContainerVideo(ComposableContainerBase):
         if render_cfg is None:
             render_cfg = RenderCfg()
 
-        # duration = 10.0 if render_cfg.target_duration is None else render_cfg.target_duration
-            
+        if render_cfg.duration_target:
+            # calculate duration based on fps constraints
+            duration = 10.0 if render_cfg.duration is None else render_cfg.duration
 
-        fps = float(len(self.container)) / render_cfg.target_duration  #
-        if render_cfg.min_frame_duration is not None:
-            fps = max(fps, render_cfg.min_frame_duration)  # never slower that 1 seconds per frame
-        if render_cfg.max_frame_duration is not None:
-            fps = min(fps, render_cfg.max_frame_duration)
+            frame_duration = duration / float(len(self.container))
 
-        # duration = fps * len(render_args.container)
-        duration = render_cfg.target_duration
+            if render_cfg.min_frame_duration is not None:
+                frame_duration = max(frame_duration, render_cfg.min_frame_duration)
+
+            if render_cfg.max_frame_duration is not None:
+                frame_duration = min(frame_duration, render_cfg.max_frame_duration)
+
+            duration = frame_duration * len(self.container)
+        else:
+            duration = render_cfg.duration
 
         out = None
-        print(f"using compose type{render_cfg.compose_method}")
+        # print(f"using compose type{render_cfg.compose_method}")
+
+        for i in range(len(self.container)):
+            if self.container[i].duration is None:  # only update image durations not video
+                self.container[i].duration = duration / float(len(self.container))
         match render_cfg.compose_method:
-            case ComposeType.right:
-                out = clips_array([self.container], bg_color=render_cfg.background_col)
-                out.duration = duration
-            case ComposeType.down:
-                out = clips_array([[c] for c in self.container], bg_color=render_cfg.background_col)
-                out.duration = duration
+            case ComposeType.right | ComposeType.down:
+                if render_cfg.compose_method == ComposeType.right:
+                    clips = [self.container]
+                else:
+                    clips = [[c] for c in self.container]
+                out = clips_array(clips, bg_color=render_cfg.background_col)
+                if out.duration is None:
+                    out.duration = duration
             case ComposeType.sequence:
-                for i in range(len(self.container)):
-                    self.container[i].duration = duration / float(len(self.container))
                 out = concatenate_videoclips(
                     self.container, bg_color=render_cfg.background_col, method="compose"
                 )
@@ -112,10 +121,9 @@ class ComposableContainerVideo(ComposableContainerBase):
 
         label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
         if label is not None:
-            label_len = len(label)
-
             print("adding label")
             label = ImageClip(np.array(VideoWriter.create_label(label)))
+            label.duration = out.duration
             label_compose = ComposeType.down
             if render_cfg.compose_method == ComposeType.down:
                 label_compose = ComposeType.right
@@ -126,7 +134,8 @@ class ComposableContainerVideo(ComposableContainerBase):
                 RenderCfg(
                     background_col=render_cfg.background_col,
                     compose_method=label_compose,
-                    target_duration=out.duration,
+                    duration=out.duration,
+                    duration_target=False,  # want exact duration
                 )
             )
         return out
@@ -138,3 +147,6 @@ class ComposableContainerVideo(ComposableContainerBase):
             str: webm filepath
         """
         return VideoWriter().write_video_raw(self.render(render_args))
+
+    def deep(self):
+        return deepcopy(self)

@@ -15,6 +15,7 @@ from bencher.utils import int_to_col
 from bencher.results.composable_container.composable_container_video import (
     ComposableContainerVideo,
     ComposeType,
+    RenderCfg,
 )
 from copy import deepcopy
 
@@ -136,9 +137,8 @@ class VideoSummaryResult(BenchResultBase):
         target_duration: float = None,
         **kwargs,
     ):
-        vr = VideoWriter()
 
-        cvc = self._to_video_panes_ds(
+        filename = self._to_video_panes_ds(
             dataset,
             self.plot_cb,
             target_dimension=0,
@@ -149,15 +149,12 @@ class VideoSummaryResult(BenchResultBase):
             reverse=reverse,
             target_duration=target_duration,
             **kwargs,
-        )
+        ).to_video()
 
-        fn = vr.write_video_raw(cvc)
-
-        if fn is not None:
+        if filename is not None:
             if video_controls is None:
                 video_controls = VideoControls()
-            vid = video_controls.video_container(fn, **kwargs)
-            return vid
+            return video_controls.video_container(filename, **kwargs)
         return None
 
     def plot_cb(self, dataset, result_var, **kwargs):
@@ -223,20 +220,12 @@ class VideoSummaryResult(BenchResultBase):
             # sliced = dataset.isel({selected_dim: i})
             # label_val = sliced.coords[selected_dim].values.item()
 
-            outer_container = ComposableContainerVideo(
-                name=" vs ".join(dims),
-                background_col=dim_color,
-                compose_method=compose_method,
-                target_duration=target_duration,
-                # var_name=selected_dim,
-                # var_value=label_val,
-            )
+            outer_container = ComposableContainerVideo()
             max_len = 0
             for i in range(dataset.sizes[selected_dim]):
                 sliced = dataset.isel({selected_dim: i})
                 label_val = sliced.coords[selected_dim].values.item()
                 inner_container = ComposableContainerVideo(
-                    outer_container.name,
                     var_name=selected_dim,
                     var_value=label_val,
                     compose_method=compose_method,
@@ -272,5 +261,13 @@ class VideoSummaryResult(BenchResultBase):
                 concat_method = ComposeType.sequence
             print(compose_method_list_pop)
             print(f"rendering with {compose_method}")
-            return outer_container.render(compose_method)
+            return outer_container.render(
+                RenderCfg(
+                    compose_method=compose_method,
+                    background_col=dim_color,
+                    target_duration=target_duration,
+                    # var_name=selected_dim,
+                    # var_value=label_val
+                )
+            )
         return plot_callback(dataset=dataset, result_var=result_var, **kwargs)
