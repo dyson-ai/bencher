@@ -2,6 +2,9 @@ apt_base:
   - git
   - git-lfs
   - python3-pip
+  - apt-utils
+  - jq
+
 
 pip_base:
   - flit

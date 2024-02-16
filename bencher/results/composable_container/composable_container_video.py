@@ -34,8 +34,8 @@ class ComposableContainerVideo(ComposableContainerBase):
         self.container = []
         self.background_col = background_col
         # self.background_col = None
-        self.target_duration = float(target_duration) if target_duration is not None else 10.0
-        self.min_frame_duration = min_frame_duration if min_frame_duration is not None else 1.0
+        self.target_duration = 10.0 if target_duration is None else float(target_duration)
+        self.min_frame_duration = 1.0 if min_frame_duration is None else float(min_frame_duration)
         self.var_name = var_name
         self.compose_method = compose_method
 
@@ -118,7 +118,9 @@ class ComposableContainerVideo(ComposableContainerBase):
             if compose_method == ComposeType.down:
                 label_compose = ComposeType.right
             con2 = ComposableContainerVideo(
-                background_col=self.background_col, compose_method=label_compose,target_duration= out.duration
+                background_col=self.background_col,
+                compose_method=label_compose,
+                target_duration=out.duration,
             )
             con2.append(label)
             con2.append(out)

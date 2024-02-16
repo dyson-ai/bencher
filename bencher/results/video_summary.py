@@ -78,7 +78,8 @@ class VideoSummaryResult(BenchResultBase):
             label = ", ".join(f"{a[0]}={a[1]}" for a in list(zip(input_order, index)))
             if val is not None:
                 vr.append_file(val, label)
-        fn = vr.write_png()
+        fn = vr.write_png(**kwargs)
+        kwargs.pop("target_duration", None)
         if fn is not None:
             if video_controls is None:
                 video_controls = VideoControls()
@@ -91,8 +92,19 @@ class VideoSummaryResult(BenchResultBase):
         self,
         result_var: Parameter = None,
         result_types=(ResultImage,),
+        pane_collection: pn.pane = None,
         **kwargs,
     ) -> Optional[pn.panel]:
+        """Returns the results compiled into a video
+
+        Args:
+            result_var (Parameter, optional): The result var to plot. Defaults to None.
+            result_types (tuple, optional): The types of result var to convert to video. Defaults to (ResultImage,).
+            collection (pn.pane, optional): If there are multiple results, use this collection to stack them. Defaults to pn.Row().
+
+        Returns:
+            Optional[pn.panel]: a panel pane with a video of all results concatenated together
+        """
         plot_filter = PlotFilter(
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
@@ -102,13 +114,16 @@ class VideoSummaryResult(BenchResultBase):
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
         )
+
+        if pane_collection is None:
+            pane_collection = pn.Row()
+
         if matches_res.overall:
             ds = self.to_dataset(ReduceType.SQUEEZE)
-            row = pn.Row()
             for rv in self.get_results_var_list(result_var):
                 if isinstance(rv, result_types):
-                    row.append(self.to_video_grid_ds(ds, rv, **kwargs))
-            return row
+                    pane_collection.append(self.to_video_grid_ds(ds, rv, **kwargs))
+            return pane_collection
         return matches_res.to_panel()
 
     def to_video_grid_ds(
@@ -118,45 +133,23 @@ class VideoSummaryResult(BenchResultBase):
         reverse=True,
         time_sequence_dimension=0,
         video_controls: VideoControls = None,
+        target_duration: float = None,
         **kwargs,
     ):
         vr = VideoWriter()
 
-        if True:
-
-            cvc = self._to_video_panes_ds(
-                dataset,
-                self.plot_cb,
-                target_dimension=0,
-                time_sequence_dimension=time_sequence_dimension,
-                compose_method=ComposeType.right,
-                result_var=result_var,
-                reverse=reverse,
-                **kwargs,
-            )
-        else:
-            da = dataset[result_var.name]
-            input_order = list(da.dims)
-            if reverse:
-                input_order = list(reversed(input_order))
-            inputs_produc = [da.coords[i].values for i in input_order]
-
-            ccv = ComposableContainerVideo(var_name="lol")
-
-            for index in itertools.product(*inputs_produc):
-                lookup = dict(zip(input_order, index))
-                val = da.loc[lookup].item()
-                if val is not None:
-                    ccv.append(val)
-            cvc = ccv.render(compose_method=ComposeType.right)
-            cvcd = ccv.render(compose_method=ComposeType.down)
-
-            ccv2 = ComposableContainerVideo(compose_method=ComposeType.sequence)
-            ccv2.append(cvc)
-            ccv2.append(cvcd)
-
-            cvc = ccv2.render()
-            print(cvc.duration)
+        cvc = self._to_video_panes_ds(
+            dataset,
+            self.plot_cb,
+            target_dimension=0,
+            horizontal=True,
+            compose_method=ComposeType.right,
+            result_var=result_var,
+            final=True,
+            reverse=reverse,
+            target_duration=target_duration,
+            **kwargs,
+        )
 
         fn = vr.write_video_raw(cvc)
 
@@ -202,6 +195,7 @@ class VideoSummaryResult(BenchResultBase):
         time_sequence_dimension=0,
         root_dimensions=None,
         reverse=False,
+        target_duration: float = None,
         **kwargs,
     ) -> pn.panel:
         num_dims = len(dataset.sizes)
@@ -233,6 +227,7 @@ class VideoSummaryResult(BenchResultBase):
                 name=" vs ".join(dims),
                 background_col=dim_color,
                 compose_method=compose_method,
+                target_duration=target_duration,
                 # var_name=selected_dim,
                 # var_value=label_val,
             )
@@ -245,6 +240,7 @@ class VideoSummaryResult(BenchResultBase):
                     var_name=selected_dim,
                     var_value=label_val,
                     compose_method=compose_method,
+                    target_duration=target_duration,
                 )
 
                 panes = self._to_video_panes_ds(
