@@ -141,6 +141,11 @@ class TestComposableContainerVideo(unittest.TestCase):
         res_label = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
         self.assertEqual(res.duration, res_label.duration)  # the duration of both clips
 
+    def test_bad_filetype(self):
+        vid = bch.ComposableContainerVideo()
+        with self.assertRaises(RuntimeWarning):
+            vid.append("bad.badextesnio")
+
 
 if __name__ == "__main__":
     unittest.main()

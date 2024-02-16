@@ -88,12 +88,13 @@ def example_image_vid(
     bench.add_plot_callback(bch.BenchResult.to_video_summary)
     bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=0)
     bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=1)
-    # bench.add_plot_callback(bch.BenchResult.to_video_grid,time_sequence_dimension=2)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=2)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=3)
 
     bench.plot_sweep(input_vars=["sides"])
     bench.plot_sweep(input_vars=["radius", "sides"])
     bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
-    # bench.plot_sweep(input_vars=["radius", "sides", "linewidth", "color"])
+    bench.plot_sweep(input_vars=["radius", "sides", "linewidth", "color"])
 
     return bench
 
@@ -112,7 +113,7 @@ if __name__ == "__main__":
     # def example_image_pairs()
 
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.use_sample_cache = True
+    ex_run_cfg.use_sample_cache = False
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 2

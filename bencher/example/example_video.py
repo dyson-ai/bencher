@@ -93,10 +93,13 @@ def example_video_tap(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:  # pragma: no cover
     bench = TuringPattern().to_bench(run_cfg=run_cfg, report=report)
-    bench.plot_sweep(
+    res = bench.plot_sweep(
         input_vars=["alpha", "beta"],
         # result_vars=["video","score"],
     )
+
+    bench.report.append(res.to_video_grid())
+    bench.report.append(res.to_video_grid())
 
     return bench
 

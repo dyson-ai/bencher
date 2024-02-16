@@ -112,7 +112,7 @@ class ComposableContainerVideo(ComposableContainerBase):
                     clips = [[c] for c in self.container]
                 out = clips_array(clips, bg_color=render_cfg.background_col)
                 if out.duration is None:
-                    out.duration = duration
+                    out.duration = max_duration
             case ComposeType.sequence:
                 out = concatenate_videoclips(
                     self.container, bg_color=render_cfg.background_col, method="compose"
@@ -123,11 +123,11 @@ class ComposableContainerVideo(ComposableContainerBase):
             #     out = CompositeVideoClip(self.container, bg_color=render_args.background_col)
             #     out.duration = fps
             case _:
-                raise RuntimeError("This compose type is not supported4")
+                raise RuntimeError("This compose type is not supported")
 
         label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
         if label is not None:
-            print("adding label")
+            # print("adding label")
             label = ImageClip(np.array(VideoWriter.create_label(label)))
             label.duration = out.duration
             label_compose = ComposeType.down

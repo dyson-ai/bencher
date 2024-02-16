@@ -198,7 +198,7 @@ class VideoSummaryResult(BenchResultBase):
 
             compose_method_list.append(ComposeType.sequence)
 
-            for i in range(time_sequence_dimension + 1):
+            for i in range(min(len(compose_method_list), time_sequence_dimension + 1)):
                 compose_method_list[i] = ComposeType.sequence
 
         return compose_method_list
@@ -236,7 +236,6 @@ class VideoSummaryResult(BenchResultBase):
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
             outer_container = ComposableContainerVideo()
-            max_len = 0
             for i in range(dataset.sizes[selected_dim]):
                 sliced = dataset.isel({selected_dim: i})
                 label_val = sliced.coords[selected_dim].values.item()
@@ -252,9 +251,6 @@ class VideoSummaryResult(BenchResultBase):
                     time_sequence_dimension=time_sequence_dimension,
                 )
                 inner_container.append(panes)
-
-                if inner_container.label_len > max_len:
-                    max_len = inner_container.label_len
 
                 rendered = inner_container.render(
                     RenderCfg(
