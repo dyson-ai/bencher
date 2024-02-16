@@ -11,7 +11,6 @@ class VideoControls:
         if path is not None and Path(path).exists():
             vid = pn.pane.Video(path, autoplay=True, **kwargs)
             vid.loop = True
-            print("LOOOOOPPIONG")
             self.vid_p.append(vid)
             return vid
         return pn.pane.Markdown(f"video does not exist {path}")

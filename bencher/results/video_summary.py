@@ -138,18 +138,21 @@ class VideoSummaryResult(BenchResultBase):
         **kwargs,
     ):
 
-        filename = self._to_video_panes_ds(
+        cvc = self._to_video_panes_ds(
             dataset,
             self.plot_cb,
             target_dimension=0,
             horizontal=True,
             compose_method=ComposeType.right,
+            time_sequence_dimension=time_sequence_dimension,
             result_var=result_var,
             final=True,
             reverse=reverse,
             target_duration=target_duration,
             **kwargs,
-        ).to_video()
+        )
+
+        filename = VideoWriter().write_video_raw(cvc)
 
         if filename is not None:
             if video_controls is None:
@@ -225,12 +228,7 @@ class VideoSummaryResult(BenchResultBase):
             for i in range(dataset.sizes[selected_dim]):
                 sliced = dataset.isel({selected_dim: i})
                 label_val = sliced.coords[selected_dim].values.item()
-                inner_container = ComposableContainerVideo(
-                    var_name=selected_dim,
-                    var_value=label_val,
-                    compose_method=compose_method,
-                    target_duration=target_duration,
-                )
+                inner_container = ComposableContainerVideo()
 
                 panes = self._to_video_panes_ds(
                     sliced,
@@ -246,7 +244,14 @@ class VideoSummaryResult(BenchResultBase):
                 if inner_container.label_len > max_len:
                     max_len = inner_container.label_len
 
-                rendered = inner_container.render()
+                rendered = inner_container.render(
+                    RenderCfg(
+                        var_name=selected_dim,
+                        var_value=label_val,
+                        compose_method=compose_method,
+                        duration=target_duration,
+                    )
+                )
                 outer_container.append(rendered)
             concat_with_time = (root_dimensions - num_dims) <= time_sequence_dimension
             print(f"Num DIMS: {num_dims}, {dims}")
@@ -256,16 +261,13 @@ class VideoSummaryResult(BenchResultBase):
             )
             print(f"Time seq: {time_sequence_dimension}")
             print(f"Concat_time: {concat_with_time}")
-            concat_method = None
-            if concat_with_time:
-                concat_method = ComposeType.sequence
             print(compose_method_list_pop)
             print(f"rendering with {compose_method}")
             return outer_container.render(
                 RenderCfg(
                     compose_method=compose_method,
                     background_col=dim_color,
-                    target_duration=target_duration,
+                    duration=target_duration,
                     # var_name=selected_dim,
                     # var_value=label_val
                 )

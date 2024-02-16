@@ -16,7 +16,7 @@ class TestComposableContainerVideo(unittest.TestCase):
     def small_video(self, num_frames: int = 2, render_cfg=None, size=None):
         img = self.small_img(size=size)
         vid = bch.ComposableContainerVideo()
-        for i in range(num_frames):
+        for _ in range(num_frames):
             vid.append(img)
         return vid.render(render_cfg)
 
