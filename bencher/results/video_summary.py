@@ -266,10 +266,7 @@ class VideoSummaryResult(BenchResultBase):
             return outer_container.render(
                 RenderCfg(
                     compose_method=compose_method,
-                    background_col=dim_color,
                     duration=target_duration,
-                    # var_name=selected_dim,
-                    # var_value=label_val
                 )
             )
         return plot_callback(dataset=dataset, result_var=result_var, **kwargs)

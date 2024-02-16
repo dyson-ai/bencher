@@ -147,7 +147,10 @@ class ComposableContainerVideo(ComposableContainerBase):
             )
         return out
 
-    def to_video(self, render_args: RenderCfg = None) -> str:
+    def to_video(
+        self,
+        render_args: RenderCfg = None,
+    ) -> str:
         """Returns the composite video clip as a webm file path
 
         Returns:
