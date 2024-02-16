@@ -1,6 +1,6 @@
 import panel as pn
 from bencher.results.composable_container.composable_container_base import ComposableContainerBase
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(kw_only=True)

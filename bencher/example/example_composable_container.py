@@ -39,7 +39,9 @@ class BenchComposableContainerVideo(BenchComposableContainerImage):
         vr = bch.ComposableContainerVideo()
         clips = []
         for i in range(3, 5):
-            res = super().__call__(compose_method=bch.ComposeType.sequence, sides=i, num_frames=i*10)
+            res = super().__call__(
+                compose_method=bch.ComposeType.sequence, sides=i, num_frames=i * 10
+            )
             clips.append(res["polygon_vid"])
 
         for c in clips:
@@ -66,11 +68,8 @@ def example_composable_container_video(
 ) -> bch.Bench:
     bench = BenchComposableContainerVideo().to_bench(run_cfg, report)
 
-    vid = bench.worker(compose_method=bch.ComposeType.down, labels=False)["polygon_vid"]
+    bench.worker(compose_method=bch.ComposeType.down, labels=False)["polygon_vid"]
 
-    # import panel as pn
-
-    # pn.Row(vid).show()
 
     bench.result_vars = ["polygon_vid"]
     bench.add_plot_callback(bch.BenchResult.to_panes)

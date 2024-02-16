@@ -1,8 +1,6 @@
 import unittest
 import bencher as bch
 import numpy as np
-from bencher.example.meta.example_meta import BenchableObject
-from bencher.results.composable_container import composable_container_video
 
 
 class TestComposableContainerVideo(unittest.TestCase):
@@ -141,9 +139,7 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertEqual(res.duration, 5.0)  # the duration of both clips
 
         res_label = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
-        self.assertEqual(res.duration,res_label.duration)  # the duration of both clips
-
-
+        self.assertEqual(res.duration, res_label.duration)  # the duration of both clips
 
 
 if __name__ == "__main__":
