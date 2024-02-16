@@ -8,7 +8,9 @@ from bencher.results.composable_container import composable_container_video
 class TestComposableContainerVideo(unittest.TestCase):
 
     def small_img(self):
-        return np.array([[1], [0]])  # represents an image of 1x2 (keep it small for speed)
+        return np.array(
+            [[[1, 1, 1]], [[0, 0, 0]]]
+        )  # represents an image of 1x2 (keep it small for speed)
 
     def small_video(self, num_frames: int = 2, render_args=None):
         img = self.small_img()
@@ -36,6 +38,8 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
+        # ADD A SECOND FRAME
+
         vid.append(img)
         res = vid.render(bch.RenderCfg(target_duration=0.1, compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (2, 2))
@@ -59,13 +63,25 @@ class TestComposableContainerVideo(unittest.TestCase):
 
     def test_video_seq(self):
 
-        img = np.array([[1], [0]])  # represents an image of 1x2 (keep it small for speed)
+        img = self.small_img()
         vid1 = bch.ComposableContainerVideo()
         vid1.append(img)
         vid1.append(img)
 
-        res = vid1.to_video(
+        res = vid1.render(
             bch.RenderCfg(target_duration=0.1, compose_method=bch.ComposeType.sequence)
+        )
+
+        self.assertEqual(res.size, (1, 2))
+        self.assertEqual(res.duration, 0.1)  # two frames
+
+        res = vid1.render(
+            bch.RenderCfg(
+                target_duration=None,
+                min_frame_duration=1.0 / 30,
+                max_frame_duration=1.0,
+                compose_method=bch.ComposeType.sequence,
+            )
         )
 
         self.assertEqual(res.size, (1, 2))
