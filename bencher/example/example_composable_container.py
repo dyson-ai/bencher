@@ -48,7 +48,7 @@ def example_composable_container_image(
 ) -> bch.Bench:
     bench = BenchComposableContainerImage().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
-    bench.add_plot_callback(bch.BenchResult.to_panes)
+    # bench.add_plot_callback(bch.BenchResult.to_panes)
     bench.plot_sweep(input_vars=["compose_method", "labels"])
     return bench
 
@@ -58,7 +58,7 @@ def example_composable_container_video(
 ) -> bch.Bench:
     bench = BenchComposableContainerVideo().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
-    bench.add_plot_callback(bch.BenchResult.to_panes)
+    # bench.add_plot_callback(bch.BenchResult.to_panes)
     bench.plot_sweep(input_vars=["compose_method", "labels"])
     return bench
 
