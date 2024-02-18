@@ -11,6 +11,7 @@ from moviepy.editor import (
     VideoClip,
     VideoFileClip,
 )
+from moviepy.video.fx.margin import margin
 
 from bencher.results.composable_container.composable_container_base import (
     ComposableContainerBase,
@@ -63,7 +64,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             else:
                 raise RuntimeWarning(f"unsupported filetype {extension}")
 
-    def render(self, render_cfg: RenderCfg = None) -> CompositeVideoClip:
+    def render(self, render_cfg: RenderCfg = None, **kwargs) -> CompositeVideoClip:
         """Composes the images/videos into a single image/video based on the type of compose method
 
         Args:
@@ -73,7 +74,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             CompositeVideoClip: A composite video clip containing the images/videos added via append()
         """
         if render_cfg is None:
-            render_cfg = RenderCfg()
+            render_cfg = RenderCfg(**kwargs)
 
         if render_cfg.duration_target:
             # calculate duration based on fps constraints
@@ -105,6 +106,9 @@ class ComposableContainerVideo(ComposableContainerBase):
             case ComposeType.right | ComposeType.down:
                 for i in range(len(self.container)):
                     self.container[i] = self.extend_clip(self.container[i], max_duration)
+                    self.container[i] = margin(
+                        self.container[i], top=2, color=render_cfg.background_col
+                    )
 
                 if render_cfg.compose_method == ComposeType.right:
                     clips = [self.container]
@@ -128,7 +132,9 @@ class ComposableContainerVideo(ComposableContainerBase):
         label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
         if label is not None:
             # print("adding label")
-            label = ImageClip(np.array(VideoWriter.create_label(label)))
+            label = ImageClip(
+                np.array(VideoWriter.create_label(label, color=render_cfg.background_col))
+            )
             label.duration = out.duration
             label_compose = ComposeType.down
             if render_cfg.compose_method == ComposeType.down:

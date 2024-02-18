@@ -5,7 +5,7 @@ from param import Parameter
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
 from bencher.variables.results import ResultImage
 from bencher.plotting.plot_filter import VarRange, PlotFilter
-from bencher.utils import callable_name
+from bencher.utils import callable_name, int_to_col, color_tuple_to_255
 from bencher.video_writer import VideoWriter
 from bencher.results.video_result import VideoControls
 from bencher.results.composable_container.composable_container_video import (
@@ -13,6 +13,7 @@ from bencher.results.composable_container.composable_container_video import (
     ComposeType,
     RenderCfg,
 )
+
 from copy import deepcopy
 
 
@@ -265,6 +266,8 @@ class VideoSummaryResult(BenchResultBase):
                 RenderCfg(
                     compose_method=compose_method,
                     duration=target_duration,
+                    background_col=color_tuple_to_255(int_to_col(num_dims - 2, 0.05, 1.0)),
+                    # background_col= (255,0,0),
                 )
             )
         return plot_callback(dataset=dataset, result_var=result_var, **kwargs)

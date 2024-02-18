@@ -25,19 +25,23 @@ class VideoWriter:
         return self.filename
 
     @staticmethod
-    def create_label(label, width=None, height=15):
+    def create_label(label, width=None, height=15, color=(255, 255, 255)):
         if width is None:
             width = len(label) * 8
-        new_img = Image.new("RGB", (width, height), (255, 255, 255))
+        new_img = Image.new("RGB", (width, height), color=color)
         # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
-        ImageDraw.Draw(new_img).text((width / 2.0, 0), label, (0, 0, 0), anchor="mt", font_size=height)
+        ImageDraw.Draw(new_img).text(
+            (width / 2.0, 0), label, (0, 0, 0), anchor="mt", font_size=height
+        )
 
         return new_img
 
     @staticmethod
-    def label_image(path: Path, label, padding=20) -> Path:
+    def label_image(path: Path, label, padding=20, color=(255, 255, 255)) -> Path:
         image = Image.open(path)
-        new_img = VideoWriter.create_label(label, image.size[0], image.size[1] + padding)
+        new_img = VideoWriter.create_label(
+            label, image.size[0], image.size[1] + padding, color=color
+        )
         new_img.paste(image, (0, padding))
         return new_img
 

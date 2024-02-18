@@ -144,7 +144,79 @@ class TestComposableContainerVideo(unittest.TestCase):
     def test_bad_filetype(self):
         vid = bch.ComposableContainerVideo()
         with self.assertRaises(RuntimeWarning):
-            vid.append("bad.badextesnio")
+            vid.append("bad.badextension")
+
+    def test_simeple_image_length(self):
+
+        ccv = bch.ComposableContainerVideo()
+        ccv.append(self.small_img())
+        ccv.append(self.small_img())
+
+        res = ccv.render()
+        self.assertEqual(res.duration, 2.0)  # limited by maximum frame time
+
+        ccv = bch.ComposableContainerVideo()
+        for _ in range(20):
+            ccv.append(self.small_img())
+
+        self.assertEqual(ccv.render().duration, 10.0)  # limited by target video duration
+
+        ccv = bch.ComposableContainerVideo()
+        for _ in range(200):
+            ccv.append(self.small_img())
+
+        self.assertAlmostEqual(
+            ccv.render().duration, 10.0
+        )  # still limited by target video duration
+
+    def test_composite_image_length(self):
+
+        ccv = bch.ComposableContainerVideo()
+
+        for _ in range(2):
+            sub_img = bch.ComposableContainerVideo()
+            sub_img.append(self.small_img())
+            sub_img.append(self.small_img())
+            sub_img.append(self.small_img())
+            ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
+
+        self.assertEqual(
+            ccv.render().duration, 2.0
+        )  # should be 2 because there are two sequential frames
+
+        # ccv = bch.ComposableContainerVideo()
+
+        # for _ in range(20):
+        #     sub_img = bch.ComposableContainerVideo()
+        #     sub_img.append(self.small_img())
+        #     sub_img.append(self.small_img())
+        #     sub_img.append(self.small_img())
+        #     ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
+
+        # # should be 10 because of the default target length
+        # self.assertEqual(ccv.render().duration, 10.0)
+
+    def test_video_lengths(self):
+
+        ccv = bch.ComposableContainerVideo()
+        ccv.append(self.small_video())
+        ccv.append(self.small_video())
+
+        res = ccv.render()
+        self.assertEqual(res.duration, 4.0)  # no frame limits, just concat videos
+
+        ccv = bch.ComposableContainerVideo()
+        for _ in range(20):
+            ccv.append(self.small_video())
+
+        self.assertEqual(ccv.render().duration, 40.0)  # concatted vid time
+
+        ccv = bch.ComposableContainerVideo()
+        for _ in range(200):
+            ccv.append(self.small_video())
+
+        # still concatted vid time
+        self.assertAlmostEqual(ccv.render().duration, 400.0)
 
 
 if __name__ == "__main__":
