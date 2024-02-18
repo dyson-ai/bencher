@@ -91,7 +91,7 @@ def example_image_vid(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport =
 
     bench.plot_sweep(input_vars=["radius"])
     # bench.plot_callbacks = []
-    bench.add_plot_callback(bch.BenchResult.to_video_grid,target_duration=0.06)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, target_duration=0.06)
 
     res = bench.plot_sweep(input_vars=["radius"], plot=False)
     bench.report.append(res.to_video_grid(target_duration=0.06))

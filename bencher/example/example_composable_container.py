@@ -28,7 +28,6 @@ class BenchComposableContainerImage(BenchPolygons):
                 var_name=var_name,
                 var_value=var_value,
                 max_frame_duration=1.0 / 20.0,
-                duration_target=
             )
         )
         return self.get_results_values_as_dict()
@@ -68,7 +67,7 @@ def example_composable_container_image(
     # bench.compose_
     bench.plot_sweep(
         input_vars=[BenchComposableContainerImage.param.num_frames.with_sample_values([2, 8, 20])],
-        const_vars=dict(compose_method=bch.ComposeType.sequence),      
+        const_vars=dict(compose_method=bch.ComposeType.sequence),
     )
 
     return bench
