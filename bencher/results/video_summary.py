@@ -98,6 +98,7 @@ class VideoSummaryResult(BenchResultBase):
         result_types=(ResultImage,),
         pane_collection: pn.pane = None,
         time_sequence_dimension=0,
+        target_duration: float = None,
         **kwargs,
     ) -> Optional[pn.panel]:
         """Returns the results compiled into a video
@@ -129,7 +130,11 @@ class VideoSummaryResult(BenchResultBase):
                 if isinstance(rv, result_types):
                     pane_collection.append(
                         self.to_video_grid_ds(
-                            ds, rv, time_sequence_dimension=time_sequence_dimension, **kwargs
+                            ds,
+                            rv,
+                            time_sequence_dimension=time_sequence_dimension,
+                            target_duration=target_duration,
+                            **kwargs,
                         )
                     )
             return pane_collection

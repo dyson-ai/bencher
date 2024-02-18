@@ -28,6 +28,7 @@ class BenchComposableContainerImage(BenchPolygons):
                 var_name=var_name,
                 var_value=var_value,
                 max_frame_duration=1.0 / 20.0,
+                duration_target=
             )
         )
         return self.get_results_values_as_dict()
@@ -63,6 +64,13 @@ def example_composable_container_image(
     bench.add_plot_callback(bch.BenchResult.to_video_grid, result_types=(bch.ResultVideo))
     # bench.add_plot_callback(bch.BenchResult.to_video_summary, result_types=(bch.ResultVideo))
     bench.plot_sweep(input_vars=["compose_method", "labels"])
+
+    # bench.compose_
+    bench.plot_sweep(
+        input_vars=[BenchComposableContainerImage.param.num_frames.with_sample_values([2, 8, 20])],
+        const_vars=dict(compose_method=bch.ComposeType.sequence),      
+    )
+
     return bench
 
 
@@ -93,6 +101,6 @@ if __name__ == "__main__":
     ex_run_cfg.use_sample_cache = False
     # ex_run_cfg.level = 2
     ex_report = bch.BenchReport()
-    # example_composable_container_image(ex_run_cfg, report=ex_report)
+    example_composable_container_image(ex_run_cfg, report=ex_report)
     example_composable_container_video(ex_run_cfg, report=ex_report)
     ex_report.show()

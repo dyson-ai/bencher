@@ -146,7 +146,7 @@ class TestComposableContainerVideo(unittest.TestCase):
         with self.assertRaises(RuntimeWarning):
             vid.append("bad.badextension")
 
-    def test_simeple_image_length(self):
+    def test_simple_image_length(self):
 
         ccv = bch.ComposableContainerVideo()
         ccv.append(self.small_img())
@@ -165,9 +165,8 @@ class TestComposableContainerVideo(unittest.TestCase):
         for _ in range(200):
             ccv.append(self.small_img())
 
-        self.assertAlmostEqual(
-            ccv.render().duration, 10.0
-        )  # still limited by target video duration
+        # still limited by target video duration
+        self.assertAlmostEqual(ccv.render().duration, 10.0)
 
     def test_composite_image_length(self):
 
@@ -180,21 +179,20 @@ class TestComposableContainerVideo(unittest.TestCase):
             sub_img.append(self.small_img())
             ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
 
-        self.assertEqual(
-            ccv.render().duration, 2.0
-        )  # should be 2 because there are two sequential frames
+        # should be 2 because there are two sequential frames
+        self.assertEqual(ccv.render().duration, 2.0)
 
-        # ccv = bch.ComposableContainerVideo()
+        ccv = bch.ComposableContainerVideo()
 
-        # for _ in range(20):
-        #     sub_img = bch.ComposableContainerVideo()
-        #     sub_img.append(self.small_img())
-        #     sub_img.append(self.small_img())
-        #     sub_img.append(self.small_img())
-        #     ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
+        for _ in range(20):
+            sub_img = bch.ComposableContainerVideo()
+            sub_img.append(self.small_img())
+            sub_img.append(self.small_img())
+            sub_img.append(self.small_img())
+            ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
 
-        # # should be 10 because of the default target length
-        # self.assertEqual(ccv.render().duration, 10.0)
+        # should be 10 because of the default target length
+        self.assertEqual(ccv.render().duration, 10.0)
 
     def test_video_lengths(self):
 

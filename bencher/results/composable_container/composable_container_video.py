@@ -96,9 +96,13 @@ class ComposableContainerVideo(ComposableContainerBase):
         # print(f"using compose type{render_cfg.compose_method}")
 
         max_duration = 0.0
+        # duration =0.06
+        # duration = None
+
+        print("DURATION",duration)
 
         for i in range(len(self.container)):
-            if self.container[i].duration is None:  # only update image durations not video
+            if self.container[i].duration is None :  # only update image durations not video
                 self.container[i].duration = duration / float(len(self.container))
             if self.container[i].duration > max_duration:
                 max_duration = self.container[i].duration
