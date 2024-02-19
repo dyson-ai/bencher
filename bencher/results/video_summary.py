@@ -20,7 +20,7 @@ from copy import deepcopy
 class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
         self,
-        result_var: Parameter = None,
+        resulcompt_var: Parameter = None,
         reverse: bool = True,
         result_types=(ResultImage,),
         **kwargs,
@@ -170,7 +170,7 @@ class VideoSummaryResult(BenchResultBase):
         if filename is not None:
             if video_controls is None:
                 video_controls = VideoControls()
-            return video_controls.video_container(filename, **kwargs)
+            return video_controls.video_container(filename, width=kwargs.get("width",None),height=kwargs.get("height",None))
         return None
 
     def plot_cb(self, dataset, result_var, **kwargs):
@@ -180,7 +180,7 @@ class VideoSummaryResult(BenchResultBase):
     def dataset_to_compose_list(
         self,
         dataset: xr.Dataset,
-        first_compose_method: ComposeType = ComposeType.right,
+        first_compose_method: ComposeType = ComposeType.down,
         time_sequence_dimension: int = 0,
     ) -> List[ComposeType]:
         """ "Given a dataset, chose an order for composing the results.  By default will flip between rigth and down and the last dimension will be a time sequence.
@@ -236,8 +236,11 @@ class VideoSummaryResult(BenchResultBase):
                 dataset, compose_method, time_sequence_dimension=time_sequence_dimension
             )
 
+            print(compose_method_list)
+
         compose_method_list_pop = deepcopy(compose_method_list)
         compose_method = compose_method_list_pop.pop()
+        print(compose_method)
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]

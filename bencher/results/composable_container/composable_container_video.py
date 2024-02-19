@@ -109,7 +109,7 @@ class ComposableContainerVideo(ComposableContainerBase):
         print("DURATION", duration)
 
         for i in range(len(self.container)):
-            if self.container[i].duration is None:  # only update image durations not video
+            if self.container[i].duration is None:  
                 self.container[i].duration = duration / float(len(self.container))
             if self.container[i].duration > max_duration:
                 max_duration = self.container[i].duration
