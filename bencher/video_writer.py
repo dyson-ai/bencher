@@ -112,7 +112,8 @@ class VideoWriter:
         return self.filename
 
 
-def add_image(np_array: np.ndarray, name: str = "img"):
+def add_image(np_array: np.ndarray, name: str = "img") -> str:
+    """Creates a file on disk from a numpy array and returns the created image path"""
     filename = gen_image_path(name)
     Image.fromarray(np_array).save(filename)
     return filename
