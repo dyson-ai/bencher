@@ -25,9 +25,9 @@ class VideoWriter:
         return self.filename
 
     @staticmethod
-    def create_label(label, width=None, height=15, color=(255, 255, 255)):
+    def create_label(label, width=None, height=16, color=(255, 255, 255)):
         if width is None:
-            width = len(label) * 8
+            width = len(label) * 10
         new_img = Image.new("RGB", (width, height), color=color)
         # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
         ImageDraw.Draw(new_img).text(
@@ -102,11 +102,12 @@ class VideoWriter:
     def write_video_raw(self, video_clip: moviepy.video.VideoClip, fps: int = 30) -> str:
         video_clip.write_videofile(
             self.filename,
-            codec="libvpx",
+            codec="libx264",
             audio=False,
             bitrate="0",
             fps=fps,
-            ffmpeg_params=["-crf", "34"],
+            ffmpeg_params=["-crf", "23"],
+            threads=8,
         )
         video_clip.close()
         return self.filename
