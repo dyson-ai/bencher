@@ -145,7 +145,7 @@ def gen_path(filename, folder, suffix):
     return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
 
 
-def gen_video_path(video_name: str = "vid", extension: str = ".webm") -> str:
+def gen_video_path(video_name: str = "vid", extension: str = ".mp4") -> str:
     return gen_path(video_name, "vid", extension)
 
 
