@@ -36,11 +36,9 @@ class ComposableContainerBase:
             return f"{var_value}"
         return None
 
-    def __init__(
-        self, horizontal: bool = True, compose_method: ComposeType = ComposeType.right
-    ) -> None:
+    def __init__(self, horizontal: bool = True, compose_method: ComposeType = None) -> None:
         self.horizontal: bool = horizontal
-        self.compose_method = compose_method
+        self.compose_method = compose_method if compose_method is not None else ComposeType.right
         self.container = []
 
     def append(self, obj: Any) -> None:

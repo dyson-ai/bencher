@@ -9,7 +9,10 @@ from moviepy.editor import (
     VideoFileClip,
 )
 
-from bencher.results.composable_container.composable_container_base import ComposableContainerBase
+from bencher.results.composable_container.composable_container_base import (
+    ComposableContainerBase,
+    ComposeType,
+)
 from bencher.video_writer import VideoWriter
 
 
@@ -20,10 +23,12 @@ class ComposableContainerVideo(ComposableContainerBase):
         var_name: str = None,
         var_value: str = None,
         background_col: tuple[3] = (255, 255, 255),
-        horizontal: bool = True,
+        compose_method: ComposeType = None,
         target_duration: float = None,
     ) -> None:
-        super().__init__(horizontal)
+        super().__init__(
+            compose_method=compose_method if compose_method is not None else ComposeType.sequence
+        )
         self.name = name
         self.container = []
         self.background_col = background_col
@@ -54,9 +59,38 @@ class ComposableContainerVideo(ComposableContainerBase):
                     raise RuntimeError("Unsupport file type")
 
     def render(self, concatenate: bool = False) -> CompositeVideoClip:
-        fps = len(self.container) / self.target_duration
-        fps = max(fps, 1.0)  # never slower that 1 seconds per frame
-        fps = min(fps, 30.0)
+
+        # fps = len(self.container) / self.target_duration
+        # fps = max(fps, 1.0)  # never slower that 1 seconds per frame
+        # fps = min(fps, 30.0)
+
+        # if self.compose_method == ComposeType.right or self.compose_method == ComposeType.down:
+        # for i in range(len(self.container)):
+        # self.container[i].duration = 1.0 / fps
+
+        match self.compose_method:
+            case ComposeType.right:
+                out = clips_array([self.container], bg_color=self.background_col)
+            case ComposeType.down:
+                out = clips_array([[c] for c in self.container], bg_color=self.background_col)
+
+        out.duration = self.target_duration
+
+        # print(self.container[i].duration)
+        print(out.duration)
+
+        # if self.label is not None:
+        #     label = ImageClip(np.array(VideoWriter.create_label(self.label)))
+        #     con2 = ComposableContainerVideo(
+        #         background_col=self.background_col,
+        #         horizontal=not self.horizontal,
+        #     )
+        #     con2.append(label)
+        #     con2.append(out)
+        #     return con2.render()
+        return out
+
+        # return out
 
         for i in range(len(self.container)):
             self.container[i].duration = 1.0 / fps
@@ -69,13 +103,5 @@ class ComposableContainerVideo(ComposableContainerBase):
                 clips = [[c] for c in self.container]
             out = clips_array(clips, bg_color=self.background_col)
 
-        if self.label is not None:
-            label = ImageClip(np.array(VideoWriter.create_label(self.label)))
-            con2 = ComposableContainerVideo(
-                background_col=self.background_col,
-                horizontal=not self.horizontal,
-            )
-            con2.append(label)
-            con2.append(out)
-            return con2.render()
-        return out
+    def to_video(self) -> str:
+        return VideoWriter().write_video_raw(self.render())
