@@ -14,6 +14,7 @@ class SweepSelector(Selector, SweepBase):
     def __init__(self, units: str = "ul", samples: int = None, **params):
         SweepBase.__init__(self)
         Selector.__init__(self, **params)
+        self.check_on_set=False
 
         self.units = units
         if samples is None:
