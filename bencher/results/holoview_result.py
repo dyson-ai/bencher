@@ -202,6 +202,7 @@ class HoloviewResult(PanelResult):
         result_var: Parameter = None,
         tap_var=None,
         tap_container: pn.pane.panel = None,
+        tap_container_direction: pn.Column | pn.Row = None,
         target_dimension=2,
         **kwargs,
     ) -> Optional[pn.panel]:
@@ -215,7 +216,10 @@ class HoloviewResult(PanelResult):
             heatmap_cb = self.to_heatmap_ds
         else:
             heatmap_cb = partial(
-                self.to_heatmap_container_tap_ds, result_var_plots=tap_var, container=tap_container
+                self.to_heatmap_container_tap_ds,
+                result_var_plots=tap_var,
+                container=tap_container,
+                tap_container_direction=tap_container_direction,
             )
 
         return self.filter(
@@ -265,6 +269,7 @@ class HoloviewResult(PanelResult):
         result_var: Parameter,
         result_var_plots: List[Parameter] = None,
         container: pn.pane.panel = None,
+        tap_container_direction: pn.Column | pn.Row = None,
         **kwargs,
     ) -> pn.Row:
         htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
@@ -327,7 +332,10 @@ class HoloviewResult(PanelResult):
         ls = hv.streams.MouseLeave(source=htmap)
         ls.add_subscriber(on_exit)
 
-        bound_plot = pn.Column(title, *cont_instances)
+        if tap_container_direction is None:
+            tap_container_direction = pn.Column
+        bound_plot = tap_container_direction(title, *cont_instances)
+
         return pn.Row(htmap, bound_plot)
 
     def to_line_tap_ds(
