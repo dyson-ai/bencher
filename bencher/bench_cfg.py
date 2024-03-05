@@ -38,10 +38,6 @@ class BenchRunCfg(BenchPlotSrvCfg):
         doc="If true each time the function is called it will plot a timeseries of historical and the latest result.",
     )
 
-    debug: bool = param.Boolean(
-        False, doc="Debug the sampling faster by reducing the dimension sampling resolution"
-    )
-
     use_optuna: bool = param.Boolean(False, doc="show optuna plots")
 
     summarise_constant_inputs = param.Boolean(
@@ -333,7 +329,6 @@ class BenchCfg(BenchRunCfg):
                 hash_sha1(str(self.title)),
                 hash_sha1(self.over_time),
                 repeats_hash,
-                hash_sha1(self.debug),
                 hash_sha1(self.tag),
             )
         )
@@ -368,16 +363,16 @@ class BenchCfg(BenchRunCfg):
 
         benchmark_sampling_str.append("Input Variables:")
         for iv in self.input_vars:
-            benchmark_sampling_str.extend(describe_variable(iv, self.debug, True))
+            benchmark_sampling_str.extend(describe_variable(iv, True))
 
         if self.const_vars and (self.summarise_constant_inputs):
             benchmark_sampling_str.append("\nConstants:")
             for cv in self.const_vars:
-                benchmark_sampling_str.extend(describe_variable(cv[0], False, False, cv[1]))
+                benchmark_sampling_str.extend(describe_variable(cv[0], False, cv[1]))
 
         benchmark_sampling_str.append("\nResult Variables:")
         for rv in self.result_vars:
-            benchmark_sampling_str.extend(describe_variable(rv, self.debug, False))
+            benchmark_sampling_str.extend(describe_variable(rv, False))
 
         print_meta = True
         # if len(self.meta_vars) == 1:
@@ -398,7 +393,7 @@ class BenchCfg(BenchRunCfg):
             benchmark_sampling_str.append(f"    parallel: {self.executor}")
 
             for mv in self.meta_vars:
-                benchmark_sampling_str.extend(describe_variable(mv, self.debug, True))
+                benchmark_sampling_str.extend(describe_variable(mv, True))
 
         benchmark_sampling_str.append("```")
 
@@ -459,7 +454,7 @@ class DimsCfg:
         self.dims_name = [i.name for i in bench_cfg.all_vars]
 
         self.dim_ranges = []
-        self.dim_ranges = [i.values(bench_cfg.debug) for i in bench_cfg.all_vars]
+        self.dim_ranges = [i.values() for i in bench_cfg.all_vars]
         self.dims_size = [len(p) for p in self.dim_ranges]
         self.dim_ranges_index = [list(range(i)) for i in self.dims_size]
         self.dim_ranges_str = [f"{s}\n" for s in self.dim_ranges]
