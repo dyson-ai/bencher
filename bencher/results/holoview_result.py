@@ -281,7 +281,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
-            print(f"moved {x}{y}")
+            # print(f"moved {x}{y}")
 
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
@@ -334,9 +334,9 @@ class HoloviewResult(PanelResult):
 
         if tap_container_direction is None:
             tap_container_direction = pn.Column
-        bound_plot = tap_container_direction(title, *cont_instances)
+        bound_plot = tap_container_direction( *cont_instances)
 
-        return pn.Row(htmap, bound_plot)
+        return pn.Row(htmap,pn.Column(title,bound_plot))
 
     def to_line_tap_ds(
         self,
