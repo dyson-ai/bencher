@@ -20,7 +20,7 @@ from copy import deepcopy
 class VideoSummaryResult(BenchResultBase):
     def to_video_summary(
         self,
-        resulcompt_var: Parameter = None,
+        result_var: Parameter = None,
         reverse: bool = True,
         result_types=(ResultImage,),
         **kwargs,
@@ -170,7 +170,9 @@ class VideoSummaryResult(BenchResultBase):
         if filename is not None:
             if video_controls is None:
                 video_controls = VideoControls()
-            return video_controls.video_container(filename, width=kwargs.get("width",None),height=kwargs.get("height",None))
+            return video_controls.video_container(
+                filename, width=kwargs.get("width", None), height=kwargs.get("height", None)
+            )
         return None
 
     def plot_cb(self, dataset, result_var, **kwargs):
