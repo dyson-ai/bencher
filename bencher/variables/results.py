@@ -88,7 +88,12 @@ class ResultHmap(param.Parameter):
 
 
 def curve(
-    x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, label: Optional[str] = None,, **kwargs
+    x_vals: List[float],
+    y_vals: List[float],
+    x_name: str,
+    y_name: str,
+    label: Optional[str] = None,
+    **kwargs,
 ) -> hv.Curve:
     label = label or y_name
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
