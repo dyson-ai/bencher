@@ -1,5 +1,5 @@
 from enum import auto
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Optional
 
 import panel as pn
 import param
@@ -87,8 +87,16 @@ class ResultHmap(param.Parameter):
         return hash_sha1(self)
 
 
-def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
-    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
+def curve(
+    x_vals: List[float],
+    y_vals: List[float],
+    x_name: str,
+    y_name: str,
+    label: Optional[str] = None,
+    **kwargs,
+) -> hv.Curve:
+    label = label or y_name
+    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
 
 
 class PathResult(param.Filename):
