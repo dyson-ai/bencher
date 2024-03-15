@@ -87,8 +87,12 @@ class ResultHmap(param.Parameter):
         return hash_sha1(self)
 
 
-def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
-    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
+def curve(
+    x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, label=None, **kwargs
+) -> hv.Curve:
+    if label is None:
+        label = y_name
+    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
 
 
 class PathResult(param.Filename):
