@@ -1,5 +1,5 @@
 from enum import auto
-from typing import List, Callable, Any
+from typing import List, Callable, Any, Optional
 
 import panel as pn
 import param
@@ -88,10 +88,14 @@ class ResultHmap(param.Parameter):
 
 
 def curve(
-    x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, label=None, **kwargs
+    x_vals: List[float],
+    y_vals: List[float],
+    x_name: str,
+    y_name: str,
+    label: Optional[str] = None,
+    **kwargs,
 ) -> hv.Curve:
-    if label is None:
-        label = y_name
+    label = label or y_name
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
 
 
