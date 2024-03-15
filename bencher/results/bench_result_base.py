@@ -415,9 +415,10 @@ class BenchResultBase(OptunaResult):
         val = self.zero_dim_da_to_val(dataset[result_var.name])
         if isinstance(result_var, ResultReference):
             ref = self.object_index[val]
-            val = ref.obj
-            if ref.container is not None:
-                return ref.container(val, **kwargs)
+            if ref is not None:
+                val = ref.obj
+                if ref.container is not None:
+                    return ref.container(val, **kwargs)
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         return val
