@@ -47,22 +47,23 @@ class ComposableContainerVideo(ComposableContainerBase):
         """
 
         # print(f"append obj: {type(obj)}, {obj}")
-        if isinstance(obj, VideoClip):
-            self.container.append(obj)
-        elif isinstance(obj, ComposableContainerVideo):
-            self.container.append(obj.render())
-        elif isinstance(obj, np.ndarray):
-            self.container.append(ImageClip(obj))
-        else:
-            path = Path(obj)
-            extension = str.lower(path.suffix)
-            if extension in [".jpg", ".jepg", ".png"]:
+        if obj is not None:
+            if isinstance(obj, VideoClip):
+                self.container.append(obj)
+            elif isinstance(obj, ComposableContainerVideo):
+                self.container.append(obj.render())
+            elif isinstance(obj, np.ndarray):
                 self.container.append(ImageClip(obj))
-            elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
-                print(obj)
-                self.container.append(VideoFileClip(obj))
             else:
-                raise RuntimeWarning(f"unsupported filetype {extension}")
+                path = Path(obj)
+                extension = str.lower(path.suffix)
+                if extension in [".jpg", ".jepg", ".png"]:
+                    self.container.append(ImageClip(obj))
+                elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
+                    print(obj)
+                    self.container.append(VideoFileClip(obj))
+                else:
+                    raise RuntimeWarning(f"unsupported filetype {extension}")
 
     def render(self, render_cfg: RenderCfg = None, **kwargs) -> CompositeVideoClip:
         """Composes the images/videos into a single image/video based on the type of compose method
