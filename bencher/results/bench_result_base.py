@@ -379,7 +379,7 @@ class BenchResultBase(OptunaResult):
                     horizontal=len(sliced.sizes) <= target_dimension + 1,
                     result_var=result_var,
                 )
-                max_len = max(max_len,inner_container.label_len)
+                max_len = max(max_len, inner_container.label_len)
                 inner_container.append(panes)
                 outer_container.append(inner_container.container)
             for c in outer_container.container:
