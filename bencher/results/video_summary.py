@@ -210,9 +210,7 @@ class VideoSummaryResult(BenchResultBase):
                 )
                 inner_container.append(panes)
 
-                if inner_container.label_len > max_len:
-                    max_len = inner_container.label_len
-
+                max_len = max(max_len, inner_container.label_len)
                 rendered = inner_container.render()
                 outer_container.append(rendered)
             return outer_container.render(concatenate=final)

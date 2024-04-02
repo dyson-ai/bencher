@@ -193,5 +193,6 @@ class TestSweepBase(unittest.TestCase):
 
 if __name__ == "__main__":
     # TestSweepBase().test_override_defaults()
+    pass
 
-    TestSweepBase().test_levels_int(0, 10)
+    # TestSweepBase().test_levels_int(0, 10)
