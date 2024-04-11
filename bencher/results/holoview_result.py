@@ -139,7 +139,7 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1:
+        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or True:
             heatmap_cb = self.to_line_ds
         else:
             heatmap_cb = partial(
@@ -212,7 +212,7 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-        if len(tap_var) == 0:
+        if len(tap_var) == 0 or True:
             heatmap_cb = self.to_heatmap_ds
         else:
             heatmap_cb = partial(
