@@ -74,8 +74,8 @@ class ComposableContainerVideo(ComposableContainerBase):
         Returns:
             CompositeVideoClip: A composite video clip containing the images/videos added via append()
         """
-        print("max_frame_duration",render_cfg.max_frame_duration)
-        print("rc",render_cfg)
+        print("max_frame_duration", render_cfg.max_frame_duration)
+        print("rc", render_cfg)
 
         if render_cfg is None:
             render_cfg = RenderCfg(**kwargs)
@@ -84,10 +84,10 @@ class ComposableContainerVideo(ComposableContainerBase):
             # calculate duration based on fps constraints
             duration = 10.0 if render_cfg.duration is None else render_cfg.duration
 
-            print("container len",len(self.container))
+            print("container len", len(self.container))
 
             frame_duration = duration / float(len(self.container))
-            print("raw_frame_duration",frame_duration)
+            print("raw_frame_duration", frame_duration)
 
             if render_cfg.min_frame_duration is not None:
                 frame_duration = max(frame_duration, render_cfg.min_frame_duration)
@@ -105,12 +105,12 @@ class ComposableContainerVideo(ComposableContainerBase):
         max_duration = 0.0
         # duration =0.06
         # duration = None
-        print("max_frame_duration",render_cfg.max_frame_duration)
+        print("max_frame_duration", render_cfg.max_frame_duration)
 
         print("DURATION", duration)
 
         for i in range(len(self.container)):
-            if self.container[i].duration is None:  
+            if self.container[i].duration is None:
                 self.container[i].duration = duration / float(len(self.container))
             if self.container[i].duration > max_duration:
                 max_duration = self.container[i].duration
