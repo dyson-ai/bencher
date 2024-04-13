@@ -15,7 +15,7 @@ docker stop "$CONTAINER_NAME" || true
 
 CONTAINER_HEX=$(printf $CONTAINER_NAME | xxd -p | tr '\n' ' ' | sed 's/\\s//g' | tr -d ' ');
 
-rocker --nvidia --x11 --user --pull --git --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --oyr-run-arg " --detach" --deps-dependencies ubuntu:22.04 
+rocker --nvidia --x11 --user --pull --git --image-name "$CONTAINER_NAME" --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --oyr-run-arg " --detach" --deps-dependencies ubuntu:22.04 
 
 # docker pull ghcr.io/red5d/docker-autocompose:latest
 # docker run --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/red5d/docker-autocompose $CONTAINER_NAME > .devcontainer/docker-compose.yaml
