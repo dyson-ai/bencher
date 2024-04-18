@@ -18,6 +18,11 @@ from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
 hv.extension("bokeh", "plotly")
 
+# hv.extension("matplotlib")
+
+
+use_tap = False
+
 
 class HoloviewResult(PanelResult):
     @staticmethod
@@ -139,7 +144,7 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or True:
+        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or not use_tap:
             heatmap_cb = self.to_line_ds
         else:
             heatmap_cb = partial(
@@ -212,7 +217,7 @@ class HoloviewResult(PanelResult):
             if not isinstance(tap_var, list):
                 tap_var = [tap_var]
 
-        if len(tap_var) == 0 or True:
+        if len(tap_var) == 0 or not use_tap:
             heatmap_cb = self.to_heatmap_ds
         else:
             heatmap_cb = partial(
@@ -251,7 +256,7 @@ class HoloviewResult(PanelResult):
             return pn.pane.PNG
         if isinstance(result_var, ResultVideo):
             return pn.pane.Video
-        return pn.pane.panel
+        return partial(pn.pane.panel, "No result")
 
     def setup_results_and_containers(self, result_var_plots, container, **kwargs):
         result_var_plots = listify(result_var_plots)
@@ -334,9 +339,9 @@ class HoloviewResult(PanelResult):
 
         if tap_container_direction is None:
             tap_container_direction = pn.Column
-        bound_plot = tap_container_direction( *cont_instances)
+        bound_plot = tap_container_direction(*cont_instances)
 
-        return pn.Row(htmap,pn.Column(title,bound_plot))
+        return pn.Row(htmap, pn.Column(title, bound_plot))
 
     def to_line_tap_ds(
         self,
