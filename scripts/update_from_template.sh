@@ -7,4 +7,4 @@ git checkout main && git pull origin main
 git checkout -B feature/update_from_template; git pull
 git merge template/main --allow-unrelated-histories -m 'feat: pull changes from remote template'
 git remote remove template
-git push origin feature/update_from_template
+git push --set-upstream origin feature/update_from_template
