@@ -1,7 +1,5 @@
 #! /bin/bash
 
-
-
 git config --global pull.rebase false
 git remote add template https://github.com/blooop/python_template.git
 git fetch --all
