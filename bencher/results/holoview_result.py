@@ -21,7 +21,7 @@ hv.extension("bokeh", "plotly")
 # hv.extension("matplotlib")
 
 
-use_tap = False
+use_tap = True
 
 
 class HoloviewResult(PanelResult):
