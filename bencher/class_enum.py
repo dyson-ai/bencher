@@ -15,7 +15,7 @@ class ClassEnum(StrEnum):
         """Create an instance of the class referred to by this enum
 
         Returns:
-            Environment: instance of the environment pointed to by the class
+            Any: instance of the class
         """
 
         class_def = getattr(importlib.import_module(module_import), class_name)
