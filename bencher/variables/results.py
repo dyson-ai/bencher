@@ -168,6 +168,29 @@ class ResultReference(param.Parameter):
         return hash_sha1(self)
 
 
+class ResultHoloview(param.Parameter):
+    """Use this class to save arbitrary objects that are not picklable or native to panel.  You can pass a container callback that takes the object and returns a panel pane to be displayed"""
+
+    __slots__ = ["units", "obj", "container"]
+
+    def __init__(
+        self,
+        obj: Any = None,
+        container: Callable[Any, pn.pane.panel] = None,
+        default: Any = None,
+        units: str = "container",
+        **params,
+    ):
+        super().__init__(default=default, **params)
+        self.units = units
+        self.obj = obj
+        self.container = container
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 class ResultVolume(param.Parameter):
     __slots__ = ["units", "obj"]
 

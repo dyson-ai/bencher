@@ -167,5 +167,28 @@ This uses bencher to display all the combinatios of plots bencher is able to pro
     return bench
 
 
+def example_meta_minimal(
+    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+) -> bch.Bench:
+    bench = BenchMeta().to_bench(run_cfg, report)
+
+    bench.plot_sweep(
+        title="Meta Bench",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots
+This uses bencher to display all the combinatios of plots bencher is able to produce""",
+        input_vars=[
+            BenchMeta.param.float_vars,
+        ],
+    )
+
+    return bench
+
+
 if __name__ == "__main__":
-    example_meta().report.show()
+    # example_meta().report.show()
+
+    br = bch.BenchRunner("ex")
+    br.add_run(example_meta_minimal)
+    br.run(2, 3, show=True)
+
+    # example_meta_minimal().report.show()
