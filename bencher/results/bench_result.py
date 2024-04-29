@@ -20,7 +20,7 @@ class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
     @staticmethod
     def default_plot_callbacks():
         return [
-            VideoSummaryResult.to_video_summary,
+            # VideoSummaryResult.to_video_summary,
             HoloviewResult.to_bar,
             HoloviewResult.to_scatter_jitter,
             HoloviewResult.to_curve,
