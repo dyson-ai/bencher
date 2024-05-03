@@ -18,10 +18,11 @@ class VideoWriter:
         self.images.append(img)
 
     def write(self) -> str:
-        clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
-            self.images, fps=30, with_mask=False, load_images=True
-        )
-        self.write_video_raw(clip)
+        if len(self.images)>0:
+            clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
+                self.images, fps=30, with_mask=False, load_images=True
+            )
+            self.write_video_raw(clip)
         return self.filename
 
     @staticmethod
