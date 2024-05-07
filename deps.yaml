@@ -1,0 +1,14 @@
+apt_tools:
+  - git
+  - git-lfs
+  - python3-pip
+  - apt-utils
+  - jq
+
+
+pip_tools:
+  - flit
+  - pip #updates to latest pip
+
+pip:
+  - pip
