@@ -253,8 +253,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot: bool = None,
-        plot_callbacks=None,
+        plot_callbacks: List | False = None,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
@@ -270,7 +269,7 @@ class Bench(BenchPlotServer):
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run
-            plot_callbacks: A list of plot callbacks to clal on the results
+            plot_callbacks: (List | False) A list of plot callbacks to call on the results. Pass false or an empty list to turn off plotting
         Raises:
             ValueError: If a result variable is not set
 
@@ -387,6 +386,8 @@ class Bench(BenchPlotServer):
             )
 
         if plot_callbacks is None:
+            if plot_callbacks == False:
+                plot_callbacks = []
             if self.plot_callbacks is not None and len(self.plot_callbacks) == 0:
                 plot_callbacks = [BenchResult.to_auto_plots]
             else:
