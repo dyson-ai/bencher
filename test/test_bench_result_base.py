@@ -24,7 +24,7 @@ class TestBenchResultBase(unittest.TestCase):
             input_vars=[BenchableObject.param.float1],
             result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
             run_cfg=bch.BenchRunCfg(repeats=1),
-            plot=False,
+            plot_callbacks=False,
         )
 
         res_repeat2 = bench.plot_sweep(
@@ -32,7 +32,7 @@ class TestBenchResultBase(unittest.TestCase):
             input_vars=[BenchableObject.param.float1],
             result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
             run_cfg=bch.BenchRunCfg(repeats=2),
-            plot=False,
+            plot_callbacks=False,
         )
 
         # print(res_repeat1.to_dataset())
@@ -57,7 +57,7 @@ class TestBenchResultBase(unittest.TestCase):
         res = bench.plot_sweep(
             input_vars=["float_var", "cat_var"],
             run_cfg=bch.BenchRunCfg(level=4),
-            plot=False,
+            plot_callbacks=False,
         )
 
         def asserts(ds, expected_float, expected_cat):
