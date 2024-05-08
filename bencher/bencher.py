@@ -217,7 +217,7 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
-        plot_callbacks=None,
+        plot_callbacks: List | bool = None,
     ) -> List[BenchResult]:
         results = []
         if relationship_cb is None:
@@ -253,7 +253,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot_callbacks: List | False = None,
+        plot_callbacks: List | bool = None,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
@@ -384,12 +384,12 @@ class Bench(BenchPlotServer):
             )
 
         if plot_callbacks is None:
-            if plot_callbacks is False:
-                plot_callbacks = []
-            if self.plot_callbacks is not None and len(self.plot_callbacks) == 0:
+            plot_callbacks = [] if self.plot_callbacks is None else self.plot_callbacks
+        else:
+            if isinstance(plot_callbacks, bool):
+                plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
+            elif len(self.plot_callbacks) == 0:
                 plot_callbacks = [BenchResult.to_auto_plots]
-            else:
-                plot_callbacks = self.plot_callbacks
 
         bench_cfg = BenchCfg(
             input_vars=input_vars,
