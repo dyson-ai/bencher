@@ -269,7 +269,7 @@ class Bench(BenchPlotServer):
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run
-            plot_callbacks: (List | False) A list of plot callbacks to call on the results. Pass false or an empty list to turn off plotting
+            plot_callbacks: (List | bool) A list of plot callbacks to call on the results. Pass false or an empty list to turn off plotting
         Raises:
             ValueError: If a result variable is not set
 
