@@ -217,7 +217,7 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
-        plot=None,
+        plot_callbacks=None,
     ) -> List[BenchResult]:
         results = []
         if relationship_cb is None:
@@ -233,7 +233,7 @@ class Bench(BenchPlotServer):
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
-                    plot=plot,
+                    plot_callbacks=plot_callbacks,
                 )
 
                 if optimise_var is not None:
@@ -328,8 +328,6 @@ class Bench(BenchPlotServer):
             cv_list = list(const_vars[i])
             cv_list[0] = self.convert_vars_to_params(cv_list[0], "const")
             const_vars[i] = cv_list
-        if plot is None:
-            plot = self.plot
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -386,7 +384,7 @@ class Bench(BenchPlotServer):
             )
 
         if plot_callbacks is None:
-            if plot_callbacks == False:
+            if plot_callbacks is False:
                 plot_callbacks = []
             if self.plot_callbacks is not None and len(self.plot_callbacks) == 0:
                 plot_callbacks = [BenchResult.to_auto_plots]
@@ -404,7 +402,6 @@ class Bench(BenchPlotServer):
             title=title,
             pass_repeat=pass_repeat,
             tag=run_cfg.run_tag + tag,
-            auto_plot=plot,
             plot_callbacks=plot_callbacks,
         )
         return self.run_sweep(bench_cfg, run_cfg, time_src)
