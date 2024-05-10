@@ -388,7 +388,7 @@ class Bench(BenchPlotServer):
                 plot_callbacks = [BenchResult.to_auto_plots]
             else:
                 plot_callbacks = self.plot_callbacks
-        if isinstance(plot_callbacks, bool):
+        elif isinstance(plot_callbacks, bool):
             plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
 
         bench_cfg = BenchCfg(
