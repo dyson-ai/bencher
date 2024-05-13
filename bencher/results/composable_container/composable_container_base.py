@@ -22,9 +22,7 @@ class ComposeType(Enum):
 
     @staticmethod
     def from_horizontal(horizontal: bool):
-        if horizontal:
-            return ComposeType.right
-        return ComposeType.down
+        return ComposeType.right if horizontal else ComposeType.down
 
 
 @dataclass(kw_only=True)
