@@ -140,9 +140,8 @@ class HoloviewResult(PanelResult):
     ) -> Optional[pn.panel]:
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
-        else:
-            if not isinstance(tap_var, list):
-                tap_var = [tap_var]
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
 
         if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or not use_tap:
             heatmap_cb = self.to_line_ds
@@ -213,9 +212,8 @@ class HoloviewResult(PanelResult):
     ) -> Optional[pn.panel]:
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
-        else:
-            if not isinstance(tap_var, list):
-                tap_var = [tap_var]
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
 
         if len(tap_var) == 0 or not use_tap:
             heatmap_cb = self.to_heatmap_ds
