@@ -161,7 +161,6 @@ class HoloviewResult(PanelResult):
 
     def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
-        # y = self.plt_cnt_cfg.result_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
@@ -274,8 +273,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
-            print(f"moved {x}{y}")
-
+            # print(f"moved {x}{y}")
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
@@ -345,8 +343,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot_line(x, y):  # pragma: no cover
-            print(f"{x},{y}")
-
+            # print(f"{x},{y}")
             # print(dataset)
 
             # xv = self.bench_cfg.input_vars[0].name
