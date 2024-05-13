@@ -19,8 +19,6 @@ class BenchPolygons(bch.ParametrizedSweep):
     color = bch.StringSweep(["red", "green", "blue"])
     polygon = bch.ResultImage()
     area = bch.ResultVar()
-    # hmap = bch.ResultHmap()
-    area = bch.ResultVar()
     side_length = bch.ResultVar()
 
     def __call__(self, **kwargs):
@@ -84,24 +82,6 @@ def example_image(
     return bench
 
 
-def simple():
-    bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
-
-    # bench.plot_sweep(input_vars=["sides","color","radius"])
-
-    # res = bench.sweep(input_vars=["sides", "radius"])
-
-    # bench.report.append(res.to_heatmap(target_dimension=3))
-
-    # res = bench.plot_sweep(input_vars=["sides"],result_vars=["area"])
-    # bench.plot_sweep(input_vars=["sides", "color"])
-
-    bench.plot_sweep(input_vars=["sides", "radius"])
-
-    # bench.report.append(res.to_line(target_dimension=1))
-
-    return bench
-
 
 def example_image_vid(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
@@ -117,6 +97,26 @@ def example_image_vid(
 
 
 if __name__ == "__main__":
+
+
+
+    def simple():
+        bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
+
+        # bench.plot_sweep(input_vars=["sides","color","radius"])
+
+        # res = bench.sweep(input_vars=["sides", "radius"])
+
+        # bench.report.append(res.to_heatmap(target_dimension=3))
+
+        res = bench.plot_sweep(input_vars=["sides"])
+        bench.plot_sweep(input_vars=["sides", "color"])
+
+        bench.plot_sweep(input_vars=["sides", "radius"])
+
+        # bench.report.append(res.to_line(target_dimension=1))
+
+        return bench
 
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
