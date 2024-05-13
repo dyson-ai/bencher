@@ -30,7 +30,9 @@ class BenchPolygons(bch.ParametrizedSweep):
         points = polygon_points(self.radius, self.sides, self.start_angle)
         # self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
-        self.area = self.radius * self.sides
+
+        self.side_length = 2 * self.radius * math.sin(math.pi / self.sides)
+        self.area = (self.sides * self.side_length**2) / (4 * math.tan(math.pi / self.sides))
         return super().__call__()
 
     def points_to_polygon_png(self, points: list[float], filename: str):
@@ -152,6 +154,8 @@ if __name__ == "__main__":
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4
-    example_image_vid(ex_run_cfg).report.show()
+    # example_image_vid(ex_run_cfg).report.show()
+    simple().report.show()
+
     # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

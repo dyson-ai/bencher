@@ -174,8 +174,6 @@ class HoloviewResult(PanelResult):
         time_widget_args = self.time_widget(title)
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
-    # def
-
     def to_curve(self, result_var: Parameter = None, **kwargs):
         return self.filter(
             self.to_curve_ds,
