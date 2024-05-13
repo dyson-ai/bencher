@@ -36,7 +36,7 @@ class TestSweepBase(unittest.TestCase):
             "tst",
             input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
-            plot=False,
+            plot_callbacks=False,
         )
 
         consts_after = [i[0] for i in res.bench_cfg.const_vars]
@@ -193,5 +193,6 @@ class TestSweepBase(unittest.TestCase):
 
 if __name__ == "__main__":
     # TestSweepBase().test_override_defaults()
+    pass
 
-    TestSweepBase().test_levels_int(0, 10)
+    # TestSweepBase().test_levels_int(0, 10)
