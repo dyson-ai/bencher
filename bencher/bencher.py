@@ -337,8 +337,6 @@ class Bench(BenchPlotServer):
                 run_cfg = deepcopy(self.run_cfg)
                 logging.info("Copy run cfg from bench class")
 
-
-
         if run_cfg.only_plot:
             run_cfg.use_cache = True
 

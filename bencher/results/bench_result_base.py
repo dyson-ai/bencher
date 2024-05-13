@@ -17,7 +17,6 @@ from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
 from bencher.plotting.plot_filter import VarRange, PlotFilter
-import panel as pn
 from bencher.utils import listify
 
 from bencher.variables.results import (
@@ -25,7 +24,6 @@ from bencher.variables.results import (
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
-from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -409,7 +407,7 @@ class BenchResultBase(OptunaResult):
 
     def ds_to_container(
         self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
-    ) -> Any:   
+    ) -> Any:
         val = self.zero_dim_da_to_val(dataset[result_var.name])
         if isinstance(result_var, ResultReference):
             ref = self.object_index[val]
