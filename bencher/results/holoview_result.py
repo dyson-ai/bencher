@@ -165,7 +165,6 @@ class HoloviewResult(PanelResult):
 
     def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
-        # y = self.plt_cnt_cfg.result_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
@@ -250,9 +249,7 @@ class HoloviewResult(PanelResult):
     def result_var_to_container(self, result_var):
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
-        if isinstance(result_var, ResultVideo):
-            return pn.pane.Video
-        return partial(pn.pane.panel, "No result")
+        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.pane.panel
 
     def setup_results_and_containers(self, result_var_plots, container, **kwargs):
         result_var_plots = listify(result_var_plots)
@@ -283,7 +280,10 @@ class HoloviewResult(PanelResult):
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/heatmap_streamxy
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
@@ -356,8 +356,7 @@ class HoloviewResult(PanelResult):
         state = dict(x=None, y=None, update=False)
 
         def tap_plot_line(x, y):  # pragma: no cover
-            print(f"{x},{y}")
-
+            # print(f"{x},{y}")
             # print(dataset)
 
             # xv = self.bench_cfg.input_vars[0].name
