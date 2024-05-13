@@ -319,7 +319,7 @@ class HoloviewResult(PanelResult):
                         cont.autoplay = True
                 state["update"] = False
 
-        def on_exit(x, y):  # pragma: no cover # pylint disable: unused-argument
+        def on_exit(x, y):  # pragma: no cover # pylint: disable=unused-argument
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
@@ -404,7 +404,7 @@ class HoloviewResult(PanelResult):
                         cont.autoplay = True
                 state["update"] = False
 
-        def on_exit(x, y):  # pragma: no cover pylint disable: unused-argument
+        def on_exit(x, y):  # pragma: no cover # pylint: disable=unused-argument
             state["update"] = True
 
         htmap_posxy = hv.streams.PointerXY(source=htmap)
