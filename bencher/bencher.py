@@ -384,12 +384,12 @@ class Bench(BenchPlotServer):
             )
 
         if plot_callbacks is None:
-            plot_callbacks = [] if self.plot_callbacks is None else self.plot_callbacks
-        else:
-            if isinstance(plot_callbacks, bool):
-                plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
-            elif len(self.plot_callbacks) == 0:
+            if self.plot_callbacks is not None and len(self.plot_callbacks) == 0:
                 plot_callbacks = [BenchResult.to_auto_plots]
+            else:
+                plot_callbacks = self.plot_callbacks
+        elif isinstance(plot_callbacks, bool):
+            plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
 
         bench_cfg = BenchCfg(
             input_vars=input_vars,
