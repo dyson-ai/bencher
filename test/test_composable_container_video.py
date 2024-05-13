@@ -4,7 +4,6 @@ import numpy as np
 
 
 class TestComposableContainerVideo(unittest.TestCase):
-
     def small_img(self, size=None):
         if size is None:
             size = (2, 1)
@@ -57,7 +56,6 @@ class TestComposableContainerVideo(unittest.TestCase):
         # self.assertEqual(res.duration, 0.1)
 
     def test_video_seq(self):
-
         img = self.small_img()
         vid1 = bch.ComposableContainerVideo()
         vid1.append(img)
@@ -147,7 +145,6 @@ class TestComposableContainerVideo(unittest.TestCase):
             vid.append("bad.badextension")
 
     def test_simple_image_length(self):
-
         ccv = bch.ComposableContainerVideo()
         ccv.append(self.small_img())
         ccv.append(self.small_img())
@@ -169,7 +166,6 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertAlmostEqual(ccv.render().duration, 10.0)
 
     def test_composite_image_length(self):
-
         ccv = bch.ComposableContainerVideo()
 
         for _ in range(2):
@@ -195,7 +191,6 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertEqual(ccv.render().duration, 10.0)
 
     def test_video_lengths(self):
-
         ccv = bch.ComposableContainerVideo()
         ccv.append(self.small_video())
         ccv.append(self.small_video())

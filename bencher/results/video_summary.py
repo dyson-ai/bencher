@@ -150,7 +150,6 @@ class VideoSummaryResult(BenchResultBase):
         target_duration: float = None,
         **kwargs,
     ):
-
         cvc = self._to_video_panes_ds(
             dataset,
             self.plot_cb,

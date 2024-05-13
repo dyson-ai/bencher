@@ -18,7 +18,7 @@ class VideoWriter:
         self.images.append(img)
 
     def write(self) -> str:
-        if len(self.images)>0:
+        if len(self.images) > 0:
             clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(
                 self.images, fps=30, with_mask=False, load_images=True
             )

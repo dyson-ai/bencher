@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 @dataclass(kw_only=True)
 class ComposableContainerPanel(ComposableContainerBase):
-
     name: str = None
     var_name: str = None
     var_value: str = None

@@ -4,7 +4,6 @@ from bencher.example.example_image import BenchPolygons
 
 
 class BenchComposableContainerImage(BenchPolygons):
-
     compose_method = bch.EnumSweep(bch.ComposeType)
     labels = bch.BoolSweep()
     num_frames = bch.IntSweep(default=5, bounds=[1, 100])
@@ -34,7 +33,6 @@ class BenchComposableContainerImage(BenchPolygons):
 
 
 class BenchComposableContainerVideo(bch.ParametrizedSweep):
-
     unequal_length = bch.BoolSweep()
     compose_method = bch.EnumSweep(bch.ComposeType)
     labels = bch.BoolSweep()
