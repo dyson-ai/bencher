@@ -36,7 +36,7 @@ class TestSweepBase(unittest.TestCase):
             "tst",
             input_vars=[AllSweepVars.param.var_float.with_samples(3)],
             const_vars=consts,
-            plot=False,
+            plot_callbacks=False,
         )
 
         consts_after = [i[0] for i in res.bench_cfg.const_vars]
@@ -97,14 +97,14 @@ class TestSweepBase(unittest.TestCase):
         self.assertEqual(instance_defaults[0][1], 2)
 
     def test_with_sample_values(self):
-        vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values(False)
+        vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values()
         self.assertEqual(vals[0], 0)
         self.assertEqual(vals[1], 1)
 
-        defaults = AllSweepVars.param.var_float.values(False)
+        defaults = AllSweepVars.param.var_float.values()
         self.assertEqual(defaults[9], 10)
 
-        vals = AllSweepVars.param.var_enum.with_sample_values([PostprocessFn.negate]).values(False)
+        vals = AllSweepVars.param.var_enum.with_sample_values([PostprocessFn.negate]).values()
         self.assertEqual(len(vals), 1)
         self.assertEqual(vals[0], PostprocessFn.negate)
 
@@ -193,5 +193,6 @@ class TestSweepBase(unittest.TestCase):
 
 if __name__ == "__main__":
     # TestSweepBase().test_override_defaults()
+    pass
 
-    TestSweepBase().test_levels_int(0, 10)
+    # TestSweepBase().test_levels_int(0, 10)

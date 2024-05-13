@@ -623,7 +623,7 @@ class HoloviewResult(PanelResult):
 
         kdims = []
         for i in self.bench_cfg.input_vars + [self.bench_cfg.iv_repeat]:
-            kdims.append(i.as_dim(compute_values=True, debug=self.bench_cfg.debug))
+            kdims.append(i.as_dim(compute_values=True))
 
         return hv.DynamicMap(cb, kdims=kdims)
 
@@ -668,7 +668,7 @@ class HoloviewResult(PanelResult):
             result_vars=VarRange(1, 1),
         ).matches_result(self.plt_cnt_cfg, "to_surface_hv")
         if matches_res.overall:
-            # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var, self.bench_cfg.debug)
+            # xr_cfg = plot_float_cnt_2(self.plt_cnt_cfg, result_var)
 
             # TODO a warning suggests setting this parameter, but it does not seem to help as expected, leaving here to fix in the future
             # hv.config.image_rtol = 1.0

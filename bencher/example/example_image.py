@@ -18,6 +18,7 @@ class BenchPolygons(bch.ParametrizedSweep):
     linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
     color = bch.StringSweep(["red", "green", "blue"])
     polygon = bch.ResultImage()
+    area = bch.ResultVar()
     # hmap = bch.ResultHmap()
     area = bch.ResultVar()
     side_length = bch.ResultVar()
@@ -27,6 +28,7 @@ class BenchPolygons(bch.ParametrizedSweep):
         points = polygon_points(self.radius, self.sides)
         # self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
+        self.area = self.radius * self.sides
 
         self.side_length = 2 * self.radius * math.sin(math.pi / self.sides)
         self.area = (self.sides * self.side_length**2) / (4 * math.tan(math.pi / self.sides))
@@ -57,15 +59,25 @@ class BenchPolygons(bch.ParametrizedSweep):
 def example_image(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
+    run_cfg.use_cache = False
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
+    bench.result_vars = ["polygon", "area"]
+
+    bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
+    # bench.add_plot_callback(bch.BenchResult.to_auto, level=2)
+    bench.add_plot_callback(bch.BenchResult.to_panes, level=3)
+    # bench.add_plot_callback(bch.BenchResult.to_panes)
+
     sweep_vars = ["sides", "radius", "linewidth", "color"]
+
+    # sweep_vars = ["sides", "radius" ]
+
     for i in range(1, len(sweep_vars)):
         s = sweep_vars[:i]
         bench.plot_sweep(
             f"Polygons Sweeping {len(s)} Parameters",
             input_vars=s,
-            result_vars=[BenchPolygons.param.polygon],
         )
         bench.report.append(bench.get_result().to_panes())
 
@@ -97,7 +109,7 @@ def example_image_vid(
 ) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
     bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    bench.add_plot_callback(bch.BenchResult.to_video_grid, target_duration=1)
     bench.plot_sweep(input_vars=["sides"])
     bench.plot_sweep(input_vars=["radius", "sides"])
     bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])

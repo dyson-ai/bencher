@@ -25,7 +25,7 @@
 			"label": "autoformat",
 			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
-			"command": "ruff . --fix && black ."
+			"command": "ruff check . --fix && black ."
 		},
 		{
 			"label": "autoformat, commit and push",
@@ -162,6 +162,32 @@
 			"type": "shell",
 			"command": "scripts/launch_vscode.sh"
 		},
+		{
+            "label": "Install All Recommended Extensions",
+            "type": "shell",           
+            "linux": {
+                "command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+        },	
+		{
+            "label": "set git config recurse submodules",
+            "type": "shell",           
+            "linux": {
+                "command": [" git config submodule.recurse true"],
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+        },	
 	],
 	"inputs": [
 		{

@@ -1,8 +1,11 @@
-apt_base:
+apt_tools:
   - git
   - git-lfs
   - python3-pip
+  - apt-utils
+  - jq
 
-pip_base:
+
+pip_tools:
   - flit
   - pip #updates to latest pip
