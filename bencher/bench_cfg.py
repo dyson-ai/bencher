@@ -344,9 +344,13 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self, width: int = 800) -> pn.pane.Markdown:
+    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
         """Produce a markdown summary of the sweep settings"""
-        return pn.pane.Markdown(self.describe_benchmark(), width=width)
+
+        desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
+        if accordion:
+            return pn.Accordion(("Data Collection Parameters", desc))
+        return desc
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
@@ -427,7 +431,7 @@ class BenchCfg(BenchRunCfg):
         if self.description is not None and description:
             col.append(self.to_description())
         if describe_sweep:
-            col.append(pn.Accordion(("Data Collection Parameters", self.describe_sweep())))
+            col.append(self.describe_sweep())
         if results_suffix:
             col.append(pn.pane.Markdown("## Results:"))
         return col

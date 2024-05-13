@@ -19,7 +19,7 @@ class BenchPolygons(bch.ParametrizedSweep):
     color = bch.StringSweep(["red", "green", "blue"])
     polygon = bch.ResultImage()
     area = bch.ResultVar()
-    # hmap = bch.ResultHmap()
+    side_length = bch.ResultVar()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
@@ -27,6 +27,9 @@ class BenchPolygons(bch.ParametrizedSweep):
         # self.hmap = hv.Curve(points)
         self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"))
         self.area = self.radius * self.sides
+
+        self.side_length = 2 * self.radius * math.sin(math.pi / self.sides)
+        self.area = (self.sides * self.side_length**2) / (4 * math.tan(math.pi / self.sides))
         return super().__call__()
 
     def points_to_polygon_png(self, points: list[float], filename: str):
@@ -74,6 +77,8 @@ def example_image(
             f"Polygons Sweeping {len(s)} Parameters",
             input_vars=s,
         )
+        bench.report.append(bench.get_result().to_panes())
+
     return bench
 
 
@@ -92,6 +97,24 @@ def example_image_vid(
 
 if __name__ == "__main__":
 
+    def simple():
+        bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
+
+        # bench.plot_sweep(input_vars=["sides","color","radius"])
+
+        # res = bench.sweep(input_vars=["sides", "radius"])
+
+        # bench.report.append(res.to_heatmap(target_dimension=3))
+
+        bench.plot_sweep(input_vars=["sides"])
+        bench.plot_sweep(input_vars=["sides", "color"])
+
+        bench.plot_sweep(input_vars=["sides", "radius"])
+
+        # bench.report.append(res.to_line(target_dimension=1))
+
+        return bench
+
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:
@@ -108,6 +131,8 @@ if __name__ == "__main__":
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4
-    example_image_vid(ex_run_cfg).report.show()
+    # example_image_vid(ex_run_cfg).report.show()
+    simple().report.show()
+
     # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

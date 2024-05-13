@@ -17,13 +17,13 @@ from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
 from bencher.plotting.plot_filter import VarRange, PlotFilter
+from bencher.utils import listify
 
 from bencher.variables.results import (
     ResultReference,
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
-from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -228,7 +228,7 @@ class BenchResultBase(OptunaResult):
         return " vs ".join(tit)
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
-        return self.bench_cfg.result_vars if result_var is None else [result_var]
+        return self.bench_cfg.result_vars if result_var is None else listify(result_var)
 
     def map_plots(
         self,
