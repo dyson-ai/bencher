@@ -82,7 +82,6 @@ def example_image(
     return bench
 
 
-
 def example_image_vid(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
@@ -98,8 +97,6 @@ def example_image_vid(
 
 if __name__ == "__main__":
 
-
-
     def simple():
         bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
 
@@ -109,7 +106,7 @@ if __name__ == "__main__":
 
         # bench.report.append(res.to_heatmap(target_dimension=3))
 
-        res = bench.plot_sweep(input_vars=["sides"])
+        bench.plot_sweep(input_vars=["sides"])
         bench.plot_sweep(input_vars=["sides", "color"])
 
         bench.plot_sweep(input_vars=["sides", "radius"])
