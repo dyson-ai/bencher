@@ -135,40 +135,6 @@ if __name__ == "__main__":
 
         return bench
 
-
-def example_image_vid(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
-    bench = BenchPolygons().to_bench(run_cfg, report)
-    bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid, target_duration=1)
-    bench.plot_sweep(input_vars=["sides"])
-    bench.plot_sweep(input_vars=["radius", "sides"])
-    bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
-
-    return bench
-
-
-if __name__ == "__main__":
-
-    def simple():
-        bench = BenchPolygons().to_bench(bch.BenchRunCfg(level=4))
-
-        # bench.plot_sweep(input_vars=["sides","color","radius"])
-
-        # res = bench.sweep(input_vars=["sides", "radius"])
-
-        # bench.report.append(res.to_heatmap(target_dimension=3))
-
-        bench.plot_sweep(input_vars=["sides"])
-        bench.plot_sweep(input_vars=["sides", "color"])
-
-        bench.plot_sweep(input_vars=["sides", "radius"])
-
-        # bench.report.append(res.to_line(target_dimension=1))
-
-        return bench
-
     def example_image_vid_sequential(
         run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
     ) -> bch.Bench:

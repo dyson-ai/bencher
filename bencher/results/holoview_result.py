@@ -280,10 +280,6 @@ class HoloviewResult(PanelResult):
 
         def tap_plot_heatmap(x, y):  # pragma: no cover
             # print(f"moved {x}{y}")
-<<<<<<< HEAD
-
-=======
->>>>>>> feature/heatmap_streamxy
             x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
