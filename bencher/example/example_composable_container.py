@@ -85,7 +85,7 @@ def example_composable_container_video(
     res = bench.plot_sweep(
         input_vars=[],
         const_vars=dict(unequal_length=False, compose_method=bch.ComposeType.sequence),
-        plot=False,
+        plot_callbacks=False,
     )
 
     bench.report.append(res.to_video_grid())
