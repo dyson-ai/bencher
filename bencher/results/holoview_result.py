@@ -135,9 +135,8 @@ class HoloviewResult(PanelResult):
     ) -> Optional[pn.panel]:
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
-        else:
-            if not isinstance(tap_var, list):
-                tap_var = [tap_var]
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
 
         if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1:
             heatmap_cb = self.to_line_ds
@@ -204,9 +203,8 @@ class HoloviewResult(PanelResult):
     ) -> Optional[pn.panel]:
         if tap_var is None:
             tap_var = self.plt_cnt_cfg.panel_vars
-        else:
-            if not isinstance(tap_var, list):
-                tap_var = [tap_var]
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
 
         if len(tap_var) == 0:
             heatmap_cb = self.to_heatmap_ds
@@ -242,9 +240,7 @@ class HoloviewResult(PanelResult):
     def result_var_to_container(self, result_var):
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
-        if isinstance(result_var, ResultVideo):
-            return pn.pane.Video
-        return pn.pane.panel
+        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.pane.panel
 
     def setup_results_and_containers(self, result_var_plots, container, **kwargs):
         result_var_plots = listify(result_var_plots)
