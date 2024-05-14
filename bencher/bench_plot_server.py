@@ -87,9 +87,9 @@ class BenchPlotServer:
             port (int): use a fixed port to lauch the server
         """
 
-        for l in ["tornado", "bokeh"]:
-            lg = logging.getLogger(l)
-            lg.setLevel(logging.WARNING)
+        # suppress verbose tornado and bokeh output
+        for logger in ["tornado", "bokeh"]:
+            logging.getLogger(logger).setLevel(logging.WARNING)
 
         if port is not None:
             return pn.serve(
