@@ -87,6 +87,10 @@ class BenchPlotServer:
             port (int): use a fixed port to lauch the server
         """
 
+        for l in ["tornado", "bokeh"]:
+            lg = logging.getLogger(l)
+            lg.setLevel(logging.WARNING)
+
         if port is not None:
             return pn.serve(
                 plots_instance,
@@ -97,5 +101,4 @@ class BenchPlotServer:
                 show=show,
             )
 
-        logging.getLogger().setLevel(logging.WARNING)
         return pn.serve(plots_instance, title=bench_name, threaded=True, show=show)
