@@ -251,7 +251,7 @@ class HoloviewResult(PanelResult):
         else:
             containers = listify(container)
 
-        cont_instances = [c(**kwargs) if c is not None else None for c in containers]
+        cont_instances = [c(**kwargs) for c in containers]
         return result_var_plots, cont_instances
 
     def to_heatmap_container_tap_ds(
@@ -305,7 +305,7 @@ class HoloviewResult(PanelResult):
                     val = ds.sel(**kdims)
                     item = self.zero_dim_da_to_val(val)
                     title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-                    
+
                     cont.object = item
                     if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
                         cont.paused = False
