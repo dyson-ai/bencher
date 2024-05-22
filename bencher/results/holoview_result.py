@@ -15,11 +15,7 @@ from bencher.results.bench_result_base import ReduceType
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
-
 hv.extension("bokeh", "plotly")
-
-# hv.extension("matplotlib")
-
 
 use_tap = True
 
@@ -249,7 +245,7 @@ class HoloviewResult(PanelResult):
     def result_var_to_container(self, result_var):
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
-        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.pane.panel
+        return pn.pane.Video if isinstance(result_var, ResultVideo) else None
 
     def setup_results_and_containers(self, result_var_plots, container, **kwargs):
         result_var_plots = listify(result_var_plots)
@@ -258,7 +254,7 @@ class HoloviewResult(PanelResult):
         else:
             containers = listify(container)
 
-        cont_instances = [c(**kwargs) for c in containers]
+        cont_instances = [c(**kwargs) if c is not None else None for c in containers]
         return result_var_plots, cont_instances
 
     def to_heatmap_container_tap_ds(
