@@ -376,7 +376,7 @@ class BenchCfg(BenchRunCfg):
 
         benchmark_sampling_str.append("\nMeta Variables:")
         benchmark_sampling_str.append(f"    run date: {self.run_date}")
-        if self.run_tag is not None and len(self.run_tag) > 0:
+        if self.run_tag:
             benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
         if self.level is not None:
             benchmark_sampling_str.append(f"    bench level: {self.level}")
