@@ -15,8 +15,10 @@ from bencher.results.bench_result_base import ReduceType
 from bencher.plotting.plot_filter import PlotFilter, VarRange
 from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
-
 hv.extension("bokeh", "plotly")
+
+# Flag to enable or disable tap tool functionality in visualizations
+use_tap = True
 
 
 class HoloviewResult(PanelResult):
@@ -240,7 +242,7 @@ class HoloviewResult(PanelResult):
     def result_var_to_container(self, result_var):
         if isinstance(result_var, ResultImage):
             return pn.pane.PNG
-        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.pane.panel
+        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.Column
 
     def setup_results_and_containers(self, result_var_plots, container, **kwargs):
         result_var_plots = listify(result_var_plots)
@@ -303,6 +305,7 @@ class HoloviewResult(PanelResult):
                     val = ds.sel(**kdims)
                     item = self.zero_dim_da_to_val(val)
                     title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+
                     cont.object = item
                     if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
                         cont.paused = False
