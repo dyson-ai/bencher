@@ -17,6 +17,7 @@ from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
 hv.extension("bokeh", "plotly")
 
+# Flag to enable or disable tap tool functionality in visualizations
 use_tap = True
 
 
