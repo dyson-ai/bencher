@@ -374,26 +374,19 @@ class BenchCfg(BenchRunCfg):
         for rv in self.result_vars:
             benchmark_sampling_str.extend(describe_variable(rv, False))
 
-        print_meta = True
-        # if len(self.meta_vars) == 1:
-        #     mv = self.meta_vars[0]
-        #     if mv.name == "repeat" and mv.samples == 1:
-        #         print_meta = False
+        benchmark_sampling_str.append("\nMeta Variables:")
+        benchmark_sampling_str.append(f"    run date: {self.run_date}")
+        if self.run_tag is not None and len(self.run_tag) > 0:
+            benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
+        if self.level is not None:
+            benchmark_sampling_str.append(f"    bench level: {self.level}")
+        benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
+        benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
+        benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
+        benchmark_sampling_str.append(f"    parallel: {self.executor}")
 
-        if print_meta:
-            benchmark_sampling_str.append("\nMeta Variables:")
-            benchmark_sampling_str.append(f"    run date: {self.run_date}")
-            if self.run_tag is not None and len(self.run_tag) > 0:
-                benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
-            if self.level is not None:
-                benchmark_sampling_str.append(f"    bench level: {self.level}")
-            benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
-            benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
-            benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
-            benchmark_sampling_str.append(f"    parallel: {self.executor}")
-
-            for mv in self.meta_vars:
-                benchmark_sampling_str.extend(describe_variable(mv, True))
+        for mv in self.meta_vars:
+            benchmark_sampling_str.extend(describe_variable(mv, True))
 
         benchmark_sampling_str.append("```")
 
