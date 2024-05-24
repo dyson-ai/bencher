@@ -24,6 +24,7 @@ from bencher.variables.results import (
     ResultVar,
     ResultVec,
     ResultHmap,
+    ResultPath,
     ResultVideo,
     ResultImage,
     ResultString,
@@ -557,7 +558,7 @@ class Bench(BenchPlotServer):
             time_src (datetime | str): a representation of the sample time
 
         Returns:
-            _type_: _description_
+            tuple[BenchResult, List, List]: bench_result, function intputs, dimension names
         """
 
         if time_src is None:
@@ -587,7 +588,9 @@ class Bench(BenchPlotServer):
             if isinstance(rv, ResultReference):
                 result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if isinstance(rv, (ResultVideo, ResultImage, ResultString, ResultContainer)):
+            if isinstance(
+                rv, (ResultPath, ResultVideo, ResultImage, ResultString, ResultContainer)
+            ):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
@@ -724,7 +727,15 @@ class Bench(BenchPlotServer):
                     logging.info(f"{rv.name}: {result_value}")
 
                 if isinstance(
-                    rv, (ResultVar, ResultVideo, ResultImage, ResultString, ResultContainer)
+                    rv,
+                    (
+                        ResultVar,
+                        ResultVideo,
+                        ResultImage,
+                        ResultString,
+                        ResultContainer,
+                        ResultPath,
+                    ),
                 ):
                     set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultReference):

@@ -46,6 +46,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             # img_obj = np.array(VideoWriter.label_image(obj, self.label))
             # else:
             # img_obj = obj
+            print(obj)
             self.container.append(ImageClip(obj))
 
     def render(self, concatenate: bool = False) -> CompositeVideoClip:

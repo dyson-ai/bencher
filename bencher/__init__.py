@@ -11,6 +11,7 @@ from .variables.results import (
     ResultVar,
     ResultVec,
     ResultHmap,
+    ResultPath,
     ResultVideo,
     ResultImage,
     ResultString,

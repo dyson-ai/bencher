@@ -1,6 +1,6 @@
 from enum import auto
 from typing import List, Callable, Any, Optional
-
+from functools import partial
 import panel as pn
 import param
 from param import Number
@@ -99,7 +99,22 @@ def curve(
     return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
 
 
-class PathResult(param.Filename):
+class ResultPath(param.Filename):
+    __slots__ = ["units"]
+
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
+        self.units = units
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+    def to_container(self):
+        return partial(pn.widgets.FileDownload, embed=True)
+
+
+class ResultVideo(param.Filename):
     __slots__ = ["units"]
 
     def __init__(self, default=None, units="path", **params):
@@ -111,14 +126,16 @@ class PathResult(param.Filename):
         return hash_sha1(self)
 
 
-class ResultVideo(PathResult):
-    def __init__(self, default=None, units="video", **params):
-        super().__init__(default=default, units=units, **params)
+class ResultImage(param.Filename):
+    __slots__ = ["units"]
 
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
+        self.units = units
 
-class ResultImage(PathResult):
-    def __init__(self, default=None, units="image", **params):
-        super().__init__(default=default, units=units, **params)
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 
 class ResultString(param.String):
@@ -181,4 +198,4 @@ class ResultVolume(param.Parameter):
         return hash_sha1(self)
 
 
-PANEL_TYPES = (ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
