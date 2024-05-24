@@ -416,6 +416,13 @@ class BenchResultBase(OptunaResult):
                 return ref.container(val, **kwargs)
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
+        try:
+            container = result_var.to_container()
+            if container is not None:
+                return container(val)
+        except AttributeError as _:
+            # TODO make sure all vars have to_container method
+            pass
         return val
 
     @staticmethod
