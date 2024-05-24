@@ -383,7 +383,7 @@ class BenchCfg(BenchRunCfg):
         benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
         benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
         benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
-        benchmark_sampling_str.append(f"    parallel: {self.executor}")
+        benchmark_sampling_str.append(f"    executor: {self.executor}")
 
         for mv in self.meta_vars:
             benchmark_sampling_str.extend(describe_variable(mv, True))

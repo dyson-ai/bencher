@@ -27,8 +27,6 @@ class PanelResult(BenchResultBase):
         level: int = None,
         **kwargs
     ) -> Optional[pn.pane.panel]:
-        if container is None:
-            container = pn.pane.panel
         if hv_dataset is None:
             hv_dataset = self.to_hv_dataset(ReduceType.SQUEEZE, level=level)
         elif not isinstance(hv_dataset, hv.Dataset):
