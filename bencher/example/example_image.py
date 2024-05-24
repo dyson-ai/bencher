@@ -151,7 +151,7 @@ if __name__ == "__main__":
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4
-    # example_image_vid(ex_run_cfg).report.show()
+    example_image_vid(ex_run_cfg).report.show()
     simple().report.show()
 
     # example_image_vid_sequential(ex_run_cfg).report.show()
