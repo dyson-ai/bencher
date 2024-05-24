@@ -420,9 +420,9 @@ class BenchResultBase(OptunaResult):
             container = result_var.to_container()
             if container is not None:
                 return container(val)
-        except Exception as _:
+        except AttributeError as _:
+            # TODO make sure all vars have to_container method
             pass
-            # container = pn.pane.panel
         return val
 
     @staticmethod

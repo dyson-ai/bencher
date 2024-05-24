@@ -6,7 +6,7 @@ import panel as pn
 
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import ALL_RESULT_TYPES
+from bencher.variables.results import ALL_RESULT_TYPES, ResultHmap
 
 
 class ParametrizedSweep(Parameterized):
