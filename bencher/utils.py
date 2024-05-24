@@ -129,7 +129,7 @@ def color_tuple_to_css(color: tuple[float, float, float]) -> str:
     return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"
 
 
-def gen_path(filename, folder, suffix):
+def gen_path(filename, folder="generic", suffix=".dat"):
     path = Path(f"cachedir/{folder}/{filename}/")
     path.mkdir(parents=True, exist_ok=True)
     return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
