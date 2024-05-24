@@ -7,4 +7,4 @@ class PluginB(Base):
         pass
 
     def start(self):
-        print("Plugin A")
+        print("Plugin B")
