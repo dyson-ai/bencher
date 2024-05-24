@@ -310,7 +310,7 @@ class HoloviewResult(PanelResult):
                     val = ds.sel(**kdims)
                     item = self.zero_dim_da_to_val(val)
                     title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-                    
+
                     cont.object = item
                     if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
                         cont.paused = False

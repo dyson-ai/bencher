@@ -6,16 +6,7 @@ import panel as pn
 
 
 from bencher.utils import make_namedtuple, hash_sha1
-from bencher.variables.results import (
-    ResultVar,
-    ResultVec,
-    ResultHmap,
-    ResultVideo,
-    ResultImage,
-    ResultString,
-    ResultContainer,
-    ResultReference,
-)
+from bencher.variables.results import ALL_RESULT_TYPES, ResultHmap
 
 
 class ParametrizedSweep(Parameterized):
@@ -78,16 +69,7 @@ class ParametrizedSweep(Parameterized):
         for k, v in cls.param.objects().items():
             if isinstance(
                 v,
-                (
-                    ResultVar,
-                    ResultVec,
-                    ResultHmap,
-                    ResultVideo,
-                    ResultImage,
-                    ResultString,
-                    ResultContainer,
-                    ResultReference,
-                ),
+                ALL_RESULT_TYPES,
             ):
                 results[k] = v
             else:
