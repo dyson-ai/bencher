@@ -566,9 +566,7 @@ class Bench(BenchPlotServer):
         bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
 
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
-
         # bench_cfg.all_vars = bench_cfg.iv_time + bench_cfg.input_vars +[ bench_cfg.iv_repeat]
-
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
 
         for i in bench_cfg.all_vars:

@@ -199,3 +199,15 @@ class ResultVolume(param.Parameter):
 
 
 PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+
+ALL_RESULT_TYPES = (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultPath,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+    ResultContainer,
+    ResultReference,
+)
