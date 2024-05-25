@@ -9,3 +9,6 @@ apt_tools:
 pip_tools:
   - flit
   - pip #updates to latest pip
+
+pip:
+  - pip
