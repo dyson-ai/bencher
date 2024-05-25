@@ -578,16 +578,16 @@ packages:
   name: python-template
   version: 0.2.0
   path: .
-  sha256: de8ddff052be788470245c6af8e4d49b7d77710414ebe5c84b704e42163732a6
+  sha256: 23f5c8f977b44c096aefc4cc84ee13ff36b8ebcad49ddc4dbc57972cf71a177a
   requires_dist:
   - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=2.16,<=3.2.2 ; extra == 'test'
+  - pylint>=2.17.7,<=3.2.2 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.2.1 ; extra == 'test'
   - hypothesis>=6.82,<=6.102.6 ; extra == 'test'
   - ruff>=0.0.280,<=0.4.5 ; extra == 'test'
   - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
-  requires_python: ==3.10
+  requires_python: '>=3.10'
   editable: true
 - kind: conda
   name: readline
