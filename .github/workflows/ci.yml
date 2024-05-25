@@ -19,7 +19,6 @@ jobs:
         with:
           pixi-version: v0.22.0
           cache: true
-          frozen: true
       - name: CI
         run: |
           pixi run ci 
