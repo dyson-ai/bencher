@@ -1,14 +1,21 @@
 [project]
 name = "python_template"
 version = "0.2.0"
-
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A python package template"
 readme = "README.md"
+requires-python = "==3.10"
 
-requires-python = ">=3.10"
+dependencies = []
 
-dependencies = ["numpy>=1.2,<=1.26.4"]
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.dependencies]
+
+[tool.pixi.pypi-dependencies]
+python_template = { path = ".", editable = true }
 
 [project.optional-dependencies]
 test = [
@@ -25,14 +32,26 @@ test = [
 Source = "https://github.com/blooop/python_template"
 Home = "https://github.com/blooop/python_template"
 
-
-[tool.flit.module]
-name = "python_template"
-
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
+# Environments
+[tool.pixi.environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
+
+[tool.pixi.tasks]
+pr = "pixi install; git commit -a -m'update pixi.lock';git push"
+
+[tool.pixi.feature.test.tasks]
+fmt = "black ."
+lint = "ruff check . --fix ; pylint $(git ls-files '*.py')"
+test = "pytest"
+coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
+
+[tool.setuptools.packages.find]
+include= ["python_template"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy"]
@@ -48,7 +67,7 @@ line-length = 100
 [tool.ruff]
 # Never enforce `E501` (line length violations).
 #"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
-lint.ignore = ["E501", "E902", "F841"]
+ignore = ["E501", "E902", "F841"]
 
 # Same as Black.
 line-length = 100
@@ -56,7 +75,7 @@ line-length = 100
 target-version = "py310"
 
 # Allow unused variables when underscore-prefixed.
-lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 # Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.lint.per-file-ignores]
