@@ -22,6 +22,7 @@ This has basic setup for
 [![GitHub release](https://img.shields.io/github/release/blooop/python_template.svg)](https://GitHub.com/blooop/python_template/releases/)
 [![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
 [![Python](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-310/)
+[![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
 
 To set up your project run the vscode task "pull updates from template repo" and then task "rename project template name"
