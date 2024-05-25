@@ -19,10 +19,9 @@ jobs:
         with:
           pixi-version: v0.22.0
           cache: true
-          frozen: true
       - name: Format and lint
         run: |
-          pixi run fmt
+          pixi run format
           pixi run lint 
       - name: Assert no changes
         run: |

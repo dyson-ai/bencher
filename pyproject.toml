@@ -7,7 +7,7 @@ description = "A package for benchmarking the performance of arbitrary functions
 readme = "README.md"
 
 #incompatible with setuptools
-requires-python = "==3.10"
+requires-python = ">= 3.10"
 
 dependencies = [
   "holoviews>=1.15,<=1.18.3",
@@ -41,7 +41,7 @@ holobench = { path = ".", editable = true }
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
-  "pylint>=2.16,<=3.2.2",
+  "pylint>=2.17.7,<=3.1.1",
   "pytest-cov>=4.1,<=5.0.0",
   "pytest>=7.4,<=8.2.0",
   "hypothesis>=6.82,<=6.100.5",
@@ -63,18 +63,19 @@ build-backend = "setuptools.build_meta"
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 
-[tool.pixi.tasks]
-pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.pixi.feature.test.tasks]
-fmt = "black ."
-lint = "ruff check . --fix ; pylint $(git ls-files '*.py'); git diff --exit-code"
+format = "black ."
+ruff-lint = "ruff check . --fix && git diff --exit-code"
+pylint = "echo 'running pylint...'; pylint --version && pylint $(git ls-files '*.py')"
+lint = { depends_on = ["ruff-lint", "pylint"] }
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
-ci-no-cover = {depends_on = ["fmt","lint","test"]}
-ci = {depends_on = ["fmt","lint","coverage","coverage-report"]}
+ci-no-cover = { depends_on = ["format", "lint", "test"] }
+ci = { depends_on = ["format", "lint", "coverage", "coverage-report"] }
 update-lock-push = "pixi install; git commit -a -m'update pixi.lock';git push"
+
 
 [tool.setuptools.packages.find]
 include = ["python_template"]
