@@ -92,6 +92,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
+      - pypi: .
   test:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -205,6 +206,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
+      - pypi: .
 packages:
 - kind: conda
   name: _libgcc_mutex
@@ -540,6 +542,38 @@ packages:
   - objgraph ; extra == 'test'
   - psutil ; extra == 'test'
   requires_python: '>=3.7'
+- kind: pypi
+  name: holobench
+  version: 1.19.0
+  path: .
+  sha256: 6c78a9c87ddbb1b617ed6ad796fe84968f780138e93e44471bd21fbf1d06518e
+  requires_dist:
+  - holoviews>=1.15,<=1.18.3
+  - numpy>=1.0,<=1.26.4
+  - param>=1.13.0,<=2.1.0
+  - hvplot>=0.8,<=0.10.0
+  - matplotlib>=3.6.3,<=3.8.4
+  - panel>=1.3.6,<=1.4.2
+  - diskcache>=5.6,<=5.6.3
+  - optuna>=3.2,<=3.6.1
+  - xarray>=2023.7,<=2024.5.0
+  - plotly>=5.15,<=5.22.0
+  - sortedcontainers>=2.4,<=2.4
+  - pandas>=2.0,<=2.2.2
+  - strenum>=0.4.0,<=0.4.15
+  - scikit-learn>=1.2,<=1.4.2
+  - str2bool>=1.1,<=1.1
+  - scoop>=0.7.0,<=0.7.2.0
+  - moviepy>=1.0.3,<=1.0.3
+  - black>=23,<=24.4.2 ; extra == 'test'
+  - pylint>=2.16,<=3.1.0 ; extra == 'test'
+  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
+  - pytest>=7.4,<=8.2.0 ; extra == 'test'
+  - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
+  - ruff>=0.0.280,<=0.4.3 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
+  requires_python: ==3.10
+  editable: true
 - kind: pypi
   name: holoviews
   version: 1.18.3
