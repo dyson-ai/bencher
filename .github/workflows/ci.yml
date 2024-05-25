@@ -22,8 +22,7 @@ jobs:
           frozen: true
       - name: Format and lint
         run: |
-          pixi run format
-          pixi run lint 
+          pixi run style 
       - name: Assert no changes
         run: |
             git diff --exit-code     

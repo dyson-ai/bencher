@@ -46,12 +46,16 @@ pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.pixi.feature.test.tasks]
 format = "black ."
-lint = "ruff check . --fix && echo 'running pylint...' && pylint $(git ls-files '*.py') && git diff --exit-code"
+check-clean-workspace = "git diff --exit-code"
+ruff-lint = "ruff check . --fix"
+pylint = "echo 'running pylint...'; pylint --version && pylint $(git ls-files '*.py')"
+lint = { depends_on = ["ruff-lint","check-clean-workspace", "pylint"] }
+style = { depends_on = ["format","lint"]}
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
-ci-no-cover = {depends_on = ["format","lint","test"]}
-ci = {depends_on = ["format","lint","coverage","coverage-report"]}
+ci-no-cover = { depends_on = ["format", "lint", "test"] }
+ci = { depends_on = ["format", "lint", "coverage", "coverage-report"] }
 update-lock-push = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 
