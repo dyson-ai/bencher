@@ -164,3 +164,7 @@ cython_debug/
 #COLCON
 install/**
 log/**
+# pixi environments
+.pixi
+*.egg-info
+

@@ -26,3 +26,7 @@ updates:
         #try to group all third party library updates into a single pr
         patterns:
           - "*"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
