@@ -7,7 +7,7 @@ description = "A package for benchmarking the performance of arbitrary functions
 readme = "README.md"
 
 #incompatible with setuptools
-requires-python = "==3.10"
+requires-python = ">=3.10"
 
 dependencies = [
   "holoviews>=1.15,<=1.18.3",

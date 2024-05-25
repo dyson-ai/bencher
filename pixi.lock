@@ -546,7 +546,7 @@ packages:
   name: holobench
   version: 1.19.0
   path: .
-  sha256: 7b7303e26b0d99ac6f505b5921160da7884ffa4252cdd24933fd213f3882fed7
+  sha256: cfe3ced627887530e28d9ef617e77ccd83b781979f8fce4da49abf215bfce40b
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
@@ -572,7 +572,7 @@ packages:
   - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
   - ruff>=0.3,<=0.4.3 ; extra == 'test'
   - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
-  requires_python: ==3.10
+  requires_python: '>=3.10'
   editable: true
 - kind: pypi
   name: holoviews
