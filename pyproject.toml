@@ -71,6 +71,10 @@ fmt = "black ."
 lint = "ruff check . --fix ; pylint $(git ls-files '*.py')"
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
+coverage-report = "coverage report -m"
+ci-no-cover = {depends_on = ["fmt","lint","test"]}
+ci = {depends_on = ["fmt","lint","coverage","coverage-report"]}
+update-lock-push = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.setuptools.packages.find]
 include = ["python_template"]
@@ -87,15 +91,17 @@ enable = "no-else-return,consider-using-in"
 line-length = 100
 
 [tool.ruff]
-# Never enforce `E501` (line length violations).
-#"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
-ignore = ["E501", "E902", "F841"]
+
 
 # Same as Black.
 line-length = 100
 
 target-version = "py310"
 
+[tool.ruff.lint]
+# Never enforce `E501` (line length violations).
+#"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
+ignore = ["E501", "E902", "F841"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
