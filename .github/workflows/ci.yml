@@ -19,7 +19,6 @@ jobs:
         with:
           pixi-version: v0.22.0
           cache: true
-          frozen: true
       - name: Format and lint
         run: |
           pixi run format
