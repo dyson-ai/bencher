@@ -19,16 +19,10 @@ jobs:
         with:
           pixi-version: v0.22.0
           cache: true
-      - name: Format and lint
+          frozen: true
+      - name: CI
         run: |
-          pixi run format
-          pixi run lint 
-      - name: Assert no changes
-        run: |
-            git diff --exit-code     
-      - name: Test
-        run: |
-          pixi run coverage      
+          pixi run ci 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:
