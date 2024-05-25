@@ -13,6 +13,11 @@
 [![Python](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-310/)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
+## Badges
+
+### Pixi Badge
+The Pixi badge indicates that this project is optimized for performance and follows best practices as evaluated by the Pixi tool. For more information, visit [Pixi](https://pixi.sh).
+
 
 ## Intro
 
