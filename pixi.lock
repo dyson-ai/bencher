@@ -546,7 +546,7 @@ packages:
   name: holobench
   version: 1.19.0
   path: .
-  sha256: b15e54283caed20e32d8899f8a34dad8af361cff9b90264c86eb9e71a35097ac
+  sha256: c9a74fe388b28907f37259d1506f2fb24e54d1b6575866608eeec1560aa9af89
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4

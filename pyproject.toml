@@ -70,7 +70,7 @@ pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 format = "black ."
 ruff-lint = "ruff check . --fix && git diff --exit-code"
 pylint = "echo 'running pylint...'; pylint --version && pylint $(git ls-files '*.py')"
-lint = { depends_on = ["ruff-lin", "pylint"] }
+lint = { depends_on = ["ruff-lint", "pylint"] }
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
