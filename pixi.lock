@@ -538,7 +538,7 @@ packages:
   name: holobench
   version: 1.19.0
   path: .
-  sha256: 779e5638c38173218500e4835e872e699c44ba1ee0f173224ff61aea40c1149d
+  sha256: 6284049b3b579526bf7c57809e15a4ba4d9fbfdd3ebf66591cecb1e02f6bbebc
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
@@ -558,7 +558,7 @@ packages:
   - scoop>=0.7.0,<=0.7.2.0
   - moviepy>=1.0.3,<=1.0.3
   - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=3.0.0,<=3.1.1 ; extra == 'test'
+  - pylint>=2.17.7,<=3.1.1 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.2.0 ; extra == 'test'
   - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
