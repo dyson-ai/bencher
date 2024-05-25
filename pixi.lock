@@ -123,7 +123,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2024a-h0c530f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/xz-5.2.6-h166bdaf_0.tar.bz2
       - pypi: https://files.pythonhosted.org/packages/7f/50/9fb3a5c80df6eb6516693270621676980acd6d5a9a7efdbfa273f8d616c7/alembic-1.13.1-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/c7/81/f49fae71340af02a6014278517c36449bdd8e8b792f4ef7397f3b054f460/astroid-3.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ed/1c/ee18acf9070f77253954b7d71b4c0cf8f5969fb23067d8f1a8793573ba00/astroid-3.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e0/44/827b2a91a5816512fcaf3cc4ebc465ccd5d598c45cefa6703fcf4a79018f/attrs-23.2.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ea/63/da7237f805089ecc28a3f36bca6a21c31fcbc2eb380f3b8f1be3312abd14/bleach-6.1.0-py3-none-any.whl
@@ -175,7 +175,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0b/f8/b65cdd2be32e442c4efe7b672f73c90b05eab5a7f3f4115efe181d432c60/plotly-5.22.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8b/f5/cab5cf6a540c31f5099043de0ae43990fd9cf66f75ecb5e9f254a4e4d4ee/proglog-0.1.10-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/bd/23/7a546224d2931cda031ee3cddc9e723650ad8e491d7c64efbab97e43e16d/pylint-3.2.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/4b/ce/99e2b80a0c6e699eb216979a70fb3c5aa59dde533778f7f77fc47b7c93bd/pylint-3.1.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/9d/ea/6d76df31432a0e6fdf81681a895f009a4bb47b3c39036db3e1b528191d52/pyparsing-3.1.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c4/43/6b1debd95ecdf001bc46789a933f658da3f9738c65f32db3f4e8f2a4ca97/pytest-8.2.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
@@ -252,9 +252,9 @@ packages:
   requires_python: '>=3.8'
 - kind: pypi
   name: astroid
-  version: 3.2.2
-  url: https://files.pythonhosted.org/packages/c7/81/f49fae71340af02a6014278517c36449bdd8e8b792f4ef7397f3b054f460/astroid-3.2.2-py3-none-any.whl
-  sha256: e8a0083b4bb28fcffb6207a3bfc9e5d0a68be951dd7e336d5dcf639c682388c0
+  version: 3.1.0
+  url: https://files.pythonhosted.org/packages/ed/1c/ee18acf9070f77253954b7d71b4c0cf8f5969fb23067d8f1a8793573ba00/astroid-3.1.0-py3-none-any.whl
+  sha256: 951798f922990137ac090c53af473db7ab4e70c770e6d7fae0cec59f74411819
   requires_dist:
   - typing-extensions>=4.0.0 ; python_version < '3.11'
   requires_python: '>=3.8.0'
@@ -538,7 +538,7 @@ packages:
   name: holobench
   version: 1.19.0
   path: .
-  sha256: ad64e7915f0276d7345ec95738c5693db26af54a910e8de1691f7c255f29f585
+  sha256: 779e5638c38173218500e4835e872e699c44ba1ee0f173224ff61aea40c1149d
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
@@ -558,7 +558,7 @@ packages:
   - scoop>=0.7.0,<=0.7.2.0
   - moviepy>=1.0.3,<=1.0.3
   - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint==3.2.2 ; extra == 'test'
+  - pylint>=3.0.0,<=3.1.1 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.2.0 ; extra == 'test'
   - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
@@ -1940,12 +1940,12 @@ packages:
   - tqdm
 - kind: pypi
   name: pylint
-  version: 3.2.2
-  url: https://files.pythonhosted.org/packages/bd/23/7a546224d2931cda031ee3cddc9e723650ad8e491d7c64efbab97e43e16d/pylint-3.2.2-py3-none-any.whl
-  sha256: 3f8788ab20bb8383e06dd2233e50f8e08949cfd9574804564803441a4946eab4
+  version: 3.1.1
+  url: https://files.pythonhosted.org/packages/4b/ce/99e2b80a0c6e699eb216979a70fb3c5aa59dde533778f7f77fc47b7c93bd/pylint-3.1.1-py3-none-any.whl
+  sha256: 862eddf25dab42704c5f06d3688b8bc19ef4c99ad8a836b6ff260a3b2fbafee1
   requires_dist:
   - platformdirs>=2.2.0
-  - astroid<=3.3.0.dev0,>=3.2.2
+  - astroid<=3.2.0.dev0,>=3.1.0
   - isort!=5.13.0,<6,>=4.2.5
   - mccabe<0.8,>=0.6
   - tomlkit>=0.10.1
