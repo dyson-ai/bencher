@@ -45,14 +45,15 @@ test = { features = ["test"], solve-group = "default" }
 pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.pixi.feature.test.tasks]
-fmt = "black ."
-lint = "ruff check . --fix ; pylint $(git ls-files '*.py')"
+format = "black ."
+lint = "ruff check . --fix ; echo 'running pylint...' pylint $(git ls-files '*.py'); git diff --exit-code"
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
-ci-no-cover = {depends_on = ["fmt","lint","test"]}
-ci = {depends_on = ["fmt","lint","coverage","coverage-report"]}
+ci-no-cover = {depends_on = ["format","lint","test"]}
+ci = {depends_on = ["format","lint","coverage","coverage-report"]}
 update-lock-push = "pixi install; git commit -a -m'update pixi.lock';git push"
+
 
 [tool.setuptools.packages.find]
 include= ["python_template"]

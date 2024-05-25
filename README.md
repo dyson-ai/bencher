@@ -26,3 +26,6 @@ This has basic setup for
 
 
 To set up your project run the vscode task "pull updates from template repo" and then task "rename project template name"
+
+### Pixi Badge
+The Pixi badge indicates that this project is optimized for performance and follows best practices as evaluated by the Pixi tool. For more information, visit [Pixi](https://pixi.sh).
