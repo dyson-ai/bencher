@@ -63,8 +63,6 @@ build-backend = "setuptools.build_meta"
 default = { solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 
-[tool.pixi.tasks]
-pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.pixi.feature.test.tasks]
 format = "black ."
