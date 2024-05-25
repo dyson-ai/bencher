@@ -49,7 +49,9 @@ fmt = "black ."
 lint = "ruff check . --fix ; pylint $(git ls-files '*.py')"
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
-ci = {depends_on = ["fmt","lint","test"]}
+ci-no-cover = {depends_on = ["fmt","lint","test"]}
+ci = {depends_on = ["fmt","lint","coverage"]}
+
 
 [tool.setuptools.packages.find]
 include= ["python_template"]
