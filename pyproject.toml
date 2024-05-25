@@ -46,7 +46,7 @@ pr = "pixi install; git commit -a -m'update pixi.lock';git push"
 
 [tool.pixi.feature.test.tasks]
 format = "black ."
-lint = "ruff check . --fix ; echo 'running pylint...' pylint $(git ls-files '*.py'); git diff --exit-code"
+lint = "ruff check . --fix && echo 'running pylint...' && pylint $(git ls-files '*.py') && git diff --exit-code"
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
