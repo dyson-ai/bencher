@@ -7,8 +7,7 @@ description = "A package for benchmarking the performance of arbitrary functions
 readme = "README.md"
 
 #incompatible with setuptools
-# requires-python = ">= 3.10"
-
+requires-python = "==3.10"
 
 dependencies = [
   "holoviews>=1.15,<=1.18.3",
@@ -30,14 +29,23 @@ dependencies = [
   "moviepy>=1.0.3,<=1.0.3",
 ]
 
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.dependencies]
+
+[tool.pixi.pypi-dependencies]
+python_template = { path = ".", editable = true }
+
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
   "pylint>=2.16,<=3.1.0",
   "pytest-cov>=4.1,<=5.0.0",
   "pytest>=7.4,<=8.2.0",
-  "hypothesis>=6.82,<=6.101.0",
-  "ruff>=0.0.280,<=0.4.4",
+  "hypothesis>=6.82,<=6.100.5",
+  "ruff>=0.0.280,<=0.4.3",
   "coverage>=7.2.7,<=7.5.1",
 ]
 
@@ -46,36 +54,42 @@ Repository = "https://github.com/dyson-ai/bencher"
 Home = "https://github.com/dyson-ai/bencher"
 Documentation = "https://bencher.readthedocs.io/en/latest/"
 
-
-[tool.flit.module]
-name = "bencher"
-
-
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
+# Environments
+[tool.pixi.environments]
+default = { solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
 
-[tool.setuptools_scm]
-# lol just to keep colcon happy
+[tool.pixi.tasks]
+pr = "pixi install; git commit -a -m'update pixi.lock';git push"
+
+[tool.pixi.feature.test.tasks]
+fmt = "black ."
+lint = "ruff check . --fix ; pylint $(git ls-files '*.py')"
+test = "pytest"
+coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
+
+[tool.setuptools.packages.find]
+include = ["python_template"]
 
 [tool.pylint]
-extension-pkg-whitelist = ["numpy", "scipy"]
-jobs = 16                                    #detect number of cores
+extension-pkg-whitelist = ["numpy"]
+jobs = 16                           #detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
-disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods,too-many-nested-blocks"
+disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
 enable = "no-else-return,consider-using-in"
 
 [tool.black]
 line-length = 100
 
-
 [tool.ruff]
 # Never enforce `E501` (line length violations).
 #"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
-lint.ignore = ["E501", "E902", "F841"]
-
+ignore = ["E501", "E902", "F841"]
 
 # Same as Black.
 line-length = 100
@@ -83,7 +97,7 @@ line-length = 100
 target-version = "py310"
 
 # Allow unused variables when underscore-prefixed.
-lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 # Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.lint.per-file-ignores]
