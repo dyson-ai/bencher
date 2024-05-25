@@ -546,7 +546,7 @@ packages:
   name: holobench
   version: 1.19.0
   path: .
-  sha256: a7bbc1bf3981dbbd8a589d7cf64a1c02e28a376e98b9a282ecd6d9ecc11ec198
+  sha256: 03f7093ec0092944162d957a5143deabaef6aa1ac638fa12bc9bb1c470d5cdba
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
@@ -892,9 +892,9 @@ packages:
   requires_python: '>=3.8'
 - kind: pypi
   name: hypothesis
-  version: 6.102.6
-  url: https://files.pythonhosted.org/packages/b5/f7/89b6869874387d22b8eee5a218613653f7b4ea40bc72e8cac8b051af4867/hypothesis-6.102.6-py3-none-any.whl
-  sha256: ef281ba8b2626ebade9f463fbe8851ae6ff6ae4a8621a9e54c7c2477a97ccff0
+  version: 6.100.5
+  url: https://files.pythonhosted.org/packages/3b/43/3bdab48c6bdd09216c19f4f1d11430869880c387af5c4a759a3eff47dd8f/hypothesis-6.100.5-py3-none-any.whl
+  sha256: d2f875a8791abdf68599e85cc9238f7239a73b72362d34be95e532e811766723
   requires_dist:
   - attrs>=22.2.0
   - sortedcontainers<3.0.0,>=2.1.0
@@ -904,7 +904,7 @@ packages:
   - crosshair-tool>=0.0.54 ; extra == 'all'
   - django>=3.2 ; extra == 'all'
   - dpcontracts>=0.4 ; extra == 'all'
-  - hypothesis-crosshair>=0.0.4 ; extra == 'all'
+  - hypothesis-crosshair>=0.0.2 ; extra == 'all'
   - lark>=0.10.1 ; extra == 'all'
   - libcst>=0.3.16 ; extra == 'all'
   - numpy>=1.17.3 ; extra == 'all'
@@ -920,7 +920,7 @@ packages:
   - black>=19.10b0 ; extra == 'cli'
   - rich>=9.0.0 ; extra == 'cli'
   - libcst>=0.3.16 ; extra == 'codemods'
-  - hypothesis-crosshair>=0.0.4 ; extra == 'crosshair'
+  - hypothesis-crosshair>=0.0.2 ; extra == 'crosshair'
   - crosshair-tool>=0.0.54 ; extra == 'crosshair'
   - python-dateutil>=1.4 ; extra == 'dateutil'
   - django>=3.2 ; extra == 'django'
@@ -1947,9 +1947,9 @@ packages:
   requires_python: '>=3.6.8'
 - kind: pypi
   name: pytest
-  version: 8.2.1
-  url: https://files.pythonhosted.org/packages/b4/c1/27a1274b73712232328cb5115030057b7dec377f36a518c83f2e01d4f305/pytest-8.2.1-py3-none-any.whl
-  sha256: faccc5d332b8c3719f40283d0d44aa5cf101cec36f88cde9ed8f2bc0538612b1
+  version: 8.2.0
+  url: https://files.pythonhosted.org/packages/c4/43/6b1debd95ecdf001bc46789a933f658da3f9738c65f32db3f4e8f2a4ca97/pytest-8.2.0-py3-none-any.whl
+  sha256: 1733f0620f6cda4095bbf0d9ff8022486e91892245bb9e7d5542c018f612f233
   requires_dist:
   - iniconfig
   - packaging
@@ -2084,9 +2084,9 @@ packages:
   requires_python: '>=3.8'
 - kind: pypi
   name: ruff
-  version: 0.4.5
-  url: https://files.pythonhosted.org/packages/d8/ae/aca5966c5017df4ace52a6222d0ca3439a6e0e806771b9e8d95ac9dacfb3/ruff-0.4.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: f4b02a65985be2b34b170025a8b92449088ce61e33e69956ce4d316c0fe7cce0
+  version: 0.4.3
+  url: https://files.pythonhosted.org/packages/5a/6b/9c1b94d5a5720390029c810428c60f791ba77cfd3de2c13a51f3beb02916/ruff-0.4.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 18b00e0bcccf0fc8d7186ed21e311dffd19761cb632241a6e4fe4477cc80ef6e
   requires_python: '>=3.7'
 - kind: pypi
   name: scikit-learn
