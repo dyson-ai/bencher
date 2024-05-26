@@ -45,8 +45,11 @@ build-backend = "setuptools.build_meta"
 
 # Environments
 [tool.pixi.environments]
-default = { solve-group = "default" }
-test = { features = ["test"], solve-group = "default" }
+default = {features = ["test"], solve-group = "default" }
+# test = { , solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+
 
 [tool.pixi.tasks]
 pr = "pixi install; git commit -a -m'update pixi.lock';git push"
