@@ -899,7 +899,7 @@ packages:
   name: holobench
   version: 1.20.0
   path: .
-  sha256: a139261f8eeb0d934329804480fb9fa6235f7d965e9354c0be37a3e5c8d848e8
+  sha256: e33fcca8f9920de44eaec4d7559d53291208e5432238c8ddddae2faabcdebb7c
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
@@ -919,12 +919,12 @@ packages:
   - scoop>=0.7.0,<=0.7.2.0
   - moviepy>=1.0.3,<=1.0.3
   - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=2.17.7,<=3.1.1 ; extra == 'test'
+  - pylint>=2.17.7,<=3.2.2 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
-  - pytest>=7.4,<=8.2.0 ; extra == 'test'
-  - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
-  - ruff>=0.3,<=0.4.3 ; extra == 'test'
-  - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
+  - pytest>=7.4,<=8.2.1 ; extra == 'test'
+  - hypothesis>=6.82,<=6.102.6 ; extra == 'test'
+  - ruff>=0.3,<=0.4.5 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.2 ; extra == 'test'
   requires_python: '>=3.10'
   editable: true
 - kind: pypi
