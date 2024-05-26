@@ -11,6 +11,7 @@
 [![GitHub release](https://img.shields.io/github/release/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/releases/)
 [![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
 [![Python](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-310/)
+[![Python](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/release/python-311/)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
 ## Badges
