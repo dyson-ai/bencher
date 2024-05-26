@@ -20,7 +20,6 @@ python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
 python = "3.11.*"
 
-
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
 
@@ -49,10 +48,8 @@ default = {features = ["test"], solve-group = "default" }
 py310 = ["py310","test"]
 py311 = ["py311","test"]
 
-
 [tool.pixi.tasks]
 pr = "pixi install; git commit -a -m'update pixi.lock';git push"
-
 
 [tool.pixi.feature.test.tasks]
 format = "black ."
@@ -84,10 +81,7 @@ enable = "no-else-return,consider-using-in"
 line-length = 100
 
 [tool.ruff]
-
-
-# Same as Black.
-line-length = 100
+line-length = 100 # Same as Black.
 
 target-version = "py310"
 
