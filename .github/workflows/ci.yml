@@ -25,8 +25,7 @@ jobs:
           environments: ${{ matrix.environment }}
       - name: CI
         run: |
-          pixi run -e py310 ci 
-          pixi run -e py311 ci 
+          pixi run -e ${{ matrix.environment }} ci 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         env:
