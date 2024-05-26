@@ -12,6 +12,15 @@ dependencies = []
 channels = ["conda-forge"]
 platforms = ["linux-64"]
 
+[tool.pixi.dependencies]
+python = ">=3.10"
+
+[tool.pixi.feature.py310.dependencies]
+python = "3.10.*"
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+
+
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
 
@@ -41,6 +50,7 @@ test = { features = ["test"], solve-group = "default" }
 
 [tool.pixi.tasks]
 pr = "pixi install; git commit -a -m'update pixi.lock';git push"
+
 
 [tool.pixi.feature.test.tasks]
 format = "black ."
