@@ -1,5 +1,5 @@
 # python_template
-A template repo for python projects
+A template repo for python projects that is set up using [pixi](https://pixi.sh). 
 
 This has basic setup for
 
@@ -25,7 +25,14 @@ This has basic setup for
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
 
-To set up your project run the vscode task "pull updates from template repo" and then task "rename project template name"
+# Install
 
-### Pixi Badge
-The Pixi badge indicates that this project is optimized for performance and follows best practices as evaluated by the Pixi tool. For more information, visit [Pixi](https://pixi.sh).
+There are three methods of using this project.  
+
+1. Use github to use this project as a template
+2. Clone the project and run, scripts/update_from_template.sh and then scripts/rename_project.sh to rename the project.
+3. In your existing git project run this command:
+
+```
+
+```
