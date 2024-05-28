@@ -6,9 +6,6 @@ authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
 readme = "README.md"
 
-#incompatible with setuptools
-requires-python = ">= 3.10"
-
 dependencies = [
   "holoviews>=1.15,<=1.18.3",
   "numpy>=1.0,<=1.26.4",
@@ -66,9 +63,9 @@ build-backend = "setuptools.build_meta"
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+py311 = ["py311", "test"]
 
 
 [tool.pixi.feature.test.tasks]
@@ -76,8 +73,8 @@ format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
 pylint = "echo 'running pylint...'; pylint --version && pylint $(git ls-files '*.py')"
-lint = { depends_on = ["ruff-lint","check-clean-workspace", "pylint"] }
-style = { depends_on = ["format","lint"]}
+lint = { depends_on = ["ruff-lint", "check-clean-workspace", "pylint"] }
+style = { depends_on = ["format", "lint"] }
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
