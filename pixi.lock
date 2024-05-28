@@ -816,7 +816,7 @@ packages:
   name: python-template
   version: 0.2.0
   path: .
-  sha256: 1d4e959a56e9c299bc7aa9a8684506d5e17a8e83db1e18b0ac4ab57647177eec
+  sha256: e60cba2cd20036a3057953f4a7b28e544e940f393873312fe828742ea27516d1
   requires_dist:
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.2 ; extra == 'test'
@@ -825,7 +825,6 @@ packages:
   - hypothesis>=6.82,<=6.102.6 ; extra == 'test'
   - ruff>=0.0.280,<=0.4.5 ; extra == 'test'
   - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
-  requires_python: '>=3.10'
   editable: true
 - kind: conda
   name: readline
