@@ -22,7 +22,7 @@ jobs:
         with:
           pixi-version: v0.23.0
           cache: true
-          # frozen: true
+          frozen: true
           environments: ${{ matrix.environment }}
       - name: CI
         run: |
