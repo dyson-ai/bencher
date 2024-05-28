@@ -816,7 +816,7 @@ packages:
   name: python-template
   version: 0.2.0
   path: .
-  sha256: 1d4e959a56e9c299bc7aa9a8684506d5e17a8e83db1e18b0ac4ab57647177eec
+  sha256: d246333815e93b87fc3934161916fa3d7c4bf5b8518acc487c6bbc86769e9f6e
   requires_dist:
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.2 ; extra == 'test'
