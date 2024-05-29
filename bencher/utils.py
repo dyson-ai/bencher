@@ -98,16 +98,17 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
-def tabs_in_markdown(regular_str: str) -> str:
+def tabs_in_markdown(regular_str: str, spaces: int = 2) -> str:
     """Given a string with tabs in the form \t convert the to &ensp; which is a double space in markdown
 
     Args:
         regular_str (str): A string with tabs in it
+        spaces (int): the number of spaces per tab
 
     Returns:
-        str: A string with &ensp; to represent the tabs in markdown
+        str: A string with sets of &nbsp; to represent the tabs in markdown
     """
-    return regular_str.replace("\t", "&ensp")
+    return regular_str.replace("\t", "".join(["&nbsp;"] * spaces))
 
 
 def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, float]:
