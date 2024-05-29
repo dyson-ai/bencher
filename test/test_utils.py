@@ -8,6 +8,7 @@ from bencher.utils import (
     callable_name,
     lerp,
     listify,
+    tabs_in_markdown,
 )
 from functools import partial
 import xarray as xr
@@ -155,3 +156,12 @@ class TestBencherUtils(unittest.TestCase):
         self.assertEqual([obj], listify((obj)))
         self.assertEqual(None, listify(None))
 
+    def test_converts_single_tab_to_ensp_fixed(self):
+        input_str = "This is\ta test"
+        expected_output = "This is&enspa test"
+        assert tabs_in_markdown(input_str) == expected_output
+
+    def test_handles_empty_string(self):
+        input_str = ""
+        expected_output = ""
+        assert tabs_in_markdown(input_str) == expected_output

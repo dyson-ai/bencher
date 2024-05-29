@@ -105,7 +105,7 @@ def tabs_in_markdown(regular_str: str) -> str:
         regular_str (str): A string with tabs in it
 
     Returns:
-        str: A string with &ensp; to represnt the tabs in markdown
+        str: A string with &ensp; to represent the tabs in markdown
     """
     return regular_str.replace("\t", "&ensp")
 

@@ -33,6 +33,7 @@ def example_strings(
     bench = bch.Bench("strings", TestPrinting(), run_cfg=run_cfg, report=report)
 
     import panel as pn
+
     for s in [
         [TestPrinting.param.a],
         [TestPrinting.param.a, TestPrinting.param.b],
@@ -42,8 +43,11 @@ def example_strings(
         bench.plot_sweep(f"String Panes {[v.name for v in s]}", input_vars=s)
 
         from functools import partial
+
         # bench.report.append(res.to_sweep_summary())
-        bench.report.append(bench.get_result().to_panes(container= partial(pn.pane.Markdown,dedent=False)))
+        bench.report.append(
+            bench.get_result().to_panes(container=partial(pn.pane.Markdown, dedent=False))
+        )
 
         bench.report.append(pn.pane.Markdown("a\n&nb\n\tc"))
 

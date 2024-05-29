@@ -149,7 +149,7 @@ class ResultString(param.String):
     def hash_persistent(self) -> str:
         """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
         return hash_sha1(self)
-    
+
     def to_container(self):
         """Returns a partial function for creating a FileDownload widget with embedding enabled.  This function is used to create a panel container to represent the ResultPath object"""
         return pn.pane.Markdown
