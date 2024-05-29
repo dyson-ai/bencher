@@ -1,6 +1,4 @@
 import bencher as bch
-import panel as pn
-from functools import partial
 
 
 class TestPrinting(bch.ParametrizedSweep):

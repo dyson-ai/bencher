@@ -99,7 +99,7 @@ def un_camel(camel: str) -> str:
 
 
 def tabs_in_markdown(regular_str: str) -> str:
-    """Given a string with tabs in the form \ t convert the to &ensp; which is a double space in markdown
+    """Given a string with tabs in the form \t convert the to &ensp; which is a double space in markdown
 
     Args:
         regular_str (str): A string with tabs in it
