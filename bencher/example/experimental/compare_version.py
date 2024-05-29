@@ -63,21 +63,23 @@ def _is_editable(dist: importlib.metadata.PathDistribution) -> bool:
         return False
     (pth_file,) = all_pth
     content = pth_file.read_text()
-    print("all_pth", all_pth)
-    print("content:", content)
-    print("content import __editable__" in content)
-    if content.startswith("/"):  # TODO: To delete
-        print(content)
     # Here, should check with github action path
-    return content.startswith("/") or "import __editable__" in content
+    editable = content.startswith("/") or "import __editable__" in content
+
+    print("all_pth: ", all_pth)
+    print("content: ", content)
+    print("editable: ", editable)
+    if editable:
+        print(content)
+    return content
 
 
 def find_pkg_name() -> str:
     # This is quite fragile. It would be best to dynamically extract the project name from
     # PEP 517 util (maybe from the dist/, wheel or similar ?)
     dists = [dist for dist in importlib.metadata.distributions() if _is_editable(dist)]
-    print("dists", dists)
-    print("dists.name", dists[0].name)
+    print("dists: ", dists)
+    print("dists.name: ", dists[0].name)
 
     if len(dists) != 1:
         names = [d.name for d in dists]
