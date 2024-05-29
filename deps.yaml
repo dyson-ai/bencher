@@ -5,10 +5,12 @@ apt_tools:
   - apt-utils
   - jq
 
-
 pip_tools:
   - flit
   - pip #updates to latest pip
 
 pip:
   - pip
+
+# script_pixi:
+  # - install_pixi.sh
