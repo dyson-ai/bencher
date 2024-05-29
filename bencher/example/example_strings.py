@@ -22,7 +22,8 @@ class TestPrinting(bch.ParametrizedSweep):
         if self.d is not None:
             self.result += f",{self.d}"
         self.result += "\n\ttab\n\t\ttab2"
-        self.result += "\n&ensp;tab\n&ensp;tab2"
+
+        self.result = bch.tabs_in_markdown(self.result)
         return super().__call__()
 
 

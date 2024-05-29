@@ -98,6 +98,18 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
+def tabs_in_markdown(regular_str: str) -> str:
+    """Given a string with tabs in the form \ t convert the to &ensp; which is a double space in markdown
+
+    Args:
+        regular_str (str): A string with tabs in it
+
+    Returns:
+        str: A string with &ensp; to represnt the tabs in markdown
+    """
+    return regular_str.replace("\t", "&ensp")
+
+
 def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, float]:
     """Uses the golden angle to generate colors programmatically with minimum overlap between colors.
     https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
