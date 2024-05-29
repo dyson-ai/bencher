@@ -171,3 +171,6 @@ test/test_bench_server.html
 #COLCON
 install/**
 log/**
+# pixi environments
+.pixi
+*.egg-info
