@@ -14,7 +14,7 @@
 		{
 			"label": "run <cfg>",
 			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; pixi run -e py310 python3 $RUNFILE",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; pixi run python3 $RUNFILE",
 			"problemMatcher": [],
 			"group": {
 				"kind": "build",
