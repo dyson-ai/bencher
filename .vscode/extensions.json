@@ -12,6 +12,6 @@
         "Codium.codium",
         "ms-azuretools.vscode-docker",
         "ryanluker.vscode-coverage-gutters",
-        "jjjermiah.pixi-vscode",        
+        "jjjermiah.pixi-vscode"       
     ]
 }
