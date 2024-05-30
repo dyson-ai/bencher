@@ -90,7 +90,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/6b/09/9163cfdd2b2440bb283f48e2e6f2bdacdbd3afeedcb48b06fa24a78d3b1f/pyviz_comms-3.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/de/77/ee4c919eac01567c70f41aba5a80e46bfa9b231de4585672caa5ac2398d5/pyzmq-26.0.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/c3/20/748e38b466e0819491f0ce6e90ebe4184966ee304fe483e2c414b0f4ef07/requests-2.32.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5a/6b/9c1b94d5a5720390029c810428c60f791ba77cfd3de2c13a51f3beb02916/ruff-0.4.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ae/54/e70102a9c12d27d985ba659f336851732415e5a02864bef2ead36afaf15d/scikit_learn-1.5.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ab/6ecdc526d509d33814835447bbbeedbebdec7cca46ef495a61b00a35b4bf/scipy-1.13.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -204,7 +204,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/6b/09/9163cfdd2b2440bb283f48e2e6f2bdacdbd3afeedcb48b06fa24a78d3b1f/pyviz_comms-3.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/29/61/bf33c6c85c55bc45a29eee3195848ff2d518d84735eb0e2d8cb42e0d285e/PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c4/0f/24ff63c1bc2cdbde7a703fcb35031d1bfa73f0e27e81235952c3b66636c6/pyzmq-26.0.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/c3/20/748e38b466e0819491f0ce6e90ebe4184966ee304fe483e2c414b0f4ef07/requests-2.32.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5a/6b/9c1b94d5a5720390029c810428c60f791ba77cfd3de2c13a51f3beb02916/ruff-0.4.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/1e/7d/1a2ea8eb5b4df373c30c7418cf26305a4a05e2a0e56c80a8043b791595f3/scikit_learn-1.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a3/ba/7255e5dc82a65adbe83771c72f384d99c43063648456796436c9a5585ec3/scipy-1.13.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -319,7 +319,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/6b/09/9163cfdd2b2440bb283f48e2e6f2bdacdbd3afeedcb48b06fa24a78d3b1f/pyviz_comms-3.0.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7b/5e/efd033ab7199a0b2044dab3b9f7a4f6670e6a52c089de572e928d2873b06/PyYAML-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c7/41/02504160c5cc9d8dfe9afa5b7128ebbbc3e47933a4692197d23e601a171c/pyzmq-26.0.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/c3/20/748e38b466e0819491f0ce6e90ebe4184966ee304fe483e2c414b0f4ef07/requests-2.32.2-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5a/6b/9c1b94d5a5720390029c810428c60f791ba77cfd3de2c13a51f3beb02916/ruff-0.4.3-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/46/c0/63d3a8da39a2ee051df229111aa93f6dca2b56f8080abd34993938166455/scikit_learn-1.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/36/07/035d22ff9795129c5a847c64cb43c1fa9188826b59344fee28a3ab02e283/scipy-1.13.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -425,6 +425,37 @@ packages:
   - pytest-xdist[psutil] ; extra == 'tests-no-zope'
   - pytest>=4.3.0 ; extra == 'tests-no-zope'
   requires_python: '>=3.7'
+- kind: pypi
+  name: bencher
+  version: 1.20.0
+  path: .
+  sha256: dc1685a7362bdcf6292e8ee82781434f47872acc4b79bde49442795b69c14eec
+  requires_dist:
+  - holoviews>=1.15,<=1.18.3
+  - numpy>=1.0,<=1.26.4
+  - param>=1.13.0,<=2.1.0
+  - hvplot>=0.8,<=0.10.0
+  - matplotlib>=3.6.3,<=3.9.0
+  - panel>=1.3.6,<=1.4.3
+  - diskcache>=5.6,<=5.6.3
+  - optuna>=3.2,<=3.6.1
+  - xarray>=2023.7,<=2024.5.0
+  - plotly>=5.15,<=5.22.0
+  - sortedcontainers>=2.4,<=2.4
+  - pandas>=2.0,<=2.2.2
+  - strenum>=0.4.0,<=0.4.15
+  - scikit-learn>=1.2,<=1.5.0
+  - str2bool>=1.1,<=1.1
+  - scoop>=0.7.0,<=0.7.2.0
+  - moviepy>=1.0.3,<=1.0.3
+  - black>=23,<=24.4.2 ; extra == 'test'
+  - pylint>=2.17.7,<=3.1.1 ; extra == 'test'
+  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
+  - pytest>=7.4,<=8.2.0 ; extra == 'test'
+  - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
+  - ruff>=0.3,<=0.4.3 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
+  editable: true
 - kind: pypi
   name: black
   version: 24.4.2
@@ -894,37 +925,6 @@ packages:
   - objgraph ; extra == 'test'
   - psutil ; extra == 'test'
   requires_python: '>=3.7'
-- kind: pypi
-  name: holobench
-  version: 1.20.0
-  path: .
-  sha256: 93651dfb5c42f331f82c22274262bffcabb09b93453b3adceb9c897ebcff1bfc
-  requires_dist:
-  - holoviews>=1.15,<=1.18.3
-  - numpy>=1.0,<=1.26.4
-  - param>=1.13.0,<=2.1.0
-  - hvplot>=0.8,<=0.10.0
-  - matplotlib>=3.6.3,<=3.9.0
-  - panel>=1.3.6,<=1.4.3
-  - diskcache>=5.6,<=5.6.3
-  - optuna>=3.2,<=3.6.1
-  - xarray>=2023.7,<=2024.5.0
-  - plotly>=5.15,<=5.22.0
-  - sortedcontainers>=2.4,<=2.4
-  - pandas>=2.0,<=2.2.2
-  - strenum>=0.4.0,<=0.4.15
-  - scikit-learn>=1.2,<=1.5.0
-  - str2bool>=1.1,<=1.1
-  - scoop>=0.7.0,<=0.7.2.0
-  - moviepy>=1.0.3,<=1.0.3
-  - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=2.17.7,<=3.1.1 ; extra == 'test'
-  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
-  - pytest>=7.4,<=8.2.0 ; extra == 'test'
-  - hypothesis>=6.82,<=6.100.5 ; extra == 'test'
-  - ruff>=0.3,<=0.4.3 ; extra == 'test'
-  - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
-  editable: true
 - kind: pypi
   name: holoviews
   version: 1.18.3
@@ -1521,7 +1521,7 @@ packages:
   md5: b3316cbe90249da4f8e84cd66e1cc55b
   depends:
   - libgcc-ng >=12
-  - libzlib >=1.2.13,<1.3.0a0
+  - libzlib >=1.2.13,<2.0.0a0
   license: Unlicense
   purls: []
   size: 859858
@@ -2715,7 +2715,7 @@ packages:
   - libsqlite >=3.45.2,<4.0a0
   - libuuid >=2.38.1,<3.0a0
   - libxcrypt >=4.4.36
-  - libzlib >=1.2.13,<1.3.0a0
+  - libzlib >=1.2.13,<2.0.0a0
   - ncurses >=6.4.20240210,<7.0a0
   - openssl >=3.2.1,<4.0a0
   - readline >=8.2,<9.0a0
@@ -2746,7 +2746,7 @@ packages:
   - libsqlite >=3.45.3,<4.0a0
   - libuuid >=2.38.1,<3.0a0
   - libxcrypt >=4.4.36
-  - libzlib >=1.2.13,<1.3.0a0
+  - libzlib >=1.2.13,<2.0.0a0
   - ncurses >=6.4.20240210,<7.0a0
   - openssl >=3.2.1,<4.0a0
   - readline >=8.2,<9.0a0
@@ -2777,7 +2777,7 @@ packages:
   - libsqlite >=3.45.2,<4.0a0
   - libuuid >=2.38.1,<3.0a0
   - libxcrypt >=4.4.36
-  - libzlib >=1.2.13,<1.3.0a0
+  - libzlib >=1.2.13,<2.0.0a0
   - ncurses >=6.4.20240210,<7.0a0
   - openssl >=3.2.1,<4.0a0
   - readline >=8.2,<9.0a0
@@ -2881,9 +2881,9 @@ packages:
   timestamp: 1679532220005
 - kind: pypi
   name: requests
-  version: 2.32.2
-  url: https://files.pythonhosted.org/packages/c3/20/748e38b466e0819491f0ce6e90ebe4184966ee304fe483e2c414b0f4ef07/requests-2.32.2-py3-none-any.whl
-  sha256: fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c
+  version: 2.32.3
+  url: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
+  sha256: 70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
   requires_dist:
   - charset-normalizer<4,>=2
   - idna<4,>=2.5

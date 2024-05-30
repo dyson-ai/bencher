@@ -1,5 +1,5 @@
 [project]
-name = "holobench"
+name = "bencher"
 version = "1.20.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
@@ -33,13 +33,14 @@ platforms = ["linux-64"]
 [tool.pixi.dependencies]
 python = ">=3.10"
 
+
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
 python = "3.11.*"
 
 [tool.pixi.pypi-dependencies]
-holobench = { path = ".", editable = true }
+bencher = { path = ".", editable = true }
 
 [project.optional-dependencies]
 test = [
@@ -73,18 +74,23 @@ check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
 pylint = "pylint --version ; echo 'running pylint...'; pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
-style = { depends_on = ["format","lint"]}
+style = { depends_on = ["format", "lint"] }
 test = "pytest"
 coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = ["style","check-clean-workspace", "coverage", "coverage-report"] }
+ci = { depends_on = [
+  "style",
+  "check-clean-workspace",
+  "coverage",
+  "coverage-report",
+] }
 update-lock-push = "pixi update; git commit -a -m'update pixi.lock';git push"
 clear-pixi = "rm -rf .pixi pixi.lock"
 
 
 [tool.setuptools.packages.find]
-include = ["python_template"]
+include = ["bencher"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
