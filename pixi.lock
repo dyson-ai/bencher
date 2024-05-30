@@ -429,7 +429,7 @@ packages:
   name: bencher
   version: 1.22.0
   path: .
-  sha256: 622a62b2e2ec36e538b6cb3b02781c00b0e0126f2d6390929250f26ee0a44a35
+  sha256: 543f7edcfb14d384bed29e016ef8fbbefcd6df6b5db472fe5b082509042188eb
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
