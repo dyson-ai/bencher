@@ -1,5 +1,5 @@
 [project]
-name = "bencher"
+name = "holobench"
 version = "1.22.1"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
