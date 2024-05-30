@@ -62,7 +62,7 @@ update-lock = "pixi update && git commit -a -m'update pixi.lock'"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = ["style","check-clean-workspace", "coverage", "coverage-report"] }
+ci = { depends_on = ["format","ruff-lint","check-clean-workspace","pylint", "coverage", "coverage-report"] }
 ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 
