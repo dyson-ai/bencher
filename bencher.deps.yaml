@@ -1,3 +1,6 @@
+apt_sources:
+  - curl
+
 apt_tools:
   - git
   - git-lfs
@@ -5,10 +8,10 @@ apt_tools:
   - apt-utils
   - jq
 
-
-pip_tools:
+pip_language-toolchain:
   - flit
   - pip #updates to latest pip
 
-pip:
-  - pip
+
+script_pixi-user:
+  - scripts/install_pixi.sh

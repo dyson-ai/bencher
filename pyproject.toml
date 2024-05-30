@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.20.0"
+version = "1.22.2"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -33,6 +33,7 @@ platforms = ["linux-64"]
 [tool.pixi.dependencies]
 python = ">=3.10"
 
+
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
@@ -44,12 +45,12 @@ holobench = { path = ".", editable = true }
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
-  "pylint>=2.17.7,<=3.1.1",
+  "pylint>=2.17.7,<=3.2.2",
   "pytest-cov>=4.1,<=5.0.0",
-  "pytest>=7.4,<=8.2.0",
-  "hypothesis>=6.82,<=6.100.5",
-  "ruff>=0.3,<=0.4.3",
-  "coverage>=7.2.7,<=7.5.1",
+  "pytest>=7.4,<=8.2.1",
+  "hypothesis>=6.82,<=6.102.6",
+  "ruff>=0.3,<=0.4.5",
+  "coverage>=7.2.7,<=7.5.2",
 ]
 
 [project.urls]
@@ -71,20 +72,23 @@ py311 = ["py311", "test"]
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
-pylint = "pylint --version ; echo 'running pylint...'; pylint $(git ls-files '*.py')"
+pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
-style = { depends_on = ["format","lint"]}
+style = { depends_on = ["format", "lint"] }
 test = "pytest"
-coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
+coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
+update-lock = "pixi update && git commit -a -m'update pixi.lock'"
+push = "git push"
+update-lock-push = { depends_on = ["update-lock", "push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = ["style","check-clean-workspace", "coverage", "coverage-report"] }
-update-lock-push = "pixi update; git commit -a -m'update pixi.lock';git push"
+ci-push = {depends_on=["update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 
 
 [tool.setuptools.packages.find]
-include = ["python_template"]
+include = ["bencher"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]

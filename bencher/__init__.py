@@ -40,6 +40,7 @@ from .utils import (
     gen_image_path,
     gen_video_path,
     lerp,
+    tabs_in_markdown,
 )
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
