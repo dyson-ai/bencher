@@ -63,7 +63,7 @@ push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = ["style","check-clean-workspace", "coverage", "coverage-report"] }
-ci-push = {depends_on=["commit-format","update-lock","ci","push"]}
+ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 
 
