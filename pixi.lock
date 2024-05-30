@@ -427,9 +427,9 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: bencher
-  version: 1.22.0
+  version: 1.22.1
   path: .
-  sha256: 543f7edcfb14d384bed29e016ef8fbbefcd6df6b5db472fe5b082509042188eb
+  sha256: fb9d3d14a0230723b12d766ca0d9fd930c6e247b4dbd73eccdb4a659f2176d8b
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
