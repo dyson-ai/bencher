@@ -9,6 +9,28 @@ from bencher.variables.sweep_base import SweepBase, shared_slots
 class TimeBase(SweepBase, Selector):
     """A class to capture a time snapshot of benchmark values.  Time is reprented as a continous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continous variables"""
 
+    def __init__(
+        self,
+        objects=None,
+        default=None,
+        instantiate=False,
+        compute_default_fn=None,
+        check_on_set=None,
+        allow_None=None,
+        empty_default=False,
+        **params,
+    ):
+        super().__init__(
+            objects,
+            default,
+            instantiate,
+            compute_default_fn,
+            check_on_set,
+            allow_None,
+            empty_default,
+            **params,
+        )
+
     __slots__ = shared_slots
 
     def values(self) -> List[str]:
