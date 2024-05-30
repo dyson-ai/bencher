@@ -72,7 +72,7 @@ py311 = ["py311", "test"]
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
-pylint = "pylint --version ; echo 'running pylint...'; pylint $(git ls-files '*.py')"
+pylint = "pylint --version && echo 'running pylint...'&& pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
 style = { depends_on = ["format", "lint"] }
 test = "pytest"

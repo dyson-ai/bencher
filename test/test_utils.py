@@ -170,4 +170,3 @@ class TestBencherUtils(unittest.TestCase):
         input_str = ""
         expected_output = ""
         self.assertEqual(tabs_in_markdown(input_str), expected_output)
-
