@@ -90,7 +90,7 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 
 
 [tool.setuptools.packages.find]
-include = ["python_template"]
+include = ["bencher"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
