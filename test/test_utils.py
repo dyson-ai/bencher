@@ -156,10 +156,16 @@ class TestBencherUtils(unittest.TestCase):
         self.assertEqual([obj], listify((obj)))
         self.assertEqual(None, listify(None))
 
-    def test_converts_single_tab_to_ensp_fixed(self):
+    def test_converts_single_tab_to_nbsp(self):
         input_str = "This is\ta test"
-        expected_output = "This is&enspa test"
-        assert tabs_in_markdown(input_str) == expected_output
+        expected_output = "This is&nbsp;&nbsp;a test"
+        self.assertEqual(tabs_in_markdown(input_str),expected_output)
+
+
+    def test_converts_multi_tab_to_nbsp(self):
+        input_str = "This is\ta test"
+        expected_output = "This is&nbsp;&nbsp;&nbsp;&nbsp;a test"
+        self.assertEqual(tabs_in_markdown(input_str, 4),expected_output)
 
     def test_handles_empty_string(self):
         input_str = ""
