@@ -7,3 +7,8 @@ class TestBasicClass(TestCase):
         instance = BasicClass()
 
         self.assertEqual(instance.int_var, 0)
+
+    def test_init_fail(self):
+        instance = BasicClass()
+
+        self.assertEqual(instance.int_var, 1)
