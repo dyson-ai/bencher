@@ -76,7 +76,7 @@ pylint = "pylint --version ; echo 'running pylint...'; pylint $(git ls-files '*.
 lint = { depends_on = ["ruff-lint", "pylint"] }
 style = { depends_on = ["format", "lint"] }
 test = "pytest"
-coverage = "coverage run -m pytest; coverage xml -o coverage.xml"
+coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
