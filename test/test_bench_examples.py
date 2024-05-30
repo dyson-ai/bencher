@@ -50,6 +50,9 @@ class TestBenchExamples(unittest.TestCase):
             path = example_result.report.save_index("cachedir")
             self.assertTrue(os.path.exists(path))
 
+    def test_fail(self):
+        self.assertTrue(False)
+
     def test_publish_docs(self):
         report = example_docs(run_cfg=self.create_run_cfg())
         index = report.save_index(filename="index_tmp.html")

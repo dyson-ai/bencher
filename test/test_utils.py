@@ -171,5 +171,3 @@ class TestBencherUtils(unittest.TestCase):
         expected_output = ""
         self.assertEqual(tabs_in_markdown(input_str), expected_output)
 
-    def test_fail(self):
-        self.assertTrue(False)
