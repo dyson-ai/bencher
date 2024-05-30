@@ -200,9 +200,10 @@ class VideoSummaryResult(BenchResultBase):
             compose_method_list = [ComposeType.sequence] * (num_dims + 1)
         else:
             compose_method_list = [first_compose_method]
-            for i in range(num_dims - 1):
-                compose_method_list.append(ComposeType.flip(compose_method_list[-1]))
-
+            compose_method_list.extend(
+                ComposeType.flip(compose_method_list[-1])
+                for _ in range(num_dims - 1)
+            )
             compose_method_list.append(ComposeType.sequence)
 
             for i in range(min(len(compose_method_list), time_sequence_dimension + 1)):
