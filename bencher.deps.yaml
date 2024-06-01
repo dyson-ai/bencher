@@ -7,6 +7,7 @@ apt_tools:
   - python3-pip
   - apt-utils
   - jq
+  - direnv
 
 pip_language-toolchain:
   - flit
@@ -15,3 +16,6 @@ pip_language-toolchain:
 
 script_pixi-user:
   - scripts/install_pixi.sh
+
+run_direnv-user:
+  - echo "eval "$(direnv hook bash)""
