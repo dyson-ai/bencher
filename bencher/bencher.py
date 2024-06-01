@@ -220,11 +220,11 @@ class Bench(BenchPlotServer):
         relationship_cb=None,
         plot_callbacks: List | bool = None,
     ) -> List[BenchResult]:
-        results = []
         if relationship_cb is None:
             relationship_cb = combinations
         if input_vars is None:
             input_vars = self.worker_class_instance.get_inputs_only()
+        results = []        
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
                 title_gen = title + "Sweeping " + " vs ".join(params_to_str(input_group))
