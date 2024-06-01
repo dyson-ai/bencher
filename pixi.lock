@@ -73,7 +73,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/da/68883911855d8b4d521f9a370e4e6aab8232b91c1d8d5a8348c4680c6642/optuna-3.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/49/df/1fceb2f8900f8639e278b056416d49134fb8d84c5942ffaa01ad34782422/packaging-24.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/40/10/79e52ef01dfeb1c1ca47a109a01a248754ebe990e159a844ece12914de83/pandas-2.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/0f/c2/89a3b313862d8ec4bcaaa74fca44e64eee0f0b4f1c38c351e32559133df3/panel-1.4.3-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/45/08/d2cc751b790e77464f8648aa707e2327d6da5d95cf236a532e99c2e7a499/pillow-10.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -187,7 +187,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/da/68883911855d8b4d521f9a370e4e6aab8232b91c1d8d5a8348c4680c6642/optuna-3.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/49/df/1fceb2f8900f8639e278b056416d49134fb8d84c5942ffaa01ad34782422/packaging-24.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/89/1b/12521efcbc6058e2673583bb096c2b5046a9df39bd73eca392c1efed24e5/pandas-2.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/0f/c2/89a3b313862d8ec4bcaaa74fca44e64eee0f0b4f1c38c351e32559133df3/panel-1.4.3-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/01/d7/0d3021e6c2da8f2a5d6f7e97ebf0bf540e69ebe3d0384c207401bfe88ef5/pillow-10.3.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -302,7 +302,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/15/da/68883911855d8b4d521f9a370e4e6aab8232b91c1d8d5a8348c4680c6642/optuna-3.6.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/49/df/1fceb2f8900f8639e278b056416d49134fb8d84c5942ffaa01ad34782422/packaging-24.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fc/a5/4d82be566f069d7a9a702dcdf6f9106df0e0b042e738043c0cc7ddd7e3f6/pandas-2.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/0f/c2/89a3b313862d8ec4bcaaa74fca44e64eee0f0b4f1c38c351e32559133df3/panel-1.4.3-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/77/cd/5205fb43a6000d424291b0525b8201004700d9a34e034517ac4dfdc6eed5/pillow-10.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -898,14 +898,14 @@ packages:
   name: holobench
   version: 1.22.2
   path: .
-  sha256: 245ce717875a3602180616282a31a191b3b5cf94112909b38f9850b8ad4bea5e
+  sha256: 315352c8f6b9295e677a1f43f113db70287a3e5b6b029c6ae70b28bf423df015
   requires_dist:
   - holoviews>=1.15,<=1.18.3
   - numpy>=1.0,<=1.26.4
   - param>=1.13.0,<=2.1.0
   - hvplot>=0.8,<=0.10.0
   - matplotlib>=3.6.3,<=3.9.0
-  - panel>=1.3.6,<=1.4.3
+  - panel>=1.3.6,<=1.4.4
   - diskcache>=5.6,<=5.6.3
   - optuna>=3.2,<=3.6.1
   - xarray>=2023.7,<=2024.5.0
@@ -2199,9 +2199,9 @@ packages:
   requires_python: '>=3.9'
 - kind: pypi
   name: panel
-  version: 1.4.3
-  url: https://files.pythonhosted.org/packages/0f/c2/89a3b313862d8ec4bcaaa74fca44e64eee0f0b4f1c38c351e32559133df3/panel-1.4.3-py3-none-any.whl
-  sha256: 888050f5411c98eeaaddb4b67da14aeed63898f55aa08592edb33328bce47d6c
+  version: 1.4.4
+  url: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
+  sha256: b49bb9676567b0c0730bf69348c057247080811aec56364dd4fcfba80e5e09a0
   requires_dist:
   - bokeh<3.5.0,>=3.4.0
   - param<3.0,>=2.1.0
