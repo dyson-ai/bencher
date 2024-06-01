@@ -30,6 +30,7 @@ class RenderCfg:
     duration_target: bool = True
     min_frame_duration: float = 1.0 / 30
     max_frame_duration: float = 2.0
+    margin: int = 0
 
 
 @dataclass
@@ -44,7 +45,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             RuntimeWarning: if file format is not recognised
         """
 
-        # print(f"append obj: {type(obj)}, {obj}")
+        print(f"append obj: {type(obj)}, {obj}")
         if obj is not None:
             if isinstance(obj, VideoClip):
                 self.container.append(obj)
@@ -58,10 +59,12 @@ class ComposableContainerVideo(ComposableContainerBase):
                 if extension in [".jpg", ".jepg", ".png"]:
                     self.container.append(ImageClip(obj))
                 elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
-                    print(obj)
+                    # print(obj)
                     self.container.append(VideoFileClip(obj))
                 else:
                     raise RuntimeWarning(f"unsupported filetype {extension}")
+        else:
+            raise RuntimeWarning("No data passed to ComposableContainerVideo.append()")
 
     def render(self, render_cfg: RenderCfg = None, **kwargs) -> CompositeVideoClip:
         """Composes the images/videos into a single image/video based on the type of compose method
@@ -72,11 +75,12 @@ class ComposableContainerVideo(ComposableContainerBase):
         Returns:
             CompositeVideoClip: A composite video clip containing the images/videos added via append()
         """
-        print("max_frame_duration", render_cfg.max_frame_duration)
-        print("rc", render_cfg)
 
         if render_cfg is None:
             render_cfg = RenderCfg(**kwargs)
+
+        print("max_frame_duration", render_cfg.max_frame_duration)
+        print("rc", render_cfg)
 
         if render_cfg.duration_target:
             # calculate duration based on fps constraints
@@ -98,7 +102,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             duration = render_cfg.duration
 
         out = None
-        # print(f"using compose type{render_cfg.compose_method}")
+        print(f"using compose type{render_cfg.compose_method}")
 
         max_duration = 0.0
         # duration =0.06
@@ -117,7 +121,7 @@ class ComposableContainerVideo(ComposableContainerBase):
                 for i in range(len(self.container)):
                     self.container[i] = self.extend_clip(self.container[i], max_duration)
                     self.container[i] = margin(
-                        self.container[i], top=2, color=render_cfg.background_col
+                        self.container[i], top=render_cfg.margin, color=render_cfg.background_col
                     )
 
                 if render_cfg.compose_method == ComposeType.right:

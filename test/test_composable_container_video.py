@@ -18,42 +18,37 @@ class TestComposableContainerVideo(unittest.TestCase):
         for _ in range(num_frames):
             vid.append(img)
         return vid.render(render_cfg)
+    
 
-    def test_img_seq(self):
-        img = self.small_img()
-        vid = bch.ComposableContainerVideo()
-        vid.append(img)
-
-        res = vid.render(bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
+    def test_img_right(self):
+        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
-        res = vid.deep().render(bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
+    def test_img_down(self):
+        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
-        res = vid.deep().render(
-            bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence)
-        )
+    def test_img_sequence(self):
+        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence))
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
-        # ADD A SECOND FRAME
-
-        vid.append(img)
-        res = vid.deep().render(bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
+    def test_img_right_x2(self):
+        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (2, 2))
         self.assertEqual(res.duration, 0.1)
 
-        res = vid.deep().render(bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
+    def test_img_down_x2(self):
+        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
         self.assertEqual(res.size, (1, 4))
         self.assertEqual(res.duration, 0.1)
 
-        res = vid.deep().render(
-            bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence)
-        )
+    def test_img_seq_x2(self):
+        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence))
         self.assertEqual(res.size, (1, 2))
-        # self.assertEqual(res.duration, 0.1)
+        self.assertEqual(res.duration, 0.2) 
 
     def test_video_seq(self):
         img = self.small_img()
@@ -213,4 +208,8 @@ class TestComposableContainerVideo(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    tst =TestComposableContainerVideo()
+
+    tst.test_img_right()
+
     unittest.main()

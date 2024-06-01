@@ -20,6 +20,7 @@ class BenchComposableContainerImage(BenchPolygons):
         vr = bch.ComposableContainerVideo()
         for i in range(self.num_frames):
             res = super().__call__(start_angle=i)
+            print(res)
             vr.append(res["polygon"])
         self.polygon_vid = vr.to_video(
             bch.RenderCfg(
@@ -57,16 +58,18 @@ def example_composable_container_image(
 ) -> bch.Bench:
     bench = BenchComposableContainerImage().to_bench(run_cfg, report)
     bench.result_vars = ["polygon_vid"]
-    bench.add_plot_callback(bch.BenchResult.to_panes)
-    bench.add_plot_callback(bch.BenchResult.to_video_grid, result_types=(bch.ResultVideo))
+    # bench.add_plot_callback(bch.BenchResult.to_panes)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid, result_types=(bch.ResultVideo))
     # bench.add_plot_callback(bch.BenchResult.to_video_summary, result_types=(bch.ResultVideo))
-    bench.plot_sweep(input_vars=["compose_method", "labels"])
+    # bench.plot_sweep(input_vars=["compose_method", "labels"])
+
+    bench.plot_sweep(input_vars=["compose_method"])
 
     # bench.compose_
-    bench.plot_sweep(
-        input_vars=[BenchComposableContainerImage.param.num_frames.with_sample_values([2, 8, 20])],
-        const_vars=dict(compose_method=bch.ComposeType.sequence),
-    )
+    # bench.plot_sweep(
+    # input_vars=[BenchComposableContainerImage.param.num_frames.with_sample_values([2, 8, 20])],
+    # const_vars=dict(compose_method=bch.ComposeType.sequence),
+    # )
 
     return bench
 
@@ -99,5 +102,5 @@ if __name__ == "__main__":
     # ex_run_cfg.level = 2
     ex_report = bch.BenchReport()
     example_composable_container_image(ex_run_cfg, report=ex_report)
-    example_composable_container_video(ex_run_cfg, report=ex_report)
+    # example_composable_container_video(ex_run_cfg, report=ex_report)
     ex_report.show()

@@ -191,7 +191,7 @@ class ParametrizedSweep(Parameterized):
             )
         )
 
-    def __call__(self):
+    def __call__(self, **kwargs):
         return self.get_results_values_as_dict()
 
     def plot_hmap(self, **kwargs):
