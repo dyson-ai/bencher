@@ -18,4 +18,5 @@ script_pixi-user:
   - scripts/install_pixi.sh
 
 run_direnv-user:
-  - echo "eval \"$(direnv hook bash)\" >> ~/.bashrc"
+  - echo "eval \"$(direnv hook bash)\" >> $HOME/.bashrc"
+  - echo -e "source /opt/ros/humble/setup.bash" >> $HOME/.bashrc
