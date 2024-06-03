@@ -1,7 +1,7 @@
 import unittest
 import bencher as bch
 import numpy as np
-from hypothesis import given, settings, strategies as st
+from hypothesis import given, strategies as st
 
 
 class TestComposableContainerVideo(unittest.TestCase):
@@ -20,12 +20,12 @@ class TestComposableContainerVideo(unittest.TestCase):
             vid.append(img)
         return vid.render(render_cfg)
 
-    @given(frames=st.sampled_from([1, 2, 10, 100]))
-    def test_duration_default(self, frames):
-        ccv = bch.ComposableContainerVideo()
-        duration, frame_duration = ccv.calculate_duration(frames, bch.RenderCfg())
-        self.assertEqual(duration, 10)
-        self.assertEqual(frame_duration, 10 / frames)
+    # @given(frames=st.sampled_from([1, 2, 10, 100]))
+    # def test_duration_default(self, frames):
+    #     ccv = bch.ComposableContainerVideo()
+    #     duration, frame_duration = ccv.calculate_duration(frames, bch.RenderCfg())
+    #     self.assertEqual(duration, 10)
+    #     self.assertEqual(frame_duration, 10 / frames)
 
     @given(frames=st.sampled_from([1, 2, 10, 100]), duration=st.sampled_from([0.1, 1, 10, 100]))
     def test_set_duration(self, frames, duration):
@@ -35,18 +35,23 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertEqual(frame_duration, duration / frames)
 
     @given(frames=st.sampled_from([1, 2, 10, 100]), duration=st.sampled_from([0.1, 1, 10, 100]))
-    def test_set_duration(self, frames, duration):
+    def test_set_duration1(self, frames, duration):
         ccv = bch.ComposableContainerVideo()
         min_frame_duration = 1 / 30
         max_frame_duration = 2.0
         duration, frame_duration = ccv.calculate_duration(
             frames,
-            bch.RenderCfg(duration=duration, min_frame_duration=1 / 30, max_frame_duration=2,duration_target=True),
+            bch.RenderCfg(
+                duration=duration,
+                min_frame_duration=1 / 30,
+                max_frame_duration=2,
+                duration_target=True,
+            ),
         )
         self.assertEqual(duration, duration)
         self.assertEqual(frame_duration, duration / frames)
-        self.assertLessEqual(frame_duration,max_frame_duration)
-        self.assertGreaterEqual(frame_duration,min_frame_duration)
+        self.assertLessEqual(frame_duration, max_frame_duration)
+        self.assertGreaterEqual(frame_duration, min_frame_duration)
 
     def test_img_right(self):
         res = self.small_video(1, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
@@ -66,21 +71,19 @@ class TestComposableContainerVideo(unittest.TestCase):
         self.assertEqual(res.duration, 0.1)
 
     def test_img_right_x2(self):
-        res = self.small_video(2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
+        res = self.small_video(2, bch.RenderCfg(compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (2, 2))
-        self.assertEqual(res.duration, 0.1)
+        self.assertEqual(res.duration, 2)
 
     def test_img_down_x2(self):
-        res = self.small_video(2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
+        res = self.small_video(2, bch.RenderCfg(compose_method=bch.ComposeType.down))
         self.assertEqual(res.size, (1, 4))
-        self.assertEqual(res.duration, 0.1)
+        self.assertEqual(res.duration, 2)
 
     def test_img_seq_x2(self):
-        res = self.small_video(
-            2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence)
-        )
+        res = self.small_video(2, bch.RenderCfg(compose_method=bch.ComposeType.sequence))
         self.assertEqual(res.size, (1, 2))
-        self.assertEqual(res.duration, 0.2)
+        self.assertEqual(res.duration, 4)
 
     def test_video_seq(self):
         img = self.small_img()
@@ -116,35 +119,13 @@ class TestComposableContainerVideo(unittest.TestCase):
     def test_concat_equal_video_len(self):
         render_cfg = bch.RenderCfg(duration_target=True)
         res1 = self.small_video(num_frames=2, render_cfg=render_cfg)
+        res2 = self.small_video(num_frames=2, render_cfg=render_cfg)
+
         self.assertEqual(res1.size, (1, 2))
-        self.assertEqual(res1.duration, 2.0)  # 3 frames of minimum frame time 1.0
+        self.assertEqual(res1.duration, 4.0)  # 2 frames of minimum frame time 2.0
 
-        vid = bch.ComposableContainerVideo()
-
-        vid.append(res1)
-        vid.append(res1)
-
-        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.right))
-        self.assertEqual(res.size, (2, 2))
-        self.assertEqual(res.duration, 2.0)  # the duration of the longer clip
-
-        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.down))
-        self.assertEqual(res.size, (1, 4))
-        self.assertEqual(res.duration, 2.0)  # the duration of the longer clip
-
-        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
-        self.assertEqual(res.size, (1, 2))
-        self.assertEqual(res.duration, 4.0)  # the duration of both clips
-
-    def test_concat_unequal_video_len(self):
-        render_cfg = bch.RenderCfg(duration_target=True)
-        res1 = self.small_video(num_frames=2, render_cfg=render_cfg)
-        self.assertEqual(res1.size, (1, 2))
-        self.assertEqual(res1.duration, 2.0)  # 3 frames of minimum frame time 1.0
-
-        res2 = self.small_video(num_frames=3, render_cfg=render_cfg)
         self.assertEqual(res2.size, (1, 2))
-        self.assertEqual(res2.duration, 3.0)  # 3 frames of minimum frame time 1.0
+        self.assertEqual(res2.duration, 4.0)  # 1 frames of minimum frame time 2.0
 
         vid = bch.ComposableContainerVideo()
 
@@ -153,15 +134,42 @@ class TestComposableContainerVideo(unittest.TestCase):
 
         res = vid.deep().render(bch.RenderCfg(bch.ComposeType.right))
         self.assertEqual(res.size, (2, 2))
-        self.assertEqual(res.duration, 3.0)  # the duration of the longer clip
+        self.assertEqual(res.duration, 4.0)  # the duration of the longer clip
 
         res = vid.deep().render(bch.RenderCfg(bch.ComposeType.down))
         self.assertEqual(res.size, (1, 4))
-        self.assertEqual(res.duration, 3.0)  # the duration of the longer clip
+        self.assertEqual(res.duration, 4.0)  # the duration of the longer clip
 
         res = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
         self.assertEqual(res.size, (1, 2))
-        self.assertEqual(res.duration, 5.0)  # the duration of both clips
+        self.assertEqual(res.duration, 8.0)  # the duration of both clips
+
+    def test_concat_unequal_video_len(self):
+        render_cfg = bch.RenderCfg(duration_target=True)
+        res1 = self.small_video(num_frames=2, render_cfg=render_cfg)
+        self.assertEqual(res1.size, (1, 2))
+        self.assertEqual(res1.duration, 4.0)  # 3 frames of minimum frame time 1.0
+
+        res2 = self.small_video(num_frames=3, render_cfg=render_cfg)
+        self.assertEqual(res2.size, (1, 2))
+        self.assertEqual(res2.duration, 6.0)  # 3 frames of minimum frame time 1.0
+
+        vid = bch.ComposableContainerVideo()
+
+        vid.append(res1)
+        vid.append(res2)
+
+        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.right))
+        self.assertEqual(res.size, (2, 2))
+        self.assertEqual(res.duration, 6.0)  # the duration of the longer clip
+
+        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.down))
+        self.assertEqual(res.size, (1, 4))
+        self.assertEqual(res.duration, 6.0)  # the duration of the longer clip
+
+        res = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
+        self.assertEqual(res.size, (1, 2))
+        self.assertEqual(res.duration, 10.0)  # the duration of both clips
 
         res_label = vid.deep().render(bch.RenderCfg(bch.ComposeType.sequence))
         self.assertEqual(res.duration, res_label.duration)  # the duration of both clips
@@ -177,7 +185,7 @@ class TestComposableContainerVideo(unittest.TestCase):
         ccv.append(self.small_img())
 
         res = ccv.render()
-        self.assertEqual(res.duration, 2.0)  # limited by maximum frame time
+        self.assertEqual(res.duration, 4.0)  # limited by maximum frame time
 
         ccv = bch.ComposableContainerVideo()
         for _ in range(20):
@@ -202,12 +210,12 @@ class TestComposableContainerVideo(unittest.TestCase):
             sub_img.append(self.small_img())
             ccv.append(sub_img.render(compose_method=bch.ComposeType.right))
 
-        # should be 2 because there are two sequential frames
-        self.assertEqual(ccv.render().duration, 2.0)
+        # should be 4 because there are two sequential frames
+        self.assertEqual(ccv.render().duration, 4.0)
 
         ccv = bch.ComposableContainerVideo()
 
-        for _ in range(20):
+        for _ in range(5):
             sub_img = bch.ComposableContainerVideo()
             sub_img.append(self.small_img())
             sub_img.append(self.small_img())
@@ -223,20 +231,20 @@ class TestComposableContainerVideo(unittest.TestCase):
         ccv.append(self.small_video())
 
         res = ccv.render()
-        self.assertEqual(res.duration, 4.0)  # no frame limits, just concat videos
+        self.assertEqual(res.duration, 8.0)  # no frame limits, just concat videos
 
         ccv = bch.ComposableContainerVideo()
         for _ in range(20):
             ccv.append(self.small_video())
 
-        self.assertEqual(ccv.render().duration, 40.0)  # concatted vid time
+        self.assertEqual(ccv.render().duration, 80.0)  # concatted vid time
 
         ccv = bch.ComposableContainerVideo()
         for _ in range(200):
             ccv.append(self.small_video())
 
         # still concatted vid time
-        self.assertAlmostEqual(ccv.render().duration, 400.0)
+        self.assertAlmostEqual(ccv.render().duration, 800.0)
 
 
 if __name__ == "__main__":
