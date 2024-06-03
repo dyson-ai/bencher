@@ -98,17 +98,15 @@ class ComposableContainerVideo(ComposableContainerBase):
             render_cfg = RenderCfg(**kwargs)
 
         print("rc", render_cfg)
-        duration, frame_duration = self.calculate_duration(float(len(self.container)), render_cfg)
+        _, frame_duration = self.calculate_duration(float(len(self.container)), render_cfg)
         out = None
         print(f"using compose type{render_cfg.compose_method}")
-
         max_duration = 0.0
 
         for i in range(len(self.container)):
             if self.container[i].duration is None:
                 self.container[i].duration = frame_duration
-            if self.container[i].duration > max_duration:
-                max_duration = self.container[i].duration
+            max_duration = max(max_duration, self.container[i].duration)
         match render_cfg.compose_method:
             case ComposeType.right | ComposeType.down:
                 for i in range(len(self.container)):
