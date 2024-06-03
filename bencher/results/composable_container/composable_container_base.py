@@ -1,11 +1,12 @@
 from enum import Enum, auto
 from typing import Any, List
-from bencher.results.float_formatter import FormatFloat
 from dataclasses import dataclass, field
+from strenum import StrEnum
+from bencher.results.float_formatter import FormatFloat
 
 
 # TODO enable these options
-class ComposeType(Enum):
+class ComposeType(StrEnum):
     right = auto()  # append the container to the right (creates a row)
     down = auto()  # append the container below (creates a column)
     sequence = auto()  # display the container after (in time)

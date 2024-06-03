@@ -1,6 +1,7 @@
 import unittest
 import bencher as bch
 import numpy as np
+from hypothesis import given, settings, strategies as st
 
 
 class TestComposableContainerVideo(unittest.TestCase):
@@ -18,37 +19,68 @@ class TestComposableContainerVideo(unittest.TestCase):
         for _ in range(num_frames):
             vid.append(img)
         return vid.render(render_cfg)
-    
+
+    @given(frames=st.sampled_from([1, 2, 10, 100]))
+    def test_duration_default(self, frames):
+        ccv = bch.ComposableContainerVideo()
+        duration, frame_duration = ccv.calculate_duration(frames, bch.RenderCfg())
+        self.assertEqual(duration, 10)
+        self.assertEqual(frame_duration, 10 / frames)
+
+    @given(frames=st.sampled_from([1, 2, 10, 100]), duration=st.sampled_from([0.1, 1, 10, 100]))
+    def test_set_duration(self, frames, duration):
+        ccv = bch.ComposableContainerVideo()
+        duration, frame_duration = ccv.calculate_duration(frames, bch.RenderCfg(duration=duration))
+        self.assertEqual(duration, duration)
+        self.assertEqual(frame_duration, duration / frames)
+
+    @given(frames=st.sampled_from([1, 2, 10, 100]), duration=st.sampled_from([0.1, 1, 10, 100]))
+    def test_set_duration(self, frames, duration):
+        ccv = bch.ComposableContainerVideo()
+        min_frame_duration = 1 / 30
+        max_frame_duration = 2.0
+        duration, frame_duration = ccv.calculate_duration(
+            frames,
+            bch.RenderCfg(duration=duration, min_frame_duration=1 / 30, max_frame_duration=2,duration_target=True),
+        )
+        self.assertEqual(duration, duration)
+        self.assertEqual(frame_duration, duration / frames)
+        self.assertLessEqual(frame_duration,max_frame_duration)
+        self.assertGreaterEqual(frame_duration,min_frame_duration)
 
     def test_img_right(self):
-        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
+        res = self.small_video(1, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
     def test_img_down(self):
-        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
+        res = self.small_video(1, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
     def test_img_sequence(self):
-        res = self.small_video(1,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence))
+        res = self.small_video(
+            1, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence)
+        )
         self.assertEqual(res.size, (1, 2))
         self.assertEqual(res.duration, 0.1)
 
     def test_img_right_x2(self):
-        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
+        res = self.small_video(2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.right))
         self.assertEqual(res.size, (2, 2))
         self.assertEqual(res.duration, 0.1)
 
     def test_img_down_x2(self):
-        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
+        res = self.small_video(2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.down))
         self.assertEqual(res.size, (1, 4))
         self.assertEqual(res.duration, 0.1)
 
     def test_img_seq_x2(self):
-        res = self.small_video(2,bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence))
+        res = self.small_video(
+            2, bch.RenderCfg(duration=0.1, compose_method=bch.ComposeType.sequence)
+        )
         self.assertEqual(res.size, (1, 2))
-        self.assertEqual(res.duration, 0.2) 
+        self.assertEqual(res.duration, 0.2)
 
     def test_video_seq(self):
         img = self.small_img()
@@ -208,7 +240,7 @@ class TestComposableContainerVideo(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    tst =TestComposableContainerVideo()
+    tst = TestComposableContainerVideo()
 
     tst.test_img_right()
 

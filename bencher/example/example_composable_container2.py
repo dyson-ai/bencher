@@ -65,7 +65,9 @@ class BenchComposableContainerImage(BenchImageTest):
                 compose_method=self.compose_method,
                 # var_name=var_name,
                 # var_value=var_value,
-                max_frame_duration=1.0 / 20.0,
+                max_frame_duration=2.
+                # max_frame_duration=1.,
+                # duration=1.
             )
         )
 
@@ -101,8 +103,11 @@ def example_composable_container_image(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     bench = BenchComposableContainerImage().to_bench(run_cfg, report)
-    bench.result_vars = ["text_vid"]
+    bench.result_vars = ["text_vid","duration"]
+    # bench.result_vars = ["duration"]
     # bench.add_plot_callback(bch.BenchResult.to_panes)
+    # bench.add_plot_callback(bch.BenchResult.to_table)
+
     # bench.add_plot_callback(bch.BenchResult.to_video_grid, result_types=(bch.ResultVideo))
     # bench.add_plot_callback(bch.BenchResult.to_video_summary, result_types=(bch.ResultVideo))
     # bench.plot_sweep(input_vars=["compose_method", "labels"])

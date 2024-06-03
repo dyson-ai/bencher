@@ -66,6 +66,25 @@ class ComposableContainerVideo(ComposableContainerBase):
         else:
             raise RuntimeWarning("No data passed to ComposableContainerVideo.append()")
 
+    def calculate_duration(self, frames, render_cfg: RenderCfg):
+        if render_cfg.duration_target:
+            # calculate duration based on fps constraints
+            duration = 10.0 if render_cfg.duration is None else render_cfg.duration
+            frame_duration = duration / frames
+            if render_cfg.min_frame_duration is not None:
+                frame_duration = max(frame_duration, render_cfg.min_frame_duration)
+            if render_cfg.max_frame_duration is not None:
+                frame_duration = min(frame_duration, render_cfg.max_frame_duration)
+            duration = frame_duration * frames
+        else:
+            duration = render_cfg.duration
+            frame_duration = duration / float(frames)
+
+        print("max_frame_duration", render_cfg.max_frame_duration)
+        print("DURATION", duration)
+
+        return duration, frame_duration
+
     def render(self, render_cfg: RenderCfg = None, **kwargs) -> CompositeVideoClip:
         """Composes the images/videos into a single image/video based on the type of compose method
 
@@ -75,41 +94,16 @@ class ComposableContainerVideo(ComposableContainerBase):
         Returns:
             CompositeVideoClip: A composite video clip containing the images/videos added via append()
         """
-
         if render_cfg is None:
             render_cfg = RenderCfg(**kwargs)
 
-        print("max_frame_duration", render_cfg.max_frame_duration)
-        print("rc", render_cfg)
-
-        if render_cfg.duration_target:
-            # calculate duration based on fps constraints
-            duration = 10.0 if render_cfg.duration is None else render_cfg.duration
-
-            print("container len", len(self.container))
-
-            frame_duration = duration / float(len(self.container))
-            print("raw_frame_duration", frame_duration)
-
-            if render_cfg.min_frame_duration is not None:
-                frame_duration = max(frame_duration, render_cfg.min_frame_duration)
-
-            if render_cfg.max_frame_duration is not None:
-                frame_duration = min(frame_duration, render_cfg.max_frame_duration)
-
-            duration = frame_duration * len(self.container)
-        else:
-            duration = render_cfg.duration
-
+        print("rc", render_cfg)        
+        duration,frame_duration = self.calculate_duration(float(len(self.container)),render_cfg)
         out = None
         print(f"using compose type{render_cfg.compose_method}")
 
         max_duration = 0.0
-        # duration =0.06
-        # duration = None
-        print("max_frame_duration", render_cfg.max_frame_duration)
 
-        print("DURATION", duration)
 
         for i in range(len(self.container)):
             if self.container[i].duration is None:
