@@ -106,7 +106,7 @@ class ComposableContainerVideo(ComposableContainerBase):
 
         for i in range(len(self.container)):
             if self.container[i].duration is None:
-                self.container[i].duration = duration / float(len(self.container))
+                self.container[i].duration = frame_duration
             if self.container[i].duration > max_duration:
                 max_duration = self.container[i].duration
         match render_cfg.compose_method:

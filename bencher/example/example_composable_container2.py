@@ -48,9 +48,6 @@ class BenchComposableContainerImage(BenchImageTest):
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        var_name = None
-        var_value = None
-
         # if self.labels:
         # var_name = "sides"
         # var_value = self.sides
