@@ -184,7 +184,7 @@ class VideoSummaryResult(BenchResultBase):
         first_compose_method: ComposeType = ComposeType.down,
         time_sequence_dimension: int = 0,
     ) -> List[ComposeType]:
-        """ "Given a dataset, chose an order for composing the results.  By default will flip between rigth and down and the last dimension will be a time sequence.
+        """ "Given a dataset, chose an order for composing the results.  By default will flip between right and down and the last dimension will be a time sequence.
 
         Args:
             dataset (xr.Dataset): the dataset to render
