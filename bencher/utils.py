@@ -101,6 +101,8 @@ def un_camel(camel: str) -> str:
 
 def mult_tuple(inp: Tuple[float], val: float):
     return tuple(np.array(inp) * val)
+
+
 def tabs_in_markdown(regular_str: str, spaces: int = 2) -> str:
     """Given a string with tabs in the form \t convert the to &ensp; which is a double space in markdown
 
