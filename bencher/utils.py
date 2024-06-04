@@ -99,7 +99,7 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
-def mult_tuple(inp: Tuple[float], val: float):
+def mult_tuple(inp: Tuple[float], val: float)->Tuple[float]:
     return tuple(np.array(inp) * val)
 
 
