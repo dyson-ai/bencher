@@ -1,21 +1,30 @@
-FROM mcr.microsoft.com/devcontainers/python:0-3.10
+FROM ghcr.io/prefix-dev/pixi:0.18.0 AS build
 
-RUN apt-get update && apt install -y git-lfs curl
+# copy source code, pixi.toml and pixi.lock to the container
+COPY . /workspace
+WORKDIR /workspace
+# run some compilation / build task (if needed)
+RUN pixi run build
+# run the `install` command (or any other). This will also install the dependencies into `/workspace/.pixi`
+# assumes that you have a `prod` environment defined in your pixi.toml
+RUN pixi run install -e prod
+# Create the shell-hook bash script to activate the environment
+RUN pixi shell-hook -e prod > /shell-hook.sh
 
-RUN python -m pip install --upgrade pip \
-    && python -m pip install 'flit>=3.8.0'
+# extend the shell-hook script to run the command passed to the container
+RUN echo 'exec "$@"' >> /shell-hook.sh
 
-ENV FLIT_ROOT_INSTALL=1
+FROM ubuntu:22.04 AS production
 
-ENV PIXI_VERSION=0.23.0
-# download the musl build since the gnu build is not available on aarch64
-RUN curl -Ls \
-    "https://github.com/prefix-dev/pixi/releases/download/v${PIXI_VERSION}/pixi-$(uname -m)-unknown-linux-musl" \
-    -o /pixi && chmod +x /pixi
-RUN /pixi --version
+# only copy the production environment into prod container
+# please note that the "prefix" (path) needs to stay the same as in the build container
+COPY --from=build /workspace/.pixi/envs/prod /workspace/.pixi/envs/prod
+COPY --from=build /shell-hook.sh /shell-hook.sh
+WORKDIR /workspace
+EXPOSE 8000
 
-COPY pyproject.toml .
-RUN touch README.md \
-    && mkdir -p src/bencher \
-    && python -m flit install --only-deps --deps develop \
-    && rm -r pyproject.toml README.md src
+# set the entrypoint to the shell-hook script (activate the environment and run the command)
+# no more pixi needed in the prod container
+ENTRYPOINT ["/bin/bash", "/shell-hook.sh"]
+
+CMD ["start-server"]
