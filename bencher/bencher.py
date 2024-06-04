@@ -261,6 +261,7 @@ class Bench(BenchPlotServer):
         tag: str = "",
         run_cfg: BenchRunCfg = None,
         plot: bool = False,
+        plot_callbacks: List | bool = None,
     ) -> BenchResult:
         # title = "Sweeping " + " vs ".join(params_to_str(input_vars))
         return self.plot_sweep(
@@ -274,7 +275,7 @@ class Bench(BenchPlotServer):
             pass_repeat=pass_repeat,
             tag=tag,
             run_cfg=run_cfg,
-            plot=plot,
+            plot_callbacks=plot_callbacks,
         )
 
     def plot_sweep(
