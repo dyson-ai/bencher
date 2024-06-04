@@ -17,12 +17,8 @@
 	"files.exclude": {
 		"**/__pycache__/**": true,
 		"/home/vscode/.local/lib/python3.10/site-packages/bencher/**": true,
-	},	
-	"python.analysis.autoImportCompletions": false,
-	"workbench.colorCustomizations": {
-		"activityBar.background": "#113507",
-		"titleBar.activeBackground": "#19440d",
-		"titleBar.activeForeground": "#F4FDF1"
 	},
-	"python.analysis.typeCheckingMode": "off" //vscode gets it wrong more than right and mostly gets in the way
+	"python.analysis.autoImportCompletions": false,
+	"python.analysis.typeCheckingMode": "off",
+	"python.defaultInterpreterPath": "/workspaces/bencher/.pixi/envs/default/bin/python" //vscode gets it wrong more than right and mostly gets in the way
 }
