@@ -30,7 +30,6 @@ class ComposeType(StrEnum):
 class ComposableContainerBase:
     """A base class for renderer backends.  A composable renderer"""
 
-    horizontal: bool = True
     compose_method: ComposeType = ComposeType.right
     container: List[Any] = field(default_factory=list)
     label_len: int = 0

@@ -25,7 +25,7 @@ class RenderCfg:
     compose_method: ComposeType = ComposeType.sequence
     var_name: str = None
     var_value: str = None
-    background_col: tuple[3] = (255, 255, 255)
+    background_col: tuple[int, int, int] = (255, 255, 255)
     duration: float = 10.0
     duration_target: bool = True
     min_frame_duration: float = 1.0 / 30
@@ -45,7 +45,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             RuntimeWarning: if file format is not recognised
         """
 
-        print(f"append obj: {type(obj)}, {obj}")
+        # print(f"append obj: {type(obj)}, {obj}")
         if obj is not None:
             if isinstance(obj, VideoClip):
                 self.container.append(obj)

@@ -104,7 +104,6 @@ def example_video_tap(
     )
 
     bench.report.append(res.to_video_grid())
-    bench.report.append(res.to_video_grid())
 
     return bench
 

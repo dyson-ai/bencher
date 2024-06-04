@@ -147,7 +147,7 @@ def color_tuple_to_css(color: tuple[float, float, float]) -> str:
     return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"
 
 
-def color_tuple_to_255(color: tuple[float, float, float]) -> str:
+def color_tuple_to_255(color: tuple[float, float, float]) -> tuple[float, float, float]:
     return (
         min(int(color[0] * 255), 255),
         min(int(color[1] * 255), 255),
