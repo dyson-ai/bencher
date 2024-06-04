@@ -365,7 +365,7 @@ class BenchResultBase(OptunaResult):
                 sliced = dataset.isel({selected_dim: i})
                 label_val = sliced.coords[selected_dim].values.item()
                 inner_container = ComposableContainerPanel(
-                    outer_container.name,
+                    name=outer_container.name,
                     width=num_dims - target_dimension,
                     var_name=selected_dim,
                     var_value=label_val,
