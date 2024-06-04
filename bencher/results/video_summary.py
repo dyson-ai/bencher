@@ -31,7 +31,6 @@ class VideoSummaryResult(BenchResultBase):
             reverse=reverse,
             **kwargs,
         )
-    
 
     def to_video_grid(
         self,
