@@ -1,18 +1,38 @@
-from enum import Enum, auto
-from typing import Any
+from enum import auto
+from typing import Any, List
+from dataclasses import dataclass, field
+from strenum import StrEnum
 from bencher.results.float_formatter import FormatFloat
 
 
 # TODO enable these options
-class ComposeType(Enum):
+class ComposeType(StrEnum):
     right = auto()  # append the container to the right (creates a row)
     down = auto()  # append the container below (creates a column)
-    overlay = auto()  # overlay on top of the current container (alpha blending)
     sequence = auto()  # display the container after (in time)
+    # overlay = auto()  # overlay on top of the current container (alpha blending)
+
+    def flip(self):
+        match self:
+            case ComposeType.right:
+                return ComposeType.down
+            case ComposeType.down:
+                return ComposeType.right
+            case _:
+                raise RuntimeError("cannot flip this type")
+
+    @staticmethod
+    def from_horizontal(horizontal: bool):
+        return ComposeType.right if horizontal else ComposeType.down
 
 
+@dataclass(kw_only=True)
 class ComposableContainerBase:
-    """A base class for renderer backends.  A composable renderr"""
+    """A base class for renderer backends.  A composable renderer"""
+
+    compose_method: ComposeType = ComposeType.right
+    container: List[Any] = field(default_factory=list)
+    label_len: int = 0
 
     @staticmethod
     def label_formatter(var_name: str, var_value: int | float | str) -> str:
@@ -35,13 +55,6 @@ class ComposableContainerBase:
         if var_value is not None:
             return f"{var_value}"
         return None
-
-    def __init__(
-        self, horizontal: bool = True, compose_method: ComposeType = ComposeType.right
-    ) -> None:
-        self.horizontal: bool = horizontal
-        self.compose_method = compose_method
-        self.container = []
 
     def append(self, obj: Any) -> None:
         """Add an object to the container.  The relationship between the objects is defined by the ComposeType

@@ -1,76 +1,184 @@
+from __future__ import annotations
 import numpy as np
+from copy import deepcopy
+from pathlib import Path
+from dataclasses import dataclass
 from moviepy.editor import (
     ImageClip,
     CompositeVideoClip,
     clips_array,
     concatenate_videoclips,
     VideoClip,
+    VideoFileClip,
 )
+from moviepy.video.fx.margin import margin
 
-from bencher.results.composable_container.composable_container_base import ComposableContainerBase
+from bencher.results.composable_container.composable_container_base import (
+    ComposableContainerBase,
+    ComposeType,
+)
 from bencher.video_writer import VideoWriter
 
 
+@dataclass()
+class RenderCfg:
+    compose_method: ComposeType = ComposeType.sequence
+    var_name: str = None
+    var_value: str = None
+    background_col: tuple[int, int, int] = (255, 255, 255)
+    duration: float = 10.0
+    duration_target: bool = True
+    min_frame_duration: float = 1.0 / 30
+    max_frame_duration: float = 2.0
+    margin: int = 0
+
+
+@dataclass
 class ComposableContainerVideo(ComposableContainerBase):
-    def __init__(
-        self,
-        name: str = None,
-        var_name: str = None,
-        var_value: str = None,
-        background_col: tuple[3] = (255, 255, 255),
-        horizontal: bool = True,
-        target_duration: float = None,
-    ) -> None:
-        super().__init__(horizontal)
-        self.name = name
-        self.container = []
-        self.background_col = background_col
-        self.target_duration = 10 if target_duration is None else target_duration
-        self.var_name = var_name
+    def append(self, obj: VideoClip | ImageClip | str | np.ndarray) -> None:
+        """Appends an image or video to the container
 
-        self.label = self.label_formatter(var_name, var_value)
-        if self.label is not None:
-            self.label_len = len(self.label)
+        Args:
+            obj (VideoClip | ImageClip | str | np.ndarray): Any representation of an image or video
 
-        # label = self.label_formatter(var_name, var_value)
-        # if label is not None:
-        # self.label_len = len(label)
-        # side = pn.pane.Markdown(label, align=align)
-        # self.append(side)
+        Raises:
+            RuntimeWarning: if file format is not recognised
+        """
 
-    def append(self, obj: VideoClip | str) -> None:
-        if isinstance(obj, VideoClip):
-            self.container.append(obj)
+        # print(f"append obj: {type(obj)}, {obj}")
+        if obj is not None:
+            if isinstance(obj, VideoClip):
+                self.container.append(obj)
+            elif isinstance(obj, ComposableContainerVideo):
+                self.container.append(obj.render())
+            elif isinstance(obj, np.ndarray):
+                self.container.append(ImageClip(obj))
+            else:
+                path = Path(obj)
+                extension = str.lower(path.suffix)
+                if extension in [".jpg", ".jepg", ".png"]:
+                    self.container.append(ImageClip(obj))
+                elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
+                    # print(obj)
+                    self.container.append(VideoFileClip(obj))
+                else:
+                    raise RuntimeWarning(f"unsupported filetype {extension}")
         else:
-            # if self.label is not None:
-            # img_obj = np.array(VideoWriter.label_image(obj, self.label))
-            # else:
-            # img_obj = obj
-            self.container.append(ImageClip(obj))
+            raise RuntimeWarning("No data passed to ComposableContainerVideo.append()")
 
-    def render(self, concatenate: bool = False) -> CompositeVideoClip:
-        fps = len(self.container) / self.target_duration
-        fps = max(fps, 1.0)  # never slower that 1 seconds per frame
-        fps = min(fps, 30.0)
+    def calculate_duration(self, frames, render_cfg: RenderCfg):
+        if render_cfg.duration_target:
+            # calculate duration based on fps constraints
+            duration = 10.0 if render_cfg.duration is None else render_cfg.duration
+            frame_duration = duration / frames
+            if render_cfg.min_frame_duration is not None:
+                frame_duration = max(frame_duration, render_cfg.min_frame_duration)
+            if render_cfg.max_frame_duration is not None:
+                frame_duration = min(frame_duration, render_cfg.max_frame_duration)
+            duration = frame_duration * frames
+        else:
+            duration = render_cfg.duration
+            frame_duration = duration / float(frames)
+
+        print("max_frame_duration", render_cfg.max_frame_duration)
+        print("DURATION", duration)
+
+        return duration, frame_duration
+
+    def render(self, render_cfg: RenderCfg = None, **kwargs) -> CompositeVideoClip:
+        """Composes the images/videos into a single image/video based on the type of compose method
+
+        Args:
+            compose_method (ComposeType, optional): optionally override the default compose type. Defaults to None.
+
+        Returns:
+            CompositeVideoClip: A composite video clip containing the images/videos added via append()
+        """
+        if render_cfg is None:
+            render_cfg = RenderCfg(**kwargs)
+
+        print("rc", render_cfg)
+        _, frame_duration = self.calculate_duration(float(len(self.container)), render_cfg)
+        out = None
+        print(f"using compose type{render_cfg.compose_method}")
+        max_duration = 0.0
 
         for i in range(len(self.container)):
-            self.container[i].duration = 1.0 / fps
-        if concatenate:
-            out = concatenate_videoclips(self.container)
-        else:
-            if self.horizontal:
-                clips = [self.container]
-            else:
-                clips = [[c] for c in self.container]
-            out = clips_array(clips, bg_color=self.background_col)
+            if self.container[i].duration is None:
+                self.container[i].duration = frame_duration
+            max_duration = max(max_duration, self.container[i].duration)
+        match render_cfg.compose_method:
+            case ComposeType.right | ComposeType.down:
+                for i in range(len(self.container)):
+                    self.container[i] = self.extend_clip(self.container[i], max_duration)
+                    self.container[i] = margin(
+                        self.container[i], top=render_cfg.margin, color=render_cfg.background_col
+                    )
 
-        if self.label is not None:
-            label = ImageClip(np.array(VideoWriter.create_label(self.label)))
-            con2 = ComposableContainerVideo(
-                background_col=self.background_col,
-                horizontal=not self.horizontal,
+                if render_cfg.compose_method == ComposeType.right:
+                    clips = [self.container]
+                else:
+                    clips = [[c] for c in self.container]
+                out = clips_array(clips, bg_color=render_cfg.background_col)
+                if out.duration is None:
+                    out.duration = max_duration
+            case ComposeType.sequence:
+                out = concatenate_videoclips(
+                    self.container, bg_color=render_cfg.background_col, method="compose"
+                )
+            # case ComposeType.overlay:
+            #     for i in range(len(self.container)):
+            #         self.container[i].alpha = 1./len(self.container)
+            #     out = CompositeVideoClip(self.container, bg_color=render_args.background_col)
+            #     out.duration = fps
+            case _:
+                raise RuntimeError("This compose type is not supported")
+
+        label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
+        if label is not None:
+            # print("adding label")
+            label = ImageClip(
+                np.array(VideoWriter.create_label(label, color=render_cfg.background_col))
             )
+            label.duration = out.duration
+            label_compose = ComposeType.down
+            if render_cfg.compose_method == ComposeType.down:
+                label_compose = ComposeType.right
+            con2 = ComposableContainerVideo()
             con2.append(label)
             con2.append(out)
-            return con2.render()
+            return con2.render(
+                RenderCfg(
+                    background_col=render_cfg.background_col,
+                    compose_method=label_compose,
+                    duration=out.duration,
+                    duration_target=False,  # want exact duration
+                )
+            )
         return out
+
+    def to_video(
+        self,
+        render_args: RenderCfg = None,
+    ) -> str:
+        """Returns the composite video clip as a webm file path
+
+        Returns:
+            str: webm filepath
+        """
+        return VideoWriter().write_video_raw(self.render(render_args))
+
+    def deep(self):
+        return deepcopy(self)
+
+    def extend_clip(self, clip: VideoClip, desired_duration: float):
+        if clip.duration < desired_duration:
+            return concatenate_videoclips(
+                [
+                    clip,
+                    ImageClip(
+                        clip.get_frame(clip.duration), duration=desired_duration - clip.duration
+                    ),
+                ]
+            )
+        return clip

@@ -121,7 +121,7 @@ class BenchRunner:
                     self.show_publish(report_level, show, publish, save, debug)
         return self.results
 
-    def show_publish(self, report, show, publish, save, debug):
+    def show_publish(self, report: BenchReport, show: bool, publish: bool, save: bool, debug: bool):
         if save:
             report.save_index()
         if publish and self.publisher is not None:

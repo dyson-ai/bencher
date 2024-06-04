@@ -95,24 +95,15 @@ def example_video(
 def example_video_tap(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:  # pragma: no cover
-    tp = TuringPattern()
-
-    # run_cfg.use_sample_cache = False
-    # run_cfg.use_optuna = True
-    run_cfg.auto_plot = False
-    run_cfg.run_tag = "3"
-    bench = tp.to_bench(run_cfg=run_cfg, report=report)
-
+    bench = TuringPattern().to_bench(run_cfg=run_cfg, report=report)
     res = bench.plot_sweep(
-        "phase",
         input_vars=["alpha", "beta"],
         # result_vars=["video","score"],
         # result_vars=["score"],
         run_cfg=run_cfg,
     )
 
-    bench.report.append(res.describe_sweep())
-    bench.report.append(res.to_heatmap())
+    bench.report.append(res.to_video_grid())
 
     return bench
 

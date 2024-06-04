@@ -9,6 +9,7 @@ from bencher.utils import (
     lerp,
     listify,
     tabs_in_markdown,
+    mult_tuple,
 )
 from functools import partial
 import xarray as xr
@@ -77,6 +78,9 @@ class TestBencherUtils(unittest.TestCase):
             bch.hmap_canonical_input(dic1),
             bch.hmap_canonical_input(dic2),
         )
+
+    def test_mult_tuple(self) -> None:
+        self.assertTupleEqual(mult_tuple((1, 2, 3), 2), (2, 4, 6))
 
     # Tests that the function returns the nearest coordinate name value pair for a dataset containing multiple coordinates
     def test_multiple_coordinates(self):
