@@ -86,15 +86,6 @@ def example_image(
 def example_image_vid(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
     bench.add_plot_callback(bch.BenchResult.to_sweep_summary)
-    # from functools import partial
-    # bench.add_plot_callback(bch.BenchResult.to_video_summary)
-    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=0)
-    # bench.add_plot_callback(bch.BenchResult.to_video_grid)
-    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=2)
-    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=3)
-
-    bench.plot_sweep(input_vars=["radius"])
-    # bench.plot_callbacks = []
     bench.add_plot_callback(
         bch.BenchResult.to_video_grid,
         target_duration=0.06,
@@ -104,10 +95,16 @@ def example_image_vid(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport =
             bch.ComposeType.sequence,
         ],
     )
+    # from functools import partial
+    # bench.add_plot_callback(bch.BenchResult.to_video_summary)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=0)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=2)
+    # bench.add_plot_callback(bch.BenchResult.to_video_grid, time_sequence_dimension=3)
 
+    bench.plot_sweep(input_vars=["radius"])
     # res = bench.plot_sweep(input_vars=["radius"], plot=False)
     # bench.report.append(res.to_video_grid(target_duration=0.06))
-
     bench.plot_sweep(input_vars=["radius", "sides"])
     # bench.plot_sweep(input_vars=["radius", "sides", "linewidth"])
     # bench.plot_sweep(input_vars=["radius", "sides", "linewidth", "color"])
@@ -152,7 +149,7 @@ if __name__ == "__main__":
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4
     example_image_vid(ex_run_cfg).report.show()
-    simple().report.show()
+    # simple().report.show()
 
     # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

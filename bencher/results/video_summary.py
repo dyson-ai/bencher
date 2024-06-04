@@ -240,8 +240,8 @@ class VideoSummaryResult(BenchResultBase):
             print(compose_method_list)
 
         compose_method_list_pop = deepcopy(compose_method_list)
-        compose_method = compose_method_list_pop.pop()
-        print(compose_method)
+        if len(compose_method_list_pop) > 1:
+            compose_method = compose_method_list_pop.pop()
 
         if num_dims > (target_dimension) and num_dims != 0:
             selected_dim = dims[-1]
