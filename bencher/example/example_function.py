@@ -1,9 +1,5 @@
 import bencher as bch
 
-# bch.fl
-
-
-
 
 def x_squared(x):
     return x * x

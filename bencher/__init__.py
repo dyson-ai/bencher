@@ -3,7 +3,16 @@ from .bench_runner import BenchRunner
 from .example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 from .bench_plot_server import BenchPlotServer
 from .variables.sweep_base import hash_sha1
-from .variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep, SweepBase,float_sweep,int_sweep
+from .variables.inputs import (
+    IntSweep,
+    FloatSweep,
+    StringSweep,
+    EnumSweep,
+    BoolSweep,
+    SweepBase,
+    float_sweep,
+    int_sweep,
+)
 from .variables.time import TimeSnapshot
 
 from .variables.inputs import box
@@ -20,7 +29,7 @@ from .variables.results import (
     ResultVolume,
     OptDir,
     curve,
-    result
+    result,
 )
 
 from .results.composable_container.composable_container_base import (

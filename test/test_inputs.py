@@ -46,7 +46,7 @@ class TestInputSweeps(unittest.TestCase):
         self.assertEqual(int_sweep.get_default(), 0)
         self.assertListEqual(int_sweep.get_values(), [0, 1, 2, 3])
 
-    def test_int_sweep_03(self):
+    def test_int_sweep_04(self):
         int_sweep = IntSweep(3)
         self.assertEqual(int_sweep.get_default(), 0)
         self.assertListEqual(int_sweep.get_values(), [0, 1, 2, 3])

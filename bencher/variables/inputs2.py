@@ -149,10 +149,10 @@ class BenchParameterBase:
     def get_default(self):
         if self.default is not None:
             return self.default
-        
+
         if self.bounds is not None:
             return self.bounds[0]
-        
+
         return self.get_sample_values()[0]
 
     # def default(self):
@@ -177,31 +177,26 @@ class BenchParameterBase:
 class IntSweep(BenchParameterBase):
 
     # def __post_init__(self):
-        # if isinstance(self.values,int):
-            # self.values = [self.values]
+    # if isinstance(self.values,int):
+    # self.values = [self.values]
 
-        # print("here")
-        # exit()
-        # match type(self.values):
-            # case int:
-                # self.values = [self.values]
-            # case list:
-            # pass
-        # if self.values
+    # print("here")
+    # exit()
+    # match type(self.values):
+    # case int:
+    # self.values = [self.values]
+    # case list:
+    # pass
+    # if self.values
 
     def get_sample_values(self) -> List[int]:
         if self.values is not None:
-            if isinstance(self.values,int):
+            if isinstance(self.values, int):
                 return [self.values]
             return self.values
         if self.bounds is not None:
             return list(range(int(self.bounds[0]), int(self.bounds[1] + 1)))
         return [0]
-
-  
-
-
-
 
 
 class FloatSweep(BenchParameterBase):
@@ -246,4 +241,3 @@ def int_sweep(name, min_val, max_val):
 
 
 # if __name__ == "__main__":
-    

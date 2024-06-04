@@ -34,7 +34,7 @@ from bencher.variables.results import (
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.job import Job, FutureCache, JobFuture, Executors
-from bencher.utils import params_to_str,listify
+from bencher.utils import params_to_str, listify
 
 # Customize the formatter
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -350,7 +350,6 @@ class Bench(BenchPlotServer):
 
         input_vars = listify(input_vars)
         result_vars = listify(result_vars)
-
 
         for i in range(len(input_vars)):
             input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
