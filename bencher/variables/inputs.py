@@ -46,7 +46,7 @@ class StringSweep(SweepSelector):
     def __init__(
         self,
         string_list: List[str],
-        units: str = "",
+        units: str = "ul",
         samples: int = None,
         **params,
     ):
@@ -65,7 +65,7 @@ class EnumSweep(SweepSelector):
 
     __slots__ = shared_slots
 
-    def __init__(self, enum_type: Enum | List[Enum], units=" ", samples=None, **params):
+    def __init__(self, enum_type: Enum | List[Enum], units="ul", samples=None, **params):
         # The enum can either be an Enum type or a list of enums
         list_of_enums = isinstance(enum_type, list)
         selector_list = enum_type if list_of_enums else list(enum_type)

@@ -8,15 +8,17 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D
+from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D, listify
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
 from bencher.plotting.plot_filter import PlotFilter, VarRange
-from bencher.variables.results import ResultVar
-
+from bencher.variables.results import ResultVar, ResultImage, ResultVideo
 
 hv.extension("bokeh", "plotly")
+
+# Flag to enable or disable tap tool functionality in visualizations
+use_tap = True
 
 
 class HoloviewResult(PanelResult):
@@ -85,6 +87,7 @@ class HoloviewResult(PanelResult):
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
+            panel_range=VarRange(0, None),
             reduce=ReduceType.SQUEEZE,
             target_dimension=2,
             result_var=result_var,
@@ -124,15 +127,34 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def to_line(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_line(
+        self,
+        result_var: Parameter = None,
+        tap_var=None,
+        tap_container: pn.pane.panel = None,
+        target_dimension=2,
+        **kwargs,
+    ) -> Optional[pn.panel]:
+        if tap_var is None:
+            tap_var = self.plt_cnt_cfg.panel_vars
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
+
+        if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or not use_tap:
+            heatmap_cb = self.to_line_ds
+        else:
+            heatmap_cb = partial(
+                self.to_line_tap_ds, result_var_plots=tap_var, container=tap_container
+            )
+
         return self.filter(
-            self.to_line_ds,
+            heatmap_cb,
             float_range=VarRange(1, 1),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
             panel_range=VarRange(0, None),
             reduce=ReduceType.SQUEEZE,
-            target_dimension=2,
+            target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
             **kwargs,
@@ -140,7 +162,6 @@ class HoloviewResult(PanelResult):
 
     def to_line_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         x = self.plt_cnt_cfg.float_vars[0].name
-        # y = self.plt_cnt_cfg.result_vars[0].name
         by = None
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
@@ -178,22 +199,32 @@ class HoloviewResult(PanelResult):
         self,
         result_var: Parameter = None,
         tap_var=None,
-        tap_container=None,
+        tap_container: pn.pane.panel = None,
+        tap_container_direction: pn.Column | pn.Row = None,
         target_dimension=2,
         **kwargs,
     ) -> Optional[pn.panel]:
         if tap_var is None:
+            tap_var = self.plt_cnt_cfg.panel_vars
+        elif not isinstance(tap_var, list):
+            tap_var = [tap_var]
+
+        if len(tap_var) == 0 or not use_tap:
             heatmap_cb = self.to_heatmap_ds
         else:
             heatmap_cb = partial(
-                self.to_heatmap_container_tap_ds, result_var_plot=tap_var, container=tap_container
+                self.to_heatmap_container_tap_ds,
+                result_var_plots=tap_var,
+                container=tap_container,
+                tap_container_direction=tap_container_direction,
             )
 
         return self.filter(
             heatmap_cb,
-            float_range=VarRange(2, None),
+            float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
-            input_range=VarRange(1, None),
+            input_range=VarRange(2, None),
+            panel_range=VarRange(0, None),
             target_dimension=target_dimension,
             result_var=result_var,
             result_types=(ResultVar),
@@ -204,56 +235,185 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.HeatMap]:
         if len(dataset.dims) >= 2:
-            x = self.plt_cnt_cfg.float_vars[0].name
-            y = self.plt_cnt_cfg.float_vars[1].name
+            x = self.bench_cfg.input_vars[0].name
+            y = self.bench_cfg.input_vars[1].name
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
             return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
+    def result_var_to_container(self, result_var):
+        if isinstance(result_var, ResultImage):
+            return pn.pane.PNG
+        return pn.pane.Video if isinstance(result_var, ResultVideo) else pn.Column
+
+    def setup_results_and_containers(self, result_var_plots, container, **kwargs):
+        result_var_plots = listify(result_var_plots)
+        if container is None:
+            containers = [self.result_var_to_container(rv) for rv in result_var_plots]
+        else:
+            containers = listify(container)
+
+        cont_instances = [c(**kwargs) if c is not None else None for c in containers]
+        return result_var_plots, cont_instances
+
     def to_heatmap_container_tap_ds(
         self,
         dataset: xr.Dataset,
         result_var: Parameter,
-        result_var_plot: Parameter,
+        result_var_plots: List[Parameter] = None,
+        container: pn.pane.panel = None,
+        tap_container_direction: pn.Column | pn.Row = None,
+        **kwargs,
+    ) -> pn.Row:
+        htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
+        result_var_plots, cont_instances = self.setup_results_and_containers(
+            result_var_plots, container
+        )
+        title = pn.pane.Markdown("Selected: None")
+
+        state = dict(x=None, y=None, update=False)
+
+        def tap_plot_heatmap(x, y):  # pragma: no cover
+            # print(f"moved {x}{y}")
+            x_nearest_new = get_nearest_coords1D(
+                x, dataset.coords[self.bench_cfg.input_vars[0].name].data
+            )
+            y_nearest_new = get_nearest_coords1D(
+                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+            )
+
+            # xv = self.bench_cfg.input_vars[0].name
+            # yv = self.bench_cfg.input_vars[1].name
+            # nearest = get_nearest_coords(dataset, **{xv: x, yv: y})
+            # print(nearest)
+            # print(x_nearest_new,y_nearest_new)
+
+            if x_nearest_new != state["x"]:
+                state["x"] = x_nearest_new
+                state["update"] = True
+            if y_nearest_new != state["y"]:
+                state["y"] = y_nearest_new
+                state["update"] = True
+
+            if state["update"]:
+                kdims = {}
+                kdims[self.bench_cfg.input_vars[0].name] = state["x"]
+                kdims[self.bench_cfg.input_vars[1].name] = state["y"]
+
+                if hasattr(htmap, "current_key"):
+                    for d, k in zip(htmap.kdims, htmap.current_key):
+                        kdims[d.name] = k
+                for rv, cont in zip(result_var_plots, cont_instances):
+                    ds = dataset[rv.name]
+                    val = ds.sel(**kdims)
+                    item = self.zero_dim_da_to_val(val)
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+
+                    cont.object = item
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
+                        cont.paused = False
+                        cont.time = 0
+                        cont.loop = True
+                        cont.autoplay = True
+                state["update"] = False
+
+        def on_exit(x, y):  # pragma: no cover # pylint: disable=unused-argument
+            state["update"] = True
+
+        htmap_posxy = hv.streams.PointerXY(source=htmap)
+        htmap_posxy.add_subscriber(tap_plot_heatmap)
+        ls = hv.streams.MouseLeave(source=htmap)
+        ls.add_subscriber(on_exit)
+
+        if tap_container_direction is None:
+            tap_container_direction = pn.Column
+        bound_plot = tap_container_direction(*cont_instances)
+
+        return pn.Row(htmap, pn.Column(title, bound_plot))
+
+    def to_line_tap_ds(
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        result_var_plots: List[Parameter] = None,
         container: pn.pane.panel = pn.pane.panel,
         **kwargs,
     ) -> pn.Row:
-        htmap = self.to_heatmap_ds(dataset, result_var).opts(tools=["hover", "tap"], **kwargs)
-        htmap_posxy = hv.streams.Tap(source=htmap, x=0, y=0)
-
-        container_instance = container(**kwargs)
+        htmap = self.to_line_ds(dataset, result_var).opts(tools=["hover"], **kwargs)
+        result_var_plots, cont_instances = self.setup_results_and_containers(
+            result_var_plots, container
+        )
         title = pn.pane.Markdown("Selected: None")
 
-        def tap_plot(x, y):  # pragma: no cover
-            x_nearest = get_nearest_coords1D(
+        state = dict(x=None, y=None, update=False)
+
+        def tap_plot_line(x, y):  # pragma: no cover
+            # print(f"{x},{y}")
+            # print(dataset)
+
+            # xv = self.bench_cfg.input_vars[0].name
+            # yv = self.bench_cfg.input_vars[1].name
+
+            # x_nearest_new = get_nearest_coords1D(
+            #     x, dataset.coords[self.bench_cfg.input_vars[0].name].data
+            # )
+            # y_nearest_new = get_nearest_coords1D(
+            #     y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+            # )
+
+            # kwargs = {xv: x, yv: y}
+
+            # nearest = get_nearest_coords(dataset, **kwargs)
+            # print(nearest)
+
+            x_nearest_new = get_nearest_coords1D(
                 x, dataset.coords[self.bench_cfg.input_vars[0].name].data
             )
-            y_nearest = get_nearest_coords1D(
-                y, dataset.coords[self.bench_cfg.input_vars[1].name].data
-            )
-            kdims = {}
-            kdims[self.bench_cfg.input_vars[0].name] = x_nearest
-            kdims[self.bench_cfg.input_vars[1].name] = y_nearest
 
-            if hasattr(htmap, "current_key"):
-                for d, k in zip(htmap.kdims, htmap.current_key):
-                    kdims[d.name] = k
+            if x_nearest_new != state["x"]:
+                state["x"] = x_nearest_new
+                state["update"] = True
 
-            ds = dataset[result_var_plot.name]
-            val = ds.sel(**kdims)
-            item = self.zero_dim_da_to_val(val)
-            title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
-            container_instance.object = item
-            if hasattr(container, "autoplay"):  # container is a video, set to autoplay
-                container_instance.paused = False
-                container_instance.time = 0
-                container_instance.loop = True
-                container_instance.autoplay = True
+            if self.plt_cnt_cfg.inputs_cnt > 1:
+                y_nearest_new = get_nearest_coords1D(
+                    y, dataset.coords[self.bench_cfg.input_vars[1].name].data
+                )
+                if y_nearest_new != state["y"]:
+                    state["y"] = y_nearest_new
+                    state["update"] = True
 
-        htmap_posxy.add_subscriber(tap_plot)
-        bound_plot = pn.Column(title, container_instance)
+            if state["update"]:
+                kdims = {}
+                kdims[self.bench_cfg.input_vars[0].name] = state["x"]
+                if self.plt_cnt_cfg.inputs_cnt > 1:
+                    kdims[self.bench_cfg.input_vars[1].name] = state["y"]
+
+                if hasattr(htmap, "current_key"):
+                    for d, k in zip(htmap.kdims, htmap.current_key):
+                        kdims[d.name] = k
+                for rv, cont in zip(result_var_plots, cont_instances):
+                    ds = dataset[rv.name]
+                    val = ds.sel(**kdims)
+                    item = self.zero_dim_da_to_val(val)
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
+                    cont.object = item
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
+                        cont.paused = False
+                        cont.time = 0
+                        cont.loop = True
+                        cont.autoplay = True
+                state["update"] = False
+
+        def on_exit(x, y):  # pragma: no cover # pylint: disable=unused-argument
+            state["update"] = True
+
+        htmap_posxy = hv.streams.PointerXY(source=htmap)
+        htmap_posxy.add_subscriber(tap_plot_line)
+        ls = hv.streams.MouseLeave(source=htmap)
+        ls.add_subscriber(on_exit)
+        bound_plot = pn.Column(title, *cont_instances)
         return pn.Row(htmap, bound_plot)
 
     def to_error_bar(self) -> hv.Bars:

@@ -11,6 +11,7 @@ from .variables.results import (
     ResultVar,
     ResultVec,
     ResultHmap,
+    ResultPath,
     ResultVideo,
     ResultImage,
     ResultString,
@@ -22,6 +23,15 @@ from .variables.results import (
     result
 )
 
+from .results.composable_container.composable_container_base import (
+    ComposeType,
+    ComposableContainerBase,
+)
+from .results.composable_container.composable_container_video import (
+    ComposableContainerVideo,
+    RenderCfg,
+)
+
 from .plotting.plot_filter import VarRange, PlotFilter
 from .utils import (
     hmap_canonical_input,
@@ -31,6 +41,7 @@ from .utils import (
     gen_image_path,
     gen_video_path,
     lerp,
+    tabs_in_markdown,
 )
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
@@ -40,3 +51,4 @@ from .results.holoview_result import ReduceType, HoloviewResult
 from .bench_report import BenchReport
 from .job import Executors
 from .video_writer import VideoWriter, add_image
+from .class_enum import ClassEnum, ExampleEnum

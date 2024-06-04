@@ -1,6 +1,6 @@
 from enum import auto
-from typing import List, Callable, Any
-
+from typing import List, Callable, Any, Optional
+from functools import partial
 import panel as pn
 import param
 from param import Number
@@ -87,11 +87,35 @@ class ResultHmap(param.Parameter):
         return hash_sha1(self)
 
 
-def curve(x_vals: List[float], y_vals: List[float], x_name: str, y_name: str, **kwargs) -> hv.Curve:
-    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=y_name, **kwargs)
+def curve(
+    x_vals: List[float],
+    y_vals: List[float],
+    x_name: str,
+    y_name: str,
+    label: Optional[str] = None,
+    **kwargs,
+) -> hv.Curve:
+    label = label or y_name
+    return hv.Curve(zip(x_vals, y_vals), kdims=[x_name], vdims=[y_name], label=label, **kwargs)
 
 
-class PathResult(param.Filename):
+class ResultPath(param.Filename):
+    __slots__ = ["units"]
+
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
+        self.units = units
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+    def to_container(self):
+        """Returns a partial function for creating a FileDownload widget with embedding enabled.  This function is used to create a panel container to represent the ResultPath object"""
+        return partial(pn.widgets.FileDownload, embed=True)
+
+
+class ResultVideo(param.Filename):
     __slots__ = ["units"]
 
     def __init__(self, default=None, units="path", **params):
@@ -103,14 +127,16 @@ class PathResult(param.Filename):
         return hash_sha1(self)
 
 
-class ResultVideo(PathResult):
-    def __init__(self, default=None, units="video", **params):
-        super().__init__(default=default, units=units, **params)
+class ResultImage(param.Filename):
+    __slots__ = ["units"]
 
+    def __init__(self, default=None, units="path", **params):
+        super().__init__(default=default, check_exists=False, **params)
+        self.units = units
 
-class ResultImage(PathResult):
-    def __init__(self, default=None, units="image", **params):
-        super().__init__(default=default, units=units, **params)
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
 
 
 class ResultString(param.String):
@@ -173,10 +199,22 @@ class ResultVolume(param.Parameter):
         return hash_sha1(self)
 
 
-PANEL_TYPES = (ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
-
-
 def result(name, units=""):
     res = ResultVar(units=units)
     res.name = name
     return res
+
+
+PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+
+ALL_RESULT_TYPES = (
+    ResultVar,
+    ResultVec,
+    ResultHmap,
+    ResultPath,
+    ResultVideo,
+    ResultImage,
+    ResultString,
+    ResultContainer,
+    ResultReference,
+)

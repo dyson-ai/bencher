@@ -47,6 +47,7 @@ class PltCntCfg(param.Parameterized):
         plt_cnt_cfg.float_vars = []
 
         for iv in bench_cfg.input_vars:
+            type_allocated = False
             if isinstance(iv, (IntSweep, FloatSweep, TimeSnapshot)):
                 # if "IntSweep" in typestr or "FloatSweep" in typestr:
                 plt_cnt_cfg.float_vars.append(iv)

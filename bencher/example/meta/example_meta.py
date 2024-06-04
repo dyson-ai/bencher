@@ -128,7 +128,7 @@ class BenchMeta(bch.ParametrizedSweep):
             # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
             # result_vars=[ BenchableObject.param.sample_noise],
             # result_vars=[BenchableObject.param.result_hmap],
-            plot=False,
+            plot_callbacks=False,
         )
 
         self.plots = bch.ResultReference()

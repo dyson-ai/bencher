@@ -24,6 +24,7 @@ from bencher.variables.results import (
     ResultVar,
     ResultVec,
     ResultHmap,
+    ResultPath,
     ResultVideo,
     ResultImage,
     ResultString,
@@ -222,11 +223,13 @@ class Bench(BenchPlotServer):
         group_size: int = 1,
         iterations: int = 1,
         relationship_cb=None,
-        plot=None,
+        plot_callbacks: List | bool = None,
     ) -> List[BenchResult]:
-        results = []
         if relationship_cb is None:
             relationship_cb = combinations
+        if input_vars is None:
+            input_vars = self.worker_class_instance.get_inputs_only()
+        results = []
         for it in range(iterations):
             for input_group in relationship_cb(input_vars, group_size):
                 title_gen = title + "Sweeping " + " vs ".join(params_to_str(input_group))
@@ -238,7 +241,7 @@ class Bench(BenchPlotServer):
                     result_vars=result_vars,
                     const_vars=const_vars,
                     run_cfg=run_cfg,
-                    plot=plot,
+                    plot_callbacks=plot_callbacks,
                 )
 
                 if optimise_var is not None:
@@ -286,8 +289,7 @@ class Bench(BenchPlotServer):
         pass_repeat: bool = False,
         tag: str = "",
         run_cfg: BenchRunCfg = None,
-        plot: bool = None,
-        plot_callbacks=None,
+        plot_callbacks: List | bool = None,
     ) -> BenchResult:
         """The all in 1 function benchmarker and results plotter.
 
@@ -303,7 +305,7 @@ class Bench(BenchPlotServer):
             you want the benchmark function to be passed the repeat number
             tag (str,optional): Use tags to group different benchmarks together.
             run_cfg: (BenchRunCfg, optional): A config for storing how the benchmarks and run
-            plot_callbacks: A list of plot callbacks to clal on the results
+            plot_callbacks: (List | bool) A list of plot callbacks to call on the results. Pass false or an empty list to turn off plotting
         Raises:
             ValueError: If a result variable is not set
 
@@ -366,8 +368,6 @@ class Bench(BenchPlotServer):
             cv_list = list(const_vars[i])
             cv_list[0] = self.convert_vars_to_params(cv_list[0], "const")
             const_vars[i] = cv_list
-        if plot is None:
-            plot = self.plot
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -428,6 +428,8 @@ class Bench(BenchPlotServer):
                 plot_callbacks = [BenchResult.to_auto_plots]
             else:
                 plot_callbacks = self.plot_callbacks
+        elif isinstance(plot_callbacks, bool):
+            plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
 
         bench_cfg = BenchCfg(
             input_vars=input_vars,
@@ -440,7 +442,6 @@ class Bench(BenchPlotServer):
             title=title,
             pass_repeat=pass_repeat,
             tag=run_cfg.run_tag + tag,
-            auto_plot=plot,
             plot_callbacks=plot_callbacks,
         )
         return self.run_sweep(bench_cfg, run_cfg, time_src)
@@ -596,7 +597,7 @@ class Bench(BenchPlotServer):
             time_src (datetime | str): a representation of the sample time
 
         Returns:
-            _type_: _description_
+            tuple[BenchResult, List, List]: bench_result, function intputs, dimension names
         """
 
         if time_src is None:
@@ -604,9 +605,7 @@ class Bench(BenchPlotServer):
         bench_cfg.meta_vars = self.define_extra_vars(bench_cfg, bench_cfg.repeats, time_src)
 
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
-
         # bench_cfg.all_vars = bench_cfg.iv_time + bench_cfg.input_vars +[ bench_cfg.iv_repeat]
-
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
 
         for i in bench_cfg.all_vars:
@@ -626,7 +625,9 @@ class Bench(BenchPlotServer):
             if isinstance(rv, ResultReference):
                 result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if isinstance(rv, (ResultVideo, ResultImage, ResultString, ResultContainer)):
+            if isinstance(
+                rv, (ResultPath, ResultVideo, ResultImage, ResultString, ResultContainer)
+            ):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             elif type(rv) == ResultVec:
@@ -763,7 +764,15 @@ class Bench(BenchPlotServer):
                     logging.info(f"{rv.name}: {result_value}")
 
                 if isinstance(
-                    rv, (ResultVar, ResultVideo, ResultImage, ResultString, ResultContainer)
+                    rv,
+                    (
+                        ResultVar,
+                        ResultVideo,
+                        ResultImage,
+                        ResultString,
+                        ResultContainer,
+                        ResultPath,
+                    ),
                 ):
                     set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
                 elif isinstance(rv, ResultReference):

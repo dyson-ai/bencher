@@ -8,6 +8,8 @@ from bencher.utils import (
     callable_name,
     lerp,
     listify,
+    tabs_in_markdown,
+    mult_tuple,
 )
 from functools import partial
 import xarray as xr
@@ -76,6 +78,9 @@ class TestBencherUtils(unittest.TestCase):
             bch.hmap_canonical_input(dic1),
             bch.hmap_canonical_input(dic2),
         )
+
+    def test_mult_tuple(self) -> None:
+        self.assertTupleEqual(mult_tuple((1, 2, 3), 2), (2, 4, 6))
 
     # Tests that the function returns the nearest coordinate name value pair for a dataset containing multiple coordinates
     def test_multiple_coordinates(self):
@@ -154,3 +159,18 @@ class TestBencherUtils(unittest.TestCase):
         self.assertEqual([obj], listify([obj]))
         self.assertEqual([obj], listify((obj)))
         self.assertEqual(None, listify(None))
+
+    def test_converts_single_tab_to_nbsp(self):
+        input_str = "This is\ta test"
+        expected_output = "This is&nbsp;&nbsp;a test"
+        self.assertEqual(tabs_in_markdown(input_str), expected_output)
+
+    def test_converts_multi_tab_to_nbsp(self):
+        input_str = "This is\ta test"
+        expected_output = "This is&nbsp;&nbsp;&nbsp;&nbsp;a test"
+        self.assertEqual(tabs_in_markdown(input_str, 4), expected_output)
+
+    def test_handles_empty_string(self):
+        input_str = ""
+        expected_output = ""
+        self.assertEqual(tabs_in_markdown(input_str), expected_output)

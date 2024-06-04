@@ -14,7 +14,7 @@
 		{
 			"label": "run <cfg>",
 			"type": "shell",
-			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; python3 $RUNFILE",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; pixi run python3 $RUNFILE",
 			"problemMatcher": [],
 			"group": {
 				"kind": "build",
@@ -25,28 +25,19 @@
 			"label": "autoformat",
 			"detail": "Use ruff and black to automatically fix and format the code",
 			"type": "shell",
-			"command": "ruff . --fix && black ."
+			"command": "pixi run fmt"
 		},
 		{
-			"label": "autoformat, commit and push",
-			"detail": "Use ruff and black to automatically fix and format the code and commit changes",
-			"type": "shell",
-			"dependsOn": [
-				"autoformat"
-			],
-			"command": "git commit -a -m 'fix: autoformatted and ruff --fix all code' || true && git push"
-		},
-		{
-			"label": "pylint",
+			"label": "lint",
 			"detail": "Run pylint on files tracked by git",
 			"type": "shell",
-			"command": "pylint $(git ls-files '*.py') "
+			"command": "pixi run lint"
 		},
 		{
 			"label": "code coverage",
 			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
 			"type": "shell",
-			"command": "coverage run -m pytest; coverage xml -o coverage.xml"
+			"command": "pixi run coverage"
 		},
 		{
 			"label": "code coverage report",
@@ -55,7 +46,7 @@
 			"dependsOn": [
 				"code coverage"
 			],
-			"command": "coverage report -m"
+			"command": "pixi run coverage-report"
 		},
 		{
 			"label": "pytest duration",
@@ -65,14 +56,9 @@
 		},
 		{
 			"label": "check CI",
-			"detail": "Runs the basic formatting and linting checks performed by CI",
+			"detail": "Runs the basic formatting and linting and tests performed by CI",
 			"type": "shell",
-			"dependsOn": [
-				"autoformat",
-				"pylint",
-				"code coverage report"
-			],
-			"dependsOrder": "sequence",
+			"command": "pixi run ci-no-cover"
 		},
 		{
 			"label": "check CI, commit and push",
@@ -81,7 +67,6 @@
 			"dependsOn": [
 				"git pull origin main",
 				"check CI",
-				"autoformat, commit and push",
 			],
 			"dependsOrder": "sequence",
 		},
@@ -120,10 +105,10 @@
 			"command": "scripts/update_from_template_ours.sh"
 		},
 		{
-			"label": "rename template project name and commit",
+			"label": "rename template project",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
-			"command": "scripts/rename_project.sh ${input:new_project_name}; git commit -a -m 'rename project'"
+			"command": "scripts/rename_project.sh ${input:new_project_name}"
 		},
 		{
 			"label": "first time setup of project",
@@ -145,7 +130,7 @@
 			"label": "flit publish",
 			"type": "shell",
 			"command": "flit publish"
-		},				
+		},
 		{
 			"label": "setup: host",
 			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
@@ -154,7 +139,7 @@
 			"presentation": {
 				"reveal": "always",
 				"panel": "new"
-			  }
+			}
 		},
 		{
 			"label": "launch container",
@@ -163,31 +148,33 @@
 			"command": "scripts/launch_vscode.sh"
 		},
 		{
-            "label": "Install All Recommended Extensions",
-            "type": "shell",           
-            "linux": {
-                "command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            },
-            "presentation": {
-                "reveal": "always"
-            },
-        },	
+			"label": "Install All Recommended Extensions",
+			"type": "shell",
+			"linux": {
+				"command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			},
+			"presentation": {
+				"reveal": "always"
+			},
+		},
 		{
-            "label": "set git config recurse submodules",
-            "type": "shell",           
-            "linux": {
-                "command": [" git config submodule.recurse true"],
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            },
-            "presentation": {
-                "reveal": "silent"
-            },
-        },	
+			"label": "set git config recurse submodules",
+			"type": "shell",
+			"linux": {
+				"command": [
+					" git config submodule.recurse true"
+				],
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			},
+			"presentation": {
+				"reveal": "silent"
+			},
+		},
 	],
 	"inputs": [
 		{

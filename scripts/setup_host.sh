@@ -52,3 +52,7 @@ echo "testing docker install"
 docker run hello-world
 
 echo "you may need to restart your machine"
+
+#INSTALL PIXI
+curl -fsSL https://pixi.sh/install.sh | bash
+echo 'eval "$(pixi completion --shell bash)"' >> ~/.bashrc

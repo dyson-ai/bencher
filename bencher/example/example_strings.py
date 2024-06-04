@@ -21,6 +21,9 @@ class TestPrinting(bch.ParametrizedSweep):
             self.result += f",{self.c}"
         if self.d is not None:
             self.result += f",{self.d}"
+        self.result += "\n\ttab\n\t\ttab2"
+
+        self.result = bch.tabs_in_markdown(self.result)
         return super().__call__()
 
 
@@ -36,8 +39,6 @@ def example_strings(
         [TestPrinting.param.a, TestPrinting.param.b, TestPrinting.param.c, TestPrinting.param.d],
     ]:
         bench.plot_sweep(f"String Panes {[v.name for v in s]}", input_vars=s)
-        # bench.report.append(res.to_sweep_summary())
-        # bench.report.append(res.to_panes())
 
     return bench
 

@@ -8,8 +8,9 @@ from colorsys import hsv_to_rgb
 from pathlib import Path
 from uuid import uuid4
 from functools import partial
-from typing import Callable, Any, List
+from typing import Callable, Any, List, Tuple
 import param
+import numpy as np
 
 
 def hmap_canonical_input(dic: dict) -> tuple:
@@ -61,6 +62,9 @@ def get_nearest_coords(dataset: xr.Dataset, collapse_list=False, **kwargs) -> di
 def get_nearest_coords1D(val: Any, coords) -> Any:
     if isinstance(val, (int, float)):
         return min(coords, key=lambda x_: abs(x_ - val))
+    for i in coords:
+        if val == i:
+            return i
     return val
 
 
@@ -95,6 +99,23 @@ def un_camel(camel: str) -> str:
     return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
+def mult_tuple(inp: Tuple[float], val: float) -> Tuple[float]:
+    return tuple(np.array(inp) * val)
+
+
+def tabs_in_markdown(regular_str: str, spaces: int = 2) -> str:
+    """Given a string with tabs in the form \t convert the to &ensp; which is a double space in markdown
+
+    Args:
+        regular_str (str): A string with tabs in it
+        spaces (int): the number of spaces per tab
+
+    Returns:
+        str: A string with sets of &nbsp; to represent the tabs in markdown
+    """
+    return regular_str.replace("\t", "".join(["&nbsp;"] * spaces))
+
+
 def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, float]:
     """Uses the golden angle to generate colors programmatically with minimum overlap between colors.
     https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
@@ -126,13 +147,21 @@ def color_tuple_to_css(color: tuple[float, float, float]) -> str:
     return f"rgb{(color[0] * 255, color[1] * 255, color[2] * 255)}"
 
 
-def gen_path(filename, folder, suffix):
+def color_tuple_to_255(color: tuple[float, float, float]) -> tuple[float, float, float]:
+    return (
+        min(int(color[0] * 255), 255),
+        min(int(color[1] * 255), 255),
+        min(int(color[2] * 255), 255),
+    )
+
+
+def gen_path(filename, folder="generic", suffix=".dat"):
     path = Path(f"cachedir/{folder}/{filename}/")
     path.mkdir(parents=True, exist_ok=True)
     return f"{path.absolute().as_posix()}/{filename}_{uuid4()}{suffix}"
 
 
-def gen_video_path(video_name: str = "vid", extension: str = ".webm") -> str:
+def gen_video_path(video_name: str = "vid", extension: str = ".mp4") -> str:
     return gen_path(video_name, "vid", extension)
 
 

@@ -17,13 +17,13 @@ from copy import deepcopy
 from bencher.results.optuna_result import OptunaResult
 from bencher.variables.results import ResultVar
 from bencher.plotting.plot_filter import VarRange, PlotFilter
+from bencher.utils import listify
 
 from bencher.variables.results import (
     ResultReference,
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
-from bencher.utils import listify
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -228,7 +228,7 @@ class BenchResultBase(OptunaResult):
         return " vs ".join(tit)
 
     def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
-        return self.bench_cfg.result_vars if result_var is None else [result_var]
+        return self.bench_cfg.result_vars if result_var is None else listify(result_var)
 
     def map_plots(
         self,
@@ -365,7 +365,7 @@ class BenchResultBase(OptunaResult):
                 sliced = dataset.isel({selected_dim: i})
                 label_val = sliced.coords[selected_dim].values.item()
                 inner_container = ComposableContainerPanel(
-                    outer_container.name,
+                    name=outer_container.name,
                     width=num_dims - target_dimension,
                     var_name=selected_dim,
                     var_value=label_val,
@@ -379,9 +379,7 @@ class BenchResultBase(OptunaResult):
                     horizontal=len(sliced.sizes) <= target_dimension + 1,
                     result_var=result_var,
                 )
-
-                if inner_container.label_len > max_len:
-                    max_len = inner_container.label_len
+                max_len = max(max_len, inner_container.label_len)
                 inner_container.append(panes)
                 outer_container.append(inner_container.container)
             for c in outer_container.container:
@@ -413,11 +411,19 @@ class BenchResultBase(OptunaResult):
         val = self.zero_dim_da_to_val(dataset[result_var.name])
         if isinstance(result_var, ResultReference):
             ref = self.object_index[val]
-            val = ref.obj
-            if ref.container is not None:
-                return ref.container(val, **kwargs)
+            if ref is not None:
+                val = ref.obj
+                if ref.container is not None:
+                    return ref.container(val, **kwargs)
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
+        try:
+            container = result_var.to_container()
+            if container is not None:
+                return container(val)
+        except AttributeError as _:
+            # TODO make sure all vars have to_container method
+            pass
         return val
 
     @staticmethod

@@ -344,9 +344,13 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self, width: int = 800) -> pn.pane.Markdown:
+    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
         """Produce a markdown summary of the sweep settings"""
-        return pn.pane.Markdown(self.describe_benchmark(), width=width)
+
+        desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
+        if accordion:
+            return pn.Accordion(("Data Collection Parameters", desc))
+        return desc
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
@@ -370,26 +374,19 @@ class BenchCfg(BenchRunCfg):
         for rv in self.result_vars:
             benchmark_sampling_str.extend(describe_variable(rv, False))
 
-        print_meta = True
-        # if len(self.meta_vars) == 1:
-        #     mv = self.meta_vars[0]
-        #     if mv.name == "repeat" and mv.samples == 1:
-        #         print_meta = False
+        benchmark_sampling_str.append("\nMeta Variables:")
+        benchmark_sampling_str.append(f"    run date: {self.run_date}")
+        if self.run_tag:
+            benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
+        if self.level is not None:
+            benchmark_sampling_str.append(f"    bench level: {self.level}")
+        benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
+        benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
+        benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
+        benchmark_sampling_str.append(f"    executor: {self.executor}")
 
-        if print_meta:
-            benchmark_sampling_str.append("\nMeta Variables:")
-            benchmark_sampling_str.append(f"    run date: {self.run_date}")
-            if self.run_tag is not None and len(self.run_tag) > 0:
-                benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
-            if self.level is not None:
-                benchmark_sampling_str.append(f"    bench level: {self.level}")
-            benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
-            benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
-            benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
-            benchmark_sampling_str.append(f"    parallel: {self.executor}")
-
-            for mv in self.meta_vars:
-                benchmark_sampling_str.extend(describe_variable(mv, True))
+        for mv in self.meta_vars:
+            benchmark_sampling_str.extend(describe_variable(mv, True))
 
         benchmark_sampling_str.append("```")
 
@@ -427,7 +424,7 @@ class BenchCfg(BenchRunCfg):
         if self.description is not None and description:
             col.append(self.to_description())
         if describe_sweep:
-            col.append(pn.Accordion(("Data Collection Parameters", self.describe_sweep())))
+            col.append(self.describe_sweep())
         if results_suffix:
             col.append(pn.pane.Markdown("## Results:"))
         return col
