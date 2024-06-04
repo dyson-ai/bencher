@@ -1,4 +1,5 @@
 from typing import List
+import logging
 
 import optuna
 import panel as pn
@@ -158,8 +159,8 @@ def summarise_optuna_study(study: optuna.study.Study) -> pn.pane.panel:
     row.append(plot_param_importances(study))
     try:
         row.append(plot_pareto_front(study))
-    except Exception:
-        pass
+    except Exception as e:  # pylint: disable=broad-except
+        logging.exception(e)
 
     row.append(
         pn.pane.Markdown(f"```\nBest value: {study.best_value}\nParams: {study.best_params}```")

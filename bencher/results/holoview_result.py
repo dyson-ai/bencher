@@ -677,7 +677,7 @@ class HoloviewResult(PanelResult):
             try:
                 surface = hvds.to(hv.Surface, vdims=[result_var.name])
                 surface = surface.opts(colorbar=True)
-            except Exception as e:
+            except Exception as e: # pylint: disable=broad-except
                 logging.warning(e)
 
             if self.bench_cfg.repeats > 1:
