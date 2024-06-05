@@ -12,7 +12,8 @@ class ExampleMergeDataset(bch.ParametrizedSweep):
     # repeats_y = bch.IntSweep(default=2, bounds=[2, 4])
 
 
-    result_df = bch.ResultReference()
+    # result_df = bch.ResultReference()
+    result_df = bch.ResultDataSet()
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
@@ -26,7 +27,10 @@ class ExampleMergeDataset(bch.ParametrizedSweep):
         result_df = xr.Dataset({"result_df": data_array})
         self.result_df = pn.panel(result_df)
 
-        self.result_df = bch.ResultReference(result_df.to_pandas())
+        # self.result_df = bch.ResultReference(result_df.to_pandas())
+
+        self.result_df = bch.ResultDataSet(result_df.to_pandas())
+
 
 
         return super().__call__(**kwargs)

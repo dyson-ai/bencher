@@ -212,7 +212,7 @@ class ResultVolume(param.Parameter):
         return hash_sha1(self)
 
 
-PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference,ResultDataSet)
 
 ALL_RESULT_TYPES = (
     ResultVar,
@@ -223,5 +223,6 @@ ALL_RESULT_TYPES = (
     ResultImage,
     ResultString,
     ResultContainer,
+    ResultDataSet,
     ResultReference,
 )

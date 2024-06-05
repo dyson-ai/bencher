@@ -587,6 +587,9 @@ class Bench(BenchPlotServer):
             if isinstance(rv, ResultVar):
                 result_data = np.full(dims_cfg.dims_size, np.nan, dtype=float)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
+            if isinstance(rv, ResultDataSet):
+                result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
+                data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             if isinstance(rv, ResultReference):
                 result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
@@ -595,9 +598,7 @@ class Bench(BenchPlotServer):
             ):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            # if isinstance(rv, ResultDataSet):
-            #     result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
-            #     data_vars[rv.name] = (dims_cfg.dims_name, result_data)
+           
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
                     result_data = np.full(dims_cfg.dims_size, np.nan)
@@ -750,6 +751,13 @@ class Bench(BenchPlotServer):
                         bench_res.ds[rv.name],
                         worker_job.index_tuple,
                         len(bench_res.object_index) - 1,
+                    )
+                elif isinstance(rv, ResultDataSet):
+                    bench_res.dataset_list.append(result_value)
+                    set_xarray_multidim(
+                        bench_res.ds[rv.name],
+                        worker_job.index_tuple,
+                        len(bench_res.dataset_list) - 1,
                     )
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
