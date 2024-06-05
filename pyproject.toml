@@ -69,6 +69,7 @@ py310 = ["py310", "test"]
 py311 = ["py311", "test"]
 
 [tool.pixi.tasks]
+success = "echo Success"
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
@@ -82,7 +83,7 @@ coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock'"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
-fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
+fix = { depends_on = ["update-lock", "format", "ruff-lint","success"] }
 
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
