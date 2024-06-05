@@ -82,6 +82,8 @@ coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock'"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
+fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
+
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
   "format",
