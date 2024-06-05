@@ -63,6 +63,7 @@ class OptunaResult:
         self.studies = []
         self.plt_cnt_cfg = PltCntCfg()
         self.plot_inputs = []
+        self.dataset_list = []
 
         # self.width=600/
         # self.height=600
