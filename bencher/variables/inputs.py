@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Any
+from typing import List, Any,Dict
 
 import numpy as np
 from param import Integer, Number, Selector
@@ -174,7 +174,6 @@ def box(name, center, width):
     return var
 
 
-from typing import Any, Dict, List
 
 
 def p(name: str, values: List[Any] = None, max_level: int = None) -> Dict[str, Any]:

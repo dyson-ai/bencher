@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from itertools import product, combinations
 
-from typing import Callable, List,Optional
+from typing import Callable, List, Optional
 from copy import deepcopy
 import numpy as np
 import param
@@ -487,8 +487,11 @@ class Bench(BenchPlotServer):
         return bench_res
 
     def convert_vars_to_params(
-        self, variable: param.Parameter | str | dict | tuple, var_type: str, run_cfg:Optional[ BenchRunCfg]
-    )->param.Parameter :
+        self,
+        variable: param.Parameter | str | dict | tuple,
+        var_type: str,
+        run_cfg: Optional[BenchRunCfg],
+    ) -> param.Parameter:
         """check that a variable is a subclass of param
 
         Args:
