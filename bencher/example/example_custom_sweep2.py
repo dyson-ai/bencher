@@ -35,7 +35,5 @@ def example_custom_sweep2(
     return bench
 
 
-
-
 if __name__ == "__main__":
     example_custom_sweep2().report.show()

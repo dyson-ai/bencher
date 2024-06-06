@@ -314,7 +314,7 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
-        
+
         if run_cfg is None:
             if self.run_cfg is None:
                 run_cfg = BenchRunCfg()
@@ -343,9 +343,9 @@ class Bench(BenchPlotServer):
             input_vars = input_lists
         else:
             for i in range(len(input_vars)):
-                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input",run_cfg)
+                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input", run_cfg)
         for i in range(len(result_vars)):
-            result_vars[i] = self.convert_vars_to_params(result_vars[i], "result",run_cfg)
+            result_vars[i] = self.convert_vars_to_params(result_vars[i], "result", run_cfg)
 
         for r in result_vars:
             logging.info(f"result var: {r.name}")
@@ -356,10 +356,8 @@ class Bench(BenchPlotServer):
         for i in range(len(const_vars)):
             # consts come as tuple pairs
             cv_list = list(const_vars[i])
-            cv_list[0] = self.convert_vars_to_params(cv_list[0], "const",run_cfg)
+            cv_list[0] = self.convert_vars_to_params(cv_list[0], "const", run_cfg)
             const_vars[i] = cv_list
-
-
 
         if title is None:
             if len(input_vars) > 0:
@@ -489,7 +487,7 @@ class Bench(BenchPlotServer):
         return bench_res
 
     def convert_vars_to_params(
-        self, variable: param.Parameter|str|dict|tuple, var_type: str, run_cfg: BenchRunCfg
+        self, variable: param.Parameter | str | dict | tuple, var_type: str, run_cfg: BenchRunCfg
     ):
         """check that a variable is a subclass of param
 
