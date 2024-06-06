@@ -495,7 +495,9 @@ class Bench(BenchPlotServer):
         if isinstance(variable, str):
             variable = self.worker_class_instance.param.objects(instance=False)[variable]
         if isinstance(variable, tuple):
-            variable = self.worker_class_instance.param.objects(instance=False)[variable[0]].with_sample_values(variable[1])
+            variable = self.worker_class_instance.param.objects(instance=False)[
+                variable[0]
+            ].with_sample_values(variable[1])
         if not isinstance(variable, param.Parameter):
             raise TypeError(
                 f"You need to use {var_type}_vars =[{self.worker_input_cfg}.param.your_variable], instead of {var_type}_vars =[{self.worker_input_cfg}.your_variable]"
