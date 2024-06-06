@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Any,Dict
+from typing import List, Any, Dict
 
 import numpy as np
 from param import Integer, Number, Selector
@@ -172,8 +172,6 @@ def box(name, center, width):
     var = FloatSweep(default=center, bounds=(center - width, center + width))
     var.name = name
     return var
-
-
 
 
 def p(name: str, values: List[Any] = None, max_level: int = None) -> Dict[str, Any]:
