@@ -174,7 +174,10 @@ def box(name, center, width):
     return var
 
 
-def p(name: str, values: List[Any] = None, max_level: int = None):
+from typing import Any, Dict, List
+
+
+def p(name: str, values: List[Any] = None, max_level: int = None) -> Dict[str, Any]:
     if max_level is not None:
         assert max_level > 0
     return {"name": name, "values": values, "max_level": max_level}
