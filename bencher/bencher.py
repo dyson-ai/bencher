@@ -331,7 +331,7 @@ class Bench(BenchPlotServer):
         if isinstance(input_vars, dict):
             input_lists = []
             for k, v in input_vars.items():
-                param_var = self.convert_vars_to_params(k, "input")
+                param_var = self.convert_vars_to_params(k, "input", run_cfg)
                 if isinstance(v, list):
                     assert len(v) > 0
                     param_var = param_var.with_sample_values(v)
