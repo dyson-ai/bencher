@@ -10,7 +10,7 @@ class Square(bch.ParametrizedSweep):
 
     def __call__(self, **kwargs) -> dict:
         self.update_params_from_kwargs(**kwargs)
-        self.result = self.x * self.x 
+        self.result = self.x * self.x
         return self.get_results_values_as_dict()
 
 
@@ -28,14 +28,10 @@ def example_custom_sweep2(
 
     bench = Square().to_bench(run_cfg=run_cfg, report=report)
 
-    bench.plot_sweep(
-        input_vars=[Square.param.x.with_sample_values([0, 1, 2])],
-    )
-
-    bench.plot_sweep(
-        title="Example User Defined Sweep 2D",
-        input_vars=[Square.param.x.with_sample_values([0, 1, 2])],
-    )
+    # These are all equivalent
+    bench.plot_sweep(input_vars=[Square.param.x.with_sample_values([0, 1, 2])])
+    bench.plot_sweep(input_vars=dict(x=[2, 3, 4]))
+    bench.plot_sweep(input_vars=[("x", [3, 4, 5])])
 
     return bench
 

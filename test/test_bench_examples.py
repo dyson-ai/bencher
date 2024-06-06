@@ -9,6 +9,7 @@ from bencher.example.example_time_event import run_example_time_event
 from bencher.example.example_float3D import example_floats3D
 
 from bencher.example.example_custom_sweep import example_custom_sweep
+from bencher.example.example_custom_sweep import example_custom_sweep2
 from bencher.example.example_workflow import example_floats2D_workflow, example_floats3D_workflow
 from bencher.example.example_holosweep import example_holosweep
 from bencher.example.example_holosweep_tap import example_holosweep_tap
@@ -84,6 +85,9 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_custom_sweep(self) -> None:
         self.examples_asserts(example_custom_sweep(self.create_run_cfg()))
+
+    def test_example_custom2(self) -> None:
+        self.examples_asserts(example_custom_sweep2(self.create_run_cfg()))
 
     def test_example_floats2D_workflow(self) -> None:
         self.examples_asserts(example_floats2D_workflow(self.create_run_cfg()))
