@@ -174,10 +174,14 @@ def box(name, center, width):
     return var
 
 
-def p(name: str, values: List[Any] = None, max_level: int = None) -> Dict[str, Any]:
+def p(
+    name: str, values: List[Any] = None, samples: int = None, max_level: int = None
+) -> Dict[str, Any]:
     if max_level is not None:
         assert max_level > 0
-    return {"name": name, "values": values, "max_level": max_level}
+    if samples is not None:
+        assert samples > 0
+    return {"name": name, "values": values, "max_level": max_level, "samples": samples}
 
 
 def with_level(arr: list, level) -> list:
