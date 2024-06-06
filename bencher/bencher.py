@@ -505,9 +505,12 @@ class Bench(BenchPlotServer):
             variable = self.worker_class_instance.param.objects(instance=False)[variable]
         if isinstance(variable, dict):
             param_var = self.worker_class_instance.param.objects(instance=False)[variable["name"]]
-            if variable["values"] is not None:
+            if variable.get("values"):
                 param_var = param_var.with_sample_values(variable["values"])
-            if variable["max_level"] is not None:
+
+            if variable.get("samples"):
+                param_var = param_var.with_samples(variable["samples"])
+            if variable.get("max_level"):
                 if run_cfg is not None:
                     param_var = param_var.with_level(run_cfg.level, variable["max_level"])
             variable = param_var

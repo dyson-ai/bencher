@@ -32,6 +32,9 @@ def example_custom_sweep2(
     bench.plot_sweep(input_vars=[Square.param.x.with_sample_values([0, 1, 2])])
     bench.plot_sweep(input_vars=[bch.p("x", [4, 5, 6])])
 
+    bench.plot_sweep(input_vars=[bch.p("x", samples=5)])
+    bench.plot_sweep(input_vars=[bch.p("x", samples=6)])
+
     return bench
 
 
