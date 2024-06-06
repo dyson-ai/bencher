@@ -500,20 +500,12 @@ class Bench(BenchPlotServer):
         """
         if isinstance(variable, str):
             variable = self.worker_class_instance.param.objects(instance=False)[variable]
-        # if isinstance(variable, tuple):
-        #     variable = self.worker_class_instance.param.objects(instance=False)[
-        #         variable[0]
-        #     ].with_sample_values(variable[1])()
-        print(variable)
         if isinstance(variable, dict):
             param_var = self.worker_class_instance.param.objects(instance=False)[variable["name"]]
             if variable["values"] is not None:
                 param_var = param_var.with_sample_values(variable["values"])
-            print(variable["max_level"])
             if variable["max_level"] is not None:
-                print(run_cfg)
                 if run_cfg is not None:
-                    print("laskdjfalskdjflkj")
                     param_var = param_var.with_level(run_cfg.level, variable["max_level"])
             variable = param_var
         if not isinstance(variable, param.Parameter):
