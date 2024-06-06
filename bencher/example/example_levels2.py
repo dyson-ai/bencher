@@ -14,9 +14,7 @@ class Square(bch.ParametrizedSweep):
         return self.get_results_values_as_dict()
 
 
-def example_custom_sweep2(
-    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
-) -> bch.Bench:
+def example_levels2(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     """This example shows how to define a custom set of value to sample from intead of a uniform sweep
 
     Args:
@@ -29,13 +27,11 @@ def example_custom_sweep2(
     bench = Square().to_bench(run_cfg=run_cfg, report=report)
 
     # These are all equivalent
-    bench.plot_sweep(input_vars=[Square.param.x.with_sample_values([0, 1, 2])])
-    bench.plot_sweep(input_vars=[bch.p("x", [4, 5, 6])])
+    bench.plot_sweep(input_vars=[Square.param.x.with_level(run_cfg.level, 3)])
+    bench.plot_sweep(input_vars=[bch.p("x", max_level=3)])
 
     return bench
 
 
-
-
 if __name__ == "__main__":
-    example_custom_sweep2().report.show()
+    example_levels2(bch.BenchRunCfg(level=4)).report.show()

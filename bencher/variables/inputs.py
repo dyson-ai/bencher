@@ -174,6 +174,12 @@ def box(name, center, width):
     return var
 
 
+def p(name: str, values: List[Any] = None, max_level: int = None):
+    if max_level is not None:
+        assert max_level > 0
+    return {"name": name, "values": values, "max_level": max_level}
+
+
 def with_level(arr: list, level) -> list:
     return IntSweep(sample_values=arr).with_level(level).values()
     # return tmp.with_sample_values(arr).with_level(level).values()

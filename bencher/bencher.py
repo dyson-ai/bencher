@@ -314,37 +314,7 @@ class Bench(BenchPlotServer):
                 const_vars = []
             else:
                 const_vars = deepcopy(const_vars)
-
-        if isinstance(input_vars, dict):
-            input_lists = []
-            for k, v in input_vars.items():
-                param_var = self.convert_vars_to_params(k, "input")
-                if isinstance(v, list):
-                    assert len(v) > 0
-                    param_var = param_var.with_sample_values(v)
-                else:
-                    raise RuntimeError("Unsupported type")
-                input_lists.append(param_var)
-
-            input_vars = input_lists
-        else:
-            for i in range(len(input_vars)):
-                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
-        for i in range(len(result_vars)):
-            result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
-
-        for r in result_vars:
-            logging.info(f"result var: {r.name}")
-
-        if isinstance(const_vars, dict):
-            const_vars = list(const_vars.items())
-
-        for i in range(len(const_vars)):
-            # consts come as tuple pairs
-            cv_list = list(const_vars[i])
-            cv_list[0] = self.convert_vars_to_params(cv_list[0], "const")
-            const_vars[i] = cv_list
-
+        
         if run_cfg is None:
             if self.run_cfg is None:
                 run_cfg = BenchRunCfg()
@@ -357,6 +327,39 @@ class Bench(BenchPlotServer):
             run_cfg.use_cache = True
 
         self.last_run_cfg = run_cfg
+
+        if isinstance(input_vars, dict):
+            input_lists = []
+            for k, v in input_vars.items():
+                param_var = self.convert_vars_to_params(k, "input")
+                if isinstance(v, list):
+                    assert len(v) > 0
+                    param_var = param_var.with_sample_values(v)
+
+                else:
+                    raise RuntimeError("Unsupported type")
+                input_lists.append(param_var)
+
+            input_vars = input_lists
+        else:
+            for i in range(len(input_vars)):
+                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input",run_cfg)
+        for i in range(len(result_vars)):
+            result_vars[i] = self.convert_vars_to_params(result_vars[i], "result",run_cfg)
+
+        for r in result_vars:
+            logging.info(f"result var: {r.name}")
+
+        if isinstance(const_vars, dict):
+            const_vars = list(const_vars.items())
+
+        for i in range(len(const_vars)):
+            # consts come as tuple pairs
+            cv_list = list(const_vars[i])
+            cv_list[0] = self.convert_vars_to_params(cv_list[0], "const",run_cfg)
+            const_vars[i] = cv_list
+
+
 
         if title is None:
             if len(input_vars) > 0:
@@ -485,7 +488,9 @@ class Bench(BenchPlotServer):
         self.results.append(bench_res)
         return bench_res
 
-    def convert_vars_to_params(self, variable: param.Parameter, var_type: str):
+    def convert_vars_to_params(
+        self, variable: param.Parameter|str|dict|tuple, var_type: str, run_cfg: BenchRunCfg
+    ):
         """check that a variable is a subclass of param
 
         Args:
@@ -497,10 +502,22 @@ class Bench(BenchPlotServer):
         """
         if isinstance(variable, str):
             variable = self.worker_class_instance.param.objects(instance=False)[variable]
-        if isinstance(variable, tuple):
-            variable = self.worker_class_instance.param.objects(instance=False)[
-                variable[0]
-            ].with_sample_values(variable[1])
+        # if isinstance(variable, tuple):
+        #     variable = self.worker_class_instance.param.objects(instance=False)[
+        #         variable[0]
+        #     ].with_sample_values(variable[1])()
+        print(variable)
+        if isinstance(variable, dict):
+            param_var = self.worker_class_instance.param.objects(instance=False)[variable["name"]]
+            if variable["values"] is not None:
+                param_var = param_var.with_sample_values(variable["values"])
+            print(variable["max_level"])
+            if variable["max_level"] is not None:
+                print(run_cfg)
+                if run_cfg is not None:
+                    print("laskdjfalskdjflkj")
+                    param_var = param_var.with_level(run_cfg.level, variable["max_level"])
+            variable = param_var
         if not isinstance(variable, param.Parameter):
             raise TypeError(
                 f"You need to use {var_type}_vars =[{self.worker_input_cfg}.param.your_variable], instead of {var_type}_vars =[{self.worker_input_cfg}.your_variable]"
