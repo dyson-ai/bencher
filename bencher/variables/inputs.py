@@ -177,10 +177,23 @@ def box(name, center, width):
 def p(
     name: str, values: List[Any] = None, samples: int = None, max_level: int = None
 ) -> Dict[str, Any]:
-    if max_level is not None:
-        assert max_level > 0
-    if samples is not None:
-        assert samples > 0
+    """
+    Create a parameter dictionary with optional values, samples, and max_level.
+
+    Args:
+        name (str): The name of the parameter.
+        values (List[Any], optional): A list of values for the parameter. Defaults to None.
+        samples (int, optional): The number of samples. Must be greater than 0 if provided. Defaults to None.
+        max_level (int, optional): The maximum level. Must be greater than 0 if provided. Defaults to None.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the parameter details.
+    """
+    if max_level is not None and max_level <= 0:
+        raise ValueError("max_level must be greater than 0")
+
+    if samples is not None and samples <= 0:
+        raise ValueError("samples must be greater than 0")
     return {"name": name, "values": values, "max_level": max_level, "samples": samples}
 
 
