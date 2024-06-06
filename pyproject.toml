@@ -81,6 +81,7 @@ coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock'"
 fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
+fix-commit-push = { depends_on = ["fix", "commit-format", "push"] }
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
