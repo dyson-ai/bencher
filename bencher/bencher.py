@@ -320,7 +320,7 @@ class Bench(BenchPlotServer):
             for k, v in input_vars.items():
                 param_var = self.convert_vars_to_params(k, "input")
                 if isinstance(v, list):
-                    assert(len(list)>0)
+                    assert len(list) > 0
                     param_var = param_var.with_sample_values(v)
                 else:
                     raise RuntimeError("Unsupported type")
