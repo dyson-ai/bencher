@@ -6,7 +6,7 @@ from .variables.sweep_base import hash_sha1
 from .variables.inputs import IntSweep, FloatSweep, StringSweep, EnumSweep, BoolSweep, SweepBase
 from .variables.time import TimeSnapshot
 
-from .variables.inputs import box
+from .variables.inputs import box, p
 from .variables.results import (
     ResultVar,
     ResultVec,
