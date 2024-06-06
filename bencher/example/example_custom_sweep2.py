@@ -35,7 +35,6 @@ def example_custom_sweep2(
     bench.plot_sweep(input_vars=[bch.p("x", samples=5)])
     bench.plot_sweep(input_vars=[bch.p("x", samples=6)])
 
-
     return bench
 
 
