@@ -315,8 +315,21 @@ class Bench(BenchPlotServer):
             else:
                 const_vars = deepcopy(const_vars)
 
-        for i in range(len(input_vars)):
-            input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
+        if isinstance(input_vars, dict):
+            input_lists = []
+            for k, v in input_vars.items():
+                param_var = self.convert_vars_to_params(k, "input")
+                if isinstance(v, list):
+                    assert len(v) > 0
+                    param_var = param_var.with_sample_values(v)
+                else:
+                    raise RuntimeError("Unsupported type")
+                input_lists.append(param_var)
+
+            input_vars = input_lists
+        else:
+            for i in range(len(input_vars)):
+                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input")
         for i in range(len(result_vars)):
             result_vars[i] = self.convert_vars_to_params(result_vars[i], "result")
 
@@ -484,6 +497,10 @@ class Bench(BenchPlotServer):
         """
         if isinstance(variable, str):
             variable = self.worker_class_instance.param.objects(instance=False)[variable]
+        if isinstance(variable, tuple):
+            variable = self.worker_class_instance.param.objects(instance=False)[
+                variable[0]
+            ].with_sample_values(variable[1])
         if not isinstance(variable, param.Parameter):
             raise TypeError(
                 f"You need to use {var_type}_vars =[{self.worker_input_cfg}.param.your_variable], instead of {var_type}_vars =[{self.worker_input_cfg}.your_variable]"
