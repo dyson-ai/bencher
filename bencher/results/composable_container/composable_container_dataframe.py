@@ -6,7 +6,7 @@ from bencher.results.composable_container.composable_container_base import Compo
 
 
 @dataclass(kw_only=True)
-class ComposableContainerPanel(ComposableContainerBase):
+class ComposableContainerDataset(ComposableContainerBase):
     name: str = None
     var_name: str = None
     var_value: str = None
@@ -50,5 +50,3 @@ class ComposableContainerPanel(ComposableContainerBase):
                 return xr.concat(self.container, 2)
             # case ComposeType.overlay:
             # return xr.Dataset.mean()
-
-
