@@ -20,7 +20,7 @@ from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import listify
 
 from bencher.variables.results import (
-    ResultReference,
+    ResultReference,ResultDataSet
 )
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
@@ -409,12 +409,17 @@ class BenchResultBase(OptunaResult):
         self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
     ) -> Any:
         val = self.zero_dim_da_to_val(dataset[result_var.name])
-        if isinstance(result_var, ResultReference):
+        if isinstance(result_var, ResultDataSet):
+            ref = self.dataset_list[val]
+            if ref is not None:
+                return ref.obj
+        elif isinstance(result_var, ResultReference):
             ref = self.object_index[val]
             if ref is not None:
                 val = ref.obj
                 if ref.container is not None:
                     return ref.container(val, **kwargs)
+       
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         try:

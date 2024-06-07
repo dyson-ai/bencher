@@ -21,7 +21,7 @@ class ExampleMergeDataset(bch.ParametrizedSweep):
         # self.result_df = xr.Dataset({"dss": dss, "nmap": (("x"), nmap)})
         # First, create a DataArray from the vector
         vector = [v for v in range(1,self.repeats_x)]
-        print(vector)
+        # print(vector)
         data_array = xr.DataArray(vector, dims=["index"], coords={"index": np.arange(len(vector))})
         # Convert the DataArray to a Dataset
         result_df = xr.Dataset({"result_df": data_array})
