@@ -1,12 +1,8 @@
-import panel as pn
-from bencher.results.composable_container.composable_container_base import ComposableContainerBase
 from dataclasses import dataclass
-from bencher.results.composable_container.composable_container_base import (
-    ComposeType,
-    # Re
-    # RenderCfg
-)
+import panel as pn
 import xarray as xr
+from bencher.results.composable_container.composable_container_base import ComposableContainerBase
+from bencher.results.composable_container.composable_container_base import ComposeType
 
 
 @dataclass(kw_only=True)
@@ -45,7 +41,6 @@ class ComposableContainerPanel(ComposableContainerBase):
             self.append(side)
 
     def render(self, **kwargs):
-
         match self.compose_method:
             case ComposeType.right:
                 return xr.concat(self.container, 0)
@@ -55,3 +50,5 @@ class ComposableContainerPanel(ComposableContainerBase):
                 return xr.concat(self.container, 2)
             # case ComposeType.overlay:
             # return xr.Dataset.mean()
+
+

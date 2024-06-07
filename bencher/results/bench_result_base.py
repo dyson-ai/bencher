@@ -412,7 +412,10 @@ class BenchResultBase(OptunaResult):
         if isinstance(result_var, ResultDataSet):
             ref = self.dataset_list[val]
             if ref is not None:
+                if container is not None:
+                    return container(ref.obj)
                 return ref.obj
+                
         elif isinstance(result_var, ResultReference):
             ref = self.object_index[val]
             if ref is not None:
