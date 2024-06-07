@@ -112,7 +112,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
   py310:
     channels:
@@ -227,7 +227,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
   py311:
     channels:
@@ -341,7 +341,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
 packages:
 - kind: conda
@@ -896,7 +896,7 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: holobench
-  version: 1.23.0
+  version: 1.25.0
   path: .
   sha256: d0dc69d3acc62e41b1c9a280ab09f90fc91b51b28f644d80097883e17e198676
   requires_dist:
@@ -3548,9 +3548,9 @@ packages:
   requires_python: '>=3.9'
 - kind: pypi
   name: xyzservices
-  version: 2024.4.0
-  url: https://files.pythonhosted.org/packages/b7/2c/08768a39947864fcebc19f059b758d8169a2ac183a61361359f56c144f7c/xyzservices-2024.4.0-py3-none-any.whl
-  sha256: b83e48c5b776c9969fffcfff57b03d02b1b1cd6607a9d9c4e7f568b01ef47f4c
+  version: 2024.6.0
+  url: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
+  sha256: fecb2508f0f2b71c819aecf5df2c03cef001c56a4b49302e640f3b34710d25e4
   requires_python: '>=3.8'
 - kind: conda
   name: xz
