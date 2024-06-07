@@ -81,7 +81,6 @@ test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock'"
-fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 fix = { depends_on = ["update-lock", "format", "ruff-lint", "success"] }
