@@ -10,8 +10,8 @@ def example_meta_cat(
     bench.plot_sweep(
         title="Sweeping Categorical Variables",
         input_vars=[
-            BenchMeta.param.categorical_vars.with_sample_values([1, 2, 3]),
-            BenchMeta.param.sample_with_repeats.with_sample_values([1, 2]),
+            bch.p("categorical_vars", [1, 2, 3]),
+            bch.p("sample_with_repeats", [1, 2]),
         ],
         const_vars=[
             BenchMeta.param.float_vars.with_const(0),

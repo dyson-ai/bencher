@@ -113,7 +113,7 @@ def example_composable_container_image(
 
     # bench.compose_
     # bench.plot_sweep(
-    # input_vars=[BenchComposableContainerImage.param.num_frames.with_sample_values([2, 8, 20])],
+    # input_vars=[bch.p("num_frames", [2, 8, 20])],
     # const_vars=dict(compose_method=bch.ComposeType.sequence),
     # )
 
