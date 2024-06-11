@@ -19,9 +19,7 @@ from bencher.variables.results import ResultVar
 from bencher.plotting.plot_filter import VarRange, PlotFilter
 from bencher.utils import listify
 
-from bencher.variables.results import (
-    ResultReference,ResultDataSet
-)
+from bencher.variables.results import ResultReference, ResultDataSet
 
 from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
 
@@ -415,14 +413,15 @@ class BenchResultBase(OptunaResult):
                 if container is not None:
                     return container(ref.obj)
                 return ref.obj
-                
+            return None
+
         elif isinstance(result_var, ResultReference):
             ref = self.object_index[val]
             if ref is not None:
                 val = ref.obj
                 if ref.container is not None:
                     return ref.container(val, **kwargs)
-       
+
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         try:

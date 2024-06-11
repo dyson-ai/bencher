@@ -39,3 +39,29 @@ class PanelResult(BenchResultBase):
             result_types=PANEL_TYPES,
             **kwargs,
         )
+
+
+def zip_results1D(args):
+    first_el = [a[0] for a in args]
+    out = pn.Column()
+    for a in zip(*first_el):
+        row = pn.Row()
+        row.append(a[0])
+        for a1 in range(1, len(a[1])):
+            row.append(a[a1][1])
+        out.append(row)
+    return out
+
+
+def zip_results1D1(args):
+    first_el = args
+    container_args = {"styles": {}}
+    container_args["styles"]["border-bottom"] = f"{2}px solid grey"
+    out = pn.Column()
+    for a in zip(*first_el):
+        row = pn.Row(**container_args)
+        row.append(a[0][0])
+        for a1 in range(0, len(a)):
+            row.append(a[a1][1])
+        out.append(row)
+    return out
