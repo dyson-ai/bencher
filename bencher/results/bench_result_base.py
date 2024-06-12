@@ -240,6 +240,46 @@ class BenchResultBase(OptunaResult):
             row.append(plot_callback(rv))
         return row.get()
 
+    @staticmethod   
+    def zip_results1D(args):
+        first_el = [a[0] for a in args]
+        out = pn.Column()
+        for a in zip(*first_el):
+            row = pn.Row()
+            row.append(a[0])
+            for a1 in range(1, len(a[1])):
+                row.append(a[a1][1])
+            out.append(row)
+        return out
+
+    @staticmethod
+    def zip_results1D1(panel_list):
+        container_args = {"styles": {}}
+        container_args["styles"]["border-bottom"] = f"{2}px solid grey"
+        print(panel_list)
+        out = pn.Column()
+        for a in zip(*panel_list):
+            row = pn.Row(**container_args)
+            row.append(a[0][0])
+            for a1 in range(0, len(a)):
+                row.append(a[a1][1])
+            out.append(row)
+        return out
+    
+    @staticmethod
+    def zip_results1D2(panel_list):
+        if panel_list is not None:
+            print(panel_list)
+            primary = panel_list[0]
+            secondary = panel_list[1:]
+            for i in range(len(primary)):
+                print(type(primary[i]))
+                if isinstance(primary[i],(pn.Column,pn.Row)):
+                    for j in range(len(secondary)):
+                        primary[i].append(secondary[j][i][1])
+            return primary
+        return panel_list
+
     def map_plot_panes(
         self,
         plot_callback: callable,
@@ -248,6 +288,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         pane_collection: pn.pane = None,
+        zip_results=False,  
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
@@ -269,6 +310,9 @@ class BenchResultBase(OptunaResult):
                         target_dimension=target_dimension,
                     )
                 )
+        
+        if zip_results:        
+            return self.zip_results1D2(row.get())
         return row.get()
 
     def filter(
