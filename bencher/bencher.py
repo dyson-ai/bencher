@@ -304,7 +304,11 @@ class Bench(BenchPlotServer):
                 if self.const_vars is None:
                     const_vars = self.worker_class_instance.get_input_defaults()
                 else:
+                    # const_vars = deepcopy(self.const_vars)
                     const_vars = self.const_vars
+
+           
+
         else:
             if input_vars is None:
                 input_vars = []
