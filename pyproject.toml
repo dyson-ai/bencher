@@ -26,6 +26,7 @@ python = "3.11.*"
 
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
+deps-rocker = ">=0.2"
 
 [project.optional-dependencies]
 test = [
