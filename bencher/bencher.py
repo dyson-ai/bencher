@@ -232,9 +232,9 @@ class Bench(BenchPlotServer):
                     title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
                     title=title_gen,
-                    input_vars=list(input_group),
-                    result_vars=result_vars,
-                    const_vars=const_vars,
+                    input_vars_in=list(input_group),
+                    result_vars_in=result_vars,
+                    const_vars_in=const_vars,
                     run_cfg=run_cfg,
                     plot_callbacks=plot_callbacks,
                 )
@@ -280,44 +280,42 @@ class Bench(BenchPlotServer):
             BenchResult: A class with all the data used to generate the results and the results
         """
 
+        input_vars_in = deepcopy(input_vars)
+        result_vars_in = deepcopy(result_vars)
+        const_vars_in = deepcopy(const_vars)
+
         if self.worker_class_instance is not None:
-            if input_vars is None:
+            if input_vars_in is None:
                 logging.info(
                     "No input variables passed, using all param variables in bench class as inputs"
                 )
                 if self.input_vars is None:
-                    input_vars = self.worker_class_instance.get_inputs_only()
+                    input_vars_in = self.worker_class_instance.get_inputs_only()
                 else:
-                    input_vars = self.input_vars
-                for i in input_vars:
+                    input_vars_in = deepcopy(self.input_vars)
+                for i in input_vars_in:
                     logging.info(f"input var: {i.name}")
-            if result_vars is None:
+            if result_vars_in is None:
                 logging.info(
                     "No results variables passed, using all result variables in bench class:"
                 )
                 if self.result_vars is None:
-                    result_vars = self.worker_class_instance.get_results_only()
+                    result_vars_in = self.worker_class_instance.get_results_only()
                 else:
-                    result_vars = self.result_vars
+                    result_vars_in = deepcopy(self.result_vars)
 
-            if const_vars is None:
+            if const_vars_in is None:
                 if self.const_vars is None:
-                    const_vars = self.worker_class_instance.get_input_defaults()
+                    const_vars_in = self.worker_class_instance.get_input_defaults()
                 else:
-                    # const_vars = deepcopy(self.const_vars)
-                    const_vars = self.const_vars
-
-           
-
+                    const_vars_in = deepcopy(self.const_vars)
         else:
-            if input_vars is None:
-                input_vars = []
-            if result_vars is None:
-                result_vars = []
-            if const_vars is None:
-                const_vars = []
-            else:
-                const_vars = deepcopy(const_vars)
+            if input_vars_in is None:
+                input_vars_in = []
+            if result_vars_in is None:
+                result_vars_in = []
+            if const_vars_in is None:
+                const_vars_in = []
 
         if run_cfg is None:
             if self.run_cfg is None:
@@ -332,9 +330,9 @@ class Bench(BenchPlotServer):
 
         self.last_run_cfg = run_cfg
 
-        if isinstance(input_vars, dict):
+        if isinstance(input_vars_in, dict):
             input_lists = []
-            for k, v in input_vars.items():
+            for k, v in input_vars_in.items():
                 param_var = self.convert_vars_to_params(k, "input", run_cfg)
                 if isinstance(v, list):
                     assert len(v) > 0
@@ -344,56 +342,56 @@ class Bench(BenchPlotServer):
                     raise RuntimeError("Unsupported type")
                 input_lists.append(param_var)
 
-            input_vars = input_lists
+            input_vars_in = input_lists
         else:
-            for i in range(len(input_vars)):
-                input_vars[i] = self.convert_vars_to_params(input_vars[i], "input", run_cfg)
-        for i in range(len(result_vars)):
-            result_vars[i] = self.convert_vars_to_params(result_vars[i], "result", run_cfg)
+            for i in range(len(input_vars_in)):
+                input_vars_in[i] = self.convert_vars_to_params(input_vars_in[i], "input", run_cfg)
+        for i in range(len(result_vars_in)):
+            result_vars_in[i] = self.convert_vars_to_params(result_vars_in[i], "result", run_cfg)
 
-        for r in result_vars:
+        for r in result_vars_in:
             logging.info(f"result var: {r.name}")
 
-        if isinstance(const_vars, dict):
-            const_vars = list(const_vars.items())
+        if isinstance(const_vars_in, dict):
+            const_vars_in = list(const_vars_in.items())
 
-        for i in range(len(const_vars)):
+        for i in range(len(const_vars_in)):
             # consts come as tuple pairs
-            cv_list = list(const_vars[i])
+            cv_list = list(const_vars_in[i])
             cv_list[0] = self.convert_vars_to_params(cv_list[0], "const", run_cfg)
-            const_vars[i] = cv_list
+            const_vars_in[i] = cv_list
 
         if title is None:
-            if len(input_vars) > 0:
-                title = "Sweeping " + " vs ".join([i.name for i in input_vars])
-            elif len(const_vars) > 0:
+            if len(input_vars_in) > 0:
+                title = "Sweeping " + " vs ".join([i.name for i in input_vars_in])
+            elif len(const_vars_in) > 0:
                 title = "Constant Value"
-                if len(const_vars) > 1:
+                if len(const_vars_in) > 1:
                     title += "s"
-                title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars])
+                title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars_in])
             else:
                 raise RuntimeError("you must pass a title, or define inputs or consts")
 
         if run_cfg.level > 0:
             inputs = []
-            print(input_vars)
-            if len(input_vars) > 0:
-                for i in input_vars:
+            print(input_vars_in)
+            if len(input_vars_in) > 0:
+                for i in input_vars_in:
                     inputs.append(i.with_level(run_cfg.level))
-                input_vars = inputs
+                input_vars_in = inputs
 
         # if any of the inputs have been include as constants, remove those variables from the list of constants
         with suppress(ValueError, AttributeError):
-            for i in input_vars:
-                for c in const_vars:
+            for i in input_vars_in:
+                for c in const_vars_in:
                     # print(i.hash_persistent())
                     if i.name == c[0].name:
-                        const_vars.remove(c)
+                        const_vars_in.remove(c)
                         logging.info(f"removing {i.name} from constants")
 
         result_hmaps = []
         result_vars_only = []
-        for i in result_vars:
+        for i in result_vars_in:
             if isinstance(i, ResultHmap):
                 result_hmaps.append(i)
             else:
@@ -413,10 +411,10 @@ class Bench(BenchPlotServer):
             plot_callbacks = [BenchResult.to_auto_plots] if plot_callbacks else []
 
         bench_cfg = BenchCfg(
-            input_vars=input_vars,
+            input_vars=input_vars_in,
             result_vars=result_vars_only,
             result_hmaps=result_hmaps,
-            const_vars=const_vars,
+            const_vars=const_vars_in,
             bench_name=self.bench_name,
             description=description,
             post_description=post_description,
