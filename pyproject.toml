@@ -48,6 +48,7 @@ py310 = ["py310","test"]
 py311 = ["py311","test"]
 
 [tool.pixi.tasks]
+code = "scripts/launch_vscode.sh"
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
