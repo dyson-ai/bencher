@@ -105,7 +105,7 @@ class TestSweepBase(unittest.TestCase):
 
         after = AllSweepVars.get_input_defaults()
 
-        self.assertListEqual(initial,after)
+        self.assertListEqual(initial, after)
 
     def test_with_sample_values(self):
         vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values()
