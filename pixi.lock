@@ -386,25 +386,25 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: coverage
-  version: 7.5.1
-  url: https://files.pythonhosted.org/packages/3f/4f/fcad903698f02ac0d7501432449db12e15fbe5ecfbc01e363eb752c65cbd/coverage-7.5.1-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 8748731ad392d736cc9ccac03c9845b13bb07d020a33423fa5b3a36521ac6e4e
+  version: 7.5.3
+  url: https://files.pythonhosted.org/packages/0e/39/c44111cfc5e40fc1681a41b96911fba6560b51172b59c204b08b75d58495/coverage-7.5.3-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: b1196e13c45e327d6cd0b6e471530a1882f1017eb83c6229fc613cd1a11b53cd
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
 - kind: pypi
   name: coverage
-  version: 7.5.1
-  url: https://files.pythonhosted.org/packages/8f/7e/14416cf45cf755fd9b09cdb9abbda1bb2819d9911a85ec279d44c7838853/coverage-7.5.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 5fd215c0c7d7aab005221608a3c2b46f58c0285a819565887ee0b718c052aa4e
+  version: 7.5.3
+  url: https://files.pythonhosted.org/packages/10/77/9d65122b73f2cfa14744286adc3c1f88bdef49ffd628076429ae59e8fa21/coverage-7.5.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: d8b7339180d00de83e930358223c617cc343dd08e1aa5ec7b06c3a121aec4e1d
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
 - kind: pypi
   name: coverage
-  version: 7.5.1
-  url: https://files.pythonhosted.org/packages/bd/e2/9da6c61f71f769e63122ac9f029dcafe5fe50e1e4043f8dd950daf58290f/coverage-7.5.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 556cf1a7cbc8028cb60e1ff0be806be2eded2daf8129b8811c63e2b9a6c43bca
+  version: 7.5.3
+  url: https://files.pythonhosted.org/packages/9c/38/d8d6616b3c5da0b6d6ab99a0141f8ba80e979596b360196240c96a67ac11/coverage-7.5.3-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 341dd8f61c26337c37988345ca5c8ccabeff33093a26953a1ac72e7d0103c4fb
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
@@ -470,9 +470,9 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: hypothesis
-  version: 6.102.6
-  url: https://files.pythonhosted.org/packages/b5/f7/89b6869874387d22b8eee5a218613653f7b4ea40bc72e8cac8b051af4867/hypothesis-6.102.6-py3-none-any.whl
-  sha256: ef281ba8b2626ebade9f463fbe8851ae6ff6ae4a8621a9e54c7c2477a97ccff0
+  version: 6.103.0
+  url: https://files.pythonhosted.org/packages/db/89/6b1d66ab6f1e627412751de7b17850e2ec88ac4f56a4ab8c947c88e90cd6/hypothesis-6.103.0-py3-none-any.whl
+  sha256: 0d21a87e2d68b4937f19f1e6e681d747de65f748c9caa818308a0e3899ea8481
   requires_dist:
   - attrs>=22.2.0
   - sortedcontainers<3.0.0,>=2.1.0
@@ -955,9 +955,9 @@ packages:
   - pylint>=2.17.7,<=3.2.2 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.2.1 ; extra == 'test'
-  - hypothesis>=6.82,<=6.102.6 ; extra == 'test'
-  - ruff>=0.0.280,<=0.4.5 ; extra == 'test'
-  - coverage>=7.2.7,<=7.5.1 ; extra == 'test'
+  - hypothesis>=6.82,<=6.103.0 ; extra == 'test'
+  - ruff>=0.0.280,<=0.4.7 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
   editable: true
 - kind: pypi
   name: pyyaml
@@ -1023,9 +1023,9 @@ packages:
   requires_python: '>=3.0'
 - kind: pypi
   name: ruff
-  version: 0.4.5
-  url: https://files.pythonhosted.org/packages/d8/ae/aca5966c5017df4ace52a6222d0ca3439a6e0e806771b9e8d95ac9dacfb3/ruff-0.4.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: f4b02a65985be2b34b170025a8b92449088ce61e33e69956ce4d316c0fe7cce0
+  version: 0.4.7
+  url: https://files.pythonhosted.org/packages/c2/ad/e8a251c07e67ef4f760e473ec612e42502a83f294fe44aca3aafb4e08f8b/ruff-0.4.7-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: cbf5d818553add7511c38b05532d94a407f499d1a76ebb0cad0374e32bc67202
   requires_python: '>=3.7'
 - kind: pypi
   name: sortedcontainers
