@@ -30,6 +30,8 @@ def example_2D_float_const(
 
     const_vars = SimpleFloat().get_input_defaults_override(noise=0.2)
     bench.plot_sweep(input_vars=["theta"], const_vars=const_vars)
+
+    bench.plot_sweep(input_vars=["theta"], const_vars=dict(offset=0.3))
     
     return bench
 
