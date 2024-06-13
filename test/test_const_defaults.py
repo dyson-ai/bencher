@@ -18,8 +18,7 @@ class TestBenchMeta(unittest.TestCase):
         res1 = bench.plot_sweep("repeats", input_vars=["float1"], const_vars=consts)
         res1 = bench.plot_sweep("repeats", input_vars=["float2"], const_vars=consts)
 
-
-        self.assertEqual(const_deep,consts)
+        self.assertEqual(const_deep, consts)
 
 
 if __name__ == "__main__":
