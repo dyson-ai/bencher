@@ -14,11 +14,6 @@ platforms = ["linux-64"]
 [tool.pixi.dependencies]
 python = ">=3.10"
 
-# [tool.pixi.host-dependencies]
-# rocker= ">=0.2.16"
-# off-your-rocker = ">=0.1.0"
-# deps-rocker = ">=0.2"
-
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
