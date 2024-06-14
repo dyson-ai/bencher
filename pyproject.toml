@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.25.0"
+version = "1.25.1"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -42,14 +42,17 @@ python = "3.11.*"
 [tool.pixi.pypi-dependencies]
 holobench = { path = ".", editable = true }
 
+[tool.pixi.feature.devenv.pypi-dependencies]
+deps-rocker = ">=0.2"
+
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
-  "pylint>=2.17.7,<=3.2.2",
+  "pylint>=2.17.7,<=3.2.3",
   "pytest-cov>=4.1,<=5.0.0",
-  "pytest>=7.4,<=8.2.1",
-  "hypothesis>=6.82,<=6.103.0",
-  "ruff>=0.3,<=0.4.7",
+  "pytest>=7.4,<=8.2.2",
+  "hypothesis>=6.82,<=6.103.1",
+  "ruff>=0.0.280,<=0.4.8",
   "coverage>=7.2.7,<=7.5.3",
 ]
 
@@ -64,9 +67,13 @@ build-backend = "setuptools.build_meta"
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test"], solve-group = "default" }
-py310 = ["py310", "test"]
-py311 = ["py311", "test"]
+default = {features = ["test"], solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+devenv =["devenv"]
+
+[tool.pixi.feature.devenv.tasks]
+code = "scripts/launch_vscode.sh"
 
 [tool.pixi.tasks]
 success = "echo Success"
@@ -107,7 +114,7 @@ extension-pkg-whitelist = ["numpy", "scipy"]
 jobs = 16                                    #detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
-disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,duplicate-code,too-many-public-methods,too-many-nested-blocks"
+disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,duplicate-code,too-many-public-methods,too-many-nested-blocks,cyclic-import"
 enable = "no-else-return,consider-using-in"
 
 [tool.black]
