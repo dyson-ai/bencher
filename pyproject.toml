@@ -22,6 +22,9 @@ python = "3.11.*"
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
 
+[tool.pixi.feature.devenv.pypi-dependencies]
+deps-rocker = ">=0.2"
+
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
@@ -46,9 +49,12 @@ build-backend = "setuptools.build_meta"
 default = {features = ["test"], solve-group = "default" }
 py310 = ["py310","test"]
 py311 = ["py311","test"]
+devenv =["devenv"]
+
+[tool.pixi.feature.devenv.tasks]
+code = "scripts/launch_vscode.sh"
 
 [tool.pixi.tasks]
-code = "scripts/launch_vscode.sh"
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
