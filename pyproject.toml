@@ -98,8 +98,8 @@ ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 
 
-[tool.setuptools.packages.find]
-include = ["bencher"]
+# [tool.setuptools.packages.find]
+# include = ["bencher"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
