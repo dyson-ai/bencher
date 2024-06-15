@@ -65,6 +65,9 @@ Documentation = "https://bencher.readthedocs.io/en/latest/"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include = ["bencher"]
+
 # Environments
 [tool.pixi.environments]
 default = { features = ["test"], solve-group = "default" }
@@ -105,8 +108,7 @@ ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 
 
-[tool.setuptools.packages.find]
-include = ["bencher"]
+
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
