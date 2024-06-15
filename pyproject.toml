@@ -70,10 +70,10 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test"], solve-group = "default" }
-py310 = ["py310", "test"]
-py311 = ["py311", "test"]
-devenv = ["devenv"]
+default = {features = ["test"], solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+devenv ={features = ["devenv"], solve-group = "devenv" }
 
 [tool.pixi.feature.devenv.tasks]
 code = "scripts/launch_vscode.sh"
