@@ -11,7 +11,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
@@ -125,7 +125,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
@@ -228,7 +228,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_9.conda
@@ -343,7 +343,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_4.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
@@ -528,6 +528,37 @@ packages:
   - pytest-xdist[psutil] ; extra == 'tests-no-zope'
   - pytest>=4.3.0 ; extra == 'tests-no-zope'
   requires_python: '>=3.7'
+- kind: pypi
+  name: bencher
+  version: 1.25.3
+  path: .
+  sha256: be40bd80d5010f17b56c228067d09bc41eaef0ecd3765c16622e7153b51bb232
+  requires_dist:
+  - holoviews>=1.15,<=1.18.3
+  - numpy>=1.0,<=1.26.4
+  - param>=1.13.0,<=2.1.0
+  - hvplot>=0.8,<=0.10.0
+  - matplotlib>=3.6.3,<=3.9.0
+  - panel>=1.3.6,<=1.4.4
+  - diskcache>=5.6,<=5.6.3
+  - optuna>=3.2,<=3.6.1
+  - xarray>=2023.7,<=2024.5.0
+  - plotly>=5.15,<=5.22.0
+  - sortedcontainers>=2.4,<=2.4
+  - pandas>=2.0,<=2.2.2
+  - strenum>=0.4.0,<=0.4.15
+  - scikit-learn>=1.2,<=1.5.0
+  - str2bool>=1.1,<=1.1
+  - scoop>=0.7.0,<=0.7.2.0
+  - moviepy>=1.0.3,<=1.0.3
+  - black>=23,<=24.4.2 ; extra == 'test'
+  - pylint>=2.17.7,<=3.2.3 ; extra == 'test'
+  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
+  - pytest>=7.4,<=8.2.2 ; extra == 'test'
+  - hypothesis>=6.82,<=6.103.1 ; extra == 'test'
+  - ruff>=0.0.280,<=0.4.8 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
+  editable: true
 - kind: pypi
   name: black
   version: 24.4.2
@@ -1041,37 +1072,6 @@ packages:
   - psutil ; extra == 'test'
   requires_python: '>=3.7'
 - kind: pypi
-  name: holobench
-  version: 1.25.2
-  path: .
-  sha256: 0221c74a6bd9f077ebd1ddaeeed0d4c9b93116a77a5df69614ab533ec83b7c6e
-  requires_dist:
-  - holoviews>=1.15,<=1.18.3
-  - numpy>=1.0,<=1.26.4
-  - param>=1.13.0,<=2.1.0
-  - hvplot>=0.8,<=0.10.0
-  - matplotlib>=3.6.3,<=3.9.0
-  - panel>=1.3.6,<=1.4.4
-  - diskcache>=5.6,<=5.6.3
-  - optuna>=3.2,<=3.6.1
-  - xarray>=2023.7,<=2024.5.0
-  - plotly>=5.15,<=5.22.0
-  - sortedcontainers>=2.4,<=2.4
-  - pandas>=2.0,<=2.2.2
-  - strenum>=0.4.0,<=0.4.15
-  - scikit-learn>=1.2,<=1.5.0
-  - str2bool>=1.1,<=1.1
-  - scoop>=0.7.0,<=0.7.2.0
-  - moviepy>=1.0.3,<=1.0.3
-  - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=2.17.7,<=3.2.3 ; extra == 'test'
-  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
-  - pytest>=7.4,<=8.2.2 ; extra == 'test'
-  - hypothesis>=6.82,<=6.103.1 ; extra == 'test'
-  - ruff>=0.0.280,<=0.4.8 ; extra == 'test'
-  - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
-  editable: true
-- kind: pypi
   name: holoviews
   version: 1.18.3
   url: https://files.pythonhosted.org/packages/d0/ab/bc778fd2011a212e147f69e5d055a628280764453962cc75989f565469ef/holoviews-1.18.3-py2.py3-none-any.whl
@@ -1561,19 +1561,18 @@ packages:
 - kind: conda
   name: ld_impl_linux-64
   version: '2.40'
-  build: hf3520f5_3
-  build_number: 3
+  build: hf3520f5_4
+  build_number: 4
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
-  sha256: 002d48084157a23c7e40a9b225bab95ea02ac6cb9267aa7739da2a3491bb0220
-  md5: 7c1062eaa78dec4ea8a9a988dbda6045
+  url: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_4.conda
+  sha256: 5f1638202f19cac8ede2800c31eb0b2b206f0c4a2c4ff12ab6592115ad128748
+  md5: 02d936b69ab683fc6755c236996f8b51
   constrains:
   - binutils_impl_linux-64 2.40
   license: GPL-3.0-only
-  license_family: GPL
   purls: []
-  size: 713873
-  timestamp: 1717997303330
+  size: 711051
+  timestamp: 1718387155980
 - kind: conda
   name: libexpat
   version: 2.6.2
