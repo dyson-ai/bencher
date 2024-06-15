@@ -529,37 +529,6 @@ packages:
   - pytest>=4.3.0 ; extra == 'tests-no-zope'
   requires_python: '>=3.7'
 - kind: pypi
-  name: bencher
-  version: 1.25.2
-  path: .
-  sha256: 515aea773105bcee4016763b8a69e05b5cec8435ccdedbf6147e52566a448b88
-  requires_dist:
-  - holoviews>=1.15,<=1.18.3
-  - numpy>=1.0,<=1.26.4
-  - param>=1.13.0,<=2.1.0
-  - hvplot>=0.8,<=0.10.0
-  - matplotlib>=3.6.3,<=3.9.0
-  - panel>=1.3.6,<=1.4.4
-  - diskcache>=5.6,<=5.6.3
-  - optuna>=3.2,<=3.6.1
-  - xarray>=2023.7,<=2024.5.0
-  - plotly>=5.15,<=5.22.0
-  - sortedcontainers>=2.4,<=2.4
-  - pandas>=2.0,<=2.2.2
-  - strenum>=0.4.0,<=0.4.15
-  - scikit-learn>=1.2,<=1.5.0
-  - str2bool>=1.1,<=1.1
-  - scoop>=0.7.0,<=0.7.2.0
-  - moviepy>=1.0.3,<=1.0.3
-  - black>=23,<=24.4.2 ; extra == 'test'
-  - pylint>=2.17.7,<=3.2.3 ; extra == 'test'
-  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
-  - pytest>=7.4,<=8.2.2 ; extra == 'test'
-  - hypothesis>=6.82,<=6.103.1 ; extra == 'test'
-  - ruff>=0.0.280,<=0.4.8 ; extra == 'test'
-  - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
-  editable: true
-- kind: pypi
   name: black
   version: 24.4.2
   url: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -1071,6 +1040,37 @@ packages:
   - objgraph ; extra == 'test'
   - psutil ; extra == 'test'
   requires_python: '>=3.7'
+- kind: pypi
+  name: holobench
+  version: 1.25.2
+  path: .
+  sha256: 0d95e754d71ab01ba11167e1ef93713194fe29a29f9225a8555fd967dc5e1f1d
+  requires_dist:
+  - holoviews>=1.15,<=1.18.3
+  - numpy>=1.0,<=1.26.4
+  - param>=1.13.0,<=2.1.0
+  - hvplot>=0.8,<=0.10.0
+  - matplotlib>=3.6.3,<=3.9.0
+  - panel>=1.3.6,<=1.4.4
+  - diskcache>=5.6,<=5.6.3
+  - optuna>=3.2,<=3.6.1
+  - xarray>=2023.7,<=2024.5.0
+  - plotly>=5.15,<=5.22.0
+  - sortedcontainers>=2.4,<=2.4
+  - pandas>=2.0,<=2.2.2
+  - strenum>=0.4.0,<=0.4.15
+  - scikit-learn>=1.2,<=1.5.0
+  - str2bool>=1.1,<=1.1
+  - scoop>=0.7.0,<=0.7.2.0
+  - moviepy>=1.0.3,<=1.0.3
+  - black>=23,<=24.4.2 ; extra == 'test'
+  - pylint>=2.17.7,<=3.2.3 ; extra == 'test'
+  - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
+  - pytest>=7.4,<=8.2.2 ; extra == 'test'
+  - hypothesis>=6.82,<=6.103.1 ; extra == 'test'
+  - ruff>=0.0.280,<=0.4.8 ; extra == 'test'
+  - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
+  editable: true
 - kind: pypi
   name: holoviews
   version: 1.18.3
