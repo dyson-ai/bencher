@@ -1,6 +1,6 @@
 [project]
 name = "bencher"
-version = "1.25.3"
+version = "1.26.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
