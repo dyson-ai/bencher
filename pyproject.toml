@@ -67,19 +67,19 @@ build-backend = "setuptools.build_meta"
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
-devenv =["devenv"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+py311 = ["py311", "test"]
+devenv = ["devenv"]
 
 [tool.pixi.feature.devenv.tasks]
 code = "scripts/launch_vscode.sh"
 
 [tool.pixi.tasks]
-format = "black ."
+format = "black src"
 check-clean-workspace = "git diff --exit-code"
-ruff-lint = "ruff check . --fix"
-pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
+ruff-lint = "ruff check src --fix"
+pylint = "pylint --version && echo 'running pylint...' && pylint src"
 lint = { depends_on = ["ruff-lint", "pylint"] }
 style = { depends_on = ["format", "lint"] }
 commit-format = "git commit -a -m'autoformat code'"
@@ -106,7 +106,7 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 
 
 [tool.setuptools.packages.find]
-include = ["bencher"]
+include = ["src/bencher"]
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
