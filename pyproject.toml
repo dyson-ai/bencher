@@ -1,5 +1,5 @@
 [project]
-name = "holobench"
+name = "bencher"
 version = "1.25.2"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
@@ -40,7 +40,7 @@ python = "3.10.*"
 python = "3.11.*"
 
 [tool.pixi.pypi-dependencies]
-holobench = { path = ".", editable = true }
+bencher = { path = ".", editable = true }
 
 [tool.pixi.feature.devenv.pypi-dependencies]
 deps-rocker = ">=0.2"
@@ -67,10 +67,10 @@ build-backend = "setuptools.build_meta"
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
-devenv =["devenv"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+py311 = ["py311", "test"]
+devenv = ["devenv"]
 
 [tool.pixi.feature.devenv.tasks]
 code = "scripts/launch_vscode.sh"
