@@ -1,6 +1,6 @@
 [project]
 name = "bencher"
-version = "1.25.2"
+version = "1.25.3"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -66,7 +66,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["holobench"]
+include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
