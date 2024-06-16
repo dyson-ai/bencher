@@ -42,9 +42,6 @@ python = "3.11.*"
 [tool.pixi.pypi-dependencies]
 bencher = { path = ".", editable = true }
 
-[tool.pixi.feature.devenv.pypi-dependencies]
-deps-rocker = ">=0.2"
-
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.4.2",
@@ -73,10 +70,6 @@ include = ["bencher"]
 default = {features = ["test"], solve-group = "default" }
 py310 = ["py310","test"]
 py311 = ["py311","test"]
-devenv ={features = ["devenv"], solve-group = "devenv" }
-
-[tool.pixi.feature.devenv.tasks]
-code = "scripts/launch_vscode.sh"
 
 [tool.pixi.tasks]
 format = "black ."
