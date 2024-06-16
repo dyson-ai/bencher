@@ -1,5 +1,5 @@
 import logging
-from typing import Callable, Tuple
+from typing import Callable
 import os
 import panel as pn
 from pathlib import Path
