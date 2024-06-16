@@ -157,8 +157,9 @@ class BenchReport(BenchPlotServer):
 
         return publish_url
 
-    def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
-        return (
-            f"https://github.com/{github_user}/{repo_name}.git",
-            f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
-        )
+    # @staticmethod
+    # def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
+    #     return (
+    #         f"https://github.com/{github_user}/{repo_name}.git",
+    #         f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
+    #     )
