@@ -18,7 +18,6 @@ echo "stopping existing container" "$CONTAINER_NAME"
 # docker stop "$CONTAINER_NAME" || true 
 docker rename "$CONTAINER_NAME" "${CONTAINER_NAME}_$(date +%Y-%m-%d_%H-%M-%S)" || true 
 
-
 CONTAINER_HEX=$(printf $CONTAINER_NAME | xxd -p | tr '\n' ' ' | sed 's/\\s//g' | tr -d ' ');
 
 #!/bin/bash
@@ -48,7 +47,6 @@ else
     echo "Activating the existing virtual environment..."
     source "$VENV_DIR/bin/activate"
 fi
-
 
 # Run the rocker command with the specified parameters
 rocker --nvidia --x11 --user --pull --git --image-name "$CONTAINER_NAME" --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --deps --oyr-run-arg " --detach" ubuntu:22.04 
