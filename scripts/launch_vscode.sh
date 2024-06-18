@@ -21,27 +21,34 @@ docker rename "$CONTAINER_NAME" "${CONTAINER_NAME}_$(date +%Y-%m-%d_%H-%M-%S)" |
 
 CONTAINER_HEX=$(printf $CONTAINER_NAME | xxd -p | tr '\n' ' ' | sed 's/\\s//g' | tr -d ' ');
 
-# Set the virtual environment directory name
+#!/bin/bash
+
+if ! dpkg -l | grep -q python3-venv; then
+    echo "python3-venv is not installed. Installing..."
+    sudo apt-get update
+    sudo apt-get install -y python3-venv
+else
+    echo "python3-venv is already installed."
+fi
+
+# Define the directory for the virtual environment
 VENV_DIR="venv"
 
 # Check if the virtual environment directory exists
 if [ ! -d "$VENV_DIR" ]; then
-    # Create the virtual environment
-    python3 -m venv $VENV_DIR
-    echo "Virtual environment created in $VENV_DIR"
-else
-    echo "Virtual environment already exists in $VENV_DIR"
-fi
-
-source $VENV_DIR/bin/activate
-
-# Install the deps_rocker package if not already installed
-if ! pip show deps_rocker > /dev/null 2>&1; then
+    echo "Creating virtual environment in $VENV_DIR..."
+    python3 -m venv "$VENV_DIR"
+    echo "Activating the virtual environment..."
+    source "$VENV_DIR/bin/activate"
+    echo "Installing deps rocker..."
     pip install deps_rocker
-    echo "deps_rocker package installed"
+    echo "Virtual environment setup and deps rocker installation complete."
 else
-    echo "deps_rocker package already installed"
+    echo "Virtual environment already exists in $VENV_DIR."
+    echo "Activating the existing virtual environment..."
+    source "$VENV_DIR/bin/activate"
 fi
+
 
 # Run the rocker command with the specified parameters
 rocker --nvidia --x11 --user --pull --git --image-name "$CONTAINER_NAME" --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --deps --oyr-run-arg " --detach" ubuntu:22.04 
