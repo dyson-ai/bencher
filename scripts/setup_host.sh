@@ -44,14 +44,25 @@ sudo systemctl restart docker
 sudo apt install git-lfs
 
 #Install rocker and rocker extensions which are used to launch the devcontainer
-pip install rocker off-your-rocker git+https://github.com/blooop/deps_rocker
-
+# pip install rocker off-your-rocker git+https://github.com/blooop/deps_rocker
 
 echo "testing docker install"
 
 docker run hello-world
 
 echo "you may need to restart your machine"
+
+echo "you may need to add this to /etc/docker/daemon.json"
+echo "cat /etc/docker/daemon.json 
+{
+    "runtimes": {
+        "nvidia": {
+            "args": [],
+            "path": "nvidia-container-runtime"
+        }
+    }
+"
+
 
 #INSTALL PIXI
 curl -fsSL https://pixi.sh/install.sh | bash
