@@ -100,12 +100,12 @@ class TestSweepBase(unittest.TestCase):
 
         initial = AllSweepVars.get_input_defaults()
 
-        over1 = AllSweepVars.get_input_defaults_override()
-        over = AllSweepVars.get_input_defaults_override(var_float=1)
-
+        overrride_defaults = AllSweepVars.get_input_defaults_override()
+        override = AllSweepVars.get_input_defaults_override(var_float=1)
         after = AllSweepVars.get_input_defaults()
 
         self.assertListEqual(initial, after)
+        self.assertNotEqual(override, overrride_defaults)
 
     def test_with_sample_values(self):
         vals = AllSweepVars.param.var_float.with_sample_values([0, 1]).values()
