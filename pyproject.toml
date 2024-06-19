@@ -57,7 +57,7 @@ ruff-lint = "ruff check . --fix"
 pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
 style = { depends_on = ["format","lint"]}
-commit-format = "git commit -a -m'autoformat code'"
+commit-format = "git commit -a -m'autoformat code' || true"
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
