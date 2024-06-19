@@ -447,7 +447,7 @@ class BenchResultBase(OptunaResult):
             return da_ds.values.squeeze().item()
         return da.expand_dims(dim).values[0]
 
-    def ds_to_container(
+    def ds_to_container(  # pylint: disable=too-many-return-statements
         self, dataset: xr.Dataset, result_var: Parameter, container, **kwargs
     ) -> Any:
         val = self.zero_dim_da_to_val(dataset[result_var.name])
@@ -458,8 +458,7 @@ class BenchResultBase(OptunaResult):
                     return container(ref.obj)
                 return ref.obj
             return None
-
-        elif isinstance(result_var, ResultReference):
+        if isinstance(result_var, ResultReference):
             ref = self.object_index[val]
             if ref is not None:
                 val = ref.obj
