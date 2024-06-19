@@ -67,9 +67,9 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+py311 = ["py311", "test"]
 
 [tool.pixi.tasks]
 success = "echo Success"
@@ -88,7 +88,6 @@ push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 fix = { depends_on = ["update-lock", "format", "ruff-lint", "success"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
-
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
   "format",
@@ -100,6 +99,8 @@ ci = { depends_on = [
 ] }
 ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
+setup-git-merge-driver = "git config merge.ourslock.driver true"
+
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
