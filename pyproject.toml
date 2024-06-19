@@ -41,6 +41,9 @@ Home = "https://github.com/blooop/python_template"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include= ["python_template"]
+
 # Environments
 [tool.pixi.environments]
 default = {features = ["test"], solve-group = "default" }
@@ -61,6 +64,7 @@ coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock' || true"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
+fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = ["format","ruff-lint","check-clean-workspace","pylint", "coverage", "coverage-report"] }
 ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
@@ -69,8 +73,7 @@ setup-git-merge-driver = "git config merge.ourslock.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
 
 
-[tool.setuptools.packages.find]
-include= ["python_template"]
+
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy"]
