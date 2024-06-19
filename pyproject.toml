@@ -58,7 +58,7 @@ commit-format = "git commit -a -m'autoformat code'"
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
-update-lock = "pixi update && git commit -a -m'update pixi.lock'"
+update-lock = "pixi update && git commit -a -m'update pixi.lock' || true"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
