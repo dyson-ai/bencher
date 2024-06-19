@@ -7,6 +7,7 @@ import panel as pn
 
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ALL_RESULT_TYPES, ResultHmap
+from bencher.bench_cfg import BenchRunCfg
 
 
 class ParametrizedSweep(Parameterized):
@@ -197,7 +198,8 @@ class ParametrizedSweep(Parameterized):
     def plot_hmap(self, **kwargs):
         return self.__call__(**kwargs)["hmap"]
 
-    def to_bench(self, run_cfg=None, report=None, name: str = None):
+    # TODO Add type hints here and fix the circular imports
+    def to_bench(self, run_cfg: BenchRunCfg = None, report=None, name: str = None):
         from bencher import Bench
 
         assert isinstance(self, ParametrizedSweep)
