@@ -77,17 +77,16 @@ check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
 pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
-style = { depends_on = ["format", "lint"] }
-commit-format = "git commit -a -m'autoformat code'"
+style = { depends_on = ["format","lint"]}
+commit-format = "git commit -a -m'autoformat code' || true"
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
-update-lock = "pixi update && git commit -a -m'update pixi.lock'"
-fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
+update-lock = "pixi update && git commit -a -m'update pixi.lock' || true"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
+fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
-
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
   "format",
@@ -100,7 +99,7 @@ ci = { depends_on = [
 ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
-update-from-repo-template = "./scripts/update_from_template"
+update-from-template-repo = "./scripts/update_from_template.sh"
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
