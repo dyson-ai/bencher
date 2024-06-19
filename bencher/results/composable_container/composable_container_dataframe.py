@@ -40,7 +40,7 @@ class ComposableContainerDataset(ComposableContainerBase):
             side = pn.pane.Markdown(label, align=align)
             self.append(side)
 
-    def render(self, **kwargs):  # pylint: ignore=unused-argument
+    def render(self, **kwargs):  # pylint: disable=unused-argument
         match self.compose_method:
             case ComposeType.right:
                 return xr.concat(self.container, 0)
