@@ -788,7 +788,7 @@ class Bench(BenchPlotServer):
                         worker_job.index_tuple,
                         len(bench_res.object_index) - 1,
                     )
-               
+
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:

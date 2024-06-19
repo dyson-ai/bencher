@@ -197,5 +197,3 @@ def get_name(var):
 
 def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]
-
-

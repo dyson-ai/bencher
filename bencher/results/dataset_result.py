@@ -1,28 +1,11 @@
-from typing import Optional, List
-from copy import deepcopy
-import panel as pn
-import xarray as xr
-from param import Parameter
-from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.variables.results import ResultDataSet
-from bencher.plotting.plot_filter import VarRange, PlotFilter
-from bencher.utils import callable_name, int_to_col, color_tuple_to_255
-from bencher.video_writer import VideoWriter
-from bencher.results.video_result import VideoControls
-from bencher.results.composable_container.composable_container_video import (
-    ComposableContainerVideo,
-    ComposeType,
-    RenderCfg,
-)
-
-
 from typing import Optional
-from functools import partial
 import panel as pn
 from param import Parameter
-import holoviews as hv
 from bencher.results.bench_result_base import BenchResultBase, ReduceType
-from bencher.results.video_result import VideoControls
+
+
+from functools import partial
+import holoviews as hv
 from bencher.variables.results import (
     PANEL_TYPES,
 )

@@ -11,11 +11,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_9.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -23,7 +23,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libzlib-1.3.1-h4ab18f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ncurses-6.5-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/openssl-3.3.1-h4ab18f5_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/python-3.12.3-hab00c5b_0_cpython.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/python-3.12.4-h194c7f8_0_cpython.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2024a-h0c530f3_0.conda
@@ -47,9 +47,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/3f/27/4570e78fc0bf5ea0ca45eb1de3818a23787af9b390c0b0a0033a1b8236f9/diskcache-5.6.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3a/4a/9ad09a38b4ebdaead66ad8abd5d1a74fe6db7b62cb3d2f148898cfd2f37b/fonttools-4.53.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/63/0f/847ed02cdfce10f0e6e3425cd054296bddb11a17ef1b34681fa01a055187/greenlet-3.0.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d0/ab/bc778fd2011a212e147f69e5d055a628280764453962cc75989f565469ef/holoviews-1.18.3-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/d5/40/869da2eedeffab3d261022f9b679ea3a6dd867d3b424beff5df451cd0c90/holoviews-1.19.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f7/3e/d5b3a524ef2eb68cf89dcae620b1a2d205cceaaeac74dda7d7445578c0d1/hvplot-0.10.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/13/10/1040d11375da7347c404b9d54e386f5f4be47c8c449e37957ee12fdd37d0/hypothesis-6.103.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/bd/8d/0fa29f35e9693777b75bd3811a969fa6815ab93bdd7f34ea755e84a4a1b9/hypothesis-6.103.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a3/b6/39c7dad203d9984225f47e0aa39ac3ba3a47c77a02d0ef2a7be691855a06/imageio-2.34.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/44/c9e18a73dfd939b5b0ec843870ac72f1f6c17e31a03149b687a85465bff7/imageio_ffmpeg-0.5.1-py3-none-manylinux2010_x86_64.whl
@@ -91,17 +91,17 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/de/77/ee4c919eac01567c70f41aba5a80e46bfa9b231de4585672caa5ac2398d5/pyzmq-26.0.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/21/77/9d9c536d8544d8b1b2fe1fcd5e3e190b946d91dc00a8956aa5fe88cb264b/ruff-0.4.8-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ae/54/e70102a9c12d27d985ba659f336851732415e5a02864bef2ead36afaf15d/scikit_learn-1.5.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ab/6ecdc526d509d33814835447bbbeedbebdec7cca46ef495a61b00a35b4bf/scipy-1.13.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/de/88/70c5767a0e43eb4451c2200f07d042a4bcd7639276003a9c54a68cfcc1f8/setuptools-70.0.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/51/b8/3fd88455562518b6e8b97c4bc5784a819bd0a5c26be2a3409d3245626fac/SQLAlchemy-2.0.30-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/60/f8/7794f3055d50e96cee04c19c7faeedacb323c7762f334660ba03bed95485/SQLAlchemy-2.0.31-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/fc/8c/42e61df3b86bb675b719877283da915d3db93fb0d1820fc7bf2a9153f739/str2bool-1.1.zip
       - pypi: https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/61/a1/6bb0cbebefb23641f068bb58a2bc56da9beb2b1c550242e3c540b37698f3/tenacity-8.3.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/80/07/2640b30384d96a99e88da7d32ff15adcfb10a552e73a337ef220a70cf941/tenacity-8.4.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4b/2c/ffbf7a134b9ab11a67b0cf0726453cedd9c5043a4fe7a35d1cefa9a1bcfb/threadpoolctl-3.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/73/6d/b5406752c4e4ba86692b22fab0afed8b48f16bdde8f92e1d852976b61dc6/tomlkit-0.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/22/d4/54f9d12668b58336bd30defe0307e6c61589a3e687b05c366f804b7faaf0/tornado-6.4.1-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -109,9 +109,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ce/78/7a78d5197e409371c4fd9734ad9ab41ed6f9147b3ac23256c4e6c81295f2/xarray-2024.6.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
   py310:
@@ -125,10 +125,10 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_9.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -161,9 +161,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/01/90/79fe92dd413a9cab314ef5c591b5aa9b9ba787ae4cadab75055b0ae00b33/exceptiongroup-1.2.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7a/d0/010c65f46fb14333cdb537566d1532e64361eb981180ab73f1148e927382/fonttools-4.53.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/1c/2f/64628f6ae48e05f585e0eb3fb7399b52e240ef99f602107b445bf6be23ef/greenlet-3.0.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d0/ab/bc778fd2011a212e147f69e5d055a628280764453962cc75989f565469ef/holoviews-1.18.3-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/d5/40/869da2eedeffab3d261022f9b679ea3a6dd867d3b424beff5df451cd0c90/holoviews-1.19.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f7/3e/d5b3a524ef2eb68cf89dcae620b1a2d205cceaaeac74dda7d7445578c0d1/hvplot-0.10.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/13/10/1040d11375da7347c404b9d54e386f5f4be47c8c449e37957ee12fdd37d0/hypothesis-6.103.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/bd/8d/0fa29f35e9693777b75bd3811a969fa6815ab93bdd7f34ea755e84a4a1b9/hypothesis-6.103.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a3/b6/39c7dad203d9984225f47e0aa39ac3ba3a47c77a02d0ef2a7be691855a06/imageio-2.34.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/44/c9e18a73dfd939b5b0ec843870ac72f1f6c17e31a03149b687a85465bff7/imageio_ffmpeg-0.5.1-py3-none-manylinux2010_x86_64.whl
@@ -205,17 +205,17 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/29/61/bf33c6c85c55bc45a29eee3195848ff2d518d84735eb0e2d8cb42e0d285e/PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c4/0f/24ff63c1bc2cdbde7a703fcb35031d1bfa73f0e27e81235952c3b66636c6/pyzmq-26.0.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/21/77/9d9c536d8544d8b1b2fe1fcd5e3e190b946d91dc00a8956aa5fe88cb264b/ruff-0.4.8-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/1e/7d/1a2ea8eb5b4df373c30c7418cf26305a4a05e2a0e56c80a8043b791595f3/scikit_learn-1.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a3/ba/7255e5dc82a65adbe83771c72f384d99c43063648456796436c9a5585ec3/scipy-1.13.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/de/88/70c5767a0e43eb4451c2200f07d042a4bcd7639276003a9c54a68cfcc1f8/setuptools-70.0.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/c2/83/2ed47c5b841496d4e106f8ed04316c6193ba8615ab70fe769a593237b20b/SQLAlchemy-2.0.30-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/bf/90/0ce8c76cd2ef8a5e0838d61d6648a1193859e1990bc1d65c8b0fd1f77ca8/SQLAlchemy-2.0.31-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/fc/8c/42e61df3b86bb675b719877283da915d3db93fb0d1820fc7bf2a9153f739/str2bool-1.1.zip
       - pypi: https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/61/a1/6bb0cbebefb23641f068bb58a2bc56da9beb2b1c550242e3c540b37698f3/tenacity-8.3.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/80/07/2640b30384d96a99e88da7d32ff15adcfb10a552e73a337ef220a70cf941/tenacity-8.4.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4b/2c/ffbf7a134b9ab11a67b0cf0726453cedd9c5043a4fe7a35d1cefa9a1bcfb/threadpoolctl-3.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/73/6d/b5406752c4e4ba86692b22fab0afed8b48f16bdde8f92e1d852976b61dc6/tomlkit-0.12.5-py3-none-any.whl
@@ -224,9 +224,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ce/78/7a78d5197e409371c4fd9734ad9ab41ed6f9147b3ac23256c4e6c81295f2/xarray-2024.6.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
   py311:
@@ -240,11 +240,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/bzip2-1.0.8-hd590300_5.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_9.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -276,9 +276,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/3f/27/4570e78fc0bf5ea0ca45eb1de3818a23787af9b390c0b0a0033a1b8236f9/diskcache-5.6.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0a/79/b5be063ea65d048a041ad8438fa1e8c7c4bf9dc3f4ac2794a850fe70c5c5/fonttools-4.53.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/bb/6b/384dee7e0121cbd1757bdc1824a5ee28e43d8d4e3f99aa59521f629442fe/greenlet-3.0.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d0/ab/bc778fd2011a212e147f69e5d055a628280764453962cc75989f565469ef/holoviews-1.18.3-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/d5/40/869da2eedeffab3d261022f9b679ea3a6dd867d3b424beff5df451cd0c90/holoviews-1.19.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f7/3e/d5b3a524ef2eb68cf89dcae620b1a2d205cceaaeac74dda7d7445578c0d1/hvplot-0.10.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/13/10/1040d11375da7347c404b9d54e386f5f4be47c8c449e37957ee12fdd37d0/hypothesis-6.103.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/bd/8d/0fa29f35e9693777b75bd3811a969fa6815ab93bdd7f34ea755e84a4a1b9/hypothesis-6.103.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e5/3e/741d8c82801c347547f8a2a06aa57dbb1992be9e948df2ea0eda2c8b79e8/idna-3.7-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a3/b6/39c7dad203d9984225f47e0aa39ac3ba3a47c77a02d0ef2a7be691855a06/imageio-2.34.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fe/44/c9e18a73dfd939b5b0ec843870ac72f1f6c17e31a03149b687a85465bff7/imageio_ffmpeg-0.5.1-py3-none-manylinux2010_x86_64.whl
@@ -320,17 +320,17 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/7b/5e/efd033ab7199a0b2044dab3b9f7a4f6670e6a52c089de572e928d2873b06/PyYAML-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c7/41/02504160c5cc9d8dfe9afa5b7128ebbbc3e47933a4692197d23e601a171c/pyzmq-26.0.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/21/77/9d9c536d8544d8b1b2fe1fcd5e3e190b946d91dc00a8956aa5fe88cb264b/ruff-0.4.8-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/46/c0/63d3a8da39a2ee051df229111aa93f6dca2b56f8080abd34993938166455/scikit_learn-1.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/36/07/035d22ff9795129c5a847c64cb43c1fa9188826b59344fee28a3ab02e283/scipy-1.13.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/de/88/70c5767a0e43eb4451c2200f07d042a4bcd7639276003a9c54a68cfcc1f8/setuptools-70.0.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/4d/21/87bcad723070f7cd5f9d45fb05557596aa1d23d19eef078b13edc9e31813/SQLAlchemy-2.0.30-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/bb/be/4045425132a2fde3422e0d2062e6a3b874e385b98b0442c1d7d29ac152bc/SQLAlchemy-2.0.31-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/fc/8c/42e61df3b86bb675b719877283da915d3db93fb0d1820fc7bf2a9153f739/str2bool-1.1.zip
       - pypi: https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/61/a1/6bb0cbebefb23641f068bb58a2bc56da9beb2b1c550242e3c540b37698f3/tenacity-8.3.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/80/07/2640b30384d96a99e88da7d32ff15adcfb10a552e73a337ef220a70cf941/tenacity-8.4.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4b/2c/ffbf7a134b9ab11a67b0cf0726453cedd9c5043a4fe7a35d1cefa9a1bcfb/threadpoolctl-3.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/73/6d/b5406752c4e4ba86692b22fab0afed8b48f16bdde8f92e1d852976b61dc6/tomlkit-0.12.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/22/d4/54f9d12668b58336bd30defe0307e6c61589a3e687b05c366f804b7faaf0/tornado-6.4.1-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -338,9 +338,9 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/65/58/f9c9e6be752e9fcb8b6a0ee9fb87e6e7a1f6bcab2cdc73f02bb7ba91ada0/tzdata-2024.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/37/87/1f677586e8ac487e29672e4b17455758fce261de06a0d086167bb760361a/uc_micro_py-1.0.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ce/78/7a78d5197e409371c4fd9734ad9ab41ed6f9147b3ac23256c4e6c81295f2/xarray-2024.6.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5f/51/c106f095c33de0b833d3823fbab3383248476b3a9fd4dcd59ba01d950361/xyzservices-2024.6.0-py3-none-any.whl
       - pypi: .
 packages:
@@ -927,234 +927,22 @@ packages:
   editable: true
 - kind: pypi
   name: holoviews
-  version: 1.18.3
-  url: https://files.pythonhosted.org/packages/d0/ab/bc778fd2011a212e147f69e5d055a628280764453962cc75989f565469ef/holoviews-1.18.3-py2.py3-none-any.whl
-  sha256: b94b96560b64a84c07e89115aaf9b226e6009684800ec84d3c88cbad122c0c46
+  version: 1.19.0
+  url: https://files.pythonhosted.org/packages/d5/40/869da2eedeffab3d261022f9b679ea3a6dd867d3b424beff5df451cd0c90/holoviews-1.19.0-py3-none-any.whl
+  sha256: a74b26dc3285b4f8b801e23f0e23b4ac93ab4ec162ea76c69ae585fff627a21b
   requires_dist:
-  - param<3.0,>=1.12.0
-  - numpy>=1.0
-  - pyviz-comms>=0.7.4
-  - panel>=1.0
+  - bokeh>=3.1
   - colorcet
+  - numpy>=1.21
   - packaging
-  - pandas>=0.20.0
-  - bokeh>=3.1 ; extra == 'all'
-  - cftime ; extra == 'all'
-  - codecov ; extra == 'all'
-  - contourpy ; extra == 'all'
-  - cudf ; extra == 'all'
-  - dash>=1.16 ; extra == 'all'
-  - dask ; extra == 'all'
-  - datashader>=0.11.1 ; extra == 'all'
-  - ffmpeg ; extra == 'all'
-  - graphviz ; extra == 'all'
-  - ibis-framework ; extra == 'all'
-  - ipython>=5.4.0 ; extra == 'all'
-  - matplotlib>=3 ; extra == 'all'
-  - myst-nb<1 ; extra == 'all'
-  - nbconvert ; extra == 'all'
-  - nbsite<0.9.0,>=0.8.4 ; extra == 'all'
-  - nbval ; extra == 'all'
-  - netcdf4 ; extra == 'all'
-  - networkx ; extra == 'all'
-  - notebook ; extra == 'all'
-  - notebook>=7.0 ; extra == 'all'
-  - pillow ; extra == 'all'
-  - playwright ; extra == 'all'
-  - plotly>=4.0 ; extra == 'all'
-  - pooch ; extra == 'all'
-  - pre-commit ; extra == 'all'
-  - pyarrow ; extra == 'all'
-  - pytest ; extra == 'all'
-  - pytest-cov ; extra == 'all'
-  - pytest-github-actions-annotate-failures ; extra == 'all'
-  - pytest-playwright ; extra == 'all'
-  - pytest-rerunfailures ; extra == 'all'
-  - pytest-xdist ; extra == 'all'
-  - ruff ; extra == 'all'
-  - scikit-image ; extra == 'all'
-  - scipy ; extra == 'all'
-  - scipy>=1.10 ; extra == 'all'
-  - selenium ; extra == 'all'
-  - shapely ; extra == 'all'
-  - spatialpandas ; extra == 'all'
-  - streamz>=0.5.0 ; extra == 'all'
-  - xarray>=0.10.4 ; extra == 'all'
-  - param>=1.7.0 ; extra == 'build'
-  - setuptools>=30.3.0 ; extra == 'build'
-  - pyct>=0.4.4 ; extra == 'build'
-  - ipython>=5.4.0 ; extra == 'doc'
-  - notebook ; extra == 'doc'
-  - matplotlib>=3 ; extra == 'doc'
-  - bokeh>=3.1 ; extra == 'doc'
-  - networkx ; extra == 'doc'
-  - pillow ; extra == 'doc'
-  - xarray>=0.10.4 ; extra == 'doc'
-  - plotly>=4.0 ; extra == 'doc'
-  - dash>=1.16 ; extra == 'doc'
-  - streamz>=0.5.0 ; extra == 'doc'
-  - ffmpeg ; extra == 'doc'
-  - cftime ; extra == 'doc'
-  - netcdf4 ; extra == 'doc'
-  - dask ; extra == 'doc'
-  - scipy ; extra == 'doc'
-  - shapely ; extra == 'doc'
-  - scikit-image ; extra == 'doc'
-  - pyarrow ; extra == 'doc'
-  - pooch ; extra == 'doc'
-  - datashader>=0.11.1 ; extra == 'doc'
-  - notebook>=7.0 ; extra == 'doc'
-  - nbsite<0.9.0,>=0.8.4 ; extra == 'doc'
-  - myst-nb<1 ; extra == 'doc'
-  - graphviz ; extra == 'doc'
-  - selenium ; extra == 'doc'
-  - ipython>=5.4.0 ; extra == 'examples'
-  - notebook ; extra == 'examples'
-  - matplotlib>=3 ; extra == 'examples'
-  - bokeh>=3.1 ; extra == 'examples'
-  - networkx ; extra == 'examples'
-  - pillow ; extra == 'examples'
-  - xarray>=0.10.4 ; extra == 'examples'
-  - plotly>=4.0 ; extra == 'examples'
-  - dash>=1.16 ; extra == 'examples'
-  - streamz>=0.5.0 ; extra == 'examples'
-  - ffmpeg ; extra == 'examples'
-  - cftime ; extra == 'examples'
-  - netcdf4 ; extra == 'examples'
-  - dask ; extra == 'examples'
-  - scipy ; extra == 'examples'
-  - shapely ; extra == 'examples'
-  - scikit-image ; extra == 'examples'
-  - pyarrow ; extra == 'examples'
-  - pooch ; extra == 'examples'
-  - datashader>=0.11.1 ; extra == 'examples'
-  - notebook>=7.0 ; extra == 'examples'
-  - ipython>=5.4.0 ; extra == 'examples_tests'
-  - notebook ; extra == 'examples_tests'
-  - matplotlib>=3 ; extra == 'examples_tests'
-  - bokeh>=3.1 ; extra == 'examples_tests'
-  - networkx ; extra == 'examples_tests'
-  - pillow ; extra == 'examples_tests'
-  - xarray>=0.10.4 ; extra == 'examples_tests'
-  - plotly>=4.0 ; extra == 'examples_tests'
-  - dash>=1.16 ; extra == 'examples_tests'
-  - streamz>=0.5.0 ; extra == 'examples_tests'
-  - ffmpeg ; extra == 'examples_tests'
-  - cftime ; extra == 'examples_tests'
-  - netcdf4 ; extra == 'examples_tests'
-  - dask ; extra == 'examples_tests'
-  - scipy ; extra == 'examples_tests'
-  - shapely ; extra == 'examples_tests'
-  - scikit-image ; extra == 'examples_tests'
-  - pyarrow ; extra == 'examples_tests'
-  - pooch ; extra == 'examples_tests'
-  - datashader>=0.11.1 ; extra == 'examples_tests'
-  - notebook>=7.0 ; extra == 'examples_tests'
-  - nbval ; extra == 'examples_tests'
-  - ruff ; extra == 'lint'
-  - pre-commit ; extra == 'lint'
-  - ipython>=5.4.0 ; extra == 'notebook'
-  - notebook ; extra == 'notebook'
-  - ipython>=5.4.0 ; extra == 'recommended'
-  - notebook ; extra == 'recommended'
+  - pandas>=1.3
+  - panel>=1.0
+  - param<3.0,>=2.0
+  - pyviz-comms>=2.1
   - matplotlib>=3 ; extra == 'recommended'
-  - bokeh>=3.1 ; extra == 'recommended'
+  - plotly>=4.0 ; extra == 'recommended'
   - pytest ; extra == 'tests'
-  - pytest-cov ; extra == 'tests'
-  - pytest-xdist ; extra == 'tests'
   - pytest-rerunfailures ; extra == 'tests'
-  - matplotlib>=3 ; extra == 'tests'
-  - nbconvert ; extra == 'tests'
-  - bokeh>=3.1 ; extra == 'tests'
-  - pillow ; extra == 'tests'
-  - plotly>=4.0 ; extra == 'tests'
-  - ipython>=5.4.0 ; extra == 'tests'
-  - contourpy ; extra == 'tests'
-  - dask ; extra == 'tests'
-  - ibis-framework ; extra == 'tests'
-  - xarray>=0.10.4 ; extra == 'tests'
-  - networkx ; extra == 'tests'
-  - shapely ; extra == 'tests'
-  - ffmpeg ; extra == 'tests'
-  - cftime ; extra == 'tests'
-  - scipy>=1.10 ; extra == 'tests'
-  - selenium ; extra == 'tests'
-  - spatialpandas ; extra == 'tests'
-  - datashader>=0.11.1 ; extra == 'tests'
-  - dash>=1.16 ; extra == 'tests'
-  - codecov ; extra == 'tests_ci'
-  - pytest-github-actions-annotate-failures ; extra == 'tests_ci'
-  - pytest ; extra == 'tests_core'
-  - pytest-cov ; extra == 'tests_core'
-  - pytest-xdist ; extra == 'tests_core'
-  - pytest-rerunfailures ; extra == 'tests_core'
-  - matplotlib>=3 ; extra == 'tests_core'
-  - nbconvert ; extra == 'tests_core'
-  - bokeh>=3.1 ; extra == 'tests_core'
-  - pillow ; extra == 'tests_core'
-  - plotly>=4.0 ; extra == 'tests_core'
-  - ipython>=5.4.0 ; extra == 'tests_core'
-  - contourpy ; extra == 'tests_core'
-  - pytest ; extra == 'tests_gpu'
-  - pytest-cov ; extra == 'tests_gpu'
-  - pytest-xdist ; extra == 'tests_gpu'
-  - pytest-rerunfailures ; extra == 'tests_gpu'
-  - matplotlib>=3 ; extra == 'tests_gpu'
-  - nbconvert ; extra == 'tests_gpu'
-  - bokeh>=3.1 ; extra == 'tests_gpu'
-  - pillow ; extra == 'tests_gpu'
-  - plotly>=4.0 ; extra == 'tests_gpu'
-  - ipython>=5.4.0 ; extra == 'tests_gpu'
-  - contourpy ; extra == 'tests_gpu'
-  - dask ; extra == 'tests_gpu'
-  - ibis-framework ; extra == 'tests_gpu'
-  - xarray>=0.10.4 ; extra == 'tests_gpu'
-  - networkx ; extra == 'tests_gpu'
-  - shapely ; extra == 'tests_gpu'
-  - ffmpeg ; extra == 'tests_gpu'
-  - cftime ; extra == 'tests_gpu'
-  - scipy>=1.10 ; extra == 'tests_gpu'
-  - selenium ; extra == 'tests_gpu'
-  - spatialpandas ; extra == 'tests_gpu'
-  - datashader>=0.11.1 ; extra == 'tests_gpu'
-  - dash>=1.16 ; extra == 'tests_gpu'
-  - cudf ; extra == 'tests_gpu'
-  - nbval ; extra == 'tests_nb'
-  - playwright ; extra == 'ui'
-  - pytest-playwright ; extra == 'ui'
-  - ipython>=5.4.0 ; extra == 'unit_tests'
-  - notebook ; extra == 'unit_tests'
-  - matplotlib>=3 ; extra == 'unit_tests'
-  - bokeh>=3.1 ; extra == 'unit_tests'
-  - networkx ; extra == 'unit_tests'
-  - pillow ; extra == 'unit_tests'
-  - xarray>=0.10.4 ; extra == 'unit_tests'
-  - plotly>=4.0 ; extra == 'unit_tests'
-  - dash>=1.16 ; extra == 'unit_tests'
-  - streamz>=0.5.0 ; extra == 'unit_tests'
-  - ffmpeg ; extra == 'unit_tests'
-  - cftime ; extra == 'unit_tests'
-  - netcdf4 ; extra == 'unit_tests'
-  - dask ; extra == 'unit_tests'
-  - scipy ; extra == 'unit_tests'
-  - shapely ; extra == 'unit_tests'
-  - scikit-image ; extra == 'unit_tests'
-  - pyarrow ; extra == 'unit_tests'
-  - pooch ; extra == 'unit_tests'
-  - datashader>=0.11.1 ; extra == 'unit_tests'
-  - notebook>=7.0 ; extra == 'unit_tests'
-  - pytest ; extra == 'unit_tests'
-  - pytest-cov ; extra == 'unit_tests'
-  - pytest-xdist ; extra == 'unit_tests'
-  - pytest-rerunfailures ; extra == 'unit_tests'
-  - nbconvert ; extra == 'unit_tests'
-  - contourpy ; extra == 'unit_tests'
-  - ibis-framework ; extra == 'unit_tests'
-  - scipy>=1.10 ; extra == 'unit_tests'
-  - selenium ; extra == 'unit_tests'
-  - spatialpandas ; extra == 'unit_tests'
-  - ruff ; extra == 'unit_tests'
-  - pre-commit ; extra == 'unit_tests'
   requires_python: '>=3.9'
 - kind: pypi
   name: hvplot
@@ -1243,9 +1031,9 @@ packages:
   requires_python: '>=3.8'
 - kind: pypi
   name: hypothesis
-  version: 6.103.1
-  url: https://files.pythonhosted.org/packages/13/10/1040d11375da7347c404b9d54e386f5f4be47c8c449e37957ee12fdd37d0/hypothesis-6.103.1-py3-none-any.whl
-  sha256: d3c959fab6233e78867499e2117ae9db8dc40eeed936d71a2cfc7b6094972e74
+  version: 6.103.2
+  url: https://files.pythonhosted.org/packages/bd/8d/0fa29f35e9693777b75bd3811a969fa6815ab93bdd7f34ea755e84a4a1b9/hypothesis-6.103.2-py3-none-any.whl
+  sha256: 629b7cdeca8c225933739f99879caba21949000d2c919c8b4585e01048b3bc73
   requires_dist:
   - attrs>=22.2.0
   - sortedcontainers<3.0.0,>=2.1.0
@@ -1415,19 +1203,19 @@ packages:
 - kind: conda
   name: ld_impl_linux-64
   version: '2.40'
-  build: hf3520f5_3
-  build_number: 3
+  build: hf3520f5_7
+  build_number: 7
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_3.conda
-  sha256: 002d48084157a23c7e40a9b225bab95ea02ac6cb9267aa7739da2a3491bb0220
-  md5: 7c1062eaa78dec4ea8a9a988dbda6045
+  url: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
+  sha256: 764b6950aceaaad0c67ef925417594dd14cd2e22fff864aeef455ac259263d15
+  md5: b80f2f396ca2c28b8c14c437a4ed1e74
   constrains:
   - binutils_impl_linux-64 2.40
   license: GPL-3.0-only
   license_family: GPL
   purls: []
-  size: 713873
-  timestamp: 1717997303330
+  size: 707602
+  timestamp: 1718625640445
 - kind: conda
   name: libexpat
   version: 2.6.2
@@ -1464,36 +1252,38 @@ packages:
 - kind: conda
   name: libgcc-ng
   version: 13.2.0
-  build: h77fa898_9
-  build_number: 9
+  build: h77fa898_10
+  build_number: 10
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_9.conda
-  sha256: 99766cf453f4d5ed78b8446d81de99a5fe243dea0d73cf402454f81c136c7d7d
-  md5: f23bc130bc3d2bbd9d9d6892609546ea
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
+  sha256: 78931358d83ff585d0cd448632366a5cbe6bcf41a66c07e8178200008127c2b5
+  md5: bbb96c5e7a11ef8ca2b666fe9fe3d199
   depends:
   - _libgcc_mutex 0.1 conda_forge
   - _openmp_mutex >=4.5
   constrains:
-  - libgomp 13.2.0 h77fa898_9
+  - libgomp 13.2.0 h77fa898_10
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
-  size: 802398
-  timestamp: 1718351812596
+  size: 802677
+  timestamp: 1718485010755
 - kind: conda
   name: libgomp
   version: 13.2.0
-  build: h77fa898_9
-  build_number: 9
+  build: h77fa898_10
+  build_number: 10
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_9.conda
-  sha256: 6f32059e844348ef090e3c1727017cc3c277ebd16038c6dcf7098057b385591a
-  md5: 0d0ad0fdee21442a479005ef5f3a02e8
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
+  sha256: bcea6ddfea86f0e6a1a831d1d2c3f36f7613b5e447229e19f978ded0d184cf5a
+  md5: 9404d1686e63142d41acc72ef876a588
   depends:
   - _libgcc_mutex 0.1 conda_forge
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
-  size: 444496
-  timestamp: 1718351734049
+  size: 444719
+  timestamp: 1718484940121
 - kind: conda
   name: libnsl
   version: 2.0.1
@@ -2758,12 +2548,12 @@ packages:
   timestamp: 1713553104915
 - kind: conda
   name: python
-  version: 3.12.3
-  build: hab00c5b_0_cpython
+  version: 3.12.4
+  build: h194c7f8_0_cpython
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/python-3.12.3-hab00c5b_0_cpython.conda
-  sha256: f9865bcbff69f15fd89a33a2da12ad616e98d65ce7c83c644b92e66e5016b227
-  md5: 2540b74d304f71d3e89c81209db4db84
+  url: https://conda.anaconda.org/conda-forge/linux-64/python-3.12.4-h194c7f8_0_cpython.conda
+  sha256: 97a78631e6c928bf7ad78d52f7f070fcf3bd37619fa48dc4394c21cf3058cdee
+  md5: d73490214f536cccb5819e9873048c92
   depends:
   - bzip2 >=1.0.8,<2.0a0
   - ld_impl_linux-64 >=2.36.1
@@ -2771,12 +2561,12 @@ packages:
   - libffi >=3.4,<4.0a0
   - libgcc-ng >=12
   - libnsl >=2.0.1,<2.1.0a0
-  - libsqlite >=3.45.2,<4.0a0
+  - libsqlite >=3.46.0,<4.0a0
   - libuuid >=2.38.1,<3.0a0
   - libxcrypt >=4.4.36
-  - libzlib >=1.2.13,<2.0.0a0
-  - ncurses >=6.4.20240210,<7.0a0
-  - openssl >=3.2.1,<4.0a0
+  - libzlib >=1.3.1,<2.0a0
+  - ncurses >=6.5,<7.0a0
+  - openssl >=3.3.1,<4.0a0
   - readline >=8.2,<9.0a0
   - tk >=8.6.13,<8.7.0a0
   - tzdata
@@ -2785,8 +2575,8 @@ packages:
   - python_abi 3.12.* *_cp312
   license: Python-2.0
   purls: []
-  size: 31991381
-  timestamp: 1713208036041
+  size: 32073625
+  timestamp: 1718621771849
 - kind: pypi
   name: python-dateutil
   version: 2.9.0.post0
@@ -2891,9 +2681,9 @@ packages:
   requires_python: '>=3.8'
 - kind: pypi
   name: ruff
-  version: 0.4.8
-  url: https://files.pythonhosted.org/packages/21/77/9d9c536d8544d8b1b2fe1fcd5e3e190b946d91dc00a8956aa5fe88cb264b/ruff-0.4.8-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: d05f8d6f0c3cce5026cecd83b7a143dcad503045857bc49662f736437380ad45
+  version: 0.4.9
+  url: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 88bffe9c6a454bf8529f9ab9091c99490578a593cc9f9822b7fc065ee0712a06
   requires_python: '>=3.7'
 - kind: pypi
   name: scikit-learn
@@ -3194,9 +2984,9 @@ packages:
   - psutil>=0.6.1 ; extra == 'nice'
 - kind: pypi
   name: setuptools
-  version: 70.0.0
-  url: https://files.pythonhosted.org/packages/de/88/70c5767a0e43eb4451c2200f07d042a4bcd7639276003a9c54a68cfcc1f8/setuptools-70.0.0-py3-none-any.whl
-  sha256: 54faa7f2e8d2d11bcd2c07bed282eef1046b5c080d1c32add737d7b5817b1ad4
+  version: 70.1.0
+  url: https://files.pythonhosted.org/packages/55/b3/b3a3415d2debd837106ed417f8681d8af63037fed367fa1b85dbfef081f1/setuptools-70.1.0-py3-none-any.whl
+  sha256: d9b8b771455a97c8a9f3ab3448ebe0b29b5e105f1228bba41028be116985a267
   requires_dist:
   - sphinx>=3.5 ; extra == 'docs'
   - jaraco-packaging>=9.3 ; extra == 'docs'
@@ -3228,14 +3018,15 @@ packages:
   - tomli-w>=1.0.0 ; extra == 'testing'
   - pytest-timeout ; extra == 'testing'
   - pytest-home>=0.5 ; extra == 'testing'
-  - mypy==1.9 ; extra == 'testing'
+  - mypy==1.10.0 ; extra == 'testing'
   - tomli ; extra == 'testing'
   - importlib-metadata ; extra == 'testing'
   - pytest-subprocess ; extra == 'testing'
   - pyproject-hooks!=1.1 ; extra == 'testing'
+  - jaraco-test ; extra == 'testing'
   - pytest-cov ; platform_python_implementation != 'PyPy' and extra == 'testing'
   - jaraco-develop>=7.21 ; (python_version >= '3.9' and sys_platform != 'cygwin') and extra == 'testing'
-  - pytest-ruff>=0.2.1 ; sys_platform != 'cygwin' and extra == 'testing'
+  - pytest-ruff>=0.3.2 ; sys_platform != 'cygwin' and extra == 'testing'
   - pytest-perf ; sys_platform != 'cygwin' and extra == 'testing'
   requires_python: '>=3.8'
 - kind: pypi
@@ -3251,12 +3042,12 @@ packages:
   sha256: a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0
 - kind: pypi
   name: sqlalchemy
-  version: 2.0.30
-  url: https://files.pythonhosted.org/packages/51/b8/3fd88455562518b6e8b97c4bc5784a819bd0a5c26be2a3409d3245626fac/SQLAlchemy-2.0.30-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 296230899df0b77dec4eb799bcea6fbe39a43707ce7bb166519c97b583cfcab3
+  version: 2.0.31
+  url: https://files.pythonhosted.org/packages/60/f8/7794f3055d50e96cee04c19c7faeedacb323c7762f334660ba03bed95485/SQLAlchemy-2.0.31-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 74afabeeff415e35525bf7a4ecdab015f00e06456166a2eba7590e49f8db940e
   requires_dist:
   - typing-extensions>=4.6.0
-  - greenlet!=0.4.17 ; platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))
+  - greenlet!=0.4.17 ; python_version < '3.13' and (platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32'))))))
   - importlib-metadata ; python_version < '3.8'
   - greenlet!=0.4.17 ; extra == 'aiomysql'
   - aiomysql>=0.2.0 ; extra == 'aiomysql'
@@ -3290,12 +3081,12 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: sqlalchemy
-  version: 2.0.30
-  url: https://files.pythonhosted.org/packages/c2/83/2ed47c5b841496d4e106f8ed04316c6193ba8615ab70fe769a593237b20b/SQLAlchemy-2.0.30-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: c4f61ada6979223013d9ab83a3ed003ded6959eae37d0d685db2c147e9143797
+  version: 2.0.31
+  url: https://files.pythonhosted.org/packages/bf/90/0ce8c76cd2ef8a5e0838d61d6648a1193859e1990bc1d65c8b0fd1f77ca8/SQLAlchemy-2.0.31-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 9f2bee229715b6366f86a95d497c347c22ddffa2c7c96143b59a2aa5cc9eebbc
   requires_dist:
   - typing-extensions>=4.6.0
-  - greenlet!=0.4.17 ; platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))
+  - greenlet!=0.4.17 ; python_version < '3.13' and (platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32'))))))
   - importlib-metadata ; python_version < '3.8'
   - greenlet!=0.4.17 ; extra == 'aiomysql'
   - aiomysql>=0.2.0 ; extra == 'aiomysql'
@@ -3329,12 +3120,12 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: sqlalchemy
-  version: 2.0.30
-  url: https://files.pythonhosted.org/packages/4d/21/87bcad723070f7cd5f9d45fb05557596aa1d23d19eef078b13edc9e31813/SQLAlchemy-2.0.30-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: a1429a4b0f709f19ff3b0cf13675b2b9bfa8a7e79990003207a011c0db880a13
+  version: 2.0.31
+  url: https://files.pythonhosted.org/packages/bb/be/4045425132a2fde3422e0d2062e6a3b874e385b98b0442c1d7d29ac152bc/SQLAlchemy-2.0.31-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 2196208432deebdfe3b22185d46b08f00ac9d7b01284e168c212919891289396
   requires_dist:
   - typing-extensions>=4.6.0
-  - greenlet!=0.4.17 ; platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))
+  - greenlet!=0.4.17 ; python_version < '3.13' and (platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32'))))))
   - importlib-metadata ; python_version < '3.8'
   - greenlet!=0.4.17 ; extra == 'aiomysql'
   - aiomysql>=0.2.0 ; extra == 'aiomysql'
@@ -3388,9 +3179,9 @@ packages:
   - pylint ; extra == 'test'
 - kind: pypi
   name: tenacity
-  version: 8.3.0
-  url: https://files.pythonhosted.org/packages/61/a1/6bb0cbebefb23641f068bb58a2bc56da9beb2b1c550242e3c540b37698f3/tenacity-8.3.0-py3-none-any.whl
-  sha256: 3649f6443dbc0d9b01b9d8020a9c4ec7a1ff5f6f3c6c8a036ef371f573fe9185
+  version: 8.4.1
+  url: https://files.pythonhosted.org/packages/80/07/2640b30384d96a99e88da7d32ff15adcfb10a552e73a337ef220a70cf941/tenacity-8.4.1-py3-none-any.whl
+  sha256: 28522e692eda3e1b8f5e99c51464efcc0b9fc86933da92415168bc1c4e2308fa
   requires_dist:
   - reno ; extra == 'doc'
   - sphinx ; extra == 'doc'
@@ -3491,9 +3282,9 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: urllib3
-  version: 2.2.1
-  url: https://files.pythonhosted.org/packages/a2/73/a68704750a7679d0b6d3ad7aa8d4da8e14e151ae82e6fee774e6e0d05ec8/urllib3-2.2.1-py3-none-any.whl
-  sha256: 450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d
+  version: 2.2.2
+  url: https://files.pythonhosted.org/packages/ca/1c/89ffc63a9605b583d5df2be791a27bc1a42b7c32bab68d3c8f2f73a98cd4/urllib3-2.2.2-py3-none-any.whl
+  sha256: a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472
   requires_dist:
   - brotli>=1.0.9 ; platform_python_implementation == 'CPython' and extra == 'brotli'
   - brotlicffi>=0.8.0 ; platform_python_implementation != 'CPython' and extra == 'brotli'
@@ -3508,9 +3299,9 @@ packages:
   sha256: a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78
 - kind: pypi
   name: xarray
-  version: 2024.5.0
-  url: https://files.pythonhosted.org/packages/67/91/1f55f0e026fba8eba15afb7d097bb873bd6a9e466be45a45e7cac40a930b/xarray-2024.5.0-py3-none-any.whl
-  sha256: 7ddedfe2294a0ab00f02d0fbdcb9c6300ec589f3cf436a9c7b7b577a12cd9bcf
+  version: 2024.6.0
+  url: https://files.pythonhosted.org/packages/ce/78/7a78d5197e409371c4fd9734ad9ab41ed6f9147b3ac23256c4e6c81295f2/xarray-2024.6.0-py3-none-any.whl
+  sha256: 721a7394e8ec3d592b2d8ebe21eed074ac077dc1bb1bd777ce00e41700b4866c
   requires_dist:
   - numpy>=1.23
   - packaging>=23.1

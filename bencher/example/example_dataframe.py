@@ -55,7 +55,6 @@ def example_dataset(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = N
 
     bench.report.append(res.to_dataset1(container=hv.Curve))
 
-
     return bench
 
 

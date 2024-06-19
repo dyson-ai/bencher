@@ -121,11 +121,10 @@ if __name__ == "__main__":
 
         # res = bench.sweep(input_vars=["sides", "radius"])
 
-
         bench.plot_sweep(input_vars=["sides"])
         bench.plot_sweep(input_vars=["sides", "color"])
 
-        res =bench.plot_sweep(input_vars=["sides", "radius"])
+        res = bench.plot_sweep(input_vars=["sides", "radius"])
         bench.report.append(res.to_heatmap(target_dimension=3))
         bench.report.append(res.to_line(target_dimension=1))
 

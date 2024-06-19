@@ -240,7 +240,7 @@ class BenchResultBase(OptunaResult):
             row.append(plot_callback(rv))
         return row.get()
 
-    @staticmethod   
+    @staticmethod
     def zip_results1D(args):
         first_el = [a[0] for a in args]
         out = pn.Column()
@@ -265,7 +265,7 @@ class BenchResultBase(OptunaResult):
                 row.append(a[a1][1])
             out.append(row)
         return out
-    
+
     @staticmethod
     def zip_results1D2(panel_list):
         if panel_list is not None:
@@ -274,7 +274,7 @@ class BenchResultBase(OptunaResult):
             secondary = panel_list[1:]
             for i in range(len(primary)):
                 print(type(primary[i]))
-                if isinstance(primary[i],(pn.Column,pn.Row)):
+                if isinstance(primary[i], (pn.Column, pn.Row)):
                     for j in range(len(secondary)):
                         primary[i].append(secondary[j][i][1])
             return primary
@@ -288,7 +288,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         pane_collection: pn.pane = None,
-        zip_results=False,  
+        zip_results=False,
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
@@ -310,8 +310,8 @@ class BenchResultBase(OptunaResult):
                         target_dimension=target_dimension,
                     )
                 )
-        
-        if zip_results:        
+
+        if zip_results:
             return self.zip_results1D2(row.get())
         return row.get()
 

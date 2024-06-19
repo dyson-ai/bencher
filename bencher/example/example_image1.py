@@ -29,15 +29,16 @@ class BenchPolygons(bch.ParametrizedSweep):
         self.update_params_from_kwargs(**kwargs)
         points = polygon_points(self.radius, self.sides, self.start_angle)
         # self.hmap = hv.Curve(points)
-        self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"),dpi=30)
-        self.polygon_small =  self.points_to_polygon_png(points, bch.gen_image_path("polygon"),dpi=10)
-
+        self.polygon = self.points_to_polygon_png(points, bch.gen_image_path("polygon"), dpi=30)
+        self.polygon_small = self.points_to_polygon_png(
+            points, bch.gen_image_path("polygon"), dpi=10
+        )
 
         self.side_length = 2 * self.radius * math.sin(math.pi / self.sides)
         self.area = (self.sides * self.side_length**2) / (4 * math.tan(math.pi / self.sides))
         return super().__call__()
 
-    def points_to_polygon_png(self, points: list[float], filename: str,dpi):
+    def points_to_polygon_png(self, points: list[float], filename: str, dpi):
         """Draw a closed polygon and save to png"""
         fig = plt.figure(frameon=False)
         ax = plt.Axes(fig, [0.0, 0.0, 1.0, 1.0], frameon=False)
@@ -60,20 +61,21 @@ class BenchPolygons(bch.ParametrizedSweep):
 
 
 def example_image_vid_sequential1(
-    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None    ) -> bch.Bench:
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
+) -> bch.Bench:
     bench = BenchPolygons().to_bench(run_cfg, report)
-    res =bench.plot_sweep(input_vars=["sides"])
+    res = bench.plot_sweep(input_vars=["sides"])
 
     bench.report.append(res.to_panes(zip_results=True))
 
     return bench
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = True
-    ex_run_cfg.overwrite_sample_cache=True
+    ex_run_cfg.overwrite_sample_cache = True
     ex_run_cfg.level = 3
 
     example_image_vid_sequential1(ex_run_cfg).report.show()
