@@ -233,9 +233,9 @@ class Bench(BenchPlotServer):
                     title_gen += f" iteration:{it}"
                 res = self.plot_sweep(
                     title=title_gen,
-                    input_vars_in=list(input_group),
-                    result_vars_in=result_vars,
-                    const_vars_in=const_vars,
+                    input_vars=list(input_group),
+                    result_vars=result_vars,
+                    const_vars=const_vars,
                     run_cfg=run_cfg,
                     plot_callbacks=plot_callbacks,
                 )
