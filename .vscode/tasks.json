@@ -97,30 +97,13 @@
 			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
 			"type": "shell",
 			"command": "scripts/update_from_template.sh"
-		},
-		{
-			"label": "update from template repo keep ours",
-			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
-			"type": "shell",
-			"command": "scripts/update_from_template_ours.sh"
-		},
+		},		
 		{
 			"label": "rename template project",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
 			"command": "scripts/rename_project.sh ${input:new_project_name}"
-		},
-		{
-			"label": "first time setup of project",
-			"detail": "Pulls updates from the template repo and replaces all instances of the template project name with a new name.",
-			"type": "shell",
-			"dependsOn": [
-				"update from template repo",
-				"rename template project name and commit",
-				"update from template repo keep ours"
-			],
-			"dependsOrder": "sequence",
-		},
+		},		
 		{
 			"label": "flit install",
 			"type": "shell",
