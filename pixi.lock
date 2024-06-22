@@ -14,8 +14,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -91,7 +91,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/b4/33/720548182ffa8344418126017aa1d4ab4aeec9a2275f04ce3f3573d8ace8/PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/de/77/ee4c919eac01567c70f41aba5a80e46bfa9b231de4585672caa5ac2398d5/pyzmq-26.0.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/11/c3/3f89b1e967a869642bd9198f27e2b89b8300862555d3e1e39b4ccaf92e8b/ruff-0.4.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ae/54/e70102a9c12d27d985ba659f336851732415e5a02864bef2ead36afaf15d/scikit_learn-1.5.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/88/ab/6ecdc526d509d33814835447bbbeedbebdec7cca46ef495a61b00a35b4bf/scipy-1.13.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
@@ -127,8 +127,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -205,7 +205,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/29/61/bf33c6c85c55bc45a29eee3195848ff2d518d84735eb0e2d8cb42e0d285e/PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c4/0f/24ff63c1bc2cdbde7a703fcb35031d1bfa73f0e27e81235952c3b66636c6/pyzmq-26.0.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/11/c3/3f89b1e967a869642bd9198f27e2b89b8300862555d3e1e39b4ccaf92e8b/ruff-0.4.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/1e/7d/1a2ea8eb5b4df373c30c7418cf26305a4a05e2a0e56c80a8043b791595f3/scikit_learn-1.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a3/ba/7255e5dc82a65adbe83771c72f384d99c43063648456796436c9a5585ec3/scipy-1.13.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
@@ -243,8 +243,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -320,7 +320,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/7b/5e/efd033ab7199a0b2044dab3b9f7a4f6670e6a52c089de572e928d2873b06/PyYAML-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/c7/41/02504160c5cc9d8dfe9afa5b7128ebbbc3e47933a4692197d23e601a171c/pyzmq-26.0.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/11/c3/3f89b1e967a869642bd9198f27e2b89b8300862555d3e1e39b4ccaf92e8b/ruff-0.4.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/46/c0/63d3a8da39a2ee051df229111aa93f6dca2b56f8080abd34993938166455/scikit_learn-1.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/36/07/035d22ff9795129c5a847c64cb43c1fa9188826b59344fee28a3ab02e283/scipy-1.13.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
@@ -593,10 +593,10 @@ packages:
   - pytest>=2.8.5 ; extra == 'tests'
   - pytest-cov ; extra == 'tests'
   - packaging ; extra == 'tests'
-  - colorcet[examples] ; extra == 'tests_examples'
-  - nbval ; extra == 'tests_examples'
-  - colorcet[tests] ; extra == 'tests_extra'
-  - pytest-mpl ; extra == 'tests_extra'
+  - colorcet[examples] ; extra == 'tests-examples'
+  - nbval ; extra == 'tests-examples'
+  - colorcet[tests] ; extra == 'tests-extra'
+  - pytest-mpl ; extra == 'tests-extra'
   requires_python: '>=3.7'
 - kind: pypi
   name: colorlog
@@ -898,7 +898,7 @@ packages:
   name: holobench
   version: 1.27.0
   path: .
-  sha256: 8ec61ea4e5b949e7e78f539f6d2d56a55a232c2db147a7880ffcace30778adb2
+  sha256: 5bebacb4c734cc5a19cee305ae1cfe926d38a89151c111364c456421618b38e6
   requires_dist:
   - holoviews>=1.15,<=1.19.0
   - numpy>=1.0,<=1.26.4
@@ -922,7 +922,7 @@ packages:
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.2.2 ; extra == 'test'
   - hypothesis>=6.82,<=6.103.2 ; extra == 'test'
-  - ruff>=0.0.280,<=0.4.9 ; extra == 'test'
+  - ruff>=0.0.280,<=0.4.10 ; extra == 'test'
   - coverage>=7.2.7,<=7.5.3 ; extra == 'test'
   editable: true
 - kind: pypi
@@ -1252,38 +1252,38 @@ packages:
 - kind: conda
   name: libgcc-ng
   version: 13.2.0
-  build: h77fa898_10
-  build_number: 10
+  build: h77fa898_11
+  build_number: 11
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_10.conda
-  sha256: 78931358d83ff585d0cd448632366a5cbe6bcf41a66c07e8178200008127c2b5
-  md5: bbb96c5e7a11ef8ca2b666fe9fe3d199
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
+  sha256: bbdd49b5a191105cf4bf82a59d611afa1e8568efa556dd988e4e5d0efc3058b1
+  md5: 0b3b218a596bb4c3854cc9ee799f94e5
   depends:
   - _libgcc_mutex 0.1 conda_forge
   - _openmp_mutex >=4.5
   constrains:
-  - libgomp 13.2.0 h77fa898_10
+  - libgomp 13.2.0 h77fa898_11
   license: GPL-3.0-only WITH GCC-exception-3.1
   license_family: GPL
   purls: []
-  size: 802677
-  timestamp: 1718485010755
+  size: 796010
+  timestamp: 1718867009281
 - kind: conda
   name: libgomp
   version: 13.2.0
-  build: h77fa898_10
-  build_number: 10
+  build: h77fa898_11
+  build_number: 11
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_10.conda
-  sha256: bcea6ddfea86f0e6a1a831d1d2c3f36f7613b5e447229e19f978ded0d184cf5a
-  md5: 9404d1686e63142d41acc72ef876a588
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
+  sha256: f4112111fa350bcd8d6d354cdde3426751a579add88fa523f6483c714821e681
+  md5: 8c462ced2af33648195dc9459f331f31
   depends:
   - _libgcc_mutex 0.1 conda_forge
   license: GPL-3.0-only WITH GCC-exception-3.1
   license_family: GPL
   purls: []
-  size: 444719
-  timestamp: 1718484940121
+  size: 444606
+  timestamp: 1718866940233
 - kind: conda
   name: libnsl
   version: 2.0.1
@@ -1421,7 +1421,7 @@ packages:
   - psutil ; extra == 'benchmarking'
   - pytest ; extra == 'benchmarking'
   - pytest-benchmark ; extra == 'benchmarking'
-  - pre-commit~=3.0 ; extra == 'code_style'
+  - pre-commit~=3.0 ; extra == 'code-style'
   - commonmark~=0.9 ; extra == 'compare'
   - markdown~=3.4 ; extra == 'compare'
   - mistletoe~=1.0 ; extra == 'compare'
@@ -1540,7 +1540,7 @@ packages:
   sha256: 1020dfe4e6bfc2c79fb49ae4e3f5b297f5ccd20f010187acc52af2921e27dc6a
   requires_dist:
   - markdown-it-py>=1.0.0,<4.0.0
-  - pre-commit ; extra == 'code_style'
+  - pre-commit ; extra == 'code-style'
   - myst-parser ; extra == 'rtd'
   - sphinx-book-theme ; extra == 'rtd'
   - coverage ; extra == 'testing'
@@ -2069,70 +2069,70 @@ packages:
   - watchfiles ; extra == 'all'
   - xarray ; extra == 'all'
   - xgboost ; extra == 'all'
-  - aiohttp ; extra == 'all_pip'
-  - altair ; extra == 'all_pip'
-  - anywidget ; extra == 'all_pip'
-  - channels ; extra == 'all_pip'
-  - croniter ; extra == 'all_pip'
-  - dask-expr ; extra == 'all_pip'
-  - datashader ; extra == 'all_pip'
-  - diskcache ; extra == 'all_pip'
-  - django<4 ; extra == 'all_pip'
-  - fastparquet ; extra == 'all_pip'
-  - flake8 ; extra == 'all_pip'
-  - folium ; extra == 'all_pip'
-  - graphviz ; extra == 'all_pip'
-  - holoviews>=1.16.0 ; extra == 'all_pip'
-  - hvplot ; extra == 'all_pip'
-  - ipyleaflet ; extra == 'all_pip'
-  - ipympl ; extra == 'all_pip'
-  - ipython>=7.0 ; extra == 'all_pip'
-  - ipyvolume ; extra == 'all_pip'
-  - ipyvuetify ; extra == 'all_pip'
-  - ipywidgets ; extra == 'all_pip'
-  - ipywidgets-bokeh ; extra == 'all_pip'
-  - jupyter-server ; extra == 'all_pip'
-  - jupyter-bokeh>=3.0.7 ; extra == 'all_pip'
-  - jupyterlab ; extra == 'all_pip'
-  - lxml ; extra == 'all_pip'
-  - matplotlib ; extra == 'all_pip'
-  - nbsite>=0.8.4 ; extra == 'all_pip'
-  - nbval ; extra == 'all_pip'
-  - networkx>=2.5 ; extra == 'all_pip'
-  - numba<0.58 ; extra == 'all_pip'
-  - numpy ; extra == 'all_pip'
-  - pandas<2.1.0 ; extra == 'all_pip'
-  - pandas>=1.3 ; extra == 'all_pip'
-  - parameterized ; extra == 'all_pip'
-  - pillow ; extra == 'all_pip'
-  - playwright ; extra == 'all_pip'
-  - plotly ; extra == 'all_pip'
-  - plotly>=4.0 ; extra == 'all_pip'
-  - pre-commit ; extra == 'all_pip'
-  - psutil ; extra == 'all_pip'
-  - pydeck ; extra == 'all_pip'
-  - pyinstrument>=4.0 ; extra == 'all_pip'
-  - pytest ; extra == 'all_pip'
-  - pytest-asyncio ; extra == 'all_pip'
-  - pytest-cov ; extra == 'all_pip'
-  - pytest-playwright ; extra == 'all_pip'
-  - pytest-rerunfailures ; extra == 'all_pip'
-  - pytest-xdist ; extra == 'all_pip'
-  - pyvista ; extra == 'all_pip'
-  - reacton ; extra == 'all_pip'
-  - scikit-image ; extra == 'all_pip'
-  - scikit-learn ; extra == 'all_pip'
-  - scipy ; extra == 'all_pip'
-  - seaborn ; extra == 'all_pip'
-  - streamz ; extra == 'all_pip'
-  - textual ; extra == 'all_pip'
-  - tomli ; extra == 'all_pip'
-  - twine ; extra == 'all_pip'
-  - vega-datasets ; extra == 'all_pip'
-  - vtk ; extra == 'all_pip'
-  - watchfiles ; extra == 'all_pip'
-  - xarray ; extra == 'all_pip'
-  - xgboost ; extra == 'all_pip'
+  - aiohttp ; extra == 'all-pip'
+  - altair ; extra == 'all-pip'
+  - anywidget ; extra == 'all-pip'
+  - channels ; extra == 'all-pip'
+  - croniter ; extra == 'all-pip'
+  - dask-expr ; extra == 'all-pip'
+  - datashader ; extra == 'all-pip'
+  - diskcache ; extra == 'all-pip'
+  - django<4 ; extra == 'all-pip'
+  - fastparquet ; extra == 'all-pip'
+  - flake8 ; extra == 'all-pip'
+  - folium ; extra == 'all-pip'
+  - graphviz ; extra == 'all-pip'
+  - holoviews>=1.16.0 ; extra == 'all-pip'
+  - hvplot ; extra == 'all-pip'
+  - ipyleaflet ; extra == 'all-pip'
+  - ipympl ; extra == 'all-pip'
+  - ipython>=7.0 ; extra == 'all-pip'
+  - ipyvolume ; extra == 'all-pip'
+  - ipyvuetify ; extra == 'all-pip'
+  - ipywidgets ; extra == 'all-pip'
+  - ipywidgets-bokeh ; extra == 'all-pip'
+  - jupyter-server ; extra == 'all-pip'
+  - jupyter-bokeh>=3.0.7 ; extra == 'all-pip'
+  - jupyterlab ; extra == 'all-pip'
+  - lxml ; extra == 'all-pip'
+  - matplotlib ; extra == 'all-pip'
+  - nbsite>=0.8.4 ; extra == 'all-pip'
+  - nbval ; extra == 'all-pip'
+  - networkx>=2.5 ; extra == 'all-pip'
+  - numba<0.58 ; extra == 'all-pip'
+  - numpy ; extra == 'all-pip'
+  - pandas<2.1.0 ; extra == 'all-pip'
+  - pandas>=1.3 ; extra == 'all-pip'
+  - parameterized ; extra == 'all-pip'
+  - pillow ; extra == 'all-pip'
+  - playwright ; extra == 'all-pip'
+  - plotly ; extra == 'all-pip'
+  - plotly>=4.0 ; extra == 'all-pip'
+  - pre-commit ; extra == 'all-pip'
+  - psutil ; extra == 'all-pip'
+  - pydeck ; extra == 'all-pip'
+  - pyinstrument>=4.0 ; extra == 'all-pip'
+  - pytest ; extra == 'all-pip'
+  - pytest-asyncio ; extra == 'all-pip'
+  - pytest-cov ; extra == 'all-pip'
+  - pytest-playwright ; extra == 'all-pip'
+  - pytest-rerunfailures ; extra == 'all-pip'
+  - pytest-xdist ; extra == 'all-pip'
+  - pyvista ; extra == 'all-pip'
+  - reacton ; extra == 'all-pip'
+  - scikit-image ; extra == 'all-pip'
+  - scikit-learn ; extra == 'all-pip'
+  - scipy ; extra == 'all-pip'
+  - seaborn ; extra == 'all-pip'
+  - streamz ; extra == 'all-pip'
+  - textual ; extra == 'all-pip'
+  - tomli ; extra == 'all-pip'
+  - twine ; extra == 'all-pip'
+  - vega-datasets ; extra == 'all-pip'
+  - vtk ; extra == 'all-pip'
+  - watchfiles ; extra == 'all-pip'
+  - xarray ; extra == 'all-pip'
+  - xgboost ; extra == 'all-pip'
   - param>=2.0.0 ; extra == 'build'
   - setuptools>=42 ; extra == 'build'
   - requests ; extra == 'build'
@@ -2220,27 +2220,27 @@ packages:
   - reacton ; extra == 'tests'
   - twine ; extra == 'tests'
   - numba<0.58 ; extra == 'tests'
-  - flake8 ; extra == 'tests_core'
-  - parameterized ; extra == 'tests_core'
-  - pytest ; extra == 'tests_core'
-  - nbval ; extra == 'tests_core'
-  - pytest-rerunfailures ; extra == 'tests_core'
-  - pytest-asyncio ; extra == 'tests_core'
-  - pytest-xdist ; extra == 'tests_core'
-  - pytest-cov ; extra == 'tests_core'
-  - pre-commit ; extra == 'tests_core'
-  - psutil ; extra == 'tests_core'
-  - altair ; extra == 'tests_core'
-  - anywidget ; extra == 'tests_core'
-  - folium ; extra == 'tests_core'
-  - diskcache ; extra == 'tests_core'
-  - holoviews>=1.16.0 ; extra == 'tests_core'
-  - numpy ; extra == 'tests_core'
-  - pandas>=1.3 ; extra == 'tests_core'
-  - ipython>=7.0 ; extra == 'tests_core'
-  - scipy ; extra == 'tests_core'
-  - textual ; extra == 'tests_core'
-  - watchfiles ; extra == 'tests_core'
+  - flake8 ; extra == 'tests-core'
+  - parameterized ; extra == 'tests-core'
+  - pytest ; extra == 'tests-core'
+  - nbval ; extra == 'tests-core'
+  - pytest-rerunfailures ; extra == 'tests-core'
+  - pytest-asyncio ; extra == 'tests-core'
+  - pytest-xdist ; extra == 'tests-core'
+  - pytest-cov ; extra == 'tests-core'
+  - pre-commit ; extra == 'tests-core'
+  - psutil ; extra == 'tests-core'
+  - altair ; extra == 'tests-core'
+  - anywidget ; extra == 'tests-core'
+  - folium ; extra == 'tests-core'
+  - diskcache ; extra == 'tests-core'
+  - holoviews>=1.16.0 ; extra == 'tests-core'
+  - numpy ; extra == 'tests-core'
+  - pandas>=1.3 ; extra == 'tests-core'
+  - ipython>=7.0 ; extra == 'tests-core'
+  - scipy ; extra == 'tests-core'
+  - textual ; extra == 'tests-core'
+  - watchfiles ; extra == 'tests-core'
   - jupyter-server ; extra == 'ui'
   - playwright ; extra == 'ui'
   - pytest-playwright ; extra == 'ui'
@@ -2677,13 +2677,13 @@ packages:
   - urllib3<3,>=1.21.1
   - certifi>=2017.4.17
   - pysocks!=1.5.7,>=1.5.6 ; extra == 'socks'
-  - chardet<6,>=3.0.2 ; extra == 'use_chardet_on_py3'
+  - chardet<6,>=3.0.2 ; extra == 'use-chardet-on-py3'
   requires_python: '>=3.8'
 - kind: pypi
   name: ruff
-  version: 0.4.9
-  url: https://files.pythonhosted.org/packages/d3/2f/3a63f461895201c6836f7822f29ada06d9cbd4b506b152f1d2800c917853/ruff-0.4.9-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 88bffe9c6a454bf8529f9ab9091c99490578a593cc9f9822b7fc065ee0712a06
+  version: 0.4.10
+  url: https://files.pythonhosted.org/packages/11/c3/3f89b1e967a869642bd9198f27e2b89b8300862555d3e1e39b4ccaf92e8b/ruff-0.4.10-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 0f54c481b39a762d48f64d97351048e842861c6662d63ec599f67d515cb417f6
   requires_python: '>=3.7'
 - kind: pypi
   name: scikit-learn
@@ -3059,23 +3059,23 @@ packages:
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
   - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb_connector'
+  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
-  - pymssql ; extra == 'mssql_pymssql'
-  - pyodbc ; extra == 'mssql_pyodbc'
+  - pymssql ; extra == 'mssql-pymssql'
+  - pyodbc ; extra == 'mssql-pyodbc'
   - mypy>=0.910 ; extra == 'mypy'
   - mysqlclient>=1.4.0 ; extra == 'mysql'
-  - mysql-connector-python ; extra == 'mysql_connector'
+  - mysql-connector-python ; extra == 'mysql-connector'
   - cx-oracle>=8 ; extra == 'oracle'
-  - oracledb>=1.0.1 ; extra == 'oracle_oracledb'
+  - oracledb>=1.0.1 ; extra == 'oracle-oracledb'
   - psycopg2>=2.7 ; extra == 'postgresql'
-  - greenlet!=0.4.17 ; extra == 'postgresql_asyncpg'
-  - asyncpg ; extra == 'postgresql_asyncpg'
-  - pg8000>=1.29.1 ; extra == 'postgresql_pg8000'
-  - psycopg>=3.0.7 ; extra == 'postgresql_psycopg'
-  - psycopg2-binary ; extra == 'postgresql_psycopg2binary'
-  - psycopg2cffi ; extra == 'postgresql_psycopg2cffi'
-  - psycopg[binary]>=3.0.7 ; extra == 'postgresql_psycopgbinary'
+  - greenlet!=0.4.17 ; extra == 'postgresql-asyncpg'
+  - asyncpg ; extra == 'postgresql-asyncpg'
+  - pg8000>=1.29.1 ; extra == 'postgresql-pg8000'
+  - psycopg>=3.0.7 ; extra == 'postgresql-psycopg'
+  - psycopg2-binary ; extra == 'postgresql-psycopg2binary'
+  - psycopg2cffi ; extra == 'postgresql-psycopg2cffi'
+  - psycopg[binary]>=3.0.7 ; extra == 'postgresql-psycopgbinary'
   - pymysql ; extra == 'pymysql'
   - sqlcipher3-binary ; extra == 'sqlcipher'
   requires_python: '>=3.7'
@@ -3098,23 +3098,23 @@ packages:
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
   - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb_connector'
+  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
-  - pymssql ; extra == 'mssql_pymssql'
-  - pyodbc ; extra == 'mssql_pyodbc'
+  - pymssql ; extra == 'mssql-pymssql'
+  - pyodbc ; extra == 'mssql-pyodbc'
   - mypy>=0.910 ; extra == 'mypy'
   - mysqlclient>=1.4.0 ; extra == 'mysql'
-  - mysql-connector-python ; extra == 'mysql_connector'
+  - mysql-connector-python ; extra == 'mysql-connector'
   - cx-oracle>=8 ; extra == 'oracle'
-  - oracledb>=1.0.1 ; extra == 'oracle_oracledb'
+  - oracledb>=1.0.1 ; extra == 'oracle-oracledb'
   - psycopg2>=2.7 ; extra == 'postgresql'
-  - greenlet!=0.4.17 ; extra == 'postgresql_asyncpg'
-  - asyncpg ; extra == 'postgresql_asyncpg'
-  - pg8000>=1.29.1 ; extra == 'postgresql_pg8000'
-  - psycopg>=3.0.7 ; extra == 'postgresql_psycopg'
-  - psycopg2-binary ; extra == 'postgresql_psycopg2binary'
-  - psycopg2cffi ; extra == 'postgresql_psycopg2cffi'
-  - psycopg[binary]>=3.0.7 ; extra == 'postgresql_psycopgbinary'
+  - greenlet!=0.4.17 ; extra == 'postgresql-asyncpg'
+  - asyncpg ; extra == 'postgresql-asyncpg'
+  - pg8000>=1.29.1 ; extra == 'postgresql-pg8000'
+  - psycopg>=3.0.7 ; extra == 'postgresql-psycopg'
+  - psycopg2-binary ; extra == 'postgresql-psycopg2binary'
+  - psycopg2cffi ; extra == 'postgresql-psycopg2cffi'
+  - psycopg[binary]>=3.0.7 ; extra == 'postgresql-psycopgbinary'
   - pymysql ; extra == 'pymysql'
   - sqlcipher3-binary ; extra == 'sqlcipher'
   requires_python: '>=3.7'
@@ -3137,23 +3137,23 @@ packages:
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
   - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb_connector'
+  - mariadb!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
-  - pymssql ; extra == 'mssql_pymssql'
-  - pyodbc ; extra == 'mssql_pyodbc'
+  - pymssql ; extra == 'mssql-pymssql'
+  - pyodbc ; extra == 'mssql-pyodbc'
   - mypy>=0.910 ; extra == 'mypy'
   - mysqlclient>=1.4.0 ; extra == 'mysql'
-  - mysql-connector-python ; extra == 'mysql_connector'
+  - mysql-connector-python ; extra == 'mysql-connector'
   - cx-oracle>=8 ; extra == 'oracle'
-  - oracledb>=1.0.1 ; extra == 'oracle_oracledb'
+  - oracledb>=1.0.1 ; extra == 'oracle-oracledb'
   - psycopg2>=2.7 ; extra == 'postgresql'
-  - greenlet!=0.4.17 ; extra == 'postgresql_asyncpg'
-  - asyncpg ; extra == 'postgresql_asyncpg'
-  - pg8000>=1.29.1 ; extra == 'postgresql_pg8000'
-  - psycopg>=3.0.7 ; extra == 'postgresql_psycopg'
-  - psycopg2-binary ; extra == 'postgresql_psycopg2binary'
-  - psycopg2cffi ; extra == 'postgresql_psycopg2cffi'
-  - psycopg[binary]>=3.0.7 ; extra == 'postgresql_psycopgbinary'
+  - greenlet!=0.4.17 ; extra == 'postgresql-asyncpg'
+  - asyncpg ; extra == 'postgresql-asyncpg'
+  - pg8000>=1.29.1 ; extra == 'postgresql-pg8000'
+  - psycopg>=3.0.7 ; extra == 'postgresql-psycopg'
+  - psycopg2-binary ; extra == 'postgresql-psycopg2binary'
+  - psycopg2cffi ; extra == 'postgresql-psycopg2cffi'
+  - psycopg[binary]>=3.0.7 ; extra == 'postgresql-psycopgbinary'
   - pymysql ; extra == 'pymysql'
   - sqlcipher3-binary ; extra == 'sqlcipher'
   requires_python: '>=3.7'
