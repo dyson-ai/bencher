@@ -54,4 +54,4 @@ Bencher is designed to work with stochastic pure functions with no side effects.
     
 ### Example Output
 
-https://dyson-ai.github.io/bencher/
+https://dyson-ai.github.io/bencher/ 
