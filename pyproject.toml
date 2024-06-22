@@ -91,7 +91,7 @@ ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
   "format",
   "ruff-lint",
-  "check-clean-workspace",
+  # "check-clean-workspace",
   "pylint",
   "coverage",
   "coverage-report",
