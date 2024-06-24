@@ -131,6 +131,12 @@
 			"command": "scripts/launch_vscode.sh"
 		},
 		{
+			"label": "launch container no cache",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
+			"type": "shell",
+			"command": "scripts/launch_vscode.sh --nocache"
+		},
+		{
             "label": "Install All Recommended Extensions",
             "type": "shell",           
             "linux": {
