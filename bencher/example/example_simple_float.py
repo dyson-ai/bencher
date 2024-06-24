@@ -1,5 +1,4 @@
 """This file has some examples for how to perform basic benchmarking parameter sweeps"""
-
 import math
 import bencher as bch
 
