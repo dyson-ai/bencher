@@ -131,18 +131,24 @@
 			"command": "scripts/launch_vscode.sh"
 		},
 		{
-			"label": "Install All Recommended Extensions",
+			"label": "launch container no cache",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
 			"type": "shell",
-			"linux": {
-				"command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
-			},
-			"runOptions": {
-				"runOn": "folderOpen"
-			},
-			"presentation": {
-				"reveal": "always"
-			},
+			"command": "scripts/launch_vscode.sh --nocache"
 		},
+		{
+            "label": "Install All Recommended Extensions",
+            "type": "shell",           
+            "linux": {
+                "command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+        },	
 		{
 			"label": "set git config recurse submodules",
 			"type": "shell",
