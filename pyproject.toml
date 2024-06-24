@@ -24,7 +24,7 @@ dependencies = [
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
   "moviepy>=1.0.3,<=1.0.3",
-  "rerun-sdk>=0.16.1,<0.17"
+  "rerun-sdk",
 ]
 
 [tool.pixi.project]

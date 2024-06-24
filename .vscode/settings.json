@@ -20,5 +20,5 @@
 	},
 	"python.analysis.autoImportCompletions": false,
 	"python.analysis.typeCheckingMode": "off",
-	"python.defaultInterpreterPath": "/workspaces/bencher/.pixi/envs/default/bin/python" //vscode gets it wrong more than right and mostly gets in the way
+	"python.defaultInterpreterPath": "/home/ags/projects/bencher/.pixi/envs/default/bin/python" //vscode gets it wrong more than right and mostly gets in the way
 }
