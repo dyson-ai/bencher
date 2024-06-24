@@ -14,8 +14,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_13.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_13.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -127,8 +127,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_13.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_13.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -243,8 +243,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_13.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_13.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda
@@ -896,9 +896,9 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: holobench
-  version: 1.27.0
+  version: 1.28.0
   path: .
-  sha256: 0c3aeac95197bba1f3d22f987bb3ab7fbd7db4264fbfa4657d0f2664051e619d
+  sha256: 3a0bb036b88549d2ee0922ab0b858dec81d825d580b5cd4ac2d828d7dae8efc5
   requires_dist:
   - holoviews>=1.15,<=1.19.0
   - numpy>=1.0,<=2.0.0
@@ -1252,36 +1252,36 @@ packages:
 - kind: conda
   name: libgcc-ng
   version: 13.2.0
-  build: h77fa898_11
-  build_number: 11
+  build: h77fa898_13
+  build_number: 13
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_11.conda
-  sha256: bbdd49b5a191105cf4bf82a59d611afa1e8568efa556dd988e4e5d0efc3058b1
-  md5: 0b3b218a596bb4c3854cc9ee799f94e5
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-13.2.0-h77fa898_13.conda
+  sha256: ffa0f472c8b37f864de855af2d3c057f1813162319f10ebd97332d73fc27ba60
+  md5: 9358cdd61ef0d600d2a0dde2d53b006c
   depends:
   - _libgcc_mutex 0.1 conda_forge
   - _openmp_mutex >=4.5
   constrains:
-  - libgomp 13.2.0 h77fa898_11
+  - libgomp 13.2.0 h77fa898_13
   license: GPL-3.0-only WITH GCC-exception-3.1
   purls: []
-  size: 796010
-  timestamp: 1718867009281
+  size: 792721
+  timestamp: 1719179941452
 - kind: conda
   name: libgomp
   version: 13.2.0
-  build: h77fa898_11
-  build_number: 11
+  build: h77fa898_13
+  build_number: 13
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_11.conda
-  sha256: f4112111fa350bcd8d6d354cdde3426751a579add88fa523f6483c714821e681
-  md5: 8c462ced2af33648195dc9459f331f31
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-13.2.0-h77fa898_13.conda
+  sha256: c5949bec7eee93cdd5c367e6e5c5e92ee1c5139a827567af23853dd52721d8ed
+  md5: d370d1855cca14dff6a819c90c77497c
   depends:
   - _libgcc_mutex 0.1 conda_forge
   license: GPL-3.0-only WITH GCC-exception-3.1
   purls: []
-  size: 444606
-  timestamp: 1718866940233
+  size: 444091
+  timestamp: 1719179831697
 - kind: conda
   name: libnsl
   version: 2.0.1
