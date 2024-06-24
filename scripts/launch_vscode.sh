@@ -38,18 +38,18 @@ if [ ! -d "$VENV_DIR" ]; then
     echo "Creating virtual environment in $VENV_DIR..."
     python3 -m venv "$VENV_DIR"
     echo "Activating the virtual environment..."
-    source "$VENV_DIR/bin/activate"
+    source $VENV_DIR/bin/activate
     echo "Installing deps rocker..."
-    pip install deps_rocker
+    pip install deps-rocker
     echo "Virtual environment setup and deps rocker installation complete."
 else
     echo "Virtual environment already exists in $VENV_DIR."
     echo "Activating the existing virtual environment..."
-    source "$VENV_DIR/bin/activate"
+    source $VENV_DIR/bin/activate
 fi
 
 # Run the rocker command with the specified parameters
-rocker --nvidia --x11 --user --pull --git --image-name "$CONTAINER_NAME" --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --deps --oyr-run-arg " --detach" ubuntu:22.04 
+rocker --nvidia --x11 --user --pull --git --image-name "$CONTAINER_NAME" --name "$CONTAINER_NAME" --volume "${PWD}":/workspaces/"${CONTAINER_NAME}":Z --deps --oyr-run-arg " --detach" ubuntu:22.04 "$@" 
 
 deactivate
 
