@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.28.0"
+version = "1.28.1"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -42,7 +42,7 @@ python = "3.10.*"
 python = "3.11.*"
 
 [tool.pixi.pypi-dependencies]
-bencher = { path = ".", editable = true }
+holobench = { path = ".",editable=true}
 
 [project.optional-dependencies]
 test = [
