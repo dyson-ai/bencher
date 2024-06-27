@@ -47,7 +47,7 @@ if True:
         )
 
     def github_content(branch_name, filename):
-        return f"https://raw.githubusercontent.com/dyson-ai/bencher/{branch_name}/{filename}"
+        return f"https://raw.githubusercontent.com/dyson-ai/bencher/{branch_name}/{filename}?token=$(date +%s)"
 
     br.publish_rrd(savepath, remote_callback=publish_args)
     # bch.bench_report.BenchPlotServer.
