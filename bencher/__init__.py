@@ -54,7 +54,7 @@ from .utils import (
     lerp,
     tabs_in_markdown,
     publish_file,
-    github_content
+    github_content,
 )
 
 from .rerun_utils import publish_and_view_rrd, rrd_to_pane

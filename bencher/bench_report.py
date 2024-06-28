@@ -3,7 +3,6 @@ from typing import Callable
 import os
 from pathlib import Path
 import tempfile
-import shutil
 from threading import Thread
 
 import panel as pn
@@ -156,8 +155,6 @@ class BenchReport(BenchPlotServer):
         logging.info(publish_url)
 
         return publish_url
-
-   
 
     # @staticmethod
     # def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:

@@ -1,8 +1,6 @@
 import bencher as bch
-import numpy as np
 import rerun as rr
 import rerun.blueprint as rrb
-import panel as pn
 
 
 my_blueprint = rrb.Blueprint(
@@ -44,5 +42,3 @@ bch.publish_and_view_rrd(
     branch_name="test_rrd",
     content_callback=bch.github_content,
 ).show()
-
-
