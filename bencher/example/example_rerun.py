@@ -26,9 +26,7 @@ rr.init(
 file_path = "dat.rrd"
 rr.save(file_path)
 
-# rr.send_blueprint(my_blueprint, make_active=True)
-# rr.log("lol1", rr.Points2D([0, 1]))
-# rr.log("lol2", rr.Points2D([1, 1]))
+rr.send_blueprint(my_blueprint, make_active=True)
 rr.log("s1", rr.Scalar(1))
 rr.log("s1", rr.Scalar(2))
 rr.log("s1", rr.Scalar(1))

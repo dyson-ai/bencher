@@ -232,8 +232,9 @@ def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma
 
         # create a new git repo and add files to that.  Push the file to another abritrary repo.  The aim of doing it this way is that no data needs to be downloaded.
 
+        # os.system(f"{cd_dir} git config init.defaultBranch {branch_name}")
         os.system(f"{cd_dir} git init")
-        os.system(f"{cd_dir} git checkout -b {branch_name}")
+        os.system(f"{cd_dir} git branch -m {branch_name}")
         os.system(f"{cd_dir} git add {filename}")
         os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
         os.system(f"{cd_dir} git remote add origin {remote}")
@@ -246,9 +247,3 @@ def github_content(remote: str, branch_name: str, filename: str):
     )
     return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
 
-
-def stash_content(remote: str, branch_name: str, filename: str):
-    raw = remote.replace(".git", "").replace(
-        "https://github.com/", "https://raw.githubusercontent.com/"
-    )
-    return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
