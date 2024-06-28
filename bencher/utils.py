@@ -241,9 +241,8 @@ def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma
         os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
 
 
-def github_content(remote: str, branch_name: str, filename: str):
+def github_content(remote: str, branch_name: str, filename: str):  # pragma: no cover
     raw = remote.replace(".git", "").replace(
         "https://github.com/", "https://raw.githubusercontent.com/"
     )
     return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
-
