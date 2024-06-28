@@ -157,6 +157,64 @@ class BenchReport(BenchPlotServer):
 
         return publish_url
 
+    def publish_rrd(
+        self, filepath: str, remote_callback: Callable, branch_name: str = None, debug: bool = False
+    ) -> str:  # pragma: no cover
+        """Publish the results as an html file by committing it to the bench_results branch in the current repo. If you have set up your repo with github pages or equivalent then the html file will be served as a viewable webpage.  This is an example of a callable to publish on github pages:
+
+        .. code-block:: python
+
+            def publish_args(branch_name) -> Tuple[str, str]:
+                return (
+                    "https://github.com/dyson-ai/bencher.git",
+                    f"https://github.com/dyson-ai/bencher/blob/{branch_name}")
+
+
+        Args:
+            remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the report on a specified branch.
+
+        Returns:
+            str: the url of the published report
+        """
+
+        if branch_name is None:
+            branch_name = self.bench_name
+        branch_name += "_debug" if debug else ""
+
+        remote, publish_url = remote_callback(branch_name)
+
+        import shutil
+
+        with tempfile.TemporaryDirectory() as td:
+            directory = td
+
+            # import os
+
+
+            shutil.copy(filepath, directory)
+
+            filename = Path(filepath).name
+
+            report_path = Path(directory) / filename
+
+            # os.symlink(filename,report_path)
+
+            logging.info(f"created report at: {report_path.absolute()}")
+
+            cd_dir = f"cd {directory} &&"
+
+            os.system(f"{cd_dir} git init")
+            os.system(f"{cd_dir} git checkout -b {branch_name}")
+            os.system(f"{cd_dir} git add {filename}")
+            os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+            os.system(f"{cd_dir} git remote add origin {remote}")
+            os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+
+        logging.info("Published report @")
+        logging.info(publish_url)
+
+        return publish_url
+
     # @staticmethod
     # def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
     #     return (
