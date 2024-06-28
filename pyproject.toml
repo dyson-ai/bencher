@@ -24,7 +24,7 @@ dependencies = [
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
   "moviepy>=1.0.3,<=1.0.3",
-  # "rerun-sdk",
+  "rerun-sdk>=0.16.1,<0.17",
 ]
 
 [tool.pixi.project]
@@ -33,7 +33,7 @@ platforms = ["linux-64"]
 
 [tool.pixi.dependencies]
 python = ">=3.10"
-rerun-sdk = ">=0.16.1,<0.17"
+# rerun-sdk = ">=0.16.1,<0.17"
 
 
 [tool.pixi.feature.py310.dependencies]
