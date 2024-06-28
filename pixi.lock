@@ -1539,7 +1539,7 @@ packages:
   name: holobench
   version: 1.28.1
   path: .
-  sha256: 017eb3d9d2af1d3a8acef094bfa68c22a7e78cbcc980549783e553c9bcdac6c3
+  sha256: 2947a82fb07314d354ccc9c32712c3be8e8d527e47d8f7cab0fd032bd301841d
   requires_dist:
   - holoviews>=1.15,<=1.19.0
   - numpy>=1.0,<=2.0.0
@@ -1558,6 +1558,7 @@ packages:
   - str2bool>=1.1,<=1.1
   - scoop>=0.7.0,<=0.7.2.0
   - moviepy>=1.0.3,<=1.0.3
+  - rerun-sdk>=0.16.1,<0.17
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.3 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'

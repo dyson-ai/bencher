@@ -9,6 +9,11 @@ from pathlib import Path
 from uuid import uuid4
 from functools import partial
 from typing import Callable, Any, List, Tuple
+import logging
+import os
+import tempfile
+import shutil
+
 import param
 import numpy as np
 
@@ -197,3 +202,53 @@ def get_name(var):
 
 def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]
+
+
+def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma: no cover
+    """Publish a file to an orphan git branch:
+
+    .. code-block:: python
+
+        def publish_args(branch_name) -> Tuple[str, str]:
+            return (
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}")
+
+
+    Args:
+        remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the file on a specified branch.
+
+    Returns:
+        str: the url of the published file
+    """
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        shutil.copy(filepath, temp_dir)
+        filename = Path(filepath).name
+        filepath_tmp = Path(temp_dir) / filename
+
+        logging.info(f"created report at: {filepath_tmp.absolute()}")
+        cd_dir = f"cd {temp_dir} &&"
+
+        # create a new git repo and add files to that.  Push the file to another abritrary repo.  The aim of doing it this way is that no data needs to be downloaded.
+
+        os.system(f"{cd_dir} git init")
+        os.system(f"{cd_dir} git checkout -b {branch_name}")
+        os.system(f"{cd_dir} git add {filename}")
+        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+        os.system(f"{cd_dir} git remote add origin {remote}")
+        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+
+
+def github_content(remote: str, branch_name: str, filename: str):
+    raw = remote.replace(".git", "").replace(
+        "https://github.com/", "https://raw.githubusercontent.com/"
+    )
+    return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
+
+
+def stash_content(remote: str, branch_name: str, filename: str):
+    raw = remote.replace(".git", "").replace(
+        "https://github.com/", "https://raw.githubusercontent.com/"
+    )
+    return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
