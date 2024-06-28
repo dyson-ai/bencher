@@ -186,6 +186,25 @@ class ResultReference(param.Parameter):
         return hash_sha1(self)
 
 
+class ResultDataSet(param.Parameter):
+    __slots__ = ["units", "obj"]
+
+    def __init__(
+        self,
+        obj: Any = None,
+        default: Any = None,
+        units: str = "dataset",
+        **params,
+    ):
+        super().__init__(default=default, **params)
+        self.units = units
+        self.obj = obj
+
+    def hash_persistent(self) -> str:
+        """A hash function that avoids the PYTHONHASHSEED 'feature' which returns a different hash value each time the program is run"""
+        return hash_sha1(self)
+
+
 class ResultVolume(param.Parameter):
     __slots__ = ["units", "obj"]
 
@@ -199,7 +218,15 @@ class ResultVolume(param.Parameter):
         return hash_sha1(self)
 
 
-PANEL_TYPES = (ResultPath, ResultImage, ResultVideo, ResultContainer, ResultString, ResultReference)
+PANEL_TYPES = (
+    ResultPath,
+    ResultImage,
+    ResultVideo,
+    ResultContainer,
+    ResultString,
+    ResultReference,
+    ResultDataSet,
+)
 
 ALL_RESULT_TYPES = (
     ResultVar,
@@ -210,5 +237,6 @@ ALL_RESULT_TYPES = (
     ResultImage,
     ResultString,
     ResultContainer,
+    ResultDataSet,
     ResultReference,
 )

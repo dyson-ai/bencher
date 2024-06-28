@@ -3,7 +3,7 @@ from typing import List, Tuple, Any
 from param import Parameter, Parameterized
 import holoviews as hv
 import panel as pn
-
+from copy import deepcopy
 
 from bencher.utils import make_namedtuple, hash_sha1
 from bencher.variables.results import ALL_RESULT_TYPES, ResultHmap
@@ -127,7 +127,7 @@ class ParametrizedSweep(Parameterized):
         inp = cls.get_inputs_only()
         defaults = {}
         for i in inp:
-            defaults[i.name] = i.default
+            defaults[i.name] = deepcopy(i.default)
 
         for k, v in kwargs.items():
             defaults[k] = v

@@ -7,15 +7,17 @@ from bencher.results.video_summary import VideoSummaryResult
 from bencher.results.panel_result import PanelResult
 from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
+from bencher.results.dataset_result import DataSetResult
 from bencher.utils import listify
 
 
-class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult):
+class BenchResult(PlotlyResult, HoloviewResult, VideoSummaryResult, DataSetResult):
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
         PlotlyResult.__init__(self, bench_cfg)
         HoloviewResult.__init__(self, bench_cfg)
+        # DataSetResult.__init__(self.bench_cfg)
 
     @staticmethod
     def default_plot_callbacks():
