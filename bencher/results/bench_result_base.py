@@ -241,7 +241,7 @@ class BenchResultBase(OptunaResult):
         return row.get()
 
     @staticmethod
-    def zip_results1D(args):
+    def zip_results1D(args): # pragma: no cover
         first_el = [a[0] for a in args]
         out = pn.Column()
         for a in zip(*first_el):
@@ -253,7 +253,7 @@ class BenchResultBase(OptunaResult):
         return out
 
     @staticmethod
-    def zip_results1D1(panel_list):
+    def zip_results1D1(panel_list): # pragma: no cover
         container_args = {"styles": {}}
         container_args["styles"]["border-bottom"] = f"{2}px solid grey"
         print(panel_list)
@@ -267,7 +267,7 @@ class BenchResultBase(OptunaResult):
         return out
 
     @staticmethod
-    def zip_results1D2(panel_list):
+    def zip_results1D2(panel_list): # pragma: no cover
         if panel_list is not None:
             print(panel_list)
             primary = panel_list[0]
@@ -464,7 +464,6 @@ class BenchResultBase(OptunaResult):
                 val = ref.obj
                 if ref.container is not None:
                     return ref.container(val, **kwargs)
-
         if container is not None:
             return container(val, styles={"background": "white"}, **kwargs)
         try:
