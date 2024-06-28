@@ -17,6 +17,7 @@ from bencher.example.example_workflow import example_floats2D_workflow, example_
 from bencher.example.example_holosweep import example_holosweep
 from bencher.example.example_holosweep_tap import example_holosweep_tap
 
+from bencher.example.example_dataframe import example_dataset
 from bencher.example.optuna.example_optuna import optuna_rastrigin
 from bencher.example.example_sample_cache import example_sample_cache
 from bencher.example.example_strings import example_strings
@@ -94,6 +95,9 @@ class TestBenchExamples(unittest.TestCase):
 
     def test_example_float3D(self) -> None:
         self.examples_asserts(example_floats3D(self.create_run_cfg()))
+
+    def test_example_dataset(self) -> None:
+        self.examples_asserts(example_dataset(self.create_run_cfg()))
 
     def test_example_custom_sweep(self) -> None:
         self.examples_asserts(example_custom_sweep(self.create_run_cfg()))
