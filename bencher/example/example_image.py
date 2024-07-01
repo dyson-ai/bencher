@@ -121,14 +121,12 @@ if __name__ == "__main__":
 
         # res = bench.sweep(input_vars=["sides", "radius"])
 
-        # bench.report.append(res.to_heatmap(target_dimension=3))
-
         bench.plot_sweep(input_vars=["sides"])
         bench.plot_sweep(input_vars=["sides", "color"])
 
-        bench.plot_sweep(input_vars=["sides", "radius"])
-
-        # bench.report.append(res.to_line(target_dimension=1))
+        res = bench.plot_sweep(input_vars=["sides", "radius"])
+        bench.report.append(res.to_heatmap(target_dimension=3))
+        bench.report.append(res.to_line(target_dimension=1))
 
         return bench
 
@@ -148,8 +146,8 @@ if __name__ == "__main__":
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4
-    example_image_vid(ex_run_cfg).report.show()
-    # simple().report.show()
+    # example_image_vid(ex_run_cfg).report.show()
+    simple().report.show()
 
     # example_image_vid_sequential(ex_run_cfg).report.show()
     # example_image(ex_run_cfg).report.show()

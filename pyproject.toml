@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.28.1"
+version = "1.29.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -72,6 +72,7 @@ py310 = ["py310", "test"]
 py311 = ["py311", "test"]
 
 [tool.pixi.tasks]
+success = "echo Success"
 format = "black ."
 check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"

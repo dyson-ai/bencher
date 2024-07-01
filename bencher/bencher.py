@@ -30,6 +30,7 @@ from bencher.variables.results import (
     ResultString,
     ResultContainer,
     ResultReference,
+    ResultDataSet,
 )
 from bencher.results.bench_result import BenchResult
 from bencher.variables.parametrised_sweep import ParametrizedSweep
@@ -612,12 +613,13 @@ class Bench(BenchPlotServer):
         )
         # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have a nd array for each result variable
         data_vars = {}
+        dataset_list = []
 
         for rv in bench_cfg.result_vars:
             if isinstance(rv, ResultVar):
                 result_data = np.full(dims_cfg.dims_size, np.nan, dtype=float)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
-            if isinstance(rv, ResultReference):
+            if isinstance(rv, (ResultReference, ResultDataSet)):
                 result_data = np.full(dims_cfg.dims_size, -1, dtype=int)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
             if isinstance(
@@ -625,6 +627,7 @@ class Bench(BenchPlotServer):
             ):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
+
             elif type(rv) == ResultVec:
                 for i in range(rv.size):
                     result_data = np.full(dims_cfg.dims_size, np.nan)
@@ -633,6 +636,7 @@ class Bench(BenchPlotServer):
         bench_res = BenchResult(bench_cfg)
         bench_res.ds = xr.Dataset(data_vars=data_vars, coords=dims_cfg.coords)
         bench_res.ds_dynamic = self.ds_dynamic
+        bench_res.dataset_list = dataset_list
         bench_res.setup_object_index()
 
         return bench_res, function_inputs, dims_cfg.dims_name
@@ -770,6 +774,13 @@ class Bench(BenchPlotServer):
                     ),
                 ):
                     set_xarray_multidim(bench_res.ds[rv.name], worker_job.index_tuple, result_value)
+                elif isinstance(rv, ResultDataSet):
+                    bench_res.dataset_list.append(result_value)
+                    set_xarray_multidim(
+                        bench_res.ds[rv.name],
+                        worker_job.index_tuple,
+                        len(bench_res.dataset_list) - 1,
+                    )
                 elif isinstance(rv, ResultReference):
                     bench_res.object_index.append(result_value)
                     set_xarray_multidim(
@@ -777,6 +788,7 @@ class Bench(BenchPlotServer):
                         worker_job.index_tuple,
                         len(bench_res.object_index) - 1,
                     )
+
                 elif isinstance(rv, ResultVec):
                     if isinstance(result_value, (list, np.ndarray)):
                         if len(result_value) == rv.size:

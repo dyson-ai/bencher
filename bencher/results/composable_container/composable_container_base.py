@@ -10,7 +10,7 @@ class ComposeType(StrEnum):
     right = auto()  # append the container to the right (creates a row)
     down = auto()  # append the container below (creates a column)
     sequence = auto()  # display the container after (in time)
-    # overlay = auto()  # overlay on top of the current container (alpha blending)
+    overlay = auto()  # overlay on top of the current container (alpha blending)
 
     def flip(self):
         match self:
