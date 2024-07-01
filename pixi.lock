@@ -896,9 +896,9 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: holobench
-  version: 1.28.1
+  version: 1.29.0
   path: .
-  sha256: d10e602c15913f0bf0d04e40362862366c83185a32caa82ed519453dc1ce4687
+  sha256: c840a38bb08de0e31559b6877b578b8a87784f483238e26afd91b50f1dee6af7
   requires_dist:
   - holoviews>=1.15,<=1.19.0
   - numpy>=1.0,<=2.0.0
@@ -1263,6 +1263,7 @@ packages:
   constrains:
   - libgomp 14.1.0 h77fa898_0
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 842109
   timestamp: 1719538896937
@@ -1277,6 +1278,7 @@ packages:
   depends:
   - _libgcc_mutex 0.1 conda_forge
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 456925
   timestamp: 1719538796073
