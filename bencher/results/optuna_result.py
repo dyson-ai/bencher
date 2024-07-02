@@ -204,7 +204,7 @@ class OptunaResult:
             values = []
             for i in all_vars:
                 if type(i) == TimeSnapshot:
-                    if type(row[1][i.name]) == np.datetime64:
+                    if type(row[1][i.name]) is np.datetime64:
                         params[i.name] = row[1][i.name].timestamp()
                 else:
                     params[i.name] = row[1][i.name]
