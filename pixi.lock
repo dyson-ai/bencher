@@ -74,7 +74,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/40/10/79e52ef01dfeb1c1ca47a109a01a248754ebe990e159a844ece12914de83/pandas-2.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/c5/7b/5593a40fcd0981bda85274bb3e622ac433a94ae1e11ef8639de362cfa7de/param-2.1.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/f3/a8c6c11fa84b59b9df0cd5694492da8c039a24cd159f0f6918690105c3be/pillow-10.4.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl
@@ -95,7 +95,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/ae/54/e70102a9c12d27d985ba659f336851732415e5a02864bef2ead36afaf15d/scikit_learn-1.5.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/9b/00/ce54410e344b3a6032cd42ed53fe425cf57a66d28e337670292bbb419ebc/scipy-1.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/b3/7a/629889a5d76200287aa5483d753811bd247bbd1b03175186f759e0c7d3a7/setuptools-70.1.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/60/f8/7794f3055d50e96cee04c19c7faeedacb323c7762f334660ba03bed95485/SQLAlchemy-2.0.31-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -188,7 +188,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/89/1b/12521efcbc6058e2673583bb096c2b5046a9df39bd73eca392c1efed24e5/pandas-2.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/c5/7b/5593a40fcd0981bda85274bb3e622ac433a94ae1e11ef8639de362cfa7de/param-2.1.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/5e/dd/425b95d0151e1d6c951f45051112394f130df3da67363b6bc75dc4c27aba/pillow-10.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl
@@ -209,7 +209,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/1e/7d/1a2ea8eb5b4df373c30c7418cf26305a4a05e2a0e56c80a8043b791595f3/scikit_learn-1.5.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/e2/20/15c8fe0dfebb6facd81b3d08bf45dfa080e305deb17172b0a40eba59e927/scipy-1.14.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/b3/7a/629889a5d76200287aa5483d753811bd247bbd1b03175186f759e0c7d3a7/setuptools-70.1.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/bf/90/0ce8c76cd2ef8a5e0838d61d6648a1193859e1990bc1d65c8b0fd1f77ca8/SQLAlchemy-2.0.31-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -303,7 +303,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/fc/a5/4d82be566f069d7a9a702dcdf6f9106df0e0b042e738043c0cc7ddd7e3f6/pandas-2.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/57/02/71ff7c22c583deead1ad0461476cf4a7ecbbaf032672529f41bc0622c878/panel-1.4.4-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/c5/7b/5593a40fcd0981bda85274bb3e622ac433a94ae1e11ef8639de362cfa7de/param-2.1.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ac/10/c67e20445a707f7a610699bba4fe050583b688d8cd2d202572b257f46600/pillow-10.4.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl
@@ -324,7 +324,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/46/c0/63d3a8da39a2ee051df229111aa93f6dca2b56f8080abd34993938166455/scikit_learn-1.5.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/89/bb/80c9c98d887c855710fd31fc5ae5574133e98203b3475b07579251803662/scipy-1.14.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/cb/76/55d6cb5b4a4e221d0f4054420258045dea917f20f051d469a5b344535970/scoop-0.7.2.0.tar.gz
-      - pypi: https://files.pythonhosted.org/packages/b3/7a/629889a5d76200287aa5483d753811bd247bbd1b03175186f759e0c7d3a7/setuptools-70.1.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/bb/be/4045425132a2fde3422e0d2062e6a3b874e385b98b0442c1d7d29ac152bc/SQLAlchemy-2.0.31-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -898,11 +898,11 @@ packages:
   name: holobench
   version: 1.29.0
   path: .
-  sha256: 90333bd67b3c92f6b3464e41a391569c440d073770a8897cf78278b2178c7456
+  sha256: 67c4d8e0f9963f8f57f07ad362096b45aa59033004d3686ccc6a692920ce2916
   requires_dist:
   - holoviews>=1.15,<=1.19.0
   - numpy>=1.0,<=2.0.0
-  - param>=1.13.0,<=2.1.0
+  - param>=1.13.0,<=2.1.1
   - hvplot>=0.8,<=0.10.0
   - matplotlib>=3.6.3,<=3.9.0
   - panel>=1.3.6,<=1.4.4
@@ -2247,15 +2247,37 @@ packages:
   requires_python: '>=3.9'
 - kind: pypi
   name: param
-  version: 2.1.0
-  url: https://files.pythonhosted.org/packages/25/7e/8bc23416cf4cd6ded2eaf78e09f90c97975987f705d23075b4d3bfbc065a/param-2.1.0-py3-none-any.whl
-  sha256: f31d3745d227347d29b5868c4e4e3077df07463889b91d3bb28e634fde211e1c
+  version: 2.1.1
+  url: https://files.pythonhosted.org/packages/c5/7b/5593a40fcd0981bda85274bb3e622ac433a94ae1e11ef8639de362cfa7de/param-2.1.1-py3-none-any.whl
+  sha256: 81066d040526fbaa44b6419f3e92348fa8856ea44c8d3915e9245937ddabe2d6
   requires_dist:
-  - param[doc] ; extra == 'all'
-  - param[lint] ; extra == 'all'
-  - param[tests-full] ; extra == 'all'
+  - aiohttp ; extra == 'all'
+  - cloudpickle ; extra == 'all'
+  - coverage[toml] ; extra == 'all'
+  - flake8 ; extra == 'all'
+  - gmpy ; extra == 'all'
+  - ipython ; extra == 'all'
+  - jsonschema ; extra == 'all'
+  - nbsite==0.8.4 ; extra == 'all'
+  - nbval ; extra == 'all'
+  - nest-asyncio ; extra == 'all'
+  - numpy ; extra == 'all'
+  - odfpy ; extra == 'all'
+  - openpyxl ; extra == 'all'
+  - pandas ; extra == 'all'
+  - panel ; extra == 'all'
+  - pre-commit ; extra == 'all'
+  - pyarrow ; extra == 'all'
+  - pytest ; extra == 'all'
+  - pytest-asyncio ; extra == 'all'
+  - pytest-xdist ; extra == 'all'
+  - sphinx-remove-toctrees ; extra == 'all'
+  - tables ; extra == 'all'
+  - xlrd ; extra == 'all'
+  - aiohttp ; extra == 'doc'
   - nbsite==0.8.4 ; extra == 'doc'
-  - param[examples] ; extra == 'doc'
+  - pandas ; extra == 'doc'
+  - panel ; extra == 'doc'
   - sphinx-remove-toctrees ; extra == 'doc'
   - aiohttp ; extra == 'examples'
   - pandas ; extra == 'examples'
@@ -2270,21 +2292,32 @@ packages:
   - pyarrow ; extra == 'tests-deser'
   - tables ; extra == 'tests-deser'
   - xlrd ; extra == 'tests-deser'
+  - aiohttp ; extra == 'tests-examples'
   - nbval ; extra == 'tests-examples'
-  - param[examples] ; extra == 'tests-examples'
+  - pandas ; extra == 'tests-examples'
+  - panel ; extra == 'tests-examples'
+  - pytest ; extra == 'tests-examples'
   - pytest-asyncio ; extra == 'tests-examples'
   - pytest-xdist ; extra == 'tests-examples'
-  - pytest<8.1 ; extra == 'tests-examples'
+  - aiohttp ; extra == 'tests-full'
   - cloudpickle ; extra == 'tests-full'
+  - coverage[toml] ; extra == 'tests-full'
   - gmpy ; extra == 'tests-full'
   - ipython ; extra == 'tests-full'
   - jsonschema ; extra == 'tests-full'
+  - nbval ; extra == 'tests-full'
   - nest-asyncio ; extra == 'tests-full'
   - numpy ; extra == 'tests-full'
+  - odfpy ; extra == 'tests-full'
+  - openpyxl ; extra == 'tests-full'
   - pandas ; extra == 'tests-full'
-  - param[tests-deser] ; extra == 'tests-full'
-  - param[tests-examples] ; extra == 'tests-full'
-  - param[tests] ; extra == 'tests-full'
+  - panel ; extra == 'tests-full'
+  - pyarrow ; extra == 'tests-full'
+  - pytest ; extra == 'tests-full'
+  - pytest-asyncio ; extra == 'tests-full'
+  - pytest-xdist ; extra == 'tests-full'
+  - tables ; extra == 'tests-full'
+  - xlrd ; extra == 'tests-full'
   requires_python: '>=3.8'
 - kind: pypi
   name: pathspec
@@ -2989,50 +3022,50 @@ packages:
   - psutil>=0.6.1 ; extra == 'nice'
 - kind: pypi
   name: setuptools
-  version: 70.1.1
-  url: https://files.pythonhosted.org/packages/b3/7a/629889a5d76200287aa5483d753811bd247bbd1b03175186f759e0c7d3a7/setuptools-70.1.1-py3-none-any.whl
-  sha256: a58a8fde0541dab0419750bcc521fbdf8585f6e5cb41909df3a472ef7b81ca95
+  version: 70.2.0
+  url: https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl
+  sha256: b8b8060bb426838fbe942479c90296ce976249451118ef566a5a0b7d8b78fb05
   requires_dist:
-  - sphinx>=3.5 ; extra == 'docs'
-  - jaraco-packaging>=9.3 ; extra == 'docs'
-  - rst-linker>=1.9 ; extra == 'docs'
-  - furo ; extra == 'docs'
-  - sphinx-lint ; extra == 'docs'
-  - jaraco-tidelift>=1.4 ; extra == 'docs'
-  - pygments-github-lexers==0.0.5 ; extra == 'docs'
-  - sphinx-favicon ; extra == 'docs'
-  - sphinx-inline-tabs ; extra == 'docs'
-  - sphinx-reredirects ; extra == 'docs'
-  - sphinxcontrib-towncrier ; extra == 'docs'
-  - sphinx-notfound-page<2,>=1 ; extra == 'docs'
-  - pyproject-hooks!=1.1 ; extra == 'docs'
-  - pytest!=8.1.1,>=6 ; extra == 'testing'
-  - pytest-checkdocs>=2.4 ; extra == 'testing'
-  - pytest-mypy ; extra == 'testing'
-  - pytest-enabler>=2.2 ; extra == 'testing'
-  - virtualenv>=13.0.0 ; extra == 'testing'
-  - wheel ; extra == 'testing'
-  - pip>=19.1 ; extra == 'testing'
-  - packaging>=23.2 ; extra == 'testing'
-  - jaraco-envs>=2.2 ; extra == 'testing'
-  - pytest-xdist>=3 ; extra == 'testing'
-  - jaraco-path>=3.2.0 ; extra == 'testing'
-  - build[virtualenv]>=1.0.3 ; extra == 'testing'
-  - filelock>=3.4.0 ; extra == 'testing'
-  - ini2toml[lite]>=0.14 ; extra == 'testing'
-  - tomli-w>=1.0.0 ; extra == 'testing'
-  - pytest-timeout ; extra == 'testing'
-  - pytest-home>=0.5 ; extra == 'testing'
-  - mypy==1.10.0 ; extra == 'testing'
-  - tomli ; extra == 'testing'
-  - importlib-metadata ; extra == 'testing'
-  - pytest-subprocess ; extra == 'testing'
-  - pyproject-hooks!=1.1 ; extra == 'testing'
-  - jaraco-test ; extra == 'testing'
-  - pytest-cov ; platform_python_implementation != 'PyPy' and extra == 'testing'
-  - jaraco-develop>=7.21 ; (python_version >= '3.9' and sys_platform != 'cygwin') and extra == 'testing'
-  - pytest-ruff>=0.3.2 ; sys_platform != 'cygwin' and extra == 'testing'
-  - pytest-perf ; sys_platform != 'cygwin' and extra == 'testing'
+  - sphinx>=3.5 ; extra == 'doc'
+  - jaraco-packaging>=9.3 ; extra == 'doc'
+  - rst-linker>=1.9 ; extra == 'doc'
+  - furo ; extra == 'doc'
+  - sphinx-lint ; extra == 'doc'
+  - jaraco-tidelift>=1.4 ; extra == 'doc'
+  - pygments-github-lexers==0.0.5 ; extra == 'doc'
+  - sphinx-favicon ; extra == 'doc'
+  - sphinx-inline-tabs ; extra == 'doc'
+  - sphinx-reredirects ; extra == 'doc'
+  - sphinxcontrib-towncrier ; extra == 'doc'
+  - sphinx-notfound-page<2,>=1 ; extra == 'doc'
+  - pyproject-hooks!=1.1 ; extra == 'doc'
+  - pytest!=8.1.*,>=6 ; extra == 'test'
+  - pytest-checkdocs>=2.4 ; extra == 'test'
+  - pytest-cov ; extra == 'test'
+  - pytest-mypy ; extra == 'test'
+  - pytest-enabler>=2.2 ; extra == 'test'
+  - virtualenv>=13.0.0 ; extra == 'test'
+  - wheel ; extra == 'test'
+  - pip>=19.1 ; extra == 'test'
+  - packaging>=23.2 ; extra == 'test'
+  - jaraco-envs>=2.2 ; extra == 'test'
+  - pytest-xdist>=3 ; extra == 'test'
+  - jaraco-path>=3.2.0 ; extra == 'test'
+  - build[virtualenv]>=1.0.3 ; extra == 'test'
+  - filelock>=3.4.0 ; extra == 'test'
+  - ini2toml[lite]>=0.14 ; extra == 'test'
+  - tomli-w>=1.0.0 ; extra == 'test'
+  - pytest-timeout ; extra == 'test'
+  - pytest-home>=0.5 ; extra == 'test'
+  - mypy==1.10.0 ; extra == 'test'
+  - tomli ; extra == 'test'
+  - importlib-metadata ; extra == 'test'
+  - pytest-subprocess ; extra == 'test'
+  - pyproject-hooks!=1.1 ; extra == 'test'
+  - jaraco-test ; extra == 'test'
+  - jaraco-develop>=7.21 ; (python_version >= '3.9' and sys_platform != 'cygwin') and extra == 'test'
+  - pytest-ruff>=0.3.2 ; sys_platform != 'cygwin' and extra == 'test'
+  - pytest-perf ; sys_platform != 'cygwin' and extra == 'test'
   requires_python: '>=3.8'
 - kind: pypi
   name: six
