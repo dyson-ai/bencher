@@ -43,7 +43,7 @@ python = "3.11.*"
 [tool.pixi.feature.devenv]
 dependencies = { python = "3.10" }
 pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh" }
+tasks = { code = "scripts/launch_vscode.sh", code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.pypi-dependencies]
 holobench = { path = ".", editable = true }
@@ -73,9 +73,9 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+py311 = ["py311", "test"]
 devenv = { features = [
   "devenv",
 ], solve-group = "devenv", no-default-feature = true }
