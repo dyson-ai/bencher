@@ -353,6 +353,18 @@ packages:
   size: 154853
   timestamp: 1720077432978
 - kind: pypi
+  name: certifi
+  version: 2024.7.4
+  url: https://files.pythonhosted.org/packages/1c/d5/c84e1a17bf61d4df64ca866a1c9a913874b4e9bdc131ec689a0ad013fb36/certifi-2024.7.4-py3-none-any.whl
+  sha256: c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90
+  requires_python: '>=3.6'
+- kind: pypi
+  name: charset-normalizer
+  version: 3.3.2
+  url: https://files.pythonhosted.org/packages/da/f1/3702ba2a7470666a62fd81c58a4c40be00670e5006a67f4d626e57f013ae/charset_normalizer-3.3.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 8465322196c8b4d7ab6d1e049e4c5cb460d0394da4a27d23cc242fbf0034b6b5
+  requires_python: '>=3.7.0'
+- kind: pypi
   name: click
   version: 8.1.7
   url: https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl
@@ -956,7 +968,7 @@ packages:
   name: python-template
   version: 0.2.0
   path: .
-  sha256: 165630d4f1301a7f504c3a5b164cc4f9c5d887824e5e918530aeba0e125a221a
+  sha256: a361cd1395f34c089748dbbf5232c60332e0365f2dd00e16b4fe16a99a916b35
   requires_dist:
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint<=3.2.5,>=3.2.5 ; extra == 'test'
