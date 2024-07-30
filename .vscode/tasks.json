@@ -102,7 +102,7 @@
 			"label": "rename template project",
 			"detail": "Replaces all instances of the template project name with a new name. ",
 			"type": "shell",
-			"command": "scripts/rename_project.sh ${input:new_project_name}"
+			"command": "scripts/rename_project.sh '${input:new_project_name}' '${input:new_author_name}'  '${input:new_author_email}'  '${input:github_username}'"
 		},		
 		{
 			"label": "flit install",
@@ -169,6 +169,21 @@
 			"id": "new_project_name",
 			"description": "The new name of the project",
 			"default": "python_template"
+		},
+		{
+			"type": "promptString",
+			"id": "new_author_name",
+			"description": "Name of author/maintainer"
+		},
+		{
+			"type": "promptString",
+			"id": "new_author_email",
+			"description": "Email id of author/maintainer"
+		},
+		{
+			"type": "promptString",
+			"id": "github_username",
+			"description": "Github username of author/maintainer"
 		}
 	]
 }
