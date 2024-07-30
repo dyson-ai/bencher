@@ -27,12 +27,8 @@ This has basic setup for
 
 # Install
 
-There are three methods of using this project.  
+There are two methods of using this project.  
 
 1. Use github to use this project as a template
 2. Clone the project and run, scripts/update_from_template.sh and then scripts/rename_project.sh to rename the project.
-3. In your existing git project run this command:
 
-```
-
-```
