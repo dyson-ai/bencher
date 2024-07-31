@@ -49,6 +49,8 @@ run the `scripts/launch_vscode.sh` script to build and connect to a docker conta
 
 If you have pixi installed on your host machine you can run any of the tasks defined in pyproject.toml.  The legacy method also installs pixi in the container so you have access to pixi there. 
 
+The main pixi tasks are related to ci.  Github actions runs the pixi task "ci".  The ci is mostly likey to fail from a lockfile mismatch.  Use the "fix" task to fix any lockfile related problems. 
+
 ## vscode tasks
 
 There are two core tasks.  
