@@ -7,6 +7,10 @@ readme = "README.md"
 
 dependencies = []
 
+[project.urls]
+Source = "https://github.com/blooop/python_template"
+Home = "https://github.com/blooop/python_template"
+
 [tool.pixi.project]
 channels = ["conda-forge"]
 platforms = ["linux-64"]
@@ -41,15 +45,11 @@ test = [
   "coverage>=7.5.4,<=7.6.0",
 ]
 
-[project.urls]
-Source = "https://github.com/blooop/python_template"
-Home = "https://github.com/blooop/python_template"
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
+[tool.hatch.build]
 include= ["python_template"]
 
 # Environments
