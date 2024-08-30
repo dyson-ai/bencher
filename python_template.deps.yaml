@@ -1,16 +1,15 @@
 apt_sources:
   - curl
+  - ca-certificates
 
 apt_tools:
   - git
   - git-lfs
   - python3-pip
-  - apt-utils
-  - jq
+  - jq #for auto installing extensions in container
 
 pip_language-toolchain:
-  - flit #pixi autocomplete does not work with this removed, #TODO fix
-  - pip #updates to latest pip
+  - uv #use uv instead of pip
 
 script_pixi-user:
   - scripts/install_pixi.sh
