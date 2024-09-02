@@ -1,0 +1,13 @@
+args:
+  - nvidia
+  - x11 
+  - user 
+  - pull 
+  - deps
+  - git 
+image: ubuntu:22.04
+image-name: '"$CONTAINER_NAME"'
+name: '"$CONTAINER_NAME"'
+volume: '"${PWD}":/workspaces/"${CONTAINER_NAME}":Z'
+oyr-run-arg: '" --detach"'
+ 
