@@ -115,6 +115,10 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
 
+#demos
+demo = "python3 bencher/example/example_image.py"
+
+
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
 jobs = 16                                    #detect number of cores

@@ -8,9 +8,16 @@
 [![GitHub issues](https://img.shields.io/github/issues/dyson-ai/bencher.svg)](https://GitHub.com/dyson-ai/bencher/issues/)
 [![GitHub pull-requests merged](https://badgen.net/github/merged-prs/dyson-ai/bencher)](https://github.com/dyson-ai/bencher/pulls?q=is%3Amerged)
 [![PyPI](https://img.shields.io/pypi/v/holobench)](https://pypi.org/project/holobench/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/holobench)](https://pypistats.org/packages/holobench)
 [![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
+
+## Install
+
+```bash
+pip install holobench
+```
 
 ## Intro
 
@@ -41,9 +48,43 @@ Bencher is designed to work with stochastic pure functions with no side effects.
             combine latest data with historical data
         
         store the results using the input hash as a key
-    deduce the type of plot based on the input types
+    deduce the type of plot based on the input and output types
     return data and plot
     
-### Example Output
+
+## Demo
+
+if you have [pixi](https://github.com/prefix-dev/pixi/) installed you can run a demo example with:
+
+```bash
+pixi run demo
+```
+
+An example of the type of output bencher produces can be seen here:
 
 https://dyson-ai.github.io/bencher/ 
+
+
+## Examples
+
+Most of the features that are supported are demonstrated in the examples folder.
+
+Start with example_simple_float.py and explore other examples based on your data types:
+- example_float.py: More complex float operations
+- example_float2D.py: 2D float sweeps
+- example_float3D.py: 3D float sweeps 
+- example_categorical.py: Sweeping categorical values (enums)
+- example_strings.py: Sweeping categorical string values
+- example_float_cat.py: Mixing float and categorical values
+- example_image.py: Output images as part of the sweep
+- example_video.py: Output videos as part of the sweep
+- example_filepath.py: Output arbitrary files as part of the sweep
+- and many others
+
+
+## Documentation
+
+API documentation can be found at https://bencher.readthedocs.io/en/latest/
+
+More documentation is needed for the examples and general workflow. 
+
