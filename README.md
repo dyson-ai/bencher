@@ -48,7 +48,7 @@ Bencher is designed to work with stochastic pure functions with no side effects.
             combine latest data with historical data
         
         store the results using the input hash as a key
-    deduce the type of plot based on the input types
+    deduce the type of plot based on the input and output types
     return data and plot
     
 
