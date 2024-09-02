@@ -12,6 +12,12 @@
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
+## Install
+
+```bash
+pip install holobench
+```
+
 ## Intro
 
 Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.  It calculates the [cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of a set of variables
@@ -44,6 +50,29 @@ Bencher is designed to work with stochastic pure functions with no side effects.
     deduce the type of plot based on the input types
     return data and plot
     
-### Example Output
+
+## Demo
+
+if you have [pixi](https://github.com/prefix-dev/pixi/) installed you can run a demo example with:
+
+```bash
+pixi run demo
+```
+
+An example of the type of output bencher produces can be seen here:
 
 https://dyson-ai.github.io/bencher/ 
+
+
+## Examples
+
+Most of the features that are supported are demonstrated in the examples folder.
+
+Start with example_simple_float.py and look for an example that matches your datatypes as a starting point. 
+
+## Documentation
+
+API documentation can be found at https://bencher.readthedocs.io/en/latest/
+
+More documentation is needed for the examples and general workflow. 
+
