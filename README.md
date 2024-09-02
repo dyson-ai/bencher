@@ -68,7 +68,18 @@ https://dyson-ai.github.io/bencher/
 
 Most of the features that are supported are demonstrated in the examples folder.
 
-Start with example_simple_float.py and look for an example that matches your datatypes as a starting point. 
+Start with example_simple_float.py and explore other examples based on your data types:
+- example_float.py: More complex float operations
+- example_float2D.py: 2D float sweeps
+- example_float3D.py: 3D float sweeps 
+- example_categorical.py: Sweeping categorical values (enums)
+- example_strings.py: Sweeping categorical string values
+- example_float_cat.py: Mixing float and categorical values
+- example_image.py: Output images as part of the sweep
+- example_video.py: Output videos as part of the sweep
+- example_filepath.py: Output arbitrary files as part of the sweep
+- and many others
+
 
 ## Documentation
 
