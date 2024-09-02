@@ -178,7 +178,7 @@ class OptunaResult:
             df = self.to_pandas()
             all_vars = []
             for v in self.bench_cfg.all_vars:
-                if type(v) != TimeEvent:
+                if type(v) is not TimeEvent:
                     all_vars.append(v)
 
             print("All vars", all_vars)
@@ -203,7 +203,7 @@ class OptunaResult:
             params = {}
             values = []
             for i in all_vars:
-                if type(i) == TimeSnapshot:
+                if type(i) is TimeSnapshot:
                     if type(row[1][i.name]) is np.datetime64:
                         params[i.name] = row[1][i.name].timestamp()
                 else:

@@ -628,7 +628,7 @@ class Bench(BenchPlotServer):
                 result_data = np.full(dims_cfg.dims_size, "NAN", dtype=object)
                 data_vars[rv.name] = (dims_cfg.dims_name, result_data)
 
-            elif type(rv) == ResultVec:
+            elif type(rv) is ResultVec:
                 for i in range(rv.size):
                     result_data = np.full(dims_cfg.dims_size, np.nan)
                     data_vars[rv.index_name(i)] = (dims_cfg.dims_name, result_data)
@@ -834,10 +834,10 @@ class Bench(BenchPlotServer):
         """
 
         for rv in bench_res.bench_cfg.result_vars:
-            if type(rv) == ResultVar:
+            if type(rv) is ResultVar:
                 bench_res.ds[rv.name].attrs["units"] = rv.units
                 bench_res.ds[rv.name].attrs["long_name"] = rv.name
-            elif type(rv) == ResultVec:
+            elif type(rv) is ResultVec:
                 for i in range(rv.size):
                     bench_res.ds[rv.index_name(i)].attrs["units"] = rv.units
                     bench_res.ds[rv.index_name(i)].attrs["long_name"] = rv.name
