@@ -26,6 +26,11 @@ dependencies = [
   "moviepy>=1.0.3,<=1.0.3",
 ]
 
+[project.urls]
+Repository = "https://github.com/dyson-ai/bencher"
+Home = "https://github.com/dyson-ai/bencher"
+Documentation = "https://bencher.readthedocs.io/en/latest/"
+
 [tool.pixi.project]
 channels = ["conda-forge"]
 platforms = ["linux-64"]
@@ -38,6 +43,8 @@ python = ">=3.10"
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
 python = "3.11.*"
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
 
 #an environment for launching vscode with rocker and deps_rocker
 [tool.pixi.feature.devenv]
@@ -59,23 +66,20 @@ test = [
   "coverage>=7.5.4,<=7.6.1",
 ]
 
-[project.urls]
-Repository = "https://github.com/dyson-ai/bencher"
-Home = "https://github.com/dyson-ai/bencher"
-Documentation = "https://bencher.readthedocs.io/en/latest/"
-
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.packages.find]
-include = ["bencher"]
+[tool.hatch.build]
+include= ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test"], solve-group = "default" }
-py310 = ["py310", "test"]
-py311 = ["py311", "test"]
+default = {features = ["test"], solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+py312 = ["py312","test"]
+
 devenv = { features = [
   "devenv",
 ], solve-group = "devenv", no-default-feature = true }
