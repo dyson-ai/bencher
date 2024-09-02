@@ -29,7 +29,7 @@ python = "3.12.*"
 [tool.pixi.feature.devenv]
 dependencies = { python = "3.10" }
 pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh",code-nocache = "scripts/launch_vscode.sh --nocache" }
+tasks = { code = "scripts/launch_vscode.sh", code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
@@ -85,9 +85,6 @@ ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
-
-
-
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy"]

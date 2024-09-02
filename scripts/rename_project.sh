@@ -17,6 +17,6 @@ if [ -n "$3" ]; then
 fi
 
 # github username
-if [ -n "$3" ]; then
+if [ -n "$4" ]; then
     find . \( -type d -name .git -prune \) -o \( -type f -not -name 'setup_host.sh' -not -name 'update_from_template.sh'  \) -print0 | xargs -0 sed -i "s/blooop/$4/g"
 fi
