@@ -23,9 +23,10 @@ dependencies = [
   "scikit-learn>=1.2,<=1.5.1",
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
-  "moviepy",
+  "moviepy-fix-codec",
   "rerun-sdk>=0.18.2",
 ]
+
 
 [project.urls]
 Repository = "https://github.com/dyson-ai/bencher"
@@ -38,7 +39,7 @@ platforms = ["linux-64"]
 
 [tool.pixi.dependencies]
 python = ">=3.10"
-rerun-sdk = ">=0.18.2"
+# rerun-sdk = ">=0.18.2"
 
 
 [tool.pixi.feature.py310.dependencies]
