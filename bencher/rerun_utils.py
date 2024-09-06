@@ -1,7 +1,7 @@
 from .utils import publish_file
 import logging
 import panel as pn
-from rerun.notebook import as_html
+from rerun_notebook import as_html
 
 
 def rrd_to_pane(url: str, version: str = "0.16.1"):  # pragma: no cover

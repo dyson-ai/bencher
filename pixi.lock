@@ -126,7 +126,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.12-5_cp312.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/re2-2023.09.01-h7f4b329_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py312h6657a43_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py312hbe4c86d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.5.1-h3400bea_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/snappy-1.2.1-ha2e4443_0.conda
@@ -391,7 +391,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.10-5_cp310.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/re2-2023.09.01-h7f4b329_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py310hf284f7f_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py310hea9781c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.5.1-h3400bea_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/snappy-1.2.1-ha2e4443_0.conda
@@ -615,7 +615,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.11-5_cp311.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/re2-2023.09.01-h7f4b329_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py311h8baf77b_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py311hce3a109_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.5.1-h3400bea_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/snappy-1.2.1-ha2e4443_0.conda
@@ -838,7 +838,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/python_abi-3.12-5_cp312.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/re2-2023.09.01-h7f4b329_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/readline-8.2-h8228510_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py312h6657a43_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py312hbe4c86d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/s2n-1.5.1-h3400bea_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2
       - conda: https://conda.anaconda.org/conda-forge/linux-64/snappy-1.2.1-ha2e4443_0.conda
@@ -2072,7 +2072,7 @@ packages:
   name: holobench
   version: 1.29.0
   path: .
-  sha256: 5fe73d67007e485f77f7fb72d06ee8495a6e5884c6aeacd41e8b4b48f966f3ba
+  sha256: 52ccc3ecd886f112eade98397cb2093bc9e0828fab7bddf1a8034a82f917a0db
   requires_dist:
   - holoviews>=1.15,<=1.19.1
   - numpy>=1.0,<=2.1.1
@@ -2091,7 +2091,8 @@ packages:
   - str2bool>=1.1,<=1.1
   - scoop>=0.7.0,<=0.7.2.0
   - moviepy-fix-codec
-  - rerun-sdk>=0.18.2
+  - rerun-sdk==0.17.0
+  - rerun-notebook
   - black>=23,<=24.8.0 ; extra == 'test'
   - pylint>=3.2.5,<=3.2.7 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
@@ -5456,85 +5457,91 @@ packages:
   requires_python: '>=3.8'
 - kind: conda
   name: rerun-sdk
-  version: 0.18.2
-  build: py310hf284f7f_0
+  version: 0.17.0
+  build: py310hea9781c_0
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py310hf284f7f_0.conda
-  sha256: 6703f9f7c1096aa726f8c300b0493af9ace74e9a8c61eecffab8e15aedaf8161
-  md5: bfb0a7f7074688525b08be949356dd04
+  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py310hea9781c_0.conda
+  sha256: baf692f0ada56ec281b202404ef99bd2c089faa78751f8b16cf306f7be84ac25
+  md5: 4f8338f6e0fc284590402f0e255e2fe0
   depends:
   - __glibc >=2.17,<3.0.a0
   - anywidget
   - attrs >=23.1.0
   - jupyter-ui-poll
-  - libgcc >=13
-  - libstdcxx >=13
+  - libgcc-ng >=12
+  - libstdcxx-ng >=12
   - numpy >=1.23
   - pillow
   - pyarrow >=14.0.2
   - python >=3.10,<3.11.0a0
   - python_abi 3.10.* *_cp310
   - typing_extensions >=4.5
+  constrains:
+  - __glibc >=2.17
   license: MIT OR Apache-2.0
   purls:
   - pkg:pypi/rerun-notebook?source=hash-mapping
   - pkg:pypi/rerun-sdk?source=hash-mapping
-  size: 28567713
-  timestamp: 1724967531766
+  size: 27028491
+  timestamp: 1720501724608
 - kind: conda
   name: rerun-sdk
-  version: 0.18.2
-  build: py311h8baf77b_0
+  version: 0.17.0
+  build: py311hce3a109_0
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py311h8baf77b_0.conda
-  sha256: 7dd8de17b28cac91d07617fc4808e31fab2f5554910ee26c5a7bb591fd7a2c9a
-  md5: e9caa6959ba99f17b78af989999df879
+  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py311hce3a109_0.conda
+  sha256: 94e9c05eb3fa9df297b07760fa01f11794295fdacd9334cd4676d7475606ea26
+  md5: 2488951929af97c1229d0fa6a23de70c
   depends:
   - __glibc >=2.17,<3.0.a0
   - anywidget
   - attrs >=23.1.0
   - jupyter-ui-poll
-  - libgcc >=13
-  - libstdcxx >=13
+  - libgcc-ng >=12
+  - libstdcxx-ng >=12
   - numpy >=1.23
   - pillow
   - pyarrow >=14.0.2
   - python >=3.11,<3.12.0a0
   - python_abi 3.11.* *_cp311
   - typing_extensions >=4.5
+  constrains:
+  - __glibc >=2.17
   license: MIT OR Apache-2.0
   purls:
   - pkg:pypi/rerun-notebook?source=hash-mapping
   - pkg:pypi/rerun-sdk?source=hash-mapping
-  size: 28665887
-  timestamp: 1724967764703
+  size: 27089991
+  timestamp: 1720501907589
 - kind: conda
   name: rerun-sdk
-  version: 0.18.2
-  build: py312h6657a43_0
+  version: 0.17.0
+  build: py312hbe4c86d_0
   subdir: linux-64
-  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.18.2-py312h6657a43_0.conda
-  sha256: 00f837d83b7ea1121b52456ee7f134229385c6bbcfa7c528cd41935e04cf3c7b
-  md5: e74afda1aabf37eb08980cf2f9f480e7
+  url: https://conda.anaconda.org/conda-forge/linux-64/rerun-sdk-0.17.0-py312hbe4c86d_0.conda
+  sha256: b94bfc7a6ee9ff2bd9560c177556f9aef3b910defa0abfaf4e305b9494bf4f5d
+  md5: 71b045c1ad3177620f508dcdf65ca52c
   depends:
   - __glibc >=2.17,<3.0.a0
   - anywidget
   - attrs >=23.1.0
   - jupyter-ui-poll
-  - libgcc >=13
-  - libstdcxx >=13
+  - libgcc-ng >=12
+  - libstdcxx-ng >=12
   - numpy >=1.23
   - pillow
   - pyarrow >=14.0.2
   - python >=3.12,<3.13.0a0
   - python_abi 3.12.* *_cp312
   - typing_extensions >=4.5
+  constrains:
+  - __glibc >=2.17
   license: MIT OR Apache-2.0
   purls:
   - pkg:pypi/rerun-notebook?source=hash-mapping
   - pkg:pypi/rerun-sdk?source=hash-mapping
-  size: 28674168
-  timestamp: 1724968142517
+  size: 27083048
+  timestamp: 1720501755148
 - kind: pypi
   name: rocker
   version: 0.2.17
