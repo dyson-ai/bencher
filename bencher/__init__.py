@@ -33,8 +33,6 @@ from .results.composable_container.composable_container_video import (
 )
 
 from .plotting.plot_filter import VarRange, PlotFilter
-
-
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .results.bench_result import BenchResult
