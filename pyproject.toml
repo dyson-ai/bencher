@@ -4,6 +4,7 @@ version = "0.2.0"
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A python package template"
 readme = "README.md"
+license = "MIT"
 
 dependencies = []
 
