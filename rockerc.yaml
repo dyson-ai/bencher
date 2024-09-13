@@ -1,3 +1,4 @@
+image: ubuntu:22.04
 args:
   - nvidia
   - x11 
@@ -5,9 +6,4 @@ args:
   - pull 
   - deps
   - git 
-image: ubuntu:22.04
-image-name: '"$CONTAINER_NAME"'
-name: '"$CONTAINER_NAME"'
-volume: '"${PWD}":/workspaces/"${CONTAINER_NAME}":Z'
-oyr-run-arg: '" --detach"'
- 
+  - pixi
