@@ -4,6 +4,7 @@ version = "0.2.0"
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A python package template"
 readme = "README.md"
+license = "MIT"
 
 dependencies = []
 
@@ -29,7 +30,7 @@ python = "3.12.*"
 [tool.pixi.feature.devenv]
 dependencies = { python = "3.10" }
 pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh",code-nocache = "scripts/launch_vscode.sh --nocache" }
+tasks = { code = "scripts/launch_vscode.sh", code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
@@ -37,7 +38,7 @@ python_template = { path = ".", editable = true }
 [project.optional-dependencies]
 test = [
   "black>=23,<=24.8.0",
-  "pylint>=3.2.5,<=3.2.6",
+  "pylint>=3.2.5,<=3.2.7",
   "pytest-cov>=4.1,<=5.0.0",
   "pytest>=7.4,<=8.3.2",
   "hypothesis>=6.104.2,<=6.111.2",
@@ -85,9 +86,6 @@ ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
-
-
-
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy"]

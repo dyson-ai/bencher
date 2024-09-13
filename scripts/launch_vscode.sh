@@ -36,3 +36,5 @@ else
 fi
 
 rockerc
+
+deactivate
