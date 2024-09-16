@@ -27,7 +27,7 @@ if [ ! -d "$VENV_DIR" ]; then
     echo "Activating the virtual environment..."
     source $VENV_DIR/bin/activate
     echo "Installing deps rocker..."
-    pip install deps-rocker pixi-rocker rockerc
+    pip install deps-rocker pixi-rocker rockervsc
     echo "Virtual environment setup and deps rocker installation complete."
 else
     echo "Virtual environment already exists in $VENV_DIR."
@@ -35,6 +35,6 @@ else
     source $VENV_DIR/bin/activate
 fi
 
-rockerc
+rockervsc
 
 deactivate
