@@ -39,7 +39,7 @@ If you are using pixi, look at the available tasks in pyproject.toml  If you are
 
 # Github setup
 
-There are github workflows, for CI, codecov and automated pypi publishing in `ci.yml` and `publish.yml`.
+There are github workflows for CI, codecov and automated pypi publishing in `ci.yml` and `publish.yml`.
 
 ci.yml uses pixi tasks to set up the environment matrix and run the various CI tasks. To set up codecov on github, you need to get a `CODECOV_TOKEN` and add it to your actions secrets.
 
