@@ -7,10 +7,12 @@ This has basic setup for
 * ruff
 * black
 * pytest
-* codecov
 * git-lfs
 * basic github actions ci
 * pulling updates from this template
+* codecov
+* pypi upload
+
 
 
 ## Continuous Integration Status
@@ -30,26 +32,52 @@ This has basic setup for
 There are two methods of using this project.  
 
 1. Use github to use this project as a template
-2. Clone the project and run, `scripts/update_from_template.sh` and then run the "rename project" task to rename the project.
+2. Clone the project and run, `scripts/update_from_template.sh` and then run the `scripts/rename_project.sh` to rename the project.
 
 If you want to use docker you may want to run the `scripts/setup_host.sh` script.  It will set up docker and nvidia-docker (assuming you are on ubuntu22.04).
 
-If you are using pixi, you can either follow the instructions on the pixi [website](https://prefix.dev/) or run `scripts/install_pixi.sh`
+If you are using pixi, look at the available tasks in pyproject.toml  If you are new to pixi follow the instructions on the pixi [website](https://prefix.dev/)
+
+# Github setup
+
+There are github workflows, for CI, codecov and automated pypi publishing in `ci.yml` and `publish.yml`.
+
+ci.yml uses pixi tasks to set up the envrionment matrix and run the various CI tasks. To set up codecov on github, you need to get a `CODECOV_TOKEN` and add it to your actions secrets.
+
+publish.yml uses [pypy-auto-publish](https://github.com/marketplace/actions/python-auto-release-pypi-github) to automatically publish to pypi if the package version number changes. You need to add a `PYPI_API_TOKEN` to your github secrets to enable this.     
 
 
 # Usage
 
-There are currently two ways of running code.  The legacy docker way and the work in progress pixi way. 
+There are currently two ways of running code.  The preferred way is to use pixi to manage your environment and dependencies. 
+
+```bash
+cd project
+
+$pixi run ci
+pixi run arbitrary_task
+```
+
+If you have dependencies or configuration that cannot be managed by pixi you can use [rockerc](https://github.com/blooop/rockerc) or [rockervsc](https://github.com/blooop/rockervsc) to build and launch a container with your dependencies set up.  
+
+```bash
+cd project_name
+
+rockerc # build and launch container with dependencies set up
+# OR
+rockervsc # build container, launch and attach vscode to that container.
+
+#once you are inside the container you can use the pixi workflows.
+pixi run ci
+```
 
 ## Legacy
 
-run the `scripts/launch_vscode.sh` script to build and connect to a docker container.  The docker container is dynamically generated using [rocker](https://github.com/osrf/rocker) and [deps rocker](https://github.com/blooop/deps_rocker).  [deps rocker](https://github.com/blooop/deps_rocker) looks at the python_template.deps.yaml file to install any required apt, pip or shell scripts and launches a container that vscode attaches to. 
+If you don't want to install rocker on your system but want to use vscode, you can run the `scripts/launch_vscode.sh` script to build and connect to a docker container. It will install rocker in a venv.  The docker container is dynamically generated using [rocker](https://github.com/osrf/rocker) and [deps rocker](https://github.com/blooop/deps_rocker).  [deps rocker](https://github.com/blooop/deps_rocker) looks at the python_template.deps.yaml file to install any required apt, pip or shell scripts and launches a container that vscode attaches to. 
 
-## Pixi
+## Troubleshooting
 
-If you have pixi installed on your host machine you can run any of the tasks defined in pyproject.toml.  The legacy method also installs pixi in the container so you have access to pixi there. 
-
-The main pixi tasks are related to ci.  Github actions runs the pixi task "ci".  The ci is mostly likey to fail from a lockfile mismatch.  Use the "fix" task to fix any lockfile related problems. 
+The main pixi tasks are related to CI.  Github actions runs the pixi task "ci".  The CI is mostly likey to fail from a lockfile mismatch.  Use the "fix" task to fix any lockfile related problems. 
 
 ## vscode tasks
 
