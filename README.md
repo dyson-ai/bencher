@@ -41,7 +41,7 @@ If you are using pixi, look at the available tasks in pyproject.toml  If you are
 
 There are github workflows, for CI, codecov and automated pypi publishing in `ci.yml` and `publish.yml`.
 
-ci.yml uses pixi tasks to set up the envrionment matrix and run the various CI tasks. To set up codecov on github, you need to get a `CODECOV_TOKEN` and add it to your actions secrets.
+ci.yml uses pixi tasks to set up the environment matrix and run the various CI tasks. To set up codecov on github, you need to get a `CODECOV_TOKEN` and add it to your actions secrets.
 
 publish.yml uses [pypy-auto-publish](https://github.com/marketplace/actions/python-auto-release-pypi-github) to automatically publish to pypi if the package version number changes. You need to add a `PYPI_API_TOKEN` to your github secrets to enable this.     
 
@@ -57,7 +57,12 @@ $pixi run ci
 pixi run arbitrary_task
 ```
 
-If you have dependencies or configuration that cannot be managed by pixi you can use [rockerc](https://github.com/blooop/rockerc) or [rockervsc](https://github.com/blooop/rockervsc) to build and launch a container with your dependencies set up.  
+If you have dependencies or configuration that cannot be managed by pixi, you can use alternative tools:
+
+- [rockerc](https://github.com/blooop/rockerc): A command-line tool for dynamically creating docker containers with access to host resources such as GPU and 
+- [rockervsc](https://github.com/blooop/rockervsc): A Visual Studio Code extension that integrates rockerc functionality into [vscode remote containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
+These tools help you create isolated environments with specific dependencies, ensuring consistent setups across different machines.
 
 ```bash
 cd project_name
