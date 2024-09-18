@@ -12,8 +12,7 @@ This has basic setup for
 * pulling updates from this template
 * codecov
 * pypi upload
-
-
+* dependabot
 
 ## Continuous Integration Status
 
