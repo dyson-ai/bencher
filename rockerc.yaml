@@ -13,4 +13,5 @@ args:
   - pull 
   - deps
   - git 
+  - lazygit
   - pixi
