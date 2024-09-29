@@ -26,11 +26,6 @@ python = "3.11.*"
 [tool.pixi.feature.py312.dependencies]
 python = "3.12.*"
 
-#an environment for launching vscode with rocker and deps_rocker
-[tool.pixi.feature.devenv]
-dependencies = { python = "3.10" }
-pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh", code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.pypi-dependencies]
 python_template = { path = ".", editable = true }
@@ -60,9 +55,6 @@ py310 = ["py310","test"]
 py311 = ["py311","test"]
 py312 = ["py312","test"]
 
-devenv = { features = [
-  "devenv",
-], solve-group = "devenv", no-default-feature = true }
 
 [tool.pixi.tasks]
 format = "black ."
