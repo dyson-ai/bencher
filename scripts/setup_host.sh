@@ -44,8 +44,7 @@ sudo systemctl restart docker
 sudo apt install git-lfs
 
 #Install rocker and rocker extensions which are used to launch the devcontainer
-pip install rocker off-your-rocker git+https://github.com/blooop/deps_rocker
-
+# pip install rocker off-your-rocker git+https://github.com/blooop/deps_rocker
 
 echo "testing docker install"
 

@@ -42,5 +42,4 @@
 # numpy file format
 *.npy filter=lfs diff=lfs merge=lfs -text
 # GitHub syntax highlighting
-pixi.lock linguist-language=YAML
-
+pixi.lock linguist-language=YAML merge=ourslock
