@@ -130,7 +130,7 @@ target-version = "py310"
 [tool.ruff.lint]
 # Never enforce `E501` (line length violations).
 #"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
-ignore = ["E501", "E902", "F841"]
+ignore = ["E501", "E902", "F841" ,"R0917"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
