@@ -1,7 +1,3 @@
-apt_sources:
-  - curl
-  - ca-certificates
-
 apt_tools:
   - git
   - git-lfs
@@ -10,6 +6,4 @@ apt_tools:
 
 pip_language-toolchain:
   - uv #use uv instead of pip
-
-script_pixi-user:
-  - scripts/install_pixi.sh
+  - pip #update to the latest pip

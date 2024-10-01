@@ -5,6 +5,7 @@ version = "1.29.0"
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
 readme = "README.md"
+license = "MIT"
 
 dependencies = [
   "holoviews>=1.15,<=1.19.1",
@@ -46,11 +47,6 @@ python = "3.11.*"
 [tool.pixi.feature.py312.dependencies]
 python = "3.12.*"
 
-#an environment for launching vscode with rocker and deps_rocker
-[tool.pixi.feature.devenv]
-dependencies = { python = "3.10" }
-pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh", code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.pypi-dependencies]
 holobench = { path = ".", editable = true }
@@ -61,8 +57,8 @@ test = [
   "pylint>=3.2.5,<=3.3.1",
   "pytest-cov>=4.1,<=5.0.0",
   "pytest>=7.4,<=8.3.3",
-  "hypothesis>=6.104.2,<=6.112.2",
-  "ruff>=0.5.0,<=0.6.8",
+  "hypothesis>=6.104.2,<=6.112.1",
+  "ruff>=0.5.0,<=0.6.5",
   "coverage>=7.5.4,<=7.6.1",
 ]
 
@@ -80,9 +76,6 @@ py310 = ["py310","test"]
 py311 = ["py311","test"]
 py312 = ["py312","test"]
 
-devenv = { features = [
-  "devenv",
-], solve-group = "devenv", no-default-feature = true }
 
 [tool.pixi.tasks]
 success = "echo Success"
@@ -117,7 +110,6 @@ update-from-template-repo = "./scripts/update_from_template.sh"
 
 #demos
 demo = "python3 bencher/example/example_image.py"
-
 
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
