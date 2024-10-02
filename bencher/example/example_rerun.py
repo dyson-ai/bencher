@@ -12,10 +12,7 @@ my_blueprint = rrb.Blueprint(
     ),
 )
 
-rr.init(
-    "rerun_example_my_blueprint",
-    spawn=True
-)
+rr.init("rerun_example_my_blueprint", spawn=True)
 
 
 file_path = "dat.rrd"
