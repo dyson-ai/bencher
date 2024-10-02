@@ -24,7 +24,7 @@ dependencies = [
   "scikit-learn>=1.2,<=1.5.1",
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
-  "moviepy>=1.0.3,<=1.0.3",
+  "moviepy-fix-codec",
 ]
 
 [project.urls]
