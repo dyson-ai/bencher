@@ -1,14 +1,13 @@
-FROM mcr.microsoft.com/devcontainers/python:0-3.10
+FROM mcr.microsoft.com/devcontainers/base:jammy
 
-RUN apt-get update && apt install git-lfs
+ARG PIXI_VERSION=v0.32.1
 
-RUN python -m pip install --upgrade pip \
-    && python -m pip install 'flit>=3.8.0'
+RUN curl -L -o /usr/local/bin/pixi -fsSL --compressed "https://github.com/prefix-dev/pixi/releases/download/${PIXI_VERSION}/pixi-$(uname -m)-unknown-linux-musl" \
+    && chmod +x /usr/local/bin/pixi \
+    && pixi info
 
-ENV FLIT_ROOT_INSTALL=1
+# set some user and workdir settings to work nicely with vscode
+USER vscode
+WORKDIR /home/vscode
 
-COPY pyproject.toml .
-RUN touch README.md \
-    && mkdir -p src/python_template \
-    && python -m flit install --only-deps --deps develop \
-    && rm -r pyproject.toml README.md src
+RUN echo 'eval "$(pixi completion -s bash)"' >> /home/vscode/.bashrc
