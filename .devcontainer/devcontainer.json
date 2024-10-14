@@ -4,8 +4,6 @@
 		"dockerfile": "Dockerfile",
 		"context": ".."
 	},
-	// "onCreateCommand": "pre-commit install --hook-type commit-msg",
-	"postCreateCommand": "flit install --symlink;",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -24,4 +22,10 @@
 			]
 		}
 	},
+	//docker in docker is included in the pixi devcontainer example, but disabling for the moment due to security issues
+	// "features": {
+    //   "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    // },
+    "mounts": ["source=${localWorkspaceFolderBasename}-pixi,target=${containerWorkspaceFolder}/.pixi,type=volume"],
+    "postCreateCommand": "sudo chown vscode .pixi && pixi install"
 }
