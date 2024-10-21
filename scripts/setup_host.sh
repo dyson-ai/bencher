@@ -26,9 +26,7 @@ sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 #END OFFICIAL DOCKER INSTALL
 
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker || true
+
 
 #INSTALL NVIDIA DOCKER 
 #https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
@@ -55,3 +53,7 @@ echo "you may need to restart your machine"
 #INSTALL PIXI
 curl -fsSL https://pixi.sh/install.sh | bash
 echo 'eval "$(pixi completion --shell bash)"' >> ~/.bashrc
+
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker || true
