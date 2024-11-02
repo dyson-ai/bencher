@@ -53,13 +53,13 @@ holobench = { path = ".", editable = true }
 
 [project.optional-dependencies]
 test = [
-  "black>=23,<=24.8.0",
+  "black>=23,<=24.10.0",
   "pylint>=3.2.5,<=3.3.1",
-  "pytest-cov>=4.1,<=5.0.0",
+  "pytest-cov>=4.1,<=6.0.0",
   "pytest>=7.4,<=8.3.3",
-  "hypothesis>=6.104.2,<=6.112.2",
-  "ruff>=0.5.0,<=0.6.8",
-  "coverage>=7.5.4,<=7.6.1",
+  "hypothesis>=6.104.2,<=6.116.0",
+  "ruff>=0.5.0,<=0.7.2",
+  "coverage>=7.5.4,<=7.6.4",
 ]
 
 [build-system]
@@ -71,10 +71,10 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test"], solve-group = "default" }
-py310 = ["py310", "test"]
-py311 = ["py311", "test"]
-py312 = ["py312", "test"]
+default = {features = ["test"], solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+py312 = ["py312","test"]
 
 
 [tool.pixi.tasks]
@@ -95,15 +95,8 @@ update-lock-push = { depends_on = ["update-lock", "push"] }
 fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = [
-  "format",
-  "ruff-lint",
-  "check-clean-workspace",
-  "pylint",
-  "coverage",
-  "coverage-report",
-] }
-ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
+ci = { depends_on = ["format","ruff-lint", "pylint", "coverage", "coverage-report"] }
+ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
