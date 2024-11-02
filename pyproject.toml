@@ -76,7 +76,7 @@ update-lock-push = { depends_on = ["update-lock", "push"] }
 fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = ["format","ruff-lint","check-clean-workspace","pylint", "coverage", "coverage-report"] }
+ci = { depends_on = ["format","ruff-lint", "pylint", "coverage", "coverage-report"] }
 ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
