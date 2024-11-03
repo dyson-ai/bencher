@@ -2,6 +2,7 @@
 import numpy as np
 import bencher as bch
 
+
 class VolumeSweep(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
@@ -25,8 +26,7 @@ class VolumeSweep(bch.ParametrizedSweep):
         3, "vec", doc="The same vector field but only showing values in a sphere of radius 0.5"
     )
 
-
-    def __call__(self,**kwargs ) -> dict:
+    def __call__(self, **kwargs) -> dict:
         """This function takes a 3D point as input and returns distance of that point to the origin.
 
         Args:
@@ -51,7 +51,7 @@ class VolumeSweep(bch.ParametrizedSweep):
         else:
             self.interesting_vec_and_occ = [0, 0, 0]
 
-        return super().__call__() 
+        return super().__call__()
 
 
 def example_floats3D(
@@ -65,14 +65,11 @@ def example_floats3D(
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = VolumeSweep().to_bench(
-        run_cfg=run_cfg,
-        report=report
-    )
+    bench = VolumeSweep().to_bench(run_cfg=run_cfg, report=report)
 
     bench.plot_sweep(
         title="Float 3D Example",
-        input_vars=["x", "y", bch.p("z",max_level=4)],
+        input_vars=["x", "y", bch.p("z", max_level=4)],
         result_vars=[
             "value",
             "occupancy",
