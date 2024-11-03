@@ -27,8 +27,7 @@ class VolumeSweep(bch.ParametrizedSweep):
     )
 
     def __call__(self, **kwargs) -> dict:
-        """This function takes a 3D point as input and returns distance of that point to the origin.
-        """
+        """This function takes a 3D point as input and returns distance of that point to the origin."""
         self.update_params_from_kwargs(**kwargs)
         self.value = np.linalg.norm(np.array([self.x, self.y, self.z]))  # distance to origin
         self.occupancy = float(self.value < 0.5)
@@ -63,7 +62,7 @@ def example_floats3D(
 
     bench.plot_sweep(
         title="Float 3D Example",
-        input_vars=["x", "y", bch.p("z", max_level=4)],
+        input_vars=["x", "y", "z"],
         result_vars=[
             "value",
             "occupancy",
