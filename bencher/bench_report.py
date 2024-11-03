@@ -1,5 +1,5 @@
 import logging
-from typing import Callable
+from typing import Callable, Tuple
 import os
 import panel as pn
 from pathlib import Path
@@ -136,7 +136,7 @@ class BenchReport(BenchPlotServer):
             branch_name = self.bench_name
         branch_name += "_debug" if debug else ""
 
-        remote, publish_url = remote_callback(branch_name)
+        remote, publish_url = remote_callback(branch_name=branch_name)
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
@@ -157,9 +157,8 @@ class BenchReport(BenchPlotServer):
 
         return publish_url
 
-    # @staticmethod
-    # def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
-    #     return (
-    #         f"https://github.com/{github_user}/{repo_name}.git",
-    #         f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
-    #     )
+def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
+    return (
+        f"https://github.com/{github_user}/{repo_name}.git",
+        f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
+    )
