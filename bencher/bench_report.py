@@ -140,14 +140,14 @@ class BenchReport(BenchPlotServer):
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
-            report_path = self.save(directory, filename="index.html", in_html_folder=False)
+            report_path = self.save(directory + "/r1/", filename="index.html", in_html_folder=False)
             logging.info(f"created report at: {report_path.absolute()}")
 
             cd_dir = f"cd {directory} &&"
 
             os.system(f"{cd_dir} git init")
             os.system(f"{cd_dir} git checkout -b {branch_name}")
-            os.system(f"{cd_dir} git add index.html")
+            os.system(f"{cd_dir} git add r1/index.html")
             os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
             os.system(f"{cd_dir} git remote add origin {remote}")
             os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
@@ -156,6 +156,7 @@ class BenchReport(BenchPlotServer):
         logging.info(publish_url)
 
         return publish_url
+
 
 def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
     return (

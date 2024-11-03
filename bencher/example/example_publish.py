@@ -21,4 +21,4 @@ import functools
 if __name__ == "__main__":
     bench = SimpleFloat().to_bench()
     bench.plot_sweep()
-    bench.report.publish(functools.partial(bch.publish_github,github_user="kinisi-robotics",repo_name="reports"),"main")
+    bench.report.publish(functools.partial(bch.publish_github,github_user="blooop",repo_name="reports"),"gh-pages")
