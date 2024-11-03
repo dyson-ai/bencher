@@ -28,12 +28,6 @@ class VolumeSweep(bch.ParametrizedSweep):
 
     def __call__(self, **kwargs) -> dict:
         """This function takes a 3D point as input and returns distance of that point to the origin.
-
-        Args:
-            point (VolumeSample): Sample point
-
-        Returns:
-            VolumeResult: Value at that point
         """
         self.update_params_from_kwargs(**kwargs)
         self.value = np.linalg.norm(np.array([self.x, self.y, self.z]))  # distance to origin
