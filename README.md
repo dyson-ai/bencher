@@ -94,6 +94,3 @@ There are two core tasks.
 2. run \<cfg\>
 
     This runs python with the file set in \<cfg\>
-
-
-
