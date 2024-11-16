@@ -178,7 +178,7 @@ class Bench(BenchPlotServer):
         self.plot = True
 
     def add_plot_callback(self, callback: Callable[[BenchResult], pn.panel], **kwargs) -> None:
-        """Add a plotting callback that will be called on any result produced when calling a sweep funciton.  You can pass additional arguments to the plotting function with kwargs.  e.g.  add_plot_callback(bch.BenchResult.to_video_grid,)
+        """Add a plotting callback that will be called on any result produced when calling a sweep function.  You can pass additional arguments to the plotting function with kwargs.  e.g.  add_plot_callback(bch.BenchResult.to_video_grid,)
 
         Args:
             callback (Callable[[BenchResult], pn.panel]): _description_
@@ -498,7 +498,7 @@ class Bench(BenchPlotServer):
         """check that a variable is a subclass of param
 
         Args:
-            variable (param.Parameter): the varible to check
+            variable (param.Parameter): the variable to check
             var_type (str): a string representation of the variable type for better error messages
 
         Raises:
@@ -560,7 +560,7 @@ class Bench(BenchPlotServer):
         """Load historical data from a cache if over_time=true
 
         Args:
-            ds (xr.Dataset): Freshly calcuated data
+            ds (xr.Dataset): Freshly calculated data
             bench_cfg_hash (int): Hash of the input variables used to generate the data
             clear_history (bool): Optionally clear the history
 
@@ -593,7 +593,7 @@ class Bench(BenchPlotServer):
             time_src (datetime | str): a representation of the sample time
 
         Returns:
-            tuple[BenchResult, List, List]: bench_result, function intputs, dimension names
+            tuple[BenchResult, List, List]: bench_result, function inputs, dimension names
         """
 
         if time_src is None:
@@ -611,7 +611,7 @@ class Bench(BenchPlotServer):
         function_inputs = list(
             zip(product(*dims_cfg.dim_ranges_index), product(*dims_cfg.dim_ranges))
         )
-        # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have a nd array for each result variable
+        # xarray stores K N-dimensional arrays of data.  Each array is named and in this case we have an ND array for each result variable
         data_vars = {}
         dataset_list = []
 
@@ -830,7 +830,7 @@ class Bench(BenchPlotServer):
 
         Args:
             bench_cfg (BenchCfg):
-            input_var (ParametrizedSweep): The varible to extract metadata from
+            input_var (ParametrizedSweep): The variable to extract metadata from
         """
 
         for rv in bench_res.bench_cfg.result_vars:
@@ -852,7 +852,7 @@ class Bench(BenchPlotServer):
             dsvar.attrs["description"] = input_var.__doc__
 
     def report_results(self, bench_cfg: BenchCfg, print_xarray: bool, print_pandas: bool):
-        """Optionally display the caculated benchmark data as either as pandas, xarray or plot
+        """Optionally display the calculated benchmark data as either as pandas, xarray or plot
 
         Args:
             bench_cfg (BenchCfg):

@@ -60,7 +60,7 @@ class BenchResultBase(OptunaResult):
         """Generate a holoviews dataset from the xarray dataset.
 
         Args:
-            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard deviation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
 
         Returns:
             hv.Dataset: results in the form of a holoviews dataset
@@ -77,7 +77,7 @@ class BenchResultBase(OptunaResult):
         """Generate a summarised xarray dataset.
 
         Args:
-            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard devation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
+            reduce (ReduceType, optional): Optionally perform reduce options on the dataset.  By default the returned dataset will calculate the mean and standard deviation over the "repeat" dimension so that the dataset plays nicely with most of the holoviews plot types.  Reduce.Sqeeze is used if there is only 1 repeat and you want the "reduce" variable removed from the dataset. ReduceType.None returns an unaltered dataset. Defaults to ReduceType.AUTO.
 
         Returns:
             xr.Dataset: results in the form of an xarray dataset
@@ -87,7 +87,7 @@ class BenchResultBase(OptunaResult):
 
         ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
-        match (reduce):
+        match reduce:
             case ReduceType.REDUCE:
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
                 ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
@@ -147,9 +147,9 @@ class BenchResultBase(OptunaResult):
             opt_val = result_da.max()
         else:
             opt_val = result_da.min()
-        indicies = result_da.where(result_da == opt_val, drop=True).squeeze()
+        indices = result_da.where(result_da == opt_val, drop=True).squeeze()
         logging.info(f"optimal value of {result_var.name}: {opt_val.values}")
-        return indicies
+        return indices
 
     def get_optimal_inputs(
         self,

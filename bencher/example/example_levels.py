@@ -81,7 +81,7 @@ def run_levels_1D(bench: bch.Bench) -> bch.Bench:
     bench.report.append(row)
 
     bench.report.append_markdown(
-        "Level 1 returns a single point at the lower bound of the parameter. Level 2 uses the uppper and lower bounds of the parameter. All subsequent levels are created by adding a sample between each previously calculated sample to ensure that all previous values can be reused while retaining an equal sample spacing.  The following plots show the sample points as circles and the corresponding plot of a sin function sampled at that level.",
+        "Level 1 returns a single point at the lower bound of the parameter. Level 2 uses the upper and lower bounds of the parameter. All subsequent levels are created by adding a sample between each previously calculated sample to ensure that all previous values can be reused while retaining an equal sample spacing.  The following plots show the sample points as circles and the corresponding plot of a sin function sampled at that level.",
         width=600,
     )
 
