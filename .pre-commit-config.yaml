@@ -58,3 +58,9 @@ repos:
       - id: codespell
         args: ['--write-changes']
         exclude: \.(svg|pyc|lock|json)$
+  # - repo: https://github.com/compilerla/conventional-pre-commit
+  #   rev: v3.0.0
+  #   hooks:
+  #     - id: conventional-pre-commit
+  #       stages: [commit-msg]
+  #       args: []
