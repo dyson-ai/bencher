@@ -56,8 +56,9 @@ repos:
     rev: v2.3.0 #TODO latest version  2.3.0 finds a lot of spelling mistakes but fails on "assertIn"
     hooks:
       - id: codespell
-        args: ['--write-changes']
+        args: ['--write-changes','--skip=index.html',"--ignore-words=./codespell-ignore.txt"]
         exclude: \.(svg|pyc|lock|json)$
+        
   # - repo: https://github.com/compilerla/conventional-pre-commit
   #   rev: v3.0.0
   #   hooks:
