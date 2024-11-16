@@ -25,7 +25,7 @@ Bencher is a tool to make it easy to benchmark the interactions between the inpu
 
 Parameters for bencher are defined using the [param](https://param.holoviz.org/) library  as a config class with extra metadata that describes the bounds of the search space you want to measure.  You must define a benchmarking function that accepts an instance of the config class and return a dictionary with string metric names and float values.
 
-Parameters are benchmarked by passing in a list N parameters, and an N-Dimensional tensor is returned.   You can optionally sample each point multiple times to get back a distribution and also track its value over time.  By default the data will be plotted automatically based on the types of parameters you are sampling (e.g, continous, discrete), but you can also pass in a callback to customize plotting.
+Parameters are benchmarked by passing in a list N parameters, and an N-Dimensional tensor is returned.   You can optionally sample each point multiple times to get back a distribution and also track its value over time.  By default the data will be plotted automatically based on the types of parameters you are sampling (e.g, continuous, discrete), but you can also pass in a callback to customize plotting.
 
 The data is stored in a persistent database so that past performance is tracked.
 
@@ -87,4 +87,3 @@ Start with example_simple_float.py and explore other examples based on your data
 API documentation can be found at https://bencher.readthedocs.io/en/latest/
 
 More documentation is needed for the examples and general workflow. 
-

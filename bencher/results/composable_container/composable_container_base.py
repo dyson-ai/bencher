@@ -65,7 +65,7 @@ class ComposableContainerBase:
         self.container.append(obj)
 
     def render(self):
-        """Return a representation of the container that can be composed with other render() results. This function can also be used to defer layout and rending options until all the information about the container content is known.  You may need to ovverride this method depending on the container. See composable_container_video as an example.
+        """Return a representation of the container that can be composed with other render() results. This function can also be used to defer layout and rending options until all the information about the container content is known.  You may need to override this method depending on the container. See composable_container_video as an example.
 
         Returns:
             Any: Visual representation of the container that can be combined with other containers

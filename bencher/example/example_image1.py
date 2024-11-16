@@ -72,7 +72,6 @@ def example_image_vid_sequential1(
 
 
 if __name__ == "__main__":
-
     ex_run_cfg = bch.BenchRunCfg()
     ex_run_cfg.use_sample_cache = True
     ex_run_cfg.overwrite_sample_cache = True

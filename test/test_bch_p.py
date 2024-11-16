@@ -5,7 +5,6 @@ from bencher import p
 
 
 class TestP:
-
     # returns correct dictionary with all parameters provided
     def test_returns_correct_dict_all_params(self):
         result = p(name="param1", values=[1, 2, 3], samples=10, max_level=5)
