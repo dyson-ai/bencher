@@ -87,7 +87,7 @@ class BenchResultBase(OptunaResult):
 
         ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
-        match (reduce):
+        match reduce:
             case ReduceType.REDUCE:
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
                 ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
