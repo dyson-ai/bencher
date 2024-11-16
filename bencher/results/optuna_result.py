@@ -342,14 +342,14 @@ class OptunaResult:
         if "width" not in kwargs:
             if self.bench_cfg.plot_size is not None:
                 kwargs["width"] = self.bench_cfg.plot_size
-            # specific width overrrides general size
+            # specific width overrides general size
             if self.bench_cfg.plot_width is not None:
                 kwargs["width"] = self.bench_cfg.plot_width
 
         if "height" not in kwargs:
             if self.bench_cfg.plot_size is not None:
                 kwargs["height"] = self.bench_cfg.plot_size
-            # specific height overrrides general size
+            # specific height overrides general size
             if self.bench_cfg.plot_height is not None:
                 kwargs["height"] = self.bench_cfg.plot_height
         return kwargs

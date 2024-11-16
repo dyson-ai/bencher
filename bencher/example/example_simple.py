@@ -12,7 +12,7 @@ from strenum import StrEnum
 import bencher as bch
 
 
-# define a class with the output variables you want to benchmark. It must inherit from ParametrizedSweep (which inherits from param.Parametrized). Param is a python library that allows you to track metadata about parameters.  I would recommend reading at least the intro: https://param.holoviz.org/.  I have extended param with some extra metadata such is the units of the variable so that it can automaticaly be plotted.
+# define a class with the output variables you want to benchmark. It must inherit from ParametrizedSweep (which inherits from param.Parametrized). Param is a python library that allows you to track metadata about parameters.  I would recommend reading at least the intro: https://param.holoviz.org/.  I have extended param with some extra metadata such is the units of the variable so that it can automatically be plotted.
 class OutputCfg(bch.ParametrizedSweep):
     """A class for defining what variables the benchmark function returns and metadata on those variables"""
 
@@ -41,7 +41,7 @@ class InputCfg(bch.ParametrizedSweep):
     # The variables must be defined as one of the Sweep types, i.e, FloatSweep, IntSweep, EnumSweep from bencher.bench_vars
     # theta = FloatSweep(default=0, bounds=[0, math.pi], doc="Input angle", units="rad", samples=30)
 
-    # Define sweep variables by passing in an enum class name. The first element of the enum is the default by convention, but you can overrride the default in the constructor
+    # Define sweep variables by passing in an enum class name. The first element of the enum is the default by convention, but you can override the default in the constructor
     algo_setting_enum = bch.EnumSweep(AlgoSetting, default=AlgoSetting.poor)
 
     # In this case there are no units so its marked as unitless or ul. You can define how many evenly distributed samples to sample the parameter with
@@ -66,7 +66,7 @@ class InputCfg(bch.ParametrizedSweep):
 
         match cfg.algo_setting_enum:
             case AlgoSetting.noisy:
-                # add some random noise to the output.  When your algorith has noisy output it often is an indication that something is not quite right.  The graphs should show that you want to avoid the "noisy" setting in your algorithm
+                # add some random noise to the output.  When your algorithm has noisy output it often is an indication that something is not quite right.  The graphs should show that you want to avoid the "noisy" setting in your algorithm
                 output.accuracy += random.uniform(-10, 10)
             case AlgoSetting.optimum:
                 output.accuracy += 30  # This is the setting with the best performance, and characterising that is is the goal of the benchmarking
@@ -122,9 +122,9 @@ if __name__ == "__main__":
         result_vars=[OutputCfg.param.accuracy],
         const_vars=[(InputCfg.param.algo_setting_float, 1.33)],
         title="Simple example 1D sweep over time",
-        description="""Once you have found the optimal settings for your algorithm you want to make sure that the performance is not lost over time.  You can set variables to a constant value and in this case the float value is set to its optimum value.  The first time this function is run only the results from sweeping the categorical value is plotted (the same as example 1), but the second time it is run a graph the values over time is shown. [Run the code again if you don't see a graph over time]. If the graphs over time shows long term changes (not just noise), it indicate there is another external factor that is affecting your performace over time, i.e. dependencies changing, physical degradation of equipment, an unnoticed bug from a pull request etc...
+        description="""Once you have found the optimal settings for your algorithm you want to make sure that the performance is not lost over time.  You can set variables to a constant value and in this case the float value is set to its optimum value.  The first time this function is run only the results from sweeping the categorical value is plotted (the same as example 1), but the second time it is run a graph the values over time is shown. [Run the code again if you don't see a graph over time]. If the graphs over time shows long term changes (not just noise), it indicate there is another external factor that is affecting your performance over time, i.e. dependencies changing, physical degradation of equipment, an unnoticed bug from a pull request etc...
 
-        This shows the basic features of bencher.  These examples are purposefully simplified to demonstrate its features in isolation and don't reeally show the real advantages of bencher.  If you only have a few inputs and outputs its not that complicated to throw together some plots of performance.  The power of bencher is that when you have a system with many moving parts that all interact with eachother, teasing apart those influences becomes much harder because the parameter spaces combine quite quickly into a high dimensional mess. Bencher makes it easier to experiment with different combination of inputs to gain an intuition of the system performance. Bencher can plot up to 6D input natively and you can add custom plots if you have exotic data types or state spaces [WIP]. 
+        This shows the basic features of bencher.  These examples are purposefully simplified to demonstrate its features in isolation and don't reeally show the real advantages of bencher.  If you only have a few inputs and outputs its not that complicated to throw together some plots of performance.  The power of bencher is that when you have a system with many moving parts that all interact with each other, teasing apart those influences becomes much harder because the parameter spaces combine quite quickly into a high dimensional mess. Bencher makes it easier to experiment with different combination of inputs to gain an intuition of the system performance. Bencher can plot up to 6D input natively and you can add custom plots if you have exotic data types or state spaces [WIP]. 
         """,
         post_description="",
         run_cfg=bch.BenchRunCfg(repeats=10, over_time=True, clear_history=False),

@@ -77,7 +77,7 @@ class SweepBase(param.Parameter):
         """given a sweep variable (self), return the range of values as a panel slider
 
         Args:
-            debug (bool, optional): pass to the sweepvar to produce a full set of varaibles, or when debug=True, a reduces number of sweep vars. Defaults to False.
+            debug (bool, optional): pass to the sweepvar to produce a full set of variables, or when debug=True, a reduces number of sweep vars. Defaults to False.
 
         Returns:
             pn.widgets.slider.DiscreteSlider: A panel slider with the values() of the sweep variable

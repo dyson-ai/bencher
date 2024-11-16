@@ -134,7 +134,7 @@ class TestBencher(unittest.TestCase):
     )
     def test_combinations_over_time(self, input_vars, result_vars) -> None:
         """check that up to 3 categorical values over time can be plotted"""
-        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot iamges
+        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot images
         random.seed(42)
         bench = self.create_bench()
         for i in range(2):
@@ -163,7 +163,7 @@ class TestBencher(unittest.TestCase):
     )
     def test_combinations(self, input_vars, result_vars, repeats) -> None:
         """check that up to 3 categorical and 1 float value without time can be plotted"""
-        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot iamges
+        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot images
         random.seed(42)
         bench = self.create_bench()
         bench.plot_sweep(
@@ -189,7 +189,7 @@ class TestBencher(unittest.TestCase):
     )
     def test_pareto(self, input_vars, result_vars, repeats) -> None:
         """check that pareto optimisation works"""
-        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot iamges
+        # needed her instead of init because hypothesis calls this function multiple times after init() and the randomly generated data need to be the same each time to produce identical results to match the hand check plot images
         random.seed(42)
         bench = self.create_bench()
         bench.plot_sweep(
@@ -214,7 +214,7 @@ class TestBencher(unittest.TestCase):
         over_time=st.booleans(),
     )
     def test_unique_file_names(self, input_vars, result_vars, repeats, over_time):
-        """This tests that every single plot has a unique but meaningfull (not just a hash) name."""
+        """This tests that every single plot has a unique but meaningful (not just a hash) name."""
         bench = self.create_bench()
         if over_time:
             for i in range(3):

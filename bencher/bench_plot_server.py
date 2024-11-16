@@ -84,7 +84,7 @@ class BenchPlotServer:
         Args:
             bench_cfg (BenchCfg): benchmark results
             plots_instance (List[pn.panel]): list of panel objects to display
-            port (int): use a fixed port to lauch the server
+            port (int): use a fixed port to launch the server
         """
 
         # suppress verbose tornado and bokeh output

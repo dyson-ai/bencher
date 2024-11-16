@@ -82,7 +82,7 @@ def example_cache_context() -> bch.Bench:
         tag="example_tag1",
     )
 
-    # these values have not been calcuated before so there should be 1 fn call
+    # these values have not been calculated before so there should be 1 fn call
     assert_call_counts(bencher, run_cfg, wrapper_calls=1, fn_calls=1, cache_calls=0)
 
     # now create a new benchmark that calculates the values of the previous two benchmarks. The tag is the same so those values will be loaded from the cache instead of getting calculated again
@@ -106,7 +106,7 @@ def example_cache_context() -> bch.Bench:
         tag="example_tag2",
     )
 
-    # Both calls are calcuated becuase the tag is different so they don't hit the cache
+    # Both calls are calculated because the tag is different so they don't hit the cache
     assert_call_counts(bencher, run_cfg, wrapper_calls=2, fn_calls=2, cache_calls=0)
 
     return bencher
