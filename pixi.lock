@@ -1012,7 +1012,7 @@ packages:
   name: holobench
   version: 1.30.2
   path: .
-  sha256: 5a3d13364507a3dc4c45b795cb4d6822911fe7d0b8c16bd68a29fd1b4137a609
+  sha256: da4fcd849bd37bbd4a1382f2f1bfb52e45c2975fc6ca013c20b479751add9b1c
   requires_dist:
   - holoviews>=1.15,<=1.19.1
   - numpy>=1.0,<=2.1.0
