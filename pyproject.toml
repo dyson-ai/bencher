@@ -10,24 +10,25 @@ license = "MIT"
 requires-python = ">=3.10,<3.13"
 
 dependencies = [
-  "holoviews>=1.15,<=1.20.0",
-  "numpy>=1.0,<=2.1.3",
+  "holoviews>=1.15,<=1.19.1",
+  "numpy>=1.0,<=2.1.0",
   "param>=1.13.0,<=2.1.1",
-  "hvplot>=0.8,<=0.11.1",
+  "hvplot>=0.8,<=0.10.0",
   "matplotlib>=3.6.3,<=3.9.2",
-  "panel>=1.3.6,<=1.5.4",
+  "panel>=1.3.6,<=1.4.5",
   "diskcache>=5.6,<=5.6.3",
-  "optuna>=3.2,<=4.1.0",
-  "xarray>=2023.7,<=2024.10.0",
-  "plotly>=5.15,<=5.24.1",
+  "optuna>=3.2,<=4.0.0",
+  "xarray>=2023.7,<=2024.7.0",
+  "plotly>=5.15,<=5.24.0",
   "sortedcontainers>=2.4,<=2.4",
-  "pandas>=2.0,<=2.2.3",
+  "pandas>=2.0,<=2.2.2",
   "strenum>=0.4.0,<=0.4.15",
-  "scikit-learn>=1.2,<=1.5.2",
+  "scikit-learn>=1.2,<=1.5.1",
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
   "moviepy-fix-codec",
 ]
+
 
 [project.urls]
 Repository = "https://github.com/dyson-ai/bencher"
