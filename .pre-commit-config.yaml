@@ -1,0 +1,60 @@
+# To use:
+#
+#     pre-commit run -a
+#
+# Or:
+#
+#     pre-commit install  # (runs every time you commit in git)
+#
+# To update this file:
+#
+#     pre-commit autoupdate
+#
+# See https://github.com/pre-commit/pre-commit
+
+repos:
+  # Standard hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: name-tests-test
+      - id: detect-private-key
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+        args: ['--unsafe']  # Fixes errors parsing custom jinja templates
+      # - id: check-json
+      # - id: pretty-format-json
+      #   args: ['--autofix']  
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      # - id: trailing-whitespace
+      - id: fix-byte-order-marker
+
+  # Formatter for python
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.3
+    hooks:
+      # Run the linter.
+      - id: ruff
+        types_or: [ python, pyi ]
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+        types_or: [ python, pyi ]
+  # Checks for spelling mistakes
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0 #TODO latest version  2.3.0 finds a lot of spelling mistakes but fails on "assertIn"
+    hooks:
+      - id: codespell
+        args: ['--write-changes']
+        exclude: \.(svg|pyc|lock|json)$
