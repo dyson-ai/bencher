@@ -7,7 +7,7 @@ from bencher.variables.sweep_base import SweepBase, shared_slots
 
 
 class TimeBase(SweepBase, Selector):
-    """A class to capture a time snapshot of benchmark values.  Time is reprented as a continuous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continuous variables"""
+    """A class to capture a time snapshot of benchmark values.  Time is represent as a continuous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continuous variables"""
 
     def __init__(
         self,
@@ -40,7 +40,7 @@ class TimeBase(SweepBase, Selector):
 
 
 class TimeSnapshot(TimeBase):
-    """A class to capture a time snapshot of benchmark values.  Time is reprented as a continuous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continuous variables"""
+    """A class to capture a time snapshot of benchmark values.  Time is represent as a continuous value i.e a datetime which is converted into a np.datetime64.  To represent time as a discrete value use the TimeEvent class. The distinction is because holoview and plotly code makes different assumptions about discrete vs continuous variables"""
 
     __slots__ = shared_slots
 

@@ -3,7 +3,13 @@ import param
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.results import PANEL_TYPES
 
-from bencher.variables.inputs import IntSweep, FloatSweep, BoolSweep, EnumSweep, StringSweep
+from bencher.variables.inputs import (
+    IntSweep,
+    FloatSweep,
+    BoolSweep,
+    EnumSweep,
+    StringSweep,
+)
 from bencher.variables.time import TimeSnapshot
 
 
@@ -17,12 +23,13 @@ class PltCntCfg(param.Parameterized):
     vector_len = param.Integer(1, doc="The vector length of the return variable , scalars = len 1")
     result_vars = param.Integer(1, doc="The number result variables to plot")  # todo remove
     panel_vars = param.List(doc="A list of panel results")
-    panel_cnt = param.Integer(0, doc="Number of results reprented as panel panes")
+    panel_cnt = param.Integer(0, doc="Number of results represent as panel panes")
     repeats = param.Integer(0, doc="The number of repeat samples")
     inputs_cnt = param.Integer(0, doc="The number of repeat samples")
 
     print_debug = param.Boolean(
-        True, doc="Print debug information about why a filter matches this config or not"
+        True,
+        doc="Print debug information about why a filter matches this config or not",
     )
 
     @staticmethod

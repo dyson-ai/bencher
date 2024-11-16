@@ -34,7 +34,7 @@ from bencher.optuna_conversions import (
 
 
 def convert_dataset_bool_dims_to_str(dataset: xr.Dataset) -> xr.Dataset:
-    """Given a dataarray that contains boolean coordinates, conver them to strings so that holoviews loads the data properly
+    """Given a dataarray that contains boolean coordinates, convert them to strings so that holoviews loads the data properly
 
     Args:
         dataarray (xr.DataArray): dataarray with boolean coordinates
