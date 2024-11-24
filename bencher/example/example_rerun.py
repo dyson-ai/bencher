@@ -11,7 +11,7 @@ class SweepRerun(bch.ParametrizedSweep):
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        self.out_pane = bch.record_rerun_session()
+        self.out_pane = bch.record_rerun_session(width=300,height=300)
         rr.log("s1", rr.Boxes2D(half_sizes=[self.theta, 1]))
 
         return super().__call__(**kwargs)
