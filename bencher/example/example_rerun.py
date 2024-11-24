@@ -5,9 +5,7 @@ rr.init("rerun_example_my_blueprint")
 
 
 class SweepRerun(bch.ParametrizedSweep):
-    theta = bch.FloatSweep(
-        default=1, bounds=[1, 4], doc="Input angle", units="rad", samples=30
-    )
+    theta = bch.FloatSweep(default=1, bounds=[1, 4], doc="Input angle", units="rad", samples=30)
 
     out_pane = bch.ResultContainer()
 
@@ -19,9 +17,7 @@ class SweepRerun(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_rerun(
-    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
-) -> bch.Bench:
+def example_rerun(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
     bench = SweepRerun().to_bench(run_cfg, report)
