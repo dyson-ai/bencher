@@ -2,7 +2,7 @@ import bencher as bch
 import rerun as rr
 import rerun.blueprint as rrb
 import open3d as o3d
-from bencher.rerun_utils import to_pane, rrd_to_pane
+from bencher.utils_rerun import to_pane, rrd_to_pane
 
 from bencher.variables.rerun_result import ResultRerunData
 

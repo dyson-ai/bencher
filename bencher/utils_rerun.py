@@ -1,9 +1,8 @@
-from .utils import publish_file
 import logging
-import panel as pn
 from rerun.legacy_notebook import as_html
 import rerun as rr
-from bencher.utils import gen_rerun_data_path
+import panel as pn
+from .utils import publish_file, gen_rerun_data_path
 
 
 def rrd_to_pane(

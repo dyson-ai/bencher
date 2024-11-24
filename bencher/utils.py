@@ -101,7 +101,9 @@ def un_camel(camel: str) -> str:
         str: uncamelcased string
     """
 
-    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
+    return capitalise_words(
+        re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " "))
+    )
 
 
 def mult_tuple(inp: Tuple[float], val: float) -> Tuple[float]:
@@ -141,11 +143,13 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
     return rgb
 
 
-def lerp(value, input_low: float, input_high: float, output_low: float, output_high: float):
+def lerp(
+    value, input_low: float, input_high: float, output_low: float, output_high: float
+):
     input_low = float(input_low)
-    return output_low + ((float(value) - input_low) / (float(input_high) - input_low)) * (
-        float(output_high) - output_low
-    )
+    return output_low + (
+        (float(value) - input_low) / (float(input_high) - input_low)
+    ) * (float(output_high) - output_low)
 
 
 def color_tuple_to_css(color: tuple[float, float, float]) -> str:
@@ -173,8 +177,10 @@ def gen_video_path(video_name: str = "vid", extension: str = ".mp4") -> str:
 def gen_image_path(image_name: str = "img", filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
 
+
 def gen_rerun_data_path(rrd_name: str = "rrd", filetype=".rrd") -> str:
     return gen_path(rrd_name, "img", filetype)
+
 
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
@@ -206,7 +212,9 @@ def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]
 
 
-def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma: no cover
+def publish_file(
+    filepath: str, remote: str, branch_name: str
+) -> str:  # pragma: no cover
     """Publish a file to an orphan git branch:
 
     .. code-block:: python
@@ -248,3 +256,5 @@ def github_content(remote: str, branch_name: str, filename: str):  # pragma: no 
         "https://github.com/", "https://raw.githubusercontent.com/"
     )
     return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
+
+

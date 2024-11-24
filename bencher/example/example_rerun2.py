@@ -1,7 +1,7 @@
 import rerun as rr
 import bencher as bch
 import rerun.blueprint as rrb
-from bencher.rerun_utils import to_pane, rrd_to_pane
+from bencher.utils_rerun import to_pane, rrd_to_pane
 import panel as pn
 
 
