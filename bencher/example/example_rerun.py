@@ -2,7 +2,7 @@ import math
 import rerun as rr
 import bencher as bch
 
-rr.init("rerun_example_my_blueprint", spawn=True)
+rr.init("rerun_example_my_blueprint")
 
 
 class SweepRerun(bch.ParametrizedSweep):
