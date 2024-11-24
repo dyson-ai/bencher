@@ -1,4 +1,3 @@
-import math
 import rerun as rr
 import bencher as bch
 
@@ -12,10 +11,6 @@ class SweepRerun(bch.ParametrizedSweep):
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        self.out_sin = math.sin(self.theta)
-
-        bch.BenchCfg()
-
         self.out_pane = bch.record_rerun_session()
         rr.log("s1", rr.Boxes2D(half_sizes=[self.theta, 1]))
 
