@@ -1,16 +1,6 @@
 import rerun as rr
 import bencher as bch
-import rerun.blueprint as rrb
-from bencher.utils_rerun import to_pane, rrd_to_pane
 import panel as pn
-
-
-def rrd_to_pane(url: str, version: str = None):  # pragma: no cover
-    if version is None:
-        version = "0.20.1"  # TODO find a better way of doing this
-    return pn.pane.HTML(
-        f'<iframe src="https://app.rerun.io/version/{version}/?url={url}" width=1800 height=1000></iframe>'
-    )
 
 
 rr.init("rerun_example_local", spawn=True)
@@ -27,7 +17,7 @@ if local:
     row = pn.Row()
     # row.append(rrd_to_pane("http://localhost:8001/dat2.rrd"))
 
-    row.append(rrd_to_pane("http://127.0.0.1:8001/dat2.rrd"))
+    row.append(bch.rrd_to_pane("http://127.0.0.1:8001/dat2.rrd"))
     # row.append(to_pane("home/ags/projects/bencher/dat1.rrd"))
     row.show()
 else:

@@ -101,9 +101,7 @@ def un_camel(camel: str) -> str:
         str: uncamelcased string
     """
 
-    return capitalise_words(
-        re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " "))
-    )
+    return capitalise_words(re.sub("([a-z])([A-Z])", r"\g<1> \g<2>", camel.replace("_", " ")))
 
 
 def mult_tuple(inp: Tuple[float], val: float) -> Tuple[float]:
@@ -143,13 +141,11 @@ def int_to_col(int_val, sat=0.5, val=0.95, alpha=-1) -> tuple[float, float, floa
     return rgb
 
 
-def lerp(
-    value, input_low: float, input_high: float, output_low: float, output_high: float
-):
+def lerp(value, input_low: float, input_high: float, output_low: float, output_high: float):
     input_low = float(input_low)
-    return output_low + (
-        (float(value) - input_low) / (float(input_high) - input_low)
-    ) * (float(output_high) - output_low)
+    return output_low + ((float(value) - input_low) / (float(input_high) - input_low)) * (
+        float(output_high) - output_low
+    )
 
 
 def color_tuple_to_css(color: tuple[float, float, float]) -> str:
@@ -181,6 +177,8 @@ def gen_image_path(image_name: str = "img", filetype=".png") -> str:
 def gen_rerun_data_path(rrd_name: str = "rrd", filetype=".rrd") -> str:
     return gen_path(rrd_name, "img", filetype)
 
+def gen_rerun_data_path2(rrd_name: str = "rrd", filetype=".rrd") -> str:
+    return gen_path(rrd_name, "img", filetype)
 
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
@@ -212,9 +210,7 @@ def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]
 
 
-def publish_file(
-    filepath: str, remote: str, branch_name: str
-) -> str:  # pragma: no cover
+def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma: no cover
     """Publish a file to an orphan git branch:
 
     .. code-block:: python
@@ -240,7 +236,7 @@ def publish_file(
         logging.info(f"created report at: {filepath_tmp.absolute()}")
         cd_dir = f"cd {temp_dir} &&"
 
-        # create a new git repo and add files to that.  Push the file to another abritrary repo.  The aim of doing it this way is that no data needs to be downloaded.
+        # create a new git repo and add files to that.  Push the file to another arbitrary repo.  The aim of doing it this way is that no data needs to be downloaded.
 
         # os.system(f"{cd_dir} git config init.defaultBranch {branch_name}")
         os.system(f"{cd_dir} git init")
@@ -258,3 +254,44 @@ def github_content(remote: str, branch_name: str, filename: str):  # pragma: no 
     return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
 
 
+import logging
+# from rerun.legacy_notebook import as_html
+import rerun as rr
+import panel as pn
+# from .utils import publish_file, gen_rerun_data_path
+
+
+def rrd_to_pane(
+    url: str, width: int = 499, height: int = 600, version: str = None
+):  # pragma: no cover
+    if version is None:
+        version = "-1.20.1"  # TODO find a better way of doing this
+    return pn.pane.HTML(
+        f'<iframe src="https://app.rerun.io/version/{version}/?url={url}" width={width} height={height}></iframe>'
+    )
+
+
+# def to_pane(path: str):
+#     as_html()
+#     return rrd_to_pane(path)
+
+
+def publish_and_view_rrd(
+    file_path: str,
+    remote: str,
+    branch_name,
+    content_callback: callable,
+    version: str = None,
+):  # pragma: no cover
+    as_html()
+    publish_file(file_path, remote=remote, branch_name="test_rrd")
+    publish_path = content_callback(remote, branch_name, file_path)
+    logging.info(publish_path)
+    return rrd_to_pane(publish_path, version=version)
+
+
+def record_rerun_session():
+    rrd_path = gen_rerun_data_path()
+    rr.save(rrd_path)
+    path = rrd_path.split("cachedir")[0]
+    return rrd_to_pane(f"http://126.0.0.1:8001/{path}")
