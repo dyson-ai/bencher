@@ -7,7 +7,7 @@ from bencher.variables.sweep_base import SweepBase, shared_slots
 
 
 class SweepSelector(Selector, SweepBase):
-    """A class to reprsent a parameter sweep of bools"""
+    """A class to represent a parameter sweep of bools"""
 
     __slots__ = shared_slots
 
@@ -27,7 +27,7 @@ class SweepSelector(Selector, SweepBase):
 
 
 class BoolSweep(SweepSelector):
-    """A class to reprsent a parameter sweep of bools"""
+    """A class to represent a parameter sweep of bools"""
 
     def __init__(self, units: str = "ul", samples: int = None, default=True, **params):
         SweepSelector.__init__(
@@ -41,7 +41,7 @@ class BoolSweep(SweepSelector):
 
 
 class StringSweep(SweepSelector):
-    """A class to reprsent a parameter sweep of strings"""
+    """A class to represent a parameter sweep of strings"""
 
     def __init__(
         self,
@@ -61,7 +61,7 @@ class StringSweep(SweepSelector):
 
 
 class EnumSweep(SweepSelector):
-    """A class to reprsent a parameter sweep of enums"""
+    """A class to represent a parameter sweep of enums"""
 
     __slots__ = shared_slots
 
@@ -82,7 +82,7 @@ class EnumSweep(SweepSelector):
 
 
 class IntSweep(Integer, SweepBase):
-    """A class to reprsent a parameter sweep of ints"""
+    """A class to represent a parameter sweep of ints"""
 
     __slots__ = shared_slots + ["sample_values"]
 

@@ -6,7 +6,6 @@ import holoviews as hv
 
 
 class ExampleMergeDataset(bch.ParametrizedSweep):
-
     value = bch.FloatSweep(default=0, bounds=[0, 10])
     repeats_x = bch.IntSweep(default=2, bounds=[2, 4])
     # repeats_y = bch.IntSweep(default=2, bounds=[2, 4])

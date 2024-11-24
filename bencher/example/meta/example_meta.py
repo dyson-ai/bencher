@@ -149,7 +149,7 @@ def example_meta(
     bench.plot_sweep(
         title="Meta Bench",
         description="""## All Combinations of Variable Sweeps and Resulting Plots
-This uses bencher to display all the combinatios of plots bencher is able to produce""",
+This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
             bch.p("float_vars", [0, 1, 2, 3]),
             BenchMeta.param.categorical_vars,

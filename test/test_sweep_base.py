@@ -97,7 +97,6 @@ class TestSweepBase(unittest.TestCase):
         self.assertEqual(instance_defaults[0][1], 2)
 
     def test_default_values_override(self):
-
         initial = AllSweepVars.get_input_defaults()
 
         overrride_defaults = AllSweepVars.get_input_defaults_override()

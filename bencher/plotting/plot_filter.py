@@ -6,7 +6,7 @@ import panel as pn
 
 
 class VarRange:
-    """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passsed to matches() will return false.  Matches only takes 0 and positive integers."""
+    """A VarRange represents the bounded and unbounded ranges of integers.  This class is used to define filters for various variable types.  For example by defining cat_var = VarRange(0,0), calling matches(0) will return true, but any other integer will not match.  You can also have unbounded ranges for example VarRange(2,None) will match to 2,3,4... up to infinity. for By default the lower and upper bounds are set to -1 so so that no matter what value is passed to matches() will return false.  Matches only takes 0 and positive integers."""
 
     def __init__(self, lower_bound: int = 0, upper_bound: int = -1) -> None:
         """
@@ -71,7 +71,7 @@ class PlotFilter:
 
 # @dataclass
 class PlotMatchesResult:
-    """Stores information about which properites match the requirements of a particular plotter"""
+    """Stores information about which properties match the requirements of a particular plotter"""
 
     def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg, plot_name: str):
         match_info = []

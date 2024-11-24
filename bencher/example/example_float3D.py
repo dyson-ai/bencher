@@ -1,11 +1,9 @@
 # pylint: disable=duplicate-code
-
 import numpy as np
-
 import bencher as bch
 
 
-class VolumeSample(bch.ParametrizedSweep):
+class VolumeSweep(bch.ParametrizedSweep):
     """A class to represent a 3D point in space."""
 
     x = bch.FloatSweep(
@@ -18,10 +16,6 @@ class VolumeSample(bch.ParametrizedSweep):
         default=0, bounds=[-1.0, 1.0], doc="z coordinate of the sample volume", samples=6
     )
 
-
-class VolumeResult(bch.ParametrizedSweep):
-    """A class to represent the properties of a volume sample."""
-
     value = bch.ResultVar("ul", doc="The scalar value of the 3D volume field")
     occupancy = bch.ResultVar(
         "occupied", doc="If the value is > 0.5 this point is considered occupied"
@@ -32,33 +26,25 @@ class VolumeResult(bch.ParametrizedSweep):
         3, "vec", doc="The same vector field but only showing values in a sphere of radius 0.5"
     )
 
+    def __call__(self, **kwargs) -> dict:
+        """This function takes a 3D point as input and returns distance of that point to the origin."""
+        self.update_params_from_kwargs(**kwargs)
+        self.value = np.linalg.norm(np.array([self.x, self.y, self.z]))  # distance to origin
+        self.occupancy = float(self.value < 0.5)
+        # from https://plotly.com/python/3d-volume-plots/
+        self.interesting = np.sin(np.pi * self.x) * np.cos(np.pi * self.z) * np.sin(np.pi * self.y)
+        self.interesting_vec = [
+            np.sin(np.pi * self.x),
+            np.cos(np.pi * self.z),
+            np.sin(np.pi * self.y),
+        ]
 
-def bench_fn(point: VolumeSample) -> VolumeResult:
-    """This function takes a 3D point as input and returns distance of that point to the origin.
+        if self.occupancy:
+            self.interesting_vec_and_occ = self.interesting_vec
+        else:
+            self.interesting_vec_and_occ = [0, 0, 0]
 
-    Args:
-        point (VolumeSample): Sample point
-
-    Returns:
-        VolumeResult: Value at that point
-    """
-    output = VolumeResult()
-    output.value = np.linalg.norm(np.array([point.x, point.y, point.z]))  # distance to origin
-    output.occupancy = float(output.value < 0.5)
-    # from https://plotly.com/python/3d-volume-plots/
-    output.interesting = np.sin(np.pi * point.x) * np.cos(np.pi * point.z) * np.sin(np.pi * point.y)
-    output.interesting_vec = [
-        np.sin(np.pi * point.x),
-        np.cos(np.pi * point.z),
-        np.sin(np.pi * point.y),
-    ]
-
-    if output.occupancy:
-        output.interesting_vec_and_occ = output.interesting_vec
-    else:
-        output.interesting_vec_and_occ = [0, 0, 0]
-
-    return output
+        return super().__call__()
 
 
 def example_floats3D(
@@ -72,21 +58,15 @@ def example_floats3D(
     Returns:
         Bench: results of the parameter sweep
     """
-    bench = bch.Bench(
-        "Bencher_Example_Floats",
-        bench_fn,
-        VolumeSample,
-        run_cfg=run_cfg,
-        report=report,
-    )
+    bench = VolumeSweep().to_bench(run_cfg=run_cfg, report=report)
 
     bench.plot_sweep(
         title="Float 3D Example",
-        input_vars=[VolumeSample.param.x, VolumeSample.param.y, VolumeSample.param.z],
+        input_vars=["x", "y", "z"],
         result_vars=[
-            VolumeResult.param.value,
-            VolumeResult.param.occupancy,
-            VolumeResult.param.interesting,
+            "value",
+            "occupancy",
+            "interesting",
         ],
         description="""This example shows how to sample 3 floating point variables and plot a volumetric representation of the results.  The benchmark function returns the distance to the origin""",
         post_description="Here you can see concentric shells as the value of the function increases with distance from the origin. The occupancy graph should show a sphere with radius=0.5",
@@ -97,5 +77,5 @@ def example_floats3D(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.level = 3
+    ex_run_cfg.level = 6
     example_floats3D(ex_run_cfg).report.show()

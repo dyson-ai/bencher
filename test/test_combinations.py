@@ -95,7 +95,7 @@ for p in input_var_permutations:
 
 @pytest.mark.skip
 class TestAllCombinations(unittest.TestCase):
-    """This class uses hypothesis to test as large a range as possible of input parameter combinations to make sure bencher always returns an error message rather than crashing.  After a long running parameter sweep the highest priority is to show as much data as possible even if some of the data processing or visulisations are not possible to calculate. (and result in an exception)"""
+    """This class uses hypothesis to test as large a range as possible of input parameter combinations to make sure bencher always returns an error message rather than crashing.  After a long running parameter sweep the highest priority is to show as much data as possible even if some of the data processing or visualisations are not possible to calculate. (and result in an exception)"""
 
     def run_bencher_over_time(
         self,
@@ -145,7 +145,7 @@ class TestAllCombinations(unittest.TestCase):
     def test_falsifying_examples(self):
         """This test runs all the falsifying examples that were caught by hypothesis"""
 
-        # TODO this has been been "fixed" by catching the pandas keyerrors for plot_surface_holo().  It needs to be fixed properly by investigating aggregation of bool datatypes.  At the moment bool varibles can cause agreggation errors. Possibly convert the bool to an enum type??
+        # TODO this has been been "fixed" by catching the pandas keyerrors for plot_surface_holo().  It needs to be fixed properly by investigating aggregation of bool datatypes.  At the moment bool variables can cause agreggation errors. Possibly convert the bool to an enum type??
         self.run_bencher_over_time(
             [
                 BenchCfgTest.param.float1,

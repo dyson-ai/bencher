@@ -5,7 +5,7 @@ import numpy as np
 from bencher.example.meta.example_meta import BenchableObject
 
 
-class TestBench(bch.ParametrizedSweep):
+class TstBench(bch.ParametrizedSweep):
     float_var = bch.FloatSweep(default=0, bounds=[0, 4])
     cat_var = bch.StringSweep(["a", "b", "c", "d", "e"])
     result = bch.ResultVar()
@@ -52,7 +52,7 @@ class TestBenchResultBase(unittest.TestCase):
         # bm.__call__(float_vars=1, sample_with_repeats=1)
 
     def test_select_level(self):
-        bench = TestBench().to_bench()
+        bench = TstBench().to_bench()
 
         res = bench.plot_sweep(
             input_vars=["float_var", "cat_var"],
