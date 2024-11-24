@@ -43,8 +43,25 @@ from .results.composable_container.composable_container_video import (
     RenderCfg,
 )
 
-from .plotting.plot_filter import VarRange, PlotFilter
+from .utils import (
+    hmap_canonical_input,
+    get_nearest_coords,
+    make_namedtuple,
+    gen_path,
+    gen_image_path,
+    gen_video_path,
+    gen_rerun_data_path,
+    gen_rerun_data_path2,
+    lerp,
+    tabs_in_markdown,
+    publish_file,
+    github_content,
+    publish_and_view_rrd,
+    rrd_to_pane,
+    record_rerun_session,
+)
 
+from .plotting.plot_filter import VarRange, PlotFilter
 from .variables.parametrised_sweep import ParametrizedSweep
 from .caching import CachedParams
 from .results.bench_result import BenchResult
@@ -54,20 +71,3 @@ from .bench_report import BenchReport
 from .job import Executors
 from .video_writer import VideoWriter, add_image
 from .class_enum import ClassEnum, ExampleEnum
-
-
-from .utils import (
-    hmap_canonical_input,
-    get_nearest_coords,
-    make_namedtuple,
-    gen_path,
-    gen_image_path,
-    gen_video_path,
-    gen_rerun_data_path,
-    lerp,
-    tabs_in_markdown,
-    publish_file,
-    github_content,
-)
-
-from .utils_rerun import publish_and_view_rrd, rrd_to_pane,record_rerun_session
