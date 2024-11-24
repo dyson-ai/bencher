@@ -35,4 +35,5 @@ def example_rerun(
 
 
 if __name__ == "__main__":
+    bch.run_flask_in_thread()
     example_rerun(bch.BenchRunCfg(level=3)).report.show()

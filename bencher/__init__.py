@@ -68,3 +68,5 @@ from .bench_report import BenchReport
 from .job import Executors
 from .video_writer import VideoWriter, add_image
 from .class_enum import ClassEnum, ExampleEnum
+
+from .flask_server import run_flask_in_thread
