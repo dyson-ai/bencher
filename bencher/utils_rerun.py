@@ -3,7 +3,7 @@ from rerun.legacy_notebook import as_html
 import rerun as rr
 import panel as pn
 from .utils import publish_file, gen_rerun_data_path
-from .flask_server import run_flask_in_thread
+
 
 def rrd_to_pane(
     url: str, width: int = 500, height: int = 600, version: str = None

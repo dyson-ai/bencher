@@ -1,22 +1,24 @@
 from flask import Flask, send_from_directory
 from flask_cors import CORS
 import threading
+from pathlib import Path
 
-app = Flask(__name__)
-CORS(app)
+def create_server(directory):
+    """Create a Flask app configured to serve files from the specified directory."""
+    app = Flask(__name__)
+    CORS(app)
 
-@app.route('/<path:path>', methods=['GET'])
-def serve_file(path):
-    return send_from_directory('/home/ags/projects/bencher/cachedir', path)
+    @app.route('/<path:path>', methods=['GET'])
+    def serve_file(path):
+        return send_from_directory(directory, path)
 
-def run_flask():
-    app.run(port=8001)
+    return app
 
+def run_flask_in_thread(directory=None, port=8001):
+    """Run the Flask server to serve files from the specified directory."""
+    if directory is None:
+        directory = Path(f"cachedir/").absolute().as_posix()
+    app = create_server(directory)
+    threading.Thread(target=app.run, kwargs={'port': port}, daemon=True).start()
+    print(f"Flask server is running on port {port} serving files from {directory}")
 
-def run_flask_in_thread():
-    # Start Flask server in a separate thread
-    flask_thread = threading.Thread(target=run_flask, daemon=True)
-    flask_thread.start()
-
-if __name__ == "__main__":
-    app.run(port=8001)
