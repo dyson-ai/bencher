@@ -177,8 +177,6 @@ def gen_image_path(image_name: str = "img", filetype=".png") -> str:
 def gen_rerun_data_path(rrd_name: str = "rrd", filetype=".rrd") -> str:
     return gen_path(rrd_name, "img", filetype)
 
-def gen_rerun_data_path2(rrd_name: str = "rrd", filetype=".rrd") -> str:
-    return gen_path(rrd_name, "img", filetype)
 
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
@@ -254,44 +252,44 @@ def github_content(remote: str, branch_name: str, filename: str):  # pragma: no 
     return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
 
 
-import logging
-# from rerun.legacy_notebook import as_html
-import rerun as rr
-import panel as pn
-# from .utils import publish_file, gen_rerun_data_path
+# import logging
+# # from rerun.legacy_notebook import as_html
+# import rerun as rr
+# import panel as pn
+# # from .utils import publish_file, gen_rerun_data_path
 
 
-def rrd_to_pane(
-    url: str, width: int = 499, height: int = 600, version: str = None
-):  # pragma: no cover
-    if version is None:
-        version = "-1.20.1"  # TODO find a better way of doing this
-    return pn.pane.HTML(
-        f'<iframe src="https://app.rerun.io/version/{version}/?url={url}" width={width} height={height}></iframe>'
-    )
+# def rrd_to_pane(
+#     url: str, width: int = 499, height: int = 600, version: str = None
+# ):  # pragma: no cover
+#     if version is None:
+#         version = "-1.20.1"  # TODO find a better way of doing this
+#     return pn.pane.HTML(
+#         f'<iframe src="https://app.rerun.io/version/{version}/?url={url}" width={width} height={height}></iframe>'
+#     )
 
 
-# def to_pane(path: str):
+# # def to_pane(path: str):
+# #     as_html()
+# #     return rrd_to_pane(path)
+
+
+# def publish_and_view_rrd(
+#     file_path: str,
+#     remote: str,
+#     branch_name,
+#     content_callback: callable,
+#     version: str = None,
+# ):  # pragma: no cover
 #     as_html()
-#     return rrd_to_pane(path)
+#     publish_file(file_path, remote=remote, branch_name="test_rrd")
+#     publish_path = content_callback(remote, branch_name, file_path)
+#     logging.info(publish_path)
+#     return rrd_to_pane(publish_path, version=version)
 
 
-def publish_and_view_rrd(
-    file_path: str,
-    remote: str,
-    branch_name,
-    content_callback: callable,
-    version: str = None,
-):  # pragma: no cover
-    as_html()
-    publish_file(file_path, remote=remote, branch_name="test_rrd")
-    publish_path = content_callback(remote, branch_name, file_path)
-    logging.info(publish_path)
-    return rrd_to_pane(publish_path, version=version)
-
-
-def record_rerun_session():
-    rrd_path = gen_rerun_data_path()
-    rr.save(rrd_path)
-    path = rrd_path.split("cachedir")[0]
-    return rrd_to_pane(f"http://126.0.0.1:8001/{path}")
+# def record_rerun_session():
+#     rrd_path = gen_rerun_data_path()
+#     rr.save(rrd_path)
+#     path = rrd_path.split("cachedir")[0]
+#     return rrd_to_pane(f"http://126.0.0.1:8001/{path}")
