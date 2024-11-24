@@ -56,7 +56,7 @@ from .utils import (
     publish_file,
     github_content,
 )
-from .utils_rerun import publish_and_view_rrd, rrd_to_pane, record_rerun_session
+from .utils_rerun import publish_and_view_rrd, rrd_to_pane, capture_rerun_window
 
 from .plotting.plot_filter import VarRange, PlotFilter
 from .variables.parametrised_sweep import ParametrizedSweep
