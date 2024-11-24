@@ -173,6 +173,8 @@ def gen_video_path(video_name: str = "vid", extension: str = ".mp4") -> str:
 def gen_image_path(image_name: str = "img", filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
 
+def gen_rerun_data_path(rrd_name: str = "rrd", filetype=".rrd") -> str:
+    return gen_path(rrd_name, "img", filetype)
 
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
