@@ -581,7 +581,7 @@ packages:
   sha256: 117d9c6097a7c3d22fd578fcd8d35ff1e125df6736f554da4e432fdd63f31e5e
   requires_dist:
   - webencodings
-  - tinycss2<1.5,>=1.1.0 ; extra == 'css'
+  - tinycss2>=1.1.0,<1.5 ; extra == 'css'
   requires_python: '>=3.9'
 - kind: pypi
   name: bokeh
@@ -870,7 +870,7 @@ packages:
   url: https://files.pythonhosted.org/packages/47/2b/9bf7527260d265281dd812951aa22f3d1c331bcc91e86e7038dc6b9737cb/fonttools-4.55.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: f307f6b5bf9e86891213b293e538d292cd1677e06d9faaa4bf9c086ad5f132f6
   requires_dist:
-  - fs<3,>=2.2.0 ; extra == 'all'
+  - fs>=2.2.0,<3 ; extra == 'all'
   - lxml>=4.0 ; extra == 'all'
   - zopfli>=0.1.4 ; extra == 'all'
   - lz4>=1.7.4.2 ; extra == 'all'
@@ -895,7 +895,7 @@ packages:
   - uharfbuzz>=0.23.0 ; extra == 'repacker'
   - sympy ; extra == 'symfont'
   - xattr ; sys_platform == 'darwin' and extra == 'type1'
-  - fs<3,>=2.2.0 ; extra == 'ufo'
+  - fs>=2.2.0,<3 ; extra == 'ufo'
   - unicodedata2>=15.1.0 ; python_full_version < '3.13' and extra == 'unicode'
   - zopfli>=0.1.4 ; extra == 'woff'
   - brotlicffi>=0.8.0 ; platform_python_implementation != 'CPython' and extra == 'woff'
@@ -907,7 +907,7 @@ packages:
   url: https://files.pythonhosted.org/packages/c4/03/8136887d1b0b7a9831c7e8e2598c0e5851e31cc2231295769350349a236b/fonttools-4.55.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 31d00f9852a6051dac23294a4cf2df80ced85d1d173a61ba90a3d8f5abc63c60
   requires_dist:
-  - fs<3,>=2.2.0 ; extra == 'all'
+  - fs>=2.2.0,<3 ; extra == 'all'
   - lxml>=4.0 ; extra == 'all'
   - zopfli>=0.1.4 ; extra == 'all'
   - lz4>=1.7.4.2 ; extra == 'all'
@@ -932,7 +932,7 @@ packages:
   - uharfbuzz>=0.23.0 ; extra == 'repacker'
   - sympy ; extra == 'symfont'
   - xattr ; sys_platform == 'darwin' and extra == 'type1'
-  - fs<3,>=2.2.0 ; extra == 'ufo'
+  - fs>=2.2.0,<3 ; extra == 'ufo'
   - unicodedata2>=15.1.0 ; python_full_version < '3.13' and extra == 'unicode'
   - zopfli>=0.1.4 ; extra == 'woff'
   - brotlicffi>=0.8.0 ; platform_python_implementation != 'CPython' and extra == 'woff'
@@ -944,7 +944,7 @@ packages:
   url: https://files.pythonhosted.org/packages/fc/0b/dbe13f2c8d745ffdf5c2bc25391263927d4ec2b927e44d5d5f70cd372873/fonttools-4.55.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 732a9a63d6ea4a81b1b25a1f2e5e143761b40c2e1b79bb2b68e4893f45139a40
   requires_dist:
-  - fs<3,>=2.2.0 ; extra == 'all'
+  - fs>=2.2.0,<3 ; extra == 'all'
   - lxml>=4.0 ; extra == 'all'
   - zopfli>=0.1.4 ; extra == 'all'
   - lz4>=1.7.4.2 ; extra == 'all'
@@ -969,7 +969,7 @@ packages:
   - uharfbuzz>=0.23.0 ; extra == 'repacker'
   - sympy ; extra == 'symfont'
   - xattr ; sys_platform == 'darwin' and extra == 'type1'
-  - fs<3,>=2.2.0 ; extra == 'ufo'
+  - fs>=2.2.0,<3 ; extra == 'ufo'
   - unicodedata2>=15.1.0 ; python_full_version < '3.13' and extra == 'unicode'
   - zopfli>=0.1.4 ; extra == 'woff'
   - brotlicffi>=0.8.0 ; platform_python_implementation != 'CPython' and extra == 'woff'
@@ -1010,12 +1010,12 @@ packages:
   requires_python: '>=3.7'
 - kind: pypi
   name: holobench
-  version: 1.30.2
+  version: 1.30.3
   path: .
-  sha256: da4fcd849bd37bbd4a1382f2f1bfb52e45c2975fc6ca013c20b479751add9b1c
+  sha256: ac39b73bb60558dcc24ec6bb8cf3748495d557b849f24eb9435b4dc662f8836b
   requires_dist:
   - holoviews>=1.15,<=1.19.1
-  - numpy>=1.0,<=2.1.0
+  - numpy>=1.0,<=2.1.3
   - param>=1.13.0,<=2.1.1
   - hvplot>=0.8,<=0.10.0
   - matplotlib>=3.6.3,<=3.9.2
@@ -1023,7 +1023,7 @@ packages:
   - diskcache>=5.6,<=5.6.3
   - optuna>=3.2,<=4.0.0
   - xarray>=2023.7,<=2024.7.0
-  - plotly>=5.15,<=5.24.0
+  - plotly>=5.15,<=5.24.1
   - sortedcontainers>=2.4,<=2.4
   - pandas>=2.0,<=2.2.2
   - strenum>=0.4.0,<=0.4.15
@@ -1052,7 +1052,7 @@ packages:
   - packaging
   - pandas>=1.3
   - panel>=1.0
-  - param<3.0,>=2.0
+  - param>=2.0,<3.0
   - pyviz-comms>=2.1
   - matplotlib>=3 ; extra == 'recommended'
   - plotly>=4.0 ; extra == 'recommended'
@@ -1072,7 +1072,7 @@ packages:
   - packaging
   - pandas
   - panel>=0.11.0
-  - param<3.0,>=1.12.0
+  - param>=1.12.0,<3.0
   - setuptools-scm>=6 ; extra == 'dev-extras'
   - hvplot[examples] ; extra == 'doc'
   - nbsite>=0.8.4 ; extra == 'doc'
@@ -1084,7 +1084,7 @@ packages:
   - ibis-framework[duckdb] ; extra == 'examples'
   - intake-parquet>=0.2.3 ; extra == 'examples'
   - intake-xarray>=0.5.0 ; extra == 'examples'
-  - intake<2.0.0,>=0.6.5 ; extra == 'examples'
+  - intake>=0.6.5,<2.0.0 ; extra == 'examples'
   - ipywidgets ; extra == 'examples'
   - networkx>=2.6.3 ; extra == 'examples'
   - matplotlib ; extra == 'examples'
@@ -1151,7 +1151,7 @@ packages:
   sha256: 77ff76a995ef40999b96e70abb6ab839d077df2f6127230f36bf9ed24c67473b
   requires_dist:
   - attrs>=22.2.0
-  - sortedcontainers<3.0.0,>=2.1.0
+  - sortedcontainers>=2.1.0,<3.0.0
   - exceptiongroup>=1.0.0 ; python_full_version < '3.11'
   - black>=19.10b0 ; extra == 'all'
   - click>=7.0 ; extra == 'all'
@@ -1709,8 +1709,8 @@ packages:
   url: https://files.pythonhosted.org/packages/3c/ca/0178b65760d5a40373c662fd354de2a1a9f59c02eec527cfc777840a9a00/moviepy_fix_codec-2.0.0-py3-none-any.whl
   sha256: 294cb33b02eed3c66b8c22a6143c0d1d1b7735c99a1dd1054abea9de9292de75
   requires_dist:
-  - decorator<6.0,>=4.0.2
-  - imageio<3.0,>=2.5
+  - decorator>=4.0.2,<6.0
+  - imageio>=2.5,<3.0
   - imageio-ffmpeg>=0.2.0
   - numpy>=1.17.3
   - proglog<=1.0.0
@@ -1733,9 +1733,9 @@ packages:
   - scipy ; extra == 'optional'
   - matplotlib ; extra == 'optional'
   - youtube-dl ; extra == 'optional'
-  - coveralls<4.0,>=3.0 ; extra == 'test'
-  - pytest-cov<3.0,>=2.5.1 ; extra == 'test'
-  - pytest<7.0.0,>=3.0.0 ; extra == 'test'
+  - coveralls>=3.0,<4.0 ; extra == 'test'
+  - pytest-cov>=2.5.1,<3.0 ; extra == 'test'
+  - pytest>=3.0.0,<7.0.0 ; extra == 'test'
 - kind: conda
   name: ncurses
   version: '6.5'
@@ -2143,8 +2143,8 @@ packages:
   url: https://files.pythonhosted.org/packages/f4/e3/81303aec6a131eefa21030f2bdea12c0e0f57d1b416e7bda91841f791d20/panel-1.4.5-py3-none-any.whl
   sha256: a6dbddd65e9e68c54a9b683f103b79b48fcea5dd9f463b81a783ea11520fe9cb
   requires_dist:
-  - bokeh<3.5.0,>=3.4.0
-  - param<3.0,>=2.1.0
+  - bokeh>=3.4.0,<3.5.0
+  - param>=2.1.0,<3.0
   - pyviz-comms>=2.0.0
   - xyzservices>=2021.9.1
   - markdown
@@ -2290,7 +2290,7 @@ packages:
   - setuptools>=42 ; extra == 'build'
   - requests ; extra == 'build'
   - packaging ; extra == 'build'
-  - bokeh<3.5.0,>=3.4.0 ; extra == 'build'
+  - bokeh>=3.4.0,<3.5.0 ; extra == 'build'
   - pyviz-comms>=2.0.0 ; extra == 'build'
   - bleach ; extra == 'build'
   - markdown ; extra == 'build'
@@ -2617,9 +2617,9 @@ packages:
   sha256: 2f846a466dd023513240bc140ad2dd73bfc080a5d85a710afdb728c420a5a2b9
   requires_dist:
   - platformdirs>=2.2.0
-  - astroid<=3.4.0.dev0,>=3.3.4
-  - isort!=5.13.0,<6,>=4.2.5
-  - mccabe<0.8,>=0.6
+  - astroid>=3.3.4,<=3.4.0.dev0
+  - isort>=4.2.5,!=5.13.0,<6
+  - mccabe>=0.6,<0.8
   - tomlkit>=0.10.1
   - typing-extensions>=3.10.0 ; python_full_version < '3.10'
   - dill>=0.2 ; python_full_version < '3.11'
@@ -2647,7 +2647,7 @@ packages:
   requires_dist:
   - iniconfig
   - packaging
-  - pluggy<2,>=1.5
+  - pluggy>=1.5,<2
   - exceptiongroup>=1.0.0rc8 ; python_full_version < '3.11'
   - tomli>=1 ; python_full_version < '3.11'
   - colorama ; sys_platform == 'win32'
@@ -2778,7 +2778,7 @@ packages:
   sha256: a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
   requires_dist:
   - six>=1.5
-  requires_python: '!=3.0.*,!=3.1.*,!=3.2.*,>=2.7'
+  requires_python: '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*'
 - kind: pypi
   name: pytz
   version: '2024.2'
@@ -2871,12 +2871,12 @@ packages:
   url: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
   sha256: 70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
   requires_dist:
-  - charset-normalizer<4,>=2
-  - idna<4,>=2.5
-  - urllib3<3,>=1.21.1
+  - charset-normalizer>=2,<4
+  - idna>=2.5,<4
+  - urllib3>=1.21.1,<3
   - certifi>=2017.4.17
-  - pysocks!=1.5.7,>=1.5.6 ; extra == 'socks'
-  - chardet<6,>=3.0.2 ; extra == 'use-chardet-on-py3'
+  - pysocks>=1.5.6,!=1.5.7 ; extra == 'socks'
+  - chardet>=3.0.2,<6 ; extra == 'use-chardet-on-py3'
   requires_python: '>=3.8'
 - kind: pypi
   name: ruff
@@ -3073,7 +3073,7 @@ packages:
   url: https://files.pythonhosted.org/packages/47/78/b0c2c23880dd1e99e938ad49ccfb011ae353758a2dc5ed7ee59baff684c3/scipy-1.14.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 8e32dced201274bf96899e6491d9ba3e9a5f6b336708656466ad0522d8528f69
   requires_dist:
-  - numpy<2.3,>=1.23.5
+  - numpy>=1.23.5,<2.3
   - pytest ; extra == 'test'
   - pytest-cov ; extra == 'test'
   - pytest-timeout ; extra == 'test'
@@ -3089,7 +3089,7 @@ packages:
   - cython ; extra == 'test'
   - meson ; extra == 'test'
   - ninja ; sys_platform != 'emscripten' and extra == 'test'
-  - sphinx<=7.3.7,>=5.0.0 ; extra == 'doc'
+  - sphinx>=5.0.0,<=7.3.7 ; extra == 'doc'
   - pydata-sphinx-theme>=0.15.2 ; extra == 'doc'
   - sphinx-design>=0.4.0 ; extra == 'doc'
   - matplotlib>=3.5 ; extra == 'doc'
@@ -3115,7 +3115,7 @@ packages:
   url: https://files.pythonhosted.org/packages/8e/ee/8a26858ca517e9c64f84b4c7734b89bda8e63bec85c3d2f432d225bb1886/scipy-1.14.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 8f9ea80f2e65bdaa0b7627fb00cbeb2daf163caa015e59b7516395fe3bd1e066
   requires_dist:
-  - numpy<2.3,>=1.23.5
+  - numpy>=1.23.5,<2.3
   - pytest ; extra == 'test'
   - pytest-cov ; extra == 'test'
   - pytest-timeout ; extra == 'test'
@@ -3131,7 +3131,7 @@ packages:
   - cython ; extra == 'test'
   - meson ; extra == 'test'
   - ninja ; sys_platform != 'emscripten' and extra == 'test'
-  - sphinx<=7.3.7,>=5.0.0 ; extra == 'doc'
+  - sphinx>=5.0.0,<=7.3.7 ; extra == 'doc'
   - pydata-sphinx-theme>=0.15.2 ; extra == 'doc'
   - sphinx-design>=0.4.0 ; extra == 'doc'
   - matplotlib>=3.5 ; extra == 'doc'
@@ -3157,7 +3157,7 @@ packages:
   url: https://files.pythonhosted.org/packages/93/6b/701776d4bd6bdd9b629c387b5140f006185bd8ddea16788a44434376b98f/scipy-1.14.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: fef8c87f8abfb884dac04e97824b61299880c43f4ce675dd2cbeadd3c9b466d2
   requires_dist:
-  - numpy<2.3,>=1.23.5
+  - numpy>=1.23.5,<2.3
   - pytest ; extra == 'test'
   - pytest-cov ; extra == 'test'
   - pytest-timeout ; extra == 'test'
@@ -3173,7 +3173,7 @@ packages:
   - cython ; extra == 'test'
   - meson ; extra == 'test'
   - ninja ; sys_platform != 'emscripten' and extra == 'test'
-  - sphinx<=7.3.7,>=5.0.0 ; extra == 'doc'
+  - sphinx>=5.0.0,<=7.3.7 ; extra == 'doc'
   - pydata-sphinx-theme>=0.15.2 ; extra == 'doc'
   - sphinx-design>=0.4.0 ; extra == 'doc'
   - matplotlib>=3.5 ; extra == 'doc'
@@ -3234,11 +3234,11 @@ packages:
   - sphinx-inline-tabs ; extra == 'doc'
   - sphinx-reredirects ; extra == 'doc'
   - sphinxcontrib-towncrier ; extra == 'doc'
-  - sphinx-notfound-page<2,>=1 ; extra == 'doc'
+  - sphinx-notfound-page>=1,<2 ; extra == 'doc'
   - pyproject-hooks!=1.1 ; extra == 'doc'
   - towncrier<24.7 ; extra == 'doc'
   - pytest-enabler>=2.2 ; extra == 'enabler'
-  - pytest!=8.1.*,>=6 ; extra == 'test'
+  - pytest>=6,!=8.1.* ; extra == 'test'
   - virtualenv>=13.0.0 ; extra == 'test'
   - wheel>=0.44.0 ; extra == 'test'
   - pip>=19.1 ; extra == 'test'
@@ -3258,7 +3258,7 @@ packages:
   - jaraco-develop>=7.21 ; python_full_version >= '3.9' and sys_platform != 'cygwin' and extra == 'test'
   - pytest-perf ; sys_platform != 'cygwin' and extra == 'test'
   - pytest-mypy ; extra == 'type'
-  - mypy<1.14,>=1.12 ; extra == 'type'
+  - mypy>=1.12,<1.14 ; extra == 'type'
   - importlib-metadata>=7.0.2 ; python_full_version < '3.10' and extra == 'type'
   - jaraco-develop>=7.21 ; sys_platform != 'cygwin' and extra == 'type'
   requires_python: '>=3.9'
@@ -3291,8 +3291,8 @@ packages:
   - typing-extensions!=3.10.0.1 ; extra == 'aiosqlite'
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
-  - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.10,!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
+  - asyncmy>=0.2.3,!=0.2.4,!=0.2.6 ; extra == 'asyncmy'
+  - mariadb>=1.0.1,!=1.1.2,!=1.1.5,!=1.1.10 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
   - pymssql ; extra == 'mssql-pymssql'
   - pyodbc ; extra == 'mssql-pyodbc'
@@ -3330,8 +3330,8 @@ packages:
   - typing-extensions!=3.10.0.1 ; extra == 'aiosqlite'
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
-  - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.10,!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
+  - asyncmy>=0.2.3,!=0.2.4,!=0.2.6 ; extra == 'asyncmy'
+  - mariadb>=1.0.1,!=1.1.2,!=1.1.5,!=1.1.10 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
   - pymssql ; extra == 'mssql-pymssql'
   - pyodbc ; extra == 'mssql-pyodbc'
@@ -3369,8 +3369,8 @@ packages:
   - typing-extensions!=3.10.0.1 ; extra == 'aiosqlite'
   - greenlet!=0.4.17 ; extra == 'asyncio'
   - greenlet!=0.4.17 ; extra == 'asyncmy'
-  - asyncmy!=0.2.4,!=0.2.6,>=0.2.3 ; extra == 'asyncmy'
-  - mariadb!=1.1.10,!=1.1.2,!=1.1.5,>=1.0.1 ; extra == 'mariadb-connector'
+  - asyncmy>=0.2.3,!=0.2.4,!=0.2.6 ; extra == 'asyncmy'
+  - mariadb>=1.0.1,!=1.1.2,!=1.1.5,!=1.1.10 ; extra == 'mariadb-connector'
   - pyodbc ; extra == 'mssql'
   - pymssql ; extra == 'mssql-pymssql'
   - pyodbc ; extra == 'mssql-pyodbc'
@@ -3522,8 +3522,8 @@ packages:
   requires_dist:
   - brotli>=1.0.9 ; platform_python_implementation == 'CPython' and extra == 'brotli'
   - brotlicffi>=0.8.0 ; platform_python_implementation != 'CPython' and extra == 'brotli'
-  - h2<5,>=4 ; extra == 'h2'
-  - pysocks!=1.5.7,<2.0,>=1.5.6 ; extra == 'socks'
+  - h2>=4,<5 ; extra == 'h2'
+  - pysocks>=1.5.6,!=1.5.7,<2.0 ; extra == 'socks'
   - zstandard>=0.18.0 ; extra == 'zstd'
   requires_python: '>=3.8'
 - kind: pypi
@@ -3532,13 +3532,13 @@ packages:
   url: https://files.pythonhosted.org/packages/ae/92/78324ff89391e00c8f4cf6b8526c41c6ef36b4ea2d2c132250b1a6fc2b8d/virtualenv-20.27.1-py3-none-any.whl
   sha256: f11f1b8a29525562925f745563bfd48b189450f61fb34c4f9cc79dd5aa32a1f4
   requires_dist:
-  - distlib<1,>=0.3.7
-  - filelock<4,>=3.12.2
+  - distlib>=0.3.7,<1
+  - filelock>=3.12.2,<4
   - importlib-metadata>=6.6 ; python_full_version < '3.8'
-  - platformdirs<5,>=3.9.1
+  - platformdirs>=3.9.1,<5
   - furo>=2023.7.26 ; extra == 'docs'
   - proselint>=0.13 ; extra == 'docs'
-  - sphinx!=7.3,>=7.1.2 ; extra == 'docs'
+  - sphinx>=7.1.2,!=7.3 ; extra == 'docs'
   - sphinx-argparse>=0.4 ; extra == 'docs'
   - sphinxcontrib-towncrier>=0.2.1a0 ; extra == 'docs'
   - towncrier>=23.6 ; extra == 'docs'
