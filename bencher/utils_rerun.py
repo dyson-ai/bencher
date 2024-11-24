@@ -34,8 +34,8 @@ def publish_and_view_rrd(
     return rrd_to_pane(publish_path, version=version)
 
 
-def record_rerun_session():
+def capture_rerun_window(width: int = 500, height: int = 500):
     rrd_path = gen_rerun_data_path()
     rr.save(rrd_path)
     path = rrd_path.split("cachedir")[1]
-    return rrd_to_pane(f"http://127.0.0.1:8001/{path}")
+    return rrd_to_pane(f"http://127.0.0.1:8001/{path}", width=width, height=height)
