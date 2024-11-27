@@ -27,13 +27,7 @@ dependencies = [
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
   "moviepy-fix-codec",
-  "rerun-sdk==0.20.1",
-  "rerun-notebook",
-  "flask",
-  "flask-cors"
 ]
-
-
 [project.urls]
 Repository = "https://github.com/dyson-ai/bencher"
 Home = "https://github.com/dyson-ai/bencher"
@@ -66,6 +60,12 @@ test = [
   "ruff>=0.5.0,<=0.7.4",
   "coverage>=7.5.4,<=7.6.7",
   "pre-commit<=4.0.1"
+]
+rerun=[
+  "rerun-sdk==0.20.1",
+  "rerun-notebook",
+  "flask",
+  "flask-cors"
 ]
 
 [build-system]
