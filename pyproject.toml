@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.31.1"
+version = "1.32.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -27,12 +27,7 @@ dependencies = [
   "str2bool>=1.1,<=1.1",
   "scoop>=0.7.0,<=0.7.2.0",
   "moviepy-fix-codec",
-  "rerun-sdk==0.20.1",
-  "rerun-notebook",
-  "flask",
-  "flask-cors"
 ]
-
 
 [project.urls]
 Repository = "https://github.com/dyson-ai/bencher"
@@ -65,8 +60,11 @@ test = [
   "hypothesis>=6.104.2,<=6.122.0",
   "ruff>=0.5.0,<=0.8.1",
   "coverage>=7.5.4,<=7.6.8",
-  "pre-commit<=4.0.1"
+  "pre-commit<=4.0.1",
 ]
+
+#adds support for embedding rerun windows (alpha)
+rerun = ["rerun-sdk==0.20.1", "rerun-notebook", "flask", "flask-cors"]
 
 [build-system]
 requires = ["hatchling"]
@@ -77,10 +75,10 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-py311 = ["py311","test"]
-py312 = ["py312","test"]
+default = { features = ["test", "rerun"], solve-group = "default" }
+py310 = ["py310", "test", "rerun"]
+py311 = ["py311", "test", "rerun"]
+py312 = ["py312", "test", "rerun"]
 
 
 [tool.pixi.tasks]
@@ -99,11 +97,17 @@ coverage-report = "coverage report -m"
 update-lock = "pixi update && git commit -a -m'update pixi.lock' || true"
 push = "git push"
 update-lock-push = { depends_on = ["update-lock", "push"] }
-fix = { depends_on = ["update-lock","pre-commit", "format", "ruff-lint"] }
+fix = { depends_on = ["update-lock", "pre-commit", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = ["format","ruff-lint", "pylint", "coverage", "coverage-report"] }
-ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
+ci = { depends_on = [
+  "format",
+  "ruff-lint",
+  "pylint",
+  "coverage",
+  "coverage-report",
+] }
+ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
