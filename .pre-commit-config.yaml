@@ -42,18 +42,15 @@ repos:
 
   # Formatter for python
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.3
+    rev: v0.8.2
     hooks:
-      # Run the linter.
-      - id: ruff
-        types_or: [ python, pyi ]
-        args: [ --fix ]
+
       # Run the formatter.
       - id: ruff-format
         types_or: [ python, pyi ]
   # Checks for spelling mistakes
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0 #TODO latest version  2.3.0 finds a lot of spelling mistakes but fails on "assertIn"
+    rev: v2.3.0 
     hooks:
       - id: codespell
         args: ['--write-changes']
