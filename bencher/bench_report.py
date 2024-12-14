@@ -120,9 +120,8 @@ class BenchReport(BenchPlotServer):
         folder_name: str = "report",
         branch_name: str = "gh-pages",
     ) -> str:  # pragma: no cover
-
         remote = f"https://github.com/{github_user}/{repo_name}.git"
-        publish_url = f"https://github.com/{github_user}/{repo_name}/{folder_name}"
+        publish_url = f"{github_user}.github.io/{repo_name}/{folder_name}"
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
@@ -202,9 +201,3 @@ def publish_github(
         f"https://github.com/{github_user}/{repo_name}.git",
         f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
     )
-
-
-def create_github_pages_publishser(
-    github_user: str, repo_name: str, branch_name: str = "gh_pages"
-):
-    import functools

@@ -64,7 +64,7 @@ from .caching import CachedParams
 from .results.bench_result import BenchResult
 from .results.panel_result import PanelResult
 from .results.holoview_result import ReduceType, HoloviewResult
-from .bench_report import BenchReport ,publish_github
+from .bench_report import BenchReport, publish_github
 from .job import Executors
 from .video_writer import VideoWriter, add_image
 from .class_enum import ClassEnum, ExampleEnum
