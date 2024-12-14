@@ -20,8 +20,10 @@ if __name__ == "__main__":
     # publish from report
     bench = SimpleFloat().to_bench()
     bench.plot_sweep()
-    bench.report.publish_gh_pages(github_user="blooop", repo_name="reports", folder_name="r5")
-    # TODO DON'T OVERWRITE ^ EXAMPLE WHEN RUNING CODE BELOW
+    bench.report.publish_gh_pages(
+        github_user="blooop", repo_name="reports", folder_name="r5"
+    )
+    # TODO DON'T OVERWRITE ^ EXAMPLE WHEN RUNNING CODE BELOW
 
     # publish from benchrunner
     bench_r = bch.BenchRunner(
