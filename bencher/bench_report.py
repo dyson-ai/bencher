@@ -122,7 +122,7 @@ class BenchReport(BenchPlotServer):
     ) -> str:  # pragma: no cover
 
         remote = f"https://github.com/{github_user}/{repo_name}.git"
-        publish_url = f"https://github.com/{github_user}/{repo_name}/{folder_name}/"
+        publish_url = f"https://github.com/{github_user}/{repo_name}/{folder_name}"
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
