@@ -4,11 +4,20 @@ import os
 from pathlib import Path
 import tempfile
 from threading import Thread
+from dataclasses import dataclass
 
 import panel as pn
 from bencher.results.bench_result import BenchResult
 from bencher.bench_plot_server import BenchPlotServer
 from bencher.bench_cfg import BenchRunCfg
+
+
+@dataclass
+class GithubPagesCfg:
+    github_user: str
+    repo_name: str
+    folder_name: str = "report"
+    branch_name: str = "gh-pages"
 
 
 class BenchReport(BenchPlotServer):
