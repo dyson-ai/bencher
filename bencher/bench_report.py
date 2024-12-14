@@ -133,7 +133,7 @@ class BenchReport(BenchPlotServer):
             logging.info(f"created report at: {report_path.absolute()}")
 
             cd_dir = f"cd {directory} &&"
-
+            # TODO DON'T OVERWRITE EVERYTHING
             os.system(f"{cd_dir} git init")
             os.system(f"{cd_dir} git checkout -b {branch_name}")
             os.system(f"{cd_dir} git add {folder_name}/index.html")
