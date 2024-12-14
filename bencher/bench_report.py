@@ -33,7 +33,9 @@ class BenchReport(BenchPlotServer):
             return self.append_tab(pn.pane.Markdown(f"# {title}", name=title), title)
         return self.append_markdown(f"# {title}", title)
 
-    def append_markdown(self, markdown: str, name=None, width=800, **kwargs) -> pn.pane.Markdown:
+    def append_markdown(
+        self, markdown: str, name=None, width=800, **kwargs
+    ) -> pn.pane.Markdown:
         if name is None:
             name = markdown
         md = pn.pane.Markdown(markdown, name=name, width=width, **kwargs)
@@ -181,7 +183,9 @@ class BenchReport(BenchPlotServer):
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
-            report_path = self.save(directory, filename="index.html", in_html_folder=False)
+            report_path = self.save(
+                directory, filename="index.html", in_html_folder=False
+            )
             logging.info(f"created report at: {report_path.absolute()}")
 
             cd_dir = f"cd {directory} &&"
@@ -197,10 +201,3 @@ class BenchReport(BenchPlotServer):
         logging.info(publish_url)
 
         return publish_url
-
-
-def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
-    return (
-        f"https://github.com/{github_user}/{repo_name}.git",
-        f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
-    )
