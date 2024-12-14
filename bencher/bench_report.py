@@ -117,7 +117,7 @@ class BenchReport(BenchPlotServer):
         self,
         github_user: str,
         repo_name: str,
-        folder_name: str = "report1",
+        folder_name: str = "report",
         branch_name: str = "gh-pages",
     ) -> str:  # pragma: no cover
 
