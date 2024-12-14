@@ -24,7 +24,9 @@ class BenchReport(BenchPlotServer):
             return self.append_tab(pn.pane.Markdown(f"# {title}", name=title), title)
         return self.append_markdown(f"# {title}", title)
 
-    def append_markdown(self, markdown: str, name=None, width=800, **kwargs) -> pn.pane.Markdown:
+    def append_markdown(
+        self, markdown: str, name=None, width=800, **kwargs
+    ) -> pn.pane.Markdown:
         if name is None:
             name = markdown
         md = pn.pane.Markdown(markdown, name=name, width=width, **kwargs)
@@ -111,6 +113,40 @@ class BenchReport(BenchPlotServer):
 
         return BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
+    def publish_gh_pages(
+        self,
+        github_user: str,
+        repo_name: str,
+        folder_name: str = "report1",
+        branch_name: str = "gh-pages",
+    ) -> str:  # pragma: no cover
+
+        remote = f"https://github.com/{github_user}/{repo_name}.git"
+        publish_url = f"https://github.com/{github_user}/{repo_name}/{folder_name}/"
+
+        with tempfile.TemporaryDirectory() as td:
+            directory = td
+            report_path = self.save(
+                directory + f"/{folder_name}/",
+                filename="index.html",
+                in_html_folder=False,
+            )
+            logging.info(f"created report at: {report_path.absolute()}")
+
+            cd_dir = f"cd {directory} &&"
+
+            os.system(f"{cd_dir} git init")
+            os.system(f"{cd_dir} git checkout -b {branch_name}")
+            os.system(f"{cd_dir} git add {folder_name}/index.html")
+            os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+            os.system(f"{cd_dir} git remote add origin {remote}")
+            os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+
+        logging.info("Published report @")
+        logging.info(publish_url)
+
+        return publish_url
+
     def publish(
         self, remote_callback: Callable, branch_name: str = None, debug: bool = False
     ) -> str:  # pragma: no cover
@@ -135,18 +171,20 @@ class BenchReport(BenchPlotServer):
             branch_name = self.bench_name
         branch_name += "_debug" if debug else ""
 
-        remote, publish_url = remote_callback(branch_name=branch_name)
+        remote, publish_url = remote_callback(branch_name)
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
-            report_path = self.save(directory + "/r1/", filename="index.html", in_html_folder=False)
+            report_path = self.save(
+                directory, filename="index.html", in_html_folder=False
+            )
             logging.info(f"created report at: {report_path.absolute()}")
 
             cd_dir = f"cd {directory} &&"
 
             os.system(f"{cd_dir} git init")
             os.system(f"{cd_dir} git checkout -b {branch_name}")
-            os.system(f"{cd_dir} git add r1/index.html")
+            os.system(f"{cd_dir} git add index.html")
             os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
             os.system(f"{cd_dir} git remote add origin {remote}")
             os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
@@ -157,8 +195,16 @@ class BenchReport(BenchPlotServer):
         return publish_url
 
 
-def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
+def publish_github(
+    github_user: str, repo_name: str, branch_name: str
+) -> Tuple[str, str]:
     return (
         f"https://github.com/{github_user}/{repo_name}.git",
         f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
     )
+
+
+def create_github_pages_publishser(
+    github_user: str, repo_name: str, branch_name: str = "gh_pages"
+):
+    import functools
