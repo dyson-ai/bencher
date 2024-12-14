@@ -33,7 +33,9 @@ class BenchReport(BenchPlotServer):
             return self.append_tab(pn.pane.Markdown(f"# {title}", name=title), title)
         return self.append_markdown(f"# {title}", title)
 
-    def append_markdown(self, markdown: str, name=None, width=800, **kwargs) -> pn.pane.Markdown:
+    def append_markdown(
+        self, markdown: str, name=None, width=800, **kwargs
+    ) -> pn.pane.Markdown:
         if name is None:
             name = markdown
         md = pn.pane.Markdown(markdown, name=name, width=width, **kwargs)
@@ -132,21 +134,29 @@ class BenchReport(BenchPlotServer):
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
+            cd_dir = f"cd {directory} &&"
+
+            # Clone only the gh-pages branch and set up sparse checkout
+            os.system(
+                f"git clone --depth=1 --branch {branch_name} {remote} {directory}"
+            )
+            os.system(f"{cd_dir} git sparse-checkout init --cone")
+            os.system(f"{cd_dir} git sparse-checkout set {folder_name}")
+
+            # Copy the new index.html to the sparse-checked folder
+            os.makedirs(f"{directory}/{folder_name}", exist_ok=True)
             report_path = self.save(
                 directory + f"/{folder_name}/",
                 filename="index.html",
                 in_html_folder=False,
             )
-            logging.info(f"created report at: {report_path.absolute()}")
+            logging.info(f"Created report at: {report_path.absolute()}")
+            os.system(f"cp {report_path} {directory}/{folder_name}/index.html")
 
-            cd_dir = f"cd {directory} &&"
-            # TODO DON'T OVERWRITE EVERYTHING
-            os.system(f"{cd_dir} git init")
-            os.system(f"{cd_dir} git checkout -b {branch_name}")
+            # Commit and push changes
             os.system(f"{cd_dir} git add {folder_name}/index.html")
-            os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
-            os.system(f"{cd_dir} git remote add origin {remote}")
-            os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+            os.system(f"{cd_dir} git commit -m 'Update {folder_name}/index.html'")
+            os.system(f"{cd_dir} git push origin {branch_name}")
 
         logging.info("Published report @")
         logging.info(publish_url)
@@ -181,10 +191,12 @@ class BenchReport(BenchPlotServer):
 
         with tempfile.TemporaryDirectory() as td:
             directory = td
-            report_path = self.save(directory, filename="index.html", in_html_folder=False)
+            report_path = self.save(
+                directory, filename="index.html", in_html_folder=False
+            )
             logging.info(f"created report at: {report_path.absolute()}")
 
-            cd_dir = f"cd {directory} &&"
+            cd_dir = f"{cd_dir}"
 
             os.system(f"{cd_dir} git init")
             os.system(f"{cd_dir} git checkout -b {branch_name}")
