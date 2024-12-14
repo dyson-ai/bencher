@@ -69,7 +69,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     serve_pandas_flat: bool = param.Boolean(
         True,
-        doc="Serve a flattend pandas summary on the results webpage.  If you have a large dataset consider setting this to false if the page loading is slow",
+        doc="Serve a flattened pandas summary on the results webpage.  If you have a large dataset consider setting this to false if the page loading is slow",
     )
 
     serve_xarray: bool = param.Boolean(
@@ -78,7 +78,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
     )
 
     auto_plot: bool = param.Boolean(
-        True, doc=" Automaticlly dedeuce the best type of plot for the results."
+        True, doc=" Automatically dedeuce the best type of plot for the results."
     )
 
     raise_duplicate_exception: bool = param.Boolean(False, doc=" Used to debug unique plot names.")
@@ -131,13 +131,13 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     render_plotly = param.Boolean(
         True,
-        doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probalby stop working.",
+        doc="Plotly and Bokeh don't play nicely together, so by default pre-render plotly figures to a non dynamic version so that bokeh plots correctly.  If you want interactive 3D graphs, set this to true but be aware that your 2D interactive graphs will probably stop working.",
     )
 
     level = param.Integer(
         default=0,
         bounds=[0, 12],
-        doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specficy the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
+        doc="The level parameter is a method of defining the number samples to sweep over in a variable agnostic way, i.e you don't need to specify the number of samples for each variable as they are calculated dynamically from the sampling level.  See example_level.py for more information.",
     )
 
     run_tag = param.String(
@@ -163,10 +163,10 @@ class BenchRunCfg(BenchPlotSrvCfg):
     plot_size = param.Integer(default=None, doc="Sets the width and height of the plot")
     plot_width = param.Integer(
         default=None,
-        doc="Sets with width of the plots, this will ovverride the plot_size parameter",
+        doc="Sets with width of the plots, this will override the plot_size parameter",
     )
     plot_height = param.Integer(
-        default=None, doc="Sets the height of the plot, this will ovverride the plot_size parameter"
+        default=None, doc="Sets the height of the plot, this will override the plot_size parameter"
     )
 
     @staticmethod
@@ -291,7 +291,7 @@ class BenchCfg(BenchRunCfg):
 
     tag: str = param.String(
         "",
-        doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from eachother and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with eachother based only on the tag value.",
+        doc="Use tags to group different benchmarks together. By default benchmarks are considered distinct from each other and are identified by the hash of their name and inputs, constants and results and tag, but you can optionally change the hash value to only depend on the tag.  This way you can have multiple unrelated benchmarks share values with each other based only on the tag value.",
     )
 
     hash_value: str = param.String(
@@ -311,10 +311,10 @@ class BenchCfg(BenchRunCfg):
         self.iv_repeat = None
 
     def hash_persistent(self, include_repeats) -> str:
-        """override the default hash function becuase the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
+        """override the default hash function because the default hash function does not return the same value for the same inputs.  It references internal variables that are unique per instance of BenchCfg
 
         Args:
-            include_repeats (bool) : by default include repeats as part of the hash execpt with using the sample cache
+            include_repeats (bool) : by default include repeats as part of the hash except with using the sample cache
         """
 
         if include_repeats:

@@ -1,12 +1,11 @@
 import logging
 from typing import Callable, Tuple
 import os
-import panel as pn
 from pathlib import Path
 import tempfile
-
 from threading import Thread
 
+import panel as pn
 from bencher.results.bench_result import BenchResult
 from bencher.bench_plot_server import BenchPlotServer
 from bencher.bench_cfg import BenchRunCfg

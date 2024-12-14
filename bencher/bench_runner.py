@@ -85,7 +85,7 @@ class BenchRunner:
             run_cfg (BenchRunCfg, optional): benchmark run configuration. Defaults to None.
             publish (bool, optional): Publish the results to git, requires a publish url to be set up. Defaults to False.
             debug (bool, optional): _description_. Defaults to False.
-            show (bool, optional): show the results in the local web browswer. Defaults to False.
+            show (bool, optional): show the results in the local web browser. Defaults to False.
             save (bool, optional): save the results to disk in index.html. Defaults to False.
             grouped (bool, optional): Produce a single html page with all the benchmarks included. Defaults to True.
             use_cache (bool, optional): Use the sample cache to reused previous results. Defaults to True.

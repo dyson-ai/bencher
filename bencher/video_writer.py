@@ -30,7 +30,7 @@ class VideoWriter:
         if width is None:
             width = len(label) * 10
         new_img = Image.new("RGB", (width, height), color=color)
-        # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",achor="ms")
+        # ImageDraw.Draw(new_img).text((width/2, 0), label, (0, 0, 0),align="center",anchor="ms")
         ImageDraw.Draw(new_img).text(
             (width / 2.0, 0), label, (0, 0, 0), anchor="mt", font_size=height
         )

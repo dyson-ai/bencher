@@ -1,0 +1,16 @@
+line-length = 100
+
+[lint]
+# E501: Lines too long (maximum of 79 characters).
+ignore = [
+    "E501", # Long line that exceeds maximum allowed length.
+    "F841", # Local variable referenced before assignment, this is annoying during development.
+]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+[lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"**/{tests,docs,tools}/*" = ["E402"]

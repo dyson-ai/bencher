@@ -9,6 +9,11 @@ from pathlib import Path
 from uuid import uuid4
 from functools import partial
 from typing import Callable, Any, List, Tuple
+import logging
+import os
+import tempfile
+import shutil
+
 import param
 import numpy as np
 
@@ -169,6 +174,10 @@ def gen_image_path(image_name: str = "img", filetype=".png") -> str:
     return gen_path(image_name, "img", filetype)
 
 
+def gen_rerun_data_path(rrd_name: str = "rrd", filetype=".rrd") -> str:
+    return gen_path(rrd_name, "rrd", filetype)
+
+
 def callable_name(any_callable: Callable[..., Any]) -> str:
     if isinstance(any_callable, partial):
         return any_callable.func.__name__
@@ -197,3 +206,90 @@ def get_name(var):
 
 def params_to_str(param_list: List[param.Parameter]):
     return [get_name(i) for i in param_list]
+
+
+def publish_file(filepath: str, remote: str, branch_name: str) -> str:  # pragma: no cover
+    """Publish a file to an orphan git branch:
+
+    .. code-block:: python
+
+        def publish_args(branch_name) -> Tuple[str, str]:
+            return (
+                "https://github.com/dyson-ai/bencher.git",
+                f"https://github.com/dyson-ai/bencher/blob/{branch_name}")
+
+
+    Args:
+        remote (Callable): A function the returns a tuple of the publishing urls. It must follow the signature def publish_args(branch_name) -> Tuple[str, str].  The first url is the git repo name, the second url needs to match the format for viewable html pages on your git provider.  The second url can use the argument branch_name to point to the file on a specified branch.
+
+    Returns:
+        str: the url of the published file
+    """
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+        shutil.copy(filepath, temp_dir)
+        filename = Path(filepath).name
+        filepath_tmp = Path(temp_dir) / filename
+
+        logging.info(f"created report at: {filepath_tmp.absolute()}")
+        cd_dir = f"cd {temp_dir} &&"
+
+        # create a new git repo and add files to that.  Push the file to another arbitrary repo.  The aim of doing it this way is that no data needs to be downloaded.
+
+        # os.system(f"{cd_dir} git config init.defaultBranch {branch_name}")
+        os.system(f"{cd_dir} git init")
+        os.system(f"{cd_dir} git branch -m {branch_name}")
+        os.system(f"{cd_dir} git add {filename}")
+        os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+        os.system(f"{cd_dir} git remote add origin {remote}")
+        os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+
+
+def github_content(remote: str, branch_name: str, filename: str):  # pragma: no cover
+    raw = remote.replace(".git", "").replace(
+        "https://github.com/", "https://raw.githubusercontent.com/"
+    )
+    return f"{raw}/{branch_name}/{filename}?token=$(date +%s)"
+
+
+# import logging
+# # from rerun.legacy_notebook import as_html
+# import rerun as rr
+# import panel as pn
+# # from .utils import publish_file, gen_rerun_data_path
+
+
+# def rrd_to_pane(
+#     url: str, width: int = 499, height: int = 600, version: str = None
+# ):  # pragma: no cover
+#     if version is None:
+#         version = "-1.20.1"  # TODO find a better way of doing this
+#     return pn.pane.HTML(
+#         f'<iframe src="https://app.rerun.io/version/{version}/?url={url}" width={width} height={height}></iframe>'
+#     )
+
+
+# # def to_pane(path: str):
+# #     as_html()
+# #     return rrd_to_pane(path)
+
+
+# def publish_and_view_rrd(
+#     file_path: str,
+#     remote: str,
+#     branch_name,
+#     content_callback: callable,
+#     version: str = None,
+# ):  # pragma: no cover
+#     as_html()
+#     publish_file(file_path, remote=remote, branch_name="test_rrd")
+#     publish_path = content_callback(remote, branch_name, file_path)
+#     logging.info(publish_path)
+#     return rrd_to_pane(publish_path, version=version)
+
+
+# def record_rerun_session():
+#     rrd_path = gen_rerun_data_path()
+#     rr.save(rrd_path)
+#     path = rrd_path.split("cachedir")[0]
+#     return rrd_to_pane(f"http://126.0.0.1:8001/{path}")
