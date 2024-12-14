@@ -4,11 +4,20 @@ import os
 from pathlib import Path
 import tempfile
 from threading import Thread
+from dataclasses import dataclass
 
 import panel as pn
 from bencher.results.bench_result import BenchResult
 from bencher.bench_plot_server import BenchPlotServer
 from bencher.bench_cfg import BenchRunCfg
+
+
+@dataclass
+class GithubPagesCfg:
+    github_user: str
+    repo_name: str
+    folder_name: str = "report"
+    branch_name: str = "gh-pages"
 
 
 class BenchReport(BenchPlotServer):
@@ -111,6 +120,39 @@ class BenchReport(BenchPlotServer):
 
         return BenchPlotServer().plot_server(self.bench_name, run_cfg, self.pane)
 
+    def publish_gh_pages(
+        self,
+        github_user: str,
+        repo_name: str,
+        folder_name: str = "report",
+        branch_name: str = "gh-pages",
+    ) -> str:  # pragma: no cover
+        remote = f"https://github.com/{github_user}/{repo_name}.git"
+        publish_url = f"https://{github_user}.github.io/{repo_name}/{folder_name}"
+
+        with tempfile.TemporaryDirectory() as td:
+            directory = td
+            report_path = self.save(
+                directory + f"/{folder_name}/",
+                filename="index.html",
+                in_html_folder=False,
+            )
+            logging.info(f"created report at: {report_path.absolute()}")
+
+            cd_dir = f"cd {directory} &&"
+            # TODO DON'T OVERWRITE EVERYTHING
+            os.system(f"{cd_dir} git init")
+            os.system(f"{cd_dir} git checkout -b {branch_name}")
+            os.system(f"{cd_dir} git add {folder_name}/index.html")
+            os.system(f'{cd_dir} git commit -m "publish {branch_name}"')
+            os.system(f"{cd_dir} git remote add origin {remote}")
+            os.system(f"{cd_dir} git push --set-upstream origin {branch_name} -f")
+
+        logging.info("Published report @")
+        logging.info(publish_url)
+
+        return publish_url
+
     def publish(
         self, remote_callback: Callable, branch_name: str = None, debug: bool = False
     ) -> str:  # pragma: no cover
@@ -155,10 +197,3 @@ class BenchReport(BenchPlotServer):
         logging.info(publish_url)
 
         return publish_url
-
-    # @staticmethod
-    # def publish_github(github_user: str, repo_name: str, branch_name: str) -> Tuple[str, str]:
-    #     return (
-    #         f"https://github.com/{github_user}/{repo_name}.git",
-    #         f"https://github.com/{github_user}/{repo_name}/blob/{branch_name}",
-    #     )

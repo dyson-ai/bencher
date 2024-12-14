@@ -3,7 +3,7 @@ import logging
 from bencher.bench_cfg import BenchRunCfg, BenchCfg
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
-from bencher.bench_report import BenchReport
+from bencher.bench_report import BenchReport, GithubPagesCfg
 from copy import deepcopy
 
 
@@ -47,7 +47,12 @@ class BenchRunner:
         run_cfg: BenchRunCfg = BenchRunCfg(),
         report: BenchReport = BenchReport(),
     ):
-        return Bench(f"bench_{class_instance.name}", class_instance, run_cfg=run_cfg, report=report)
+        return Bench(
+            f"bench_{class_instance.name}",
+            class_instance,
+            run_cfg=run_cfg,
+            report=report,
+        )
 
     def add_run(self, bench_fn: Benchable) -> None:
         self.bench_fns.append(bench_fn)
@@ -125,7 +130,11 @@ class BenchRunner:
         if save:
             report.save_index()
         if publish and self.publisher is not None:
-            report.publish(remote_callback=self.publisher, debug=debug)
+            if isinstance(self.publisher, GithubPagesCfg):
+                p = self.publisher
+                report.publish_gh_pages(p.github_user, p.repo_name, p.folder_name, p.branch_name)
+            else:
+                report.publish(remote_callback=self.publisher, debug=debug)
         if show:
             self.servers.append(report.show())
 

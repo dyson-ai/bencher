@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.32.0"
+version = "1.33.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -10,23 +10,23 @@ license = "MIT"
 requires-python = ">=3.10,<3.13"
 
 dependencies = [
-  "holoviews>=1.15,<=1.19.1",
-  "numpy>=1.0,<=2.1.3",
-  "param>=1.13.0,<=2.1.1",
-  "hvplot>=0.8,<=0.10.0",
-  "matplotlib>=3.6.3,<=3.9.2",
-  "panel>=1.3.6,<=1.4.5",
-  "diskcache>=5.6,<=5.6.3",
-  "optuna>=3.2,<=4.0.0",
-  "xarray>=2023.7,<=2024.7.0",
-  "plotly>=5.15,<=5.24.1",
-  "sortedcontainers>=2.4,<=2.4",
-  "pandas>=2.0,<=2.2.2",
-  "strenum>=0.4.0,<=0.4.15",
-  "scikit-learn>=1.2,<=1.5.1",
-  "str2bool>=1.1,<=1.1",
-  "scoop>=0.7.0,<=0.7.2.0",
-  "moviepy-fix-codec",
+    "holoviews>=1.15,<=1.19.1",
+    "numpy>=1.0,<=2.1.3",
+    "param>=1.13.0,<=2.1.1",
+    "hvplot>=0.8,<=0.10.0",
+    "matplotlib>=3.6.3,<=3.9.2",
+    "panel>=1.3.6,<=1.4.5",
+    "diskcache>=5.6,<=5.6.3",
+    "optuna>=3.2,<=4.0.0",
+    "xarray>=2023.7,<=2024.7.0",
+    "plotly>=5.15,<=5.24.1",
+    "sortedcontainers>=2.4,<=2.4",
+    "pandas>=2.0,<=2.2.2",
+    "strenum>=0.4.0,<=0.4.15",
+    "scikit-learn>=1.2,<=1.5.1",
+    "str2bool>=1.1,<=1.1",
+    "scoop>=0.7.0,<=0.7.2.0",
+    "moviepy-fix-codec",
 ]
 
 [project.urls]
@@ -54,13 +54,13 @@ holobench = { path = ".", editable = true }
 
 [project.optional-dependencies]
 test = [
-  "pylint>=3.2.5,<=3.3.1",
-  "pytest-cov>=4.1,<=6.0.0",
-  "pytest>=7.4,<=8.3.3",
-  "hypothesis>=6.104.2,<=6.122.0",
-  "ruff>=0.5.0,<=0.8.1",
-  "coverage>=7.5.4,<=7.6.8",
-  "pre-commit<=4.0.1",
+    "pylint>=3.2.5,<=3.3.1",
+    "pytest-cov>=4.1,<=6.0.0",
+    "pytest>=7.4,<=8.3.3",
+    "hypothesis>=6.104.2,<=6.122.0",
+    "ruff>=0.5.0,<=0.8.1",
+    "coverage>=7.5.4,<=7.6.8",
+    "pre-commit<=4.0.1",
 ]
 
 #adds support for embedding rerun windows (alpha)
@@ -101,11 +101,11 @@ fix = { depends_on = ["update-lock", "pre-commit", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
 ci = { depends_on = [
-  "format",
-  "ruff-lint",
-  "pylint",
-  "coverage",
-  "coverage-report",
+    "format",
+    "ruff-lint",
+    "pylint",
+    "coverage",
+    "coverage-report",
 ] }
 ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
@@ -129,12 +129,12 @@ omit = ["*/test/*", "__init__.py"]
 
 [tool.coverage.report]
 exclude_also = [
-  "def __repr__",
-  "if False:",
-  "if 0:",
-  "raise AssertionError",
-  "raise NotImplementedError",
-  "if __name__ == .__main__.:",
-  "pass",
-  "(_):",
+    "def __repr__",
+    "if False:",
+    "if 0:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+    "(_):",
 ]
