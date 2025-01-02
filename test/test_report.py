@@ -39,4 +39,3 @@ class TestReport(unittest.TestCase):
 
     def test_example_floats2D_report(self) -> None:
         example_floats2D(bch.BenchRunCfg(level=2).report.save()
-
