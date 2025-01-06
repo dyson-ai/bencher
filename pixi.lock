@@ -1162,10 +1162,10 @@ packages:
 - pypi: .
   name: holobench
   version: 1.33.2
-  sha256: c10165764946592356c183ce7064fc77be821c14677440b79ee134bdb68c0f9a
+  sha256: 88f54eba6db25bda3cecb2504cf640e16ebb18f62c0a5360a4dc11aca56b2a9b
   requires_dist:
   - holoviews==1.20.0
-  - numpy==2.2.1
+  - numpy
   - param==2.2.0
   - hvplot==0.10.0
   - matplotlib==3.10.0
