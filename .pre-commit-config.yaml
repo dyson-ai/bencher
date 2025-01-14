@@ -53,5 +53,5 @@ repos:
     rev: v2.3.0 
     hooks:
       - id: codespell
-        args: ['--write-changes']
-        exclude: \.(svg|pyc|lock|json)$
+        args: ["--write-changes","--ignore-words=./codespell-ignore.txt"]
+        exclude: \.(svg|pyc|lock|json|hrd|pgm)$
