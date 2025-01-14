@@ -50,7 +50,7 @@ repos:
         types_or: [ python, pyi ]
   # Checks for spelling mistakes
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0 #TODO latest version  2.3.0 finds a lot of spelling mistakes but fails on "assertIn"
+    rev: v2.3.0 
     hooks:
       - id: codespell
         args: ["--write-changes","--ignore-words=./codespell-ignore.txt"]
