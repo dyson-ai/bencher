@@ -49,7 +49,9 @@ class VarRange:
         return match, info
 
     def __str__(self) -> str:
-        return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
+        return (
+            f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
+        )
 
 
 @dataclass
@@ -64,16 +66,24 @@ class PlotFilter:
     repeats_range: VarRange = VarRange(1, None)
     input_range: VarRange = VarRange(1, None)
 
-    def matches_result(self, plt_cnt_cfg: PltCntCfg, plot_name: str) -> PlotMatchesResult:
+    def matches_result(
+        self, plt_cnt_cfg: PltCntCfg, plot_name: str, override: bool = False
+    ) -> PlotMatchesResult:
         """Checks if the result data signature matches the type of data the plot is able to display."""
-        return PlotMatchesResult(self, plt_cnt_cfg, plot_name)
+        return PlotMatchesResult(self, plt_cnt_cfg, plot_name, override)
 
 
 # @dataclass
 class PlotMatchesResult:
     """Stores information about which properties match the requirements of a particular plotter"""
 
-    def __init__(self, plot_filter: PlotFilter, plt_cnt_cfg: PltCntCfg, plot_name: str):
+    def __init__(
+        self,
+        plot_filter: PlotFilter,
+        plt_cnt_cfg: PltCntCfg,
+        plot_name: str,
+        overrride: bool = False,
+    ):
         match_info = []
         matches = []
 
@@ -92,8 +102,11 @@ class PlotMatchesResult:
             matches.append(match)
             if not match:
                 match_info.append(info)
-
-        self.overall = all(matches)
+        if overrride:
+            match_info.append(f"overrride: {overrride}")
+            self.overall = True
+        else:
+            self.overall = all(matches)
 
         match_info.insert(0, f"plot {plot_name} matches: {self.overall}")
         self.matches_info = "\n".join(match_info).strip()
