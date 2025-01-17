@@ -277,7 +277,9 @@ class OptunaResult:
                 if len(target_names) <= 3:
                     study_pane.append(
                         plot_pareto_front(
-                            study, target_names=target_names, include_dominated_trials=False
+                            study,
+                            target_names=target_names,
+                            include_dominated_trials=False,
                         )
                     )
                 else:
@@ -312,7 +314,10 @@ class OptunaResult:
 
             param_str = "\n".join(param_str)
             study_pane.append(
-                pn.Row(pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"), **kwargs),
+                pn.Row(
+                    pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"),
+                    **kwargs,
+                ),
             )
 
             study_repeats_pane.append(study_pane)

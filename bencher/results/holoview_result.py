@@ -8,7 +8,12 @@ from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
-from bencher.utils import hmap_canonical_input, get_nearest_coords, get_nearest_coords1D, listify
+from bencher.utils import (
+    hmap_canonical_input,
+    get_nearest_coords,
+    get_nearest_coords1D,
+    listify,
+)
 from bencher.results.panel_result import PanelResult
 from bencher.results.bench_result_base import ReduceType
 
@@ -105,7 +110,11 @@ class HoloviewResult(PanelResult):
         return da_plot.hvplot.bar(by=by, **time_widget_args, **kwargs)
 
     def hv_container_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, container: hv.Chart = None, **kwargs
+        self,
+        dataset: xr.Dataset,
+        result_var: Parameter,
+        container: hv.Chart = None,
+        **kwargs,
     ):
         return hv.Dataset(dataset[result_var.name]).to(container).opts(**kwargs)
 
@@ -428,7 +437,9 @@ class HoloviewResult(PanelResult):
 
     def to_scatter(self, **kwargs) -> Optional[pn.panel]:
         match_res = PlotFilter(
-            float_range=VarRange(0, 0), cat_range=VarRange(0, None), repeats_range=VarRange(1, 1)
+            float_range=VarRange(0, 0),
+            cat_range=VarRange(0, None),
+            repeats_range=VarRange(1, 1),
         ).matches_result(self.plt_cnt_cfg, "to_hvplot_scatter")
         if match_res.overall:
             hv_ds = self.to_hv_dataset(ReduceType.SQUEEZE)
@@ -628,6 +639,9 @@ class HoloviewResult(PanelResult):
             kdims.append(i.as_dim(compute_values=True))
 
         return hv.DynamicMap(cb, kdims=kdims)
+
+    def to_explorer(self):
+        return self.to_xarray().hvplot.explorer()
 
     def to_grid(self, inputs=None):
         if inputs is None:
