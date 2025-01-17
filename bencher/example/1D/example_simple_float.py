@@ -37,14 +37,22 @@ def example_1D_float(
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
     bench = SimpleFloat().to_bench(run_cfg, report)
-    bench.plot_sweep(pass_repeat=True)
+    # bench.plot_sweep(pass_repeat=True,plot_callbacks=False)
 
+    # res = bench.get_result()
     bench.run_cfg = bch.BenchRunCfg(repeats=4)
     bench.plot_sweep(pass_repeat=True)
 
     res = bench.get_result()
+    bench.report.append(res.to_auto())
     bench.report.append(res.to_scatter())
     bench.report.append(res.to_scatter_jitter(override=True))
+    # bench.report.append(res.to_bar(override=True))
+    import hvplot.xarray
+
+    bench.report.append(res.to_xarray().hvplot.explorer())
+
+    # bench.report.append()
     return bench
 
 

@@ -88,7 +88,9 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_bar(
+        self, result_var: Parameter = None, override: bool = False, **kwargs
+    ) -> Optional[pn.panel]:
         return self.filter(
             self.to_bar_ds,
             float_range=VarRange(0, 0),
@@ -99,7 +101,7 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
-            **kwargs,
+            override=override,**kwargs,
         )
 
     def to_bar_ds(self, dataset: xr.Dataset, result_var: Parameter = None, **kwargs):
@@ -556,19 +558,19 @@ class HoloviewResult(PanelResult):
         override: bool = False,
         **kwargs,  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
-        return self.overlay_plots(partial(self.to_scatter_jitter_single,override=override, **kwargs))
+        return self.overlay_plots(
+            partial(self.to_scatter_jitter_single, override=override, **kwargs)
+        )
 
     def to_scatter_jitter_single(
-        self, result_var: Parameter, override: bool = False, **kwargs
+        self, result_var: Parameter, override: bool = True, **kwargs
     ) -> Optional[hv.Scatter]:
         matches = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
-        ).matches_result(
-            self.plt_cnt_cfg, "to_scatter_jitter", override, **kwargs
-        )
+        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override, **kwargs)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
