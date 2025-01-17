@@ -1,3 +1,4 @@
+# pylint: skip-file
 from setuptools import setup, find_packages
 
 package_name = "bencher"
