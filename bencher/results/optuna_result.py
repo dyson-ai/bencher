@@ -277,7 +277,9 @@ class OptunaResult:
                 if len(target_names) <= 3:
                     study_pane.append(
                         plot_pareto_front(
-                            study, target_names=target_names, include_dominated_trials=False
+                            study,
+                            target_names=target_names,
+                            include_dominated_trials=False,
                         )
                     )
                 else:
@@ -304,7 +306,9 @@ class OptunaResult:
                 # If there is only 1 parameter then there is no point is plotting relative importance.  Only worth plotting if there are multiple repeats of the same value so that you can compare the parameter vs to repeat to get a sense of the how much chance affects the results
                 # if bench_cfg.repeats > 1 and len(bench_cfg.input_vars) > 1:  #old code, not sure if its right
                 if len(self.bench_cfg.input_vars) > 1:
-                    study_pane.append(plot_param_importances(study, target_name=target_names[0]))
+                    study_pane.append(
+                        plot_param_importances(study, target_name=target_names[0])
+                    )
 
                 param_str.extend(summarise_trial(study.best_trial, self.bench_cfg))
 
@@ -312,7 +316,10 @@ class OptunaResult:
 
             param_str = "\n".join(param_str)
             study_pane.append(
-                pn.Row(pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"), **kwargs),
+                pn.Row(
+                    pn.pane.Markdown(f"## Best Parameters\n```text\n{param_str}"),
+                    **kwargs,
+                ),
             )
 
             study_repeats_pane.append(study_pane)
