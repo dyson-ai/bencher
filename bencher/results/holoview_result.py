@@ -560,7 +560,7 @@ class HoloviewResult(PanelResult):
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override, **kwargs)
+        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (

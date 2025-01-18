@@ -42,7 +42,7 @@ class HvplotResult(PanelResult):
             **kwargs,
         )
 
-    def to_histogram_ds(self, dataset: xr.Dataset, result_var: Parameter):
+    def to_histogram_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
         return dataset.hvplot(
             kind="hist",
             y=[result_var.name],
@@ -50,4 +50,5 @@ class HvplotResult(PanelResult):
             legend="bottom_right",
             widget_location="bottom",
             title=f"{result_var.name} vs Count",
+            **kwargs,
         )
