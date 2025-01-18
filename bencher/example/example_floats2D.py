@@ -44,47 +44,53 @@ def example_floats2D(
     The following examples will show how to perform parameter sweeps to characterise the behavior of the function.  The idea is that the benchmarking can be used to gain understanding of an unknown function.
         """,
         post_description="Here you can see the output plot of sin theta between 0 and pi.  In the tabs at the top you can also view 3 tabular representations of the data",
+        plot_callbacks=False,
     )
+
+    res = bench.get_result()
+
+    bench.report.append(res.to_heatmap())
+    bench.report.append(res.to_explorer())
 
     bench.report.append(bench.get_result().to_surface())
 
-    bench.plot_sweep(
-        input_vars=[
-            ExampleBenchCfg.param.theta,
-            ExampleBenchCfg.param.offset,
-            ExampleBenchCfg.param.postprocess_fn,
-        ],
-        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
-        const_vars=[
-            (ExampleBenchCfg.param.sigma, 0.1),
-            (ExampleBenchCfg.param.noise_distribution, NoiseDistribution.gaussian),
-            (ExampleBenchCfg.param.noisy, True),
-        ],
-        title="Float 2D with categorical Example",
-        description="""Here we add plot a 2d surface and facet over a categorical variable
-        """,
-    )
-    bench.report.append(bench.get_result().to_surface())
+    # bench.plot_sweep(
+    #     input_vars=[
+    #         ExampleBenchCfg.param.theta,
+    #         ExampleBenchCfg.param.offset,
+    #         ExampleBenchCfg.param.postprocess_fn,
+    #     ],
+    #     result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
+    #     const_vars=[
+    #         (ExampleBenchCfg.param.sigma, 0.1),
+    #         (ExampleBenchCfg.param.noise_distribution, NoiseDistribution.gaussian),
+    #         (ExampleBenchCfg.param.noisy, True),
+    #     ],
+    #     title="Float 2D with categorical Example",
+    #     description="""Here we add plot a 2d surface and facet over a categorical variable
+    #     """,
+    # )
+    # # bench.report.append(bench.get_result().to_surface())
 
-    bench.plot_sweep(
-        input_vars=[
-            ExampleBenchCfg.param.theta,
-            ExampleBenchCfg.param.offset,
-            ExampleBenchCfg.param.postprocess_fn,
-            ExampleBenchCfg.param.noise_distribution,
-        ],
-        result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
-        const_vars=[
-            (ExampleBenchCfg.param.sigma, 0.1),
-            (ExampleBenchCfg.param.noise_distribution, NoiseDistribution.gaussian),
-            (ExampleBenchCfg.param.noisy, True),
-        ],
-        title="Float 2D with categorical x2 Example",
-        description="""Here we add plot a 2d surface and facet over two categorical variable
-        """,
-    )
+    # bench.plot_sweep(
+    #     input_vars=[
+    #         ExampleBenchCfg.param.theta,
+    #         ExampleBenchCfg.param.offset,
+    #         ExampleBenchCfg.param.postprocess_fn,
+    #         ExampleBenchCfg.param.noise_distribution,
+    #     ],
+    #     result_vars=[ExampleBenchCfgOut.param.out_sin, ExampleBenchCfgOut.param.out_cos],
+    #     const_vars=[
+    #         (ExampleBenchCfg.param.sigma, 0.1),
+    #         (ExampleBenchCfg.param.noise_distribution, NoiseDistribution.gaussian),
+    #         (ExampleBenchCfg.param.noisy, True),
+    #     ],
+    #     title="Float 2D with categorical x2 Example",
+    #     description="""Here we add plot a 2d surface and facet over two categorical variable
+    #     """,
+    # )
 
-    bench.report.append(bench.get_result().to_surface())
+    # bench.report.append(bench.get_result().to_surface())
 
     return bench
 

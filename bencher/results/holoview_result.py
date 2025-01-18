@@ -253,7 +253,9 @@ class HoloviewResult(PanelResult):
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
-            return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
+            print(dataset)
+            # return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
+            return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma" )
         return None
 
     def result_var_to_container(self, result_var):
