@@ -661,6 +661,9 @@ class HoloviewResult(PanelResult):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
+    def to_explorer(self):
+        return self.to_xarray().hvplot.explorer()
+
     def to_grid(self, inputs=None):
         if inputs is None:
             inputs = self.bench_cfg.inputs_as_str()
