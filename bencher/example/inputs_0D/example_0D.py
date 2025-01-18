@@ -8,7 +8,6 @@ class SimpleFloat0D(bch.ParametrizedSweep):
     """This class has 0 input dimensions and 1 output dimensions.  It samples from a gaussian distribution"""
 
     output = bch.ResultVar(units="ul", doc="a sample from a gaussian distribution")
-    output1 = bch.ResultVar(units="ul", doc="a sample from a gaussian distribution")
 
     def __call__(self, **kwargs) -> dict:
         """Generate a sample from a uniform distribution
@@ -17,8 +16,7 @@ class SimpleFloat0D(bch.ParametrizedSweep):
             dict: a dictionary with all the result variables in the ParametrisedSweep class as named key value pairs.
         """
 
-        self.output = random.gauss()
-        self.output1 = random.gauss(1)
+        self.output = random.gauss(mu=0.0, sigma=1.0)
         return super().__call__(**kwargs)
 
 
