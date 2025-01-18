@@ -192,7 +192,12 @@ class ParametrizedSweep(Parameterized):
             )
         )
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs) -> dict:
+        """This is the function that is called to record data samples in the benchmarking function.  It should be overridden with your custom logic and then call the parent method  "return super().__call__(**kwargs)"
+
+        Returns:
+            dict: a dictionary with all the result variables in the ParametrisedSweep class as named key value pairs.
+        """
         return self.get_results_values_as_dict()
 
     def plot_hmap(self, **kwargs):
