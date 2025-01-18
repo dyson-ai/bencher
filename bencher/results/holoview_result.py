@@ -649,14 +649,6 @@ class HoloviewResult(PanelResult):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
-    def to_explorer(self):
-        try:
-            return self.to_xarray().hvplot.explorer()
-        except ValueError as e:
-            # For some reason hvplot doesn't like 1D datasets in xarray, so convert to pandas which it has no problem with
-            # TODO look into why this is, its probaly due to how I am setting up the indexing in xarray.
-            return self.to_pandas().hvplot.explorer()
-
     def to_grid(self, inputs=None):
         if inputs is None:
             inputs = self.bench_cfg.inputs_as_str()
@@ -673,7 +665,7 @@ class HoloviewResult(PanelResult):
         """
         return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
-    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
