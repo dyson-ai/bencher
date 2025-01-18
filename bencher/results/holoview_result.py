@@ -6,6 +6,7 @@ import holoviews as hv
 from param import Parameter
 from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
+import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
 from bencher.utils import (
@@ -41,9 +42,7 @@ class HoloviewResult(PanelResult):
         )
         return width_heigh
 
-    def to(
-        self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs
-    ) -> hv.Chart:
+    def to(self, hv_type: hv.Chart, reduce: ReduceType = ReduceType.AUTO, **kwargs) -> hv.Chart:
         return self.to_hv_dataset(reduce).to(hv_type, **kwargs)
 
     def overlay_plots(self, plot_callback: callable) -> Optional[hv.Overlay]:
@@ -101,7 +100,8 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
-            override=override,**kwargs,
+            override=override,
+            **kwargs,
         )
 
     def to_bar_ds(self, dataset: xr.Dataset, result_var: Parameter = None, **kwargs):
@@ -253,9 +253,7 @@ class HoloviewResult(PanelResult):
             C = result_var.name
             title = f"Heatmap of {result_var.name}"
             time_args = self.time_widget(title)
-            return dataset.hvplot.heatmap(
-                x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs
-            )
+            return dataset.hvplot.heatmap(x=x, y=y, C=C, cmap="plasma", **time_args, **kwargs)
         return None
 
     def result_var_to_container(self, result_var):
@@ -324,14 +322,10 @@ class HoloviewResult(PanelResult):
                     ds = dataset[rv.name]
                     val = ds.sel(**kdims)
                     item = self.zero_dim_da_to_val(val)
-                    title.object = "Selected: " + ", ".join(
-                        [f"{k}:{v}" for k, v in kdims.items()]
-                    )
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
 
                     cont.object = item
-                    if hasattr(
-                        cont, "autoplay"
-                    ):  # container is a video, set to autoplay
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
                         cont.paused = False
                         cont.time = 0
                         cont.loop = True
@@ -416,13 +410,9 @@ class HoloviewResult(PanelResult):
                     ds = dataset[rv.name]
                     val = ds.sel(**kdims)
                     item = self.zero_dim_da_to_val(val)
-                    title.object = "Selected: " + ", ".join(
-                        [f"{k}:{v}" for k, v in kdims.items()]
-                    )
+                    title.object = "Selected: " + ", ".join([f"{k}:{v}" for k, v in kdims.items()])
                     cont.object = item
-                    if hasattr(
-                        cont, "autoplay"
-                    ):  # container is a video, set to autoplay
+                    if hasattr(cont, "autoplay"):  # container is a video, set to autoplay
                         cont.paused = False
                         cont.time = 0
                         cont.loop = True
@@ -575,9 +565,7 @@ class HoloviewResult(PanelResult):
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
                 ds.to(hv.Scatter, vdims=[result_var.name], label=result_var.name)
-                .opts(
-                    jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs
-                )
+                .opts(jitter=0.1, show_legend=False, title=self.to_plot_title(), **kwargs)
                 .overlay("repeat")
             )
             return pt
@@ -626,9 +614,9 @@ class HoloviewResult(PanelResult):
         return htmap + tap_htmap
 
     def to_nd_layout(self, hmap_name: str) -> hv.NdLayout:
-        return hv.NdLayout(
-            self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims
-        ).opts(shared_axes=False, shared_datasource=False)
+        return hv.NdLayout(self.get_hmap(hmap_name), kdims=self.bench_cfg.hmap_kdims).opts(
+            shared_axes=False, shared_datasource=False
+        )
 
     def to_holomap(self, name: str = None) -> hv.HoloMap:
         return hv.HoloMap(self.to_nd_layout(name)).opts(shared_axes=False)
@@ -662,7 +650,12 @@ class HoloviewResult(PanelResult):
         return hv.DynamicMap(cb, kdims=kdims)
 
     def to_explorer(self):
-        return self.to_xarray().hvplot.explorer()
+        try:
+            return self.to_xarray().hvplot.explorer()
+        except ValueError as e:
+            # For some reason hvplot doesn't like 1D datasets in xarray, so convert to pandas which it has no problem with
+            # TODO look into why this is, its probaly due to how I am setting up the indexing in xarray.
+            return self.to_pandas().hvplot.explorer()
 
     def to_grid(self, inputs=None):
         if inputs is None:
@@ -673,6 +666,12 @@ class HoloviewResult(PanelResult):
 
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
+
+    def to_tabulator(self, **kwargs):
+        """Passes the data to the panel Tabulator type to display an interactive table
+        see https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options
+        """
+        return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
 
     def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
         return self.filter(
