@@ -7,6 +7,7 @@ import random
 class SimpleFloat0D(bch.ParametrizedSweep):
     """This class has 0 input dimensions and 1 output dimensions.  It samples from a gaussian distribution"""
 
+    # This defines a variable that we want to plot
     output = bch.ResultVar(units="ul", doc="a sample from a gaussian distribution")
 
     def __call__(self, **kwargs) -> dict:
