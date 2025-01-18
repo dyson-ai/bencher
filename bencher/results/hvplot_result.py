@@ -52,3 +52,27 @@ class HvplotResult(PanelResult):
             title=f"{result_var.name} vs Count",
             **kwargs,
         )
+
+    def to_hvplot(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
+        return self.filter(
+            self.to_hvplot_ds,
+            # float_range=VarRange(0, 0),
+            # cat_range=VarRange(0, None),
+            # input_range=VarRange(0, 0),
+            reduce=ReduceType.NONE,
+            target_dimension=1,
+            result_var=result_var,
+            result_types=(ResultVar),
+            **kwargs,
+        )
+
+    def to_hvplot_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
+        return dataset.hvplot(
+            # kind="hist",
+            y=[result_var.name],
+            # ylabel="count",
+            legend="bottom_right",
+            widget_location="bottom",
+            # title=f"{result_var.name} vs Count",
+            **kwargs,
+        )
