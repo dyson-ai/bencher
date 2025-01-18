@@ -49,9 +49,7 @@ class VarRange:
         return match, info
 
     def __str__(self) -> str:
-        return (
-            f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
-        )
+        return f"VarRange(lower_bound={self.lower_bound}, upper_bound={self.upper_bound})"
 
 
 @dataclass

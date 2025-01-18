@@ -91,9 +91,7 @@ class BenchResultBase(OptunaResult):
             xr.Dataset: results in the form of an xarray dataset
         """
         if reduce == ReduceType.AUTO:
-            reduce = (
-                ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
-            )
+            reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
         ds_out = self.ds if result_var is None else self.ds[result_var.name]
 
@@ -235,9 +233,7 @@ class BenchResultBase(OptunaResult):
 
         return " vs ".join(tit)
 
-    def get_results_var_list(
-        self, result_var: ParametrizedSweep = None
-    ) -> List[ResultVar]:
+    def get_results_var_list(self, result_var: ParametrizedSweep = None) -> List[ResultVar]:
         return self.bench_cfg.result_vars if result_var is None else listify(result_var)
 
     def map_plots(
@@ -523,9 +519,7 @@ class BenchResultBase(OptunaResult):
                 vals = v.to_numpy()
                 print(vals.dtype)
                 include = True
-                if include_types is not None and vals.dtype not in listify(
-                    include_types
-                ):
+                if include_types is not None and vals.dtype not in listify(include_types):
                     include = False
                 if exclude_names is not None and c in listify(exclude_names):
                     include = False

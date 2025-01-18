@@ -5,7 +5,6 @@ from bencher.example.inputs_1D.example_1D import example_1D_float_repeats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
-from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_simple_float2d import example_2D_float
 from bencher.example.example_consts import example_2D_float_const
 from bencher.example.example_float_cat import run_example_float_cat
