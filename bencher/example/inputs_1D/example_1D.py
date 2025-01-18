@@ -19,10 +19,8 @@ class DataSource:
         return self.data[index][repeat - 1]
 
 
-class SimpleFloat(bch.ParametrizedSweep):
-    index = bch.IntSweep(
-        default=0, bounds=[0, 5], doc="Input angle", units="rad", samples=30
-    )
+class Example1D(bch.ParametrizedSweep):
+    index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input angle", units="rad", samples=30)
     output = bch.ResultVar(units="v", doc="sin of theta")
 
     def __call__(self, **kwargs):
@@ -31,12 +29,12 @@ class SimpleFloat(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_1D_float(
+def example_1D_float_repeats(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
-    bench = SimpleFloat().to_bench(run_cfg, report)
+    bench = Example1D().to_bench(run_cfg, report)
     # bench.plot_sweep(pass_repeat=True,plot_callbacks=False)
 
     # res = bench.get_result()
@@ -47,14 +45,10 @@ def example_1D_float(
     bench.report.append(res.to_auto())
     bench.report.append(res.to_scatter())
     bench.report.append(res.to_scatter_jitter(override=True))
-    # bench.report.append(res.to_bar(override=True))
-    import hvplot.xarray
-
-    bench.report.append(res.to_xarray().hvplot.explorer())
 
     # bench.report.append()
     return bench
 
 
 if __name__ == "__main__":
-    example_1D_float().report.show()
+    example_1D_float_repeats().report.show()
