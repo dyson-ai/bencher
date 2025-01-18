@@ -371,7 +371,7 @@ class Bench(BenchPlotServer):
                     title += "s"
                 title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars_in])
             else:
-                raise RuntimeError("you must pass a title, or define inputs or consts")
+                title = " ".join([i.name for  i in result_vars_in])
 
         if run_cfg.level > 0:
             inputs = []
@@ -870,6 +870,9 @@ class Bench(BenchPlotServer):
 
     def get_result(self, index: int = -1) -> BenchResult:
         return self.results[index]
+
+    def get_ds(self, index: int = -1) -> xr.Dataset:
+        return self.get_result(index).to_xarray()
 
     def publish(self, remote_callback: Callable) -> str:
         branch_name = f"{self.bench_name}_{self.run_cfg.run_tag}"
