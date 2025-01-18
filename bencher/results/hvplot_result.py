@@ -26,7 +26,7 @@ class HvplotResult(PanelResult):
             return self.to_xarray().hvplot.explorer()
 
         # For some reason hvplot doesn't like 1D datasets in xarray, so convert to pandas which it has no problem with
-        # TODO look into why this is, its probaly due to how I am setting up the indexing in xarray.
+        # TODO look into why this is, its probably due to how I am setting up the indexing in xarray.
         return self.to_pandas().hvplot.explorer()
 
     def to_histogram(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:

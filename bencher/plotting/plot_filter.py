@@ -80,7 +80,7 @@ class PlotMatchesResult:
         plot_filter: PlotFilter,
         plt_cnt_cfg: PltCntCfg,
         plot_name: str,
-        overrride: bool = False,
+        override: bool = False,
     ):
         match_info = []
         matches = []
@@ -100,8 +100,8 @@ class PlotMatchesResult:
             matches.append(match)
             if not match:
                 match_info.append(info)
-        if overrride:
-            match_info.append(f"overrride: {overrride}")
+        if override:
+            match_info.append(f"override: {override}")
             self.overall = True
         else:
             self.overall = all(matches)
