@@ -41,9 +41,12 @@ def example_1D_float_repeats(
     bench.plot_sweep(pass_repeat=True)
 
     res = bench.get_result()
-    bench.report.append(res.to_auto())
-    bench.report.append(res.to_scatter())
+    # bench.report.append(res.to_auto())
+    # bench.report.append(res.to_scatter())
+    bench.report.append(res.to_curve())
+    # bench.report.append(res.to_line())
     bench.report.append(res.to_scatter_jitter(override=True))
+    bench.report.append(res.to_explorer())
 
     # bench.report.append()
     return bench

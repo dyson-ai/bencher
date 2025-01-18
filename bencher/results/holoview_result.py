@@ -179,8 +179,11 @@ class HoloviewResult(PanelResult):
         if self.plt_cnt_cfg.cat_cnt >= 1:
             by = self.plt_cnt_cfg.cat_vars[0].name
         da_plot = dataset[result_var.name]
+
         title = self.title_from_ds(da_plot, result_var, **kwargs)
         time_widget_args = self.time_widget(title)
+        # res_var = result_var.name
+        # minmax = da_plot.groupby(
         return da_plot.hvplot.line(x=x, by=by, **time_widget_args, **kwargs)
 
     def to_curve(self, result_var: Parameter = None, **kwargs):
@@ -203,6 +206,8 @@ class HoloviewResult(PanelResult):
         # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
+        print(hvds)
+
         pt *= hvds.to(hv.Spread).opts(alpha=0.2)
         if len(dataset.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
