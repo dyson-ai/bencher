@@ -56,7 +56,13 @@ from .utils import (
     publish_file,
     github_content,
 )
-from .utils_rerun import publish_and_view_rrd, rrd_to_pane, capture_rerun_window
+
+try:
+    from .utils_rerun import publish_and_view_rrd, rrd_to_pane, capture_rerun_window
+    from .flask_server import run_flask_in_thread
+except ModuleNotFoundError as e:
+    pass
+
 
 from .plotting.plot_filter import VarRange, PlotFilter
 from .variables.parametrised_sweep import ParametrizedSweep
@@ -68,5 +74,3 @@ from .bench_report import BenchReport, GithubPagesCfg
 from .job import Executors
 from .video_writer import VideoWriter, add_image
 from .class_enum import ClassEnum, ExampleEnum
-
-from .flask_server import run_flask_in_thread

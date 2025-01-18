@@ -21,7 +21,9 @@ from bencher.utils import listify
 
 from bencher.variables.results import ResultReference, ResultDataSet
 
-from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
+from bencher.results.composable_container.composable_container_panel import (
+    ComposableContainerPanel,
+)
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -55,7 +57,10 @@ class BenchResultBase(OptunaResult):
         return self.ds.count()
 
     def to_hv_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
+        self,
+        reduce: ReduceType = ReduceType.AUTO,
+        result_var: ResultVar = None,
+        level: int = None,
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
@@ -72,7 +77,10 @@ class BenchResultBase(OptunaResult):
         return hv.Dataset(self.to_dataset(reduce, result_var, level))
 
     def to_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
+        self,
+        reduce: ReduceType = ReduceType.AUTO,
+        result_var: ResultVar = None,
+        level: int = None,
     ) -> xr.Dataset:
         """Generate a summarised xarray dataset.
 
@@ -331,6 +339,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         pane_collection: pn.pane = None,
+        override=False,
         **kwargs,
     ):
         plot_filter = PlotFilter(
@@ -342,7 +351,9 @@ class BenchResultBase(OptunaResult):
             repeats_range=repeats_range,
             input_range=input_range,
         )
-        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, callable_name(plot_callback))
+        matches_res = plot_filter.matches_result(
+            self.plt_cnt_cfg, callable_name(plot_callback), override
+        )
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
@@ -400,7 +411,9 @@ class BenchResultBase(OptunaResult):
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
             outer_container = ComposableContainerPanel(
-                name=" vs ".join(dims), background_col=dim_color, horizontal=not horizontal
+                name=" vs ".join(dims),
+                background_col=dim_color,
+                horizontal=not horizontal,
             )
             max_len = 0
             for i in range(dataset.sizes[selected_dim]):

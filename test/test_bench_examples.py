@@ -1,9 +1,10 @@
 import unittest
 import bencher as bch
+from bencher.example.inputs_0D.example_0D import example_0D
+from bencher.example.inputs_1D.example_1D import example_1D_float_repeats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
-from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_simple_float2d import example_2D_float
 from bencher.example.example_consts import example_2D_float_const
 from bencher.example.example_float_cat import run_example_float_cat
@@ -66,6 +67,12 @@ class TestBenchExamples(unittest.TestCase):
     # def test_example_floats(self) -> None:
     #     self.examples_asserts(example_floats(self.create_run_cfg()))
 
+    def test_example0D(self) -> None:
+        self.examples_asserts(example_0D(self.create_run_cfg()))
+
+    def test_example1D(self) -> None:
+        self.examples_asserts(example_1D_float_repeats(self.create_run_cfg()))
+
     def test_example_simple_cat(self) -> None:
         self.examples_asserts(example_1D_cat(self.create_run_cfg()))
 
@@ -76,10 +83,10 @@ class TestBenchExamples(unittest.TestCase):
         self.examples_asserts(example_pareto(self.create_run_cfg()))
 
     def test_example_simple_float(self) -> None:
-        self.examples_asserts(example_1D_float(self.create_run_cfg()))
+        self.examples_asserts(example_1D_float_repeats(self.create_run_cfg()))
 
     def test_example_simple_float1D(self) -> None:
-        self.examples_asserts(example_1D_float(self.create_run_cfg()))
+        self.examples_asserts(example_1D_float_repeats(self.create_run_cfg()))
 
     def test_example_simple_float2D(self) -> None:
         self.examples_asserts(example_2D_float(self.create_run_cfg()))
