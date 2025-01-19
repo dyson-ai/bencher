@@ -295,13 +295,26 @@ class HoloviewResult(PanelResult):
         #     # y=
         #     color="grey",
         # )
+        title = self.title_from_ds(dataset, result_var, **kwargs)
+        # line_plot = dataset.hvplot.line(
+        #     x="index",
+        #     y=f"{var_name}",
+        #     **kwargs,
+        # )
 
-        # Plot the main line
-        line_plot = y_data.hvplot.line(
-            # x=y_data.dims[0],  # same dimension as above
+        line_plot = dataset.hvplot.line(
+            x=y_data.dims[0],  # same dimension as above
+            y=f"{var_name}",
             **kwargs,
         )
-        return area_plot * line_plot
+        pt =(area_plot * line_plot).opts(title=title)
+
+        # pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
+        # pt *= hv.Dataset(dataset[f"{result_var.name}_std"]).to(hv.Spread).opts(alpha=0.2)
+        if len(dataset.sizes) > 1:
+            return pt.opts(legend_position="right").overlay()
+        return pt.opts(legend_position="right")
+        # return line_plot
 
     def to_heatmap(
         self,
