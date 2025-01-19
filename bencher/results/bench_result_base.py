@@ -120,8 +120,8 @@ class BenchResultBase(OptunaResult):
                         ds_reduce_std,
                         # ds_reduce_std_min,
                         # ds_reduce_std_max,
-                        ds_reduce_min,
-                        ds_reduce_max,
+                        # ds_reduce_min,
+                        # ds_reduce_max,
                     ]
                 )
                 print(ds_out)
