@@ -199,19 +199,54 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def to_curve_ds_old(
+    def to_curve_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.Curve]:
         hvds = hv.Dataset(dataset)
         # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
+
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
-        pt *= hv.Dataset(dataset[f"{result_var.name}_std"]).to(hv.Spread).opts(alpha=0.2)
+        # pt *= hvds.to(hv.Spread).opts(alpha=0.2)
+        print(dataset)
+        pt *= (
+            # hv.Dataset(dataset[[f"{result_var.name}_std_min", f"{result_var.name}_std_max"]])
+            hvds.to(hv.Spread)
+            .opts(alpha=0.2)
+        )
+        var_name = result_var.name
+
+        # # print("curve", dataset)
+        # # # Get the main values and standard deviation
+        # y_data = dataset[var_name]
+        # y_std = dataset[f"{var_name}_std"]
+
+        # # Compute the upper and lower bounds
+        # y_upper = y_data + y_std
+        # y_lower = y_data - y_std
+
+        # # Create a small dataset with upper/lower bounds
+        # area_ds = y_upper.to_dataset(name="upper")
+        # area_ds["lower"] = y_lower
+
+        # print("area", area_ds)
+
+        # # # Plot the shaded area first (alpha=0.2 for slight transparency)
+        # # # Feel free to customize color, labels, etc.
+        # pt = area_ds.hvplot.area(
+        #     x=dataset[var_name].dims[0],  # typically "index" or the first dimension
+        #     y="lower",
+        #     y2="upper",
+        #     alpha=0.2,
+        #     color="blue",
+        #     **kwargs,
+        # )
+        pt *= hvds.to(hv.Curve).opts(title=title, **kwargs)
         if len(dataset.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")
 
-    def to_curve_ds(self, dataset: xr.Dataset, result_var, **kwargs):
+    def to_curve_ds_wip(self, dataset: xr.Dataset, result_var, **kwargs):
         """
         Plots `result_var` and a shaded area representing the standard deviation
         around that variable.
@@ -302,12 +337,13 @@ class HoloviewResult(PanelResult):
         #     **kwargs,
         # )
 
+        line_plot = hvds.to(hv.Curve).opts(title=title, **kwargs)
         line_plot = dataset.hvplot.line(
             x=y_data.dims[0],  # same dimension as above
             y=f"{var_name}",
             **kwargs,
         )
-        pt =(area_plot * line_plot).opts(title=title)
+        pt = (area_plot * line_plot).opts(title=title)
 
         # pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         # pt *= hv.Dataset(dataset[f"{result_var.name}_std"]).to(hv.Spread).opts(alpha=0.2)

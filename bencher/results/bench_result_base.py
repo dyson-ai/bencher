@@ -106,10 +106,18 @@ class BenchResultBase(OptunaResult):
         match reduce:
             case ReduceType.REDUCE:
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
-                ds_reduce_std = rename_ds(ds_out.std(dim="repeat", keep_attrs=True), "std")
-                # ds_reduce_std_min = rename_ds(ds_reduce_mean - ds_reduce_std, "std_min")
-                # ds_reduce_std_min = ds_reduce_mean - ds_reduce_std
-                # ds_reduce_std_max = rename_ds(ds_reduce_mean + ds_reduce_std, "std_max")
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
+                # ds_reduce_std = rename_ds(ds_out.std(dim="repeat", keep_attrs=True), "std")
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
+                ds_reduce_std_min = ds_reduce_mean - ds_reduce_std
+                ds_reduce_std_max = ds_reduce_mean - ds_reduce_std
+                print(ds_reduce_mean)
+                print(ds_reduce_std)
+                print(ds_reduce_std_min)
+                # exit()
+
+                ds_reduce_std_min = rename_ds(ds_reduce_std_min, "std_min")
+                ds_reduce_std_max = rename_ds(ds_reduce_std_max, "std_max")
                 # ds_reduce_min = rename_ds(ds_out.min(dim="repeat", keep_attrs=True), "min")
                 # ds_reduce_max = rename_ds(ds_out.max(dim="repeat", keep_attrs=True), "max")
                 # ds_reduce_min -= ds_reduce_mean
@@ -117,9 +125,9 @@ class BenchResultBase(OptunaResult):
                 ds_out = xr.merge(
                     [
                         ds_reduce_mean,
-                        ds_reduce_std,
-                        # ds_reduce_std_min,
-                        # ds_reduce_std_max,
+                        # ds_reduce_std,
+                        ds_reduce_std_min,
+                        ds_reduce_std_max,
                         # ds_reduce_min,
                         # ds_reduce_max,
                     ]
