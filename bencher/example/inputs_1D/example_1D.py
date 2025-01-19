@@ -38,15 +38,26 @@ def example_1D_float_repeats(
 
     # res = bench.get_result()
     bench.run_cfg = bch.BenchRunCfg(repeats=4)
-    bench.plot_sweep(pass_repeat=True)
+    bench.plot_sweep(pass_repeat=True,plot_callbacks=False)
 
     res = bench.get_result()
     # bench.report.append(res.to_auto())
     # bench.report.append(res.to_scatter())
+
+    import holoviews as hv
+    bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.REDUCE)))
+    bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
+    # exit()
     bench.report.append(res.to_curve())
+
+    import holoviews as hv
+    # bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
+    # bench.report.append(res.to_curve() + res.to_scatter_jitter(override=True))
     # bench.report.append(res.to_line())
-    # bench.report.append(res.to_scatter_jitter(override=True))
+    bench.report.append(res.to_scatter_jitter(override=True))
+    bench.report.append(res.to_error_bar())
     bench.report.append(res.to_explorer())
+    # bench.report.append(res.to_error_bar()
 
     bench.report.append(res.to_dataset())
     # bench.report.append(res.to_xarray().hvplot.plot(kind="andrews_curves"))

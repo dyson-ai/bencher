@@ -33,7 +33,8 @@ from bencher.results.composable_container.composable_container_panel import (
 class ReduceType(Enum):
     AUTO = auto()  # automatically determine the best way to reduce the dataset
     SQUEEZE = auto()  # remove any dimensions of length 1
-    REDUCE = auto()  # get the mean and std dev of the the "repeat" dimension
+    REDUCE = auto()  # get the mean and std dev of the data along the "repeat" dimension
+    MINMAX = auto()  # get the minimum and maximum of data along the "repeat" dimension
     NONE = auto()  # don't reduce
 
 
@@ -102,6 +103,15 @@ class BenchResultBase(OptunaResult):
 
                 for v in ds_reduce_mean.data_vars:
                     ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
+                ds_out = ds_reduce_mean
+            case ReduceType.MINMAX:
+                ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_min = ds_out.min(dim="repeat", keep_attrs=True)
+                ds_reduce_max = ds_out.max(dim="repeat", keep_attrs=True)
+
+                for v in ds_reduce_mean.data_vars:
+                    ds_reduce_mean[f"{v}_min"] = ds_reduce_min[v]
+                    ds_reduce_mean[f"{v}_max"] = ds_reduce_max[v]
                 ds_out = ds_reduce_mean
             case ReduceType.SQUEEZE:
                 ds_out = ds_out.squeeze(drop=True)

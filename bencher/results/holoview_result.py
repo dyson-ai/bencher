@@ -199,93 +199,68 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
-    def to_curve_ds(
-        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
-    ) -> Optional[hv.Curve]:
-        # print(dataset)
-        # hvds = hv.Dataset(dataset)
+    def to_curve_ds(self, dataset: xr.Dataset, result_var, **kwargs):
+        """
+        Plots `result_var` and a shaded area representing the standard deviation
+        around that variable.
 
-        rv_name = result_var.name
-        # Extract the mean and std data
-        mean = dataset[rv_name].values
-        std = dataset[f"{rv_name}_std"].values
-        x = dataset["index"].values
+        Parameters
+        ----------
+        self : object
+            (Not used, but included for method signature consistency.)
+        dataset : xr.Dataset
+            The xarray dataset containing the variable and its standard deviation.
+            Assumes:
+                - The main variable is stored as dataset[result_var.name]
+                - The corresponding standard deviation is stored as
+                dataset[f"{result_var.name}_std"].
+        result_var : Parameter
+            An object with an attribute `name` that indicates which variable
+            to plot.
+        **kwargs
+            Additional keyword arguments passed to hvplot functions (e.g., labels,
+            color, line_width, etc.)
 
-        # Construct the Curve and Spread
-        curve = hv.Curve((x, mean), label=rv_name).opts(
-            title=self.title_from_ds(dataset, result_var, **kwargs), **kwargs
+        Returns
+        -------
+        hv.Overlay
+            A Holoviews overlay of the shaded standard deviation area plus the main line plot.
+        """
+
+        # The variable name we want to plot
+        var_name = result_var.name
+
+        # Get the main values and standard deviation
+        y_data = dataset[var_name]
+        y_std = dataset[f"{var_name}_std"]
+
+        # Compute the upper and lower bounds
+        y_upper = y_data + y_std
+        y_lower = y_data - y_std
+
+        # Create a small dataset with upper/lower bounds
+        area_ds = y_upper.to_dataset(name="upper")
+        area_ds["lower"] = y_lower
+
+        # Plot the shaded area first (alpha=0.2 for slight transparency)
+        # Feel free to customize color, labels, etc.
+        area_plot = area_ds.hvplot.area(
+            x=dataset[var_name].dims[0],  # typically "index" or the first dimension
+            y="upper",
+            y2="lower",
+            alpha=0.2,
+            color="gray",
+            **kwargs,
         )
 
-        print(x)
-        print(mean)
-        print(std)
+        # Plot the main line
+        line_plot = y_data.hvplot.line(
+            x=y_data.dims[0],  # same dimension as above
+            **kwargs,
+        )
 
-        print(mean-std)
-        print(mean+std)
-
-
-        spread = hv.Spread((x, mean - std, mean + std)).opts(alpha=0.2)
-
-        # Combine Curve and Spread
-        combined = curve * spread
-
-        if len(dataset.sizes) > 1:
-            return combined.opts(legend_position="right").overlay()
-
-        return combined.opts(legend_position="right")
-
-    # def to_curve_ds(self, dataset: xr.Dataset, result_var: Parameter, **kwargs):
-    #     """
-    #     Plots a line plot with a shaded area representing standard deviation
-    #     for a dataset with repeated measurements.
-
-    #     Parameters:
-    #         dataset (xarray.Dataset): Input dataset with an independent variable and dependent variables.
-    #         confidence (float): Confidence level for the shaded area (default is 0.95).
-
-    #     Returns:
-    #         hvplot object: Plot with line(s) and shaded area(s).
-    #     """
-    #     # import hvplot
-    #     # import holoviews as hv
-
-    #     # Extract independent variable
-    #     independent_var = list(dataset.dims.keys())[0]
-    #     dependent_vars = result_var.name
-
-    #     print(dataset)
-
-    #     print(independent_var)
-    #     print(dependent_vars)
-    #     # dependent_vars = [result_var.name]
-    #     print("dims", dataset.coords.keys())
-    #     # Collect plots
-    #     plots = []
-
-    #     if "repeat" in dataset.coords.keys():
-    #         exit()
-    #         # Compute mean and standard deviation along the repeats dimension
-    #         mean = dataset.mean(dim="repeat")
-    #         std = dataset.std(dim="repeat")
-
-    #         # Prepare data for shading
-    #         upper_bound = mean + std
-    #         lower_bound = mean - std
-
-    #         # Plot line with shading
-    #         line = mean.hvplot.line(x=independent_var, label=f"{result_var.name} Mean")
-    #         band = hv.Area(
-    #             (mean[independent_var], lower_bound, upper_bound),
-    #             vdims=["lower_bound", "upper_bound"],
-    #         ).opts(alpha=0.2, color=line.opts["color"])
-
-    #         plots.append(band * line)
-    #     else:
-    #         # Single measurement, plot only the line
-    #         line = dataset.hvplot.line(x=independent_var, label=f"{result_var.name}")
-    #         plots.append(line)
-
-    #     return hv.Overlay(plots)
+        # Overlay the area and the line
+        return area_plot * line_plot
 
     def to_heatmap(
         self,
