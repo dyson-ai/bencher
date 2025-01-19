@@ -226,11 +226,26 @@ class HoloviewResult(PanelResult):
         hv.Overlay
             A Holoviews overlay of the shaded standard deviation area plus the main line plot.
         """
+        
+        # #todo investigate why their aggregations works for them but not here.
+        # https://holoviews.org/user_guide/Tabular_Datasets.html
+        # hvds = hv.Dataset(dataset)
+
+        # curv=hv.Curve(hvds.to(hv.Table))
+        # import numpy as np
+
+        # return curv
+        # return curv.aggregate("repeat")
+
+        # # col = hv.HoloMap(curv)
+        # collap=curv.collapse(function=np.mean,spreadfn=np.std)
+      
 
         # The variable name we want to plot
         var_name = result_var.name
 
-        # Get the main values and standard deviation
+        # print("curve", dataset)
+        # # Get the main values and standard deviation
         y_data = dataset[var_name]
         y_std = dataset[f"{var_name}_std"]
 
@@ -242,24 +257,39 @@ class HoloviewResult(PanelResult):
         area_ds = y_upper.to_dataset(name="upper")
         area_ds["lower"] = y_lower
 
-        # Plot the shaded area first (alpha=0.2 for slight transparency)
-        # Feel free to customize color, labels, etc.
+        print("area", area_ds)
+
+        # # Plot the shaded area first (alpha=0.2 for slight transparency)
+        # # Feel free to customize color, labels, etc.
         area_plot = area_ds.hvplot.area(
-            x=dataset[var_name].dims[0],  # typically "index" or the first dimension
-            y="upper",
-            y2="lower",
+            # x=dataset[var_name].dims[0],  # typically "index" or the first dimension
+            y="lower",
+            y2="upper",
             alpha=0.2,
-            color="gray",
+            color="blue",
             **kwargs,
         )
+
+        # std_minmax= dataset[[f"{var_name}_std_min", f"{var_name}_std_max"]]
+        # area_plot = std_minmax.hvplot.area(
+        #     alpha=0.2,
+        #     color="blue",
+        # )
+
+        # area_ds2 = dataset[[f"{var_name}_min", f"{var_name}_max"]]
+        # area_plot2= hv.Spread(dataset,vdims=[var_name,f"{var_name}_min", f"{var_name}_max"])
+        # area_plot2 = area_ds2.hvplot.area(
+        #     # x=var_name,
+        #     # alpha=0.2,
+        #     # y=
+        #     color="grey",
+        # )
 
         # Plot the main line
         line_plot = y_data.hvplot.line(
-            x=y_data.dims[0],  # same dimension as above
+            # x=y_data.dims[0],  # same dimension as above
             **kwargs,
         )
-
-        # Overlay the area and the line
         return area_plot * line_plot
 
     def to_heatmap(
