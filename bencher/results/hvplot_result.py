@@ -52,3 +52,52 @@ class HvplotResult(PanelResult):
             title=f"{result_var.name} vs Count",
             **kwargs,
         )
+
+    def to_line_hv(self, dataset: xr.Dataset, confidence=0.95):
+        """
+        Plots a line plot with a shaded area representing standard deviation
+        for a dataset with repeated measurements.
+
+        Parameters:
+            dataset (xarray.Dataset): Input dataset with an independent variable and dependent variables.
+            confidence (float): Confidence level for the shaded area (default is 0.95).
+
+        Returns:
+            hvplot object: Plot with line(s) and shaded area(s).
+        """
+        import hvplot
+        import holoviews as hv
+
+        # Extract independent variable
+        independent_var = list(dataset.dims.keys())[0]
+        dependent_vars = list(dataset.data_vars.keys())
+
+        # Collect plots
+        plots = []
+
+        for dep_var in dependent_vars:
+            data = dataset[dep_var]
+
+            if "repeats" in data.dims:
+                # Compute mean and standard deviation along the repeats dimension
+                mean = data.mean(dim="repeats")
+                std = data.std(dim="repeats")
+
+                # Prepare data for shading
+                upper_bound = mean + std
+                lower_bound = mean - std
+
+                # Plot line with shading
+                line = mean.hvplot.line(x=independent_var, label=f"{dep_var} Mean")
+                band = hv.Area(
+                    (mean[independent_var], lower_bound, upper_bound),
+                    vdims=["lower_bound", "upper_bound"],
+                ).opts(alpha=0.2, color=line.opts["color"])
+
+                plots.append(band * line)
+            else:
+                # Single measurement, plot only the line
+                line = data.hvplot.line(x=independent_var, label=f"{dep_var}")
+                plots.append(line)
+
+        return hv.Overlay(plots)

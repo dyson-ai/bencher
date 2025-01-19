@@ -45,9 +45,12 @@ def example_1D_float_repeats(
     # bench.report.append(res.to_scatter())
     bench.report.append(res.to_curve())
     # bench.report.append(res.to_line())
-    bench.report.append(res.to_scatter_jitter(override=True))
+    # bench.report.append(res.to_scatter_jitter(override=True))
     bench.report.append(res.to_explorer())
 
+    bench.report.append(res.to_dataset())
+    # bench.report.append(res.to_xarray().hvplot.plot(kind="andrews_curves"))
+    print(res.to_xarray())
     # bench.report.append()
     return bench
 
