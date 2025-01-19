@@ -199,6 +199,18 @@ class HoloviewResult(PanelResult):
             **kwargs,
         )
 
+    def to_curve_ds_old(
+        self, dataset: xr.Dataset, result_var: Parameter, **kwargs
+    ) -> Optional[hv.Curve]:
+        hvds = hv.Dataset(dataset)
+        # result_var = self.get_results_var_list(result_var)[0]
+        title = self.title_from_ds(dataset, result_var, **kwargs)
+        pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
+        pt *= hv.Dataset(dataset[f"{result_var.name}_std"]).to(hv.Spread).opts(alpha=0.2)
+        if len(dataset.sizes) > 1:
+            return pt.opts(legend_position="right").overlay()
+        return pt.opts(legend_position="right")
+
     def to_curve_ds(self, dataset: xr.Dataset, result_var, **kwargs):
         """
         Plots `result_var` and a shaded area representing the standard deviation
@@ -226,7 +238,7 @@ class HoloviewResult(PanelResult):
         hv.Overlay
             A Holoviews overlay of the shaded standard deviation area plus the main line plot.
         """
-        
+
         # #todo investigate why their aggregations works for them but not here.
         # https://holoviews.org/user_guide/Tabular_Datasets.html
         # hvds = hv.Dataset(dataset)
@@ -239,7 +251,6 @@ class HoloviewResult(PanelResult):
 
         # # col = hv.HoloMap(curv)
         # collap=curv.collapse(function=np.mean,spreadfn=np.std)
-      
 
         # The variable name we want to plot
         var_name = result_var.name
