@@ -21,7 +21,9 @@ from bencher.utils import listify
 
 from bencher.variables.results import ResultReference, ResultDataSet
 
-from bencher.results.composable_container.composable_container_panel import ComposableContainerPanel
+from bencher.results.composable_container.composable_container_panel import (
+    ComposableContainerPanel,
+)
 
 # todo add plugins
 # https://gist.github.com/dorneanu/cce1cd6711969d581873a88e0257e312
@@ -31,7 +33,8 @@ from bencher.results.composable_container.composable_container_panel import Comp
 class ReduceType(Enum):
     AUTO = auto()  # automatically determine the best way to reduce the dataset
     SQUEEZE = auto()  # remove any dimensions of length 1
-    REDUCE = auto()  # get the mean and std dev of the the "repeat" dimension
+    REDUCE = auto()  # get the mean and std dev of the data along the "repeat" dimension
+    MINMAX = auto()  # get the minimum and maximum of data along the "repeat" dimension
     NONE = auto()  # don't reduce
 
 
@@ -55,7 +58,10 @@ class BenchResultBase(OptunaResult):
         return self.ds.count()
 
     def to_hv_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
+        self,
+        reduce: ReduceType = ReduceType.AUTO,
+        result_var: ResultVar = None,
+        level: int = None,
     ) -> hv.Dataset:
         """Generate a holoviews dataset from the xarray dataset.
 
@@ -72,7 +78,10 @@ class BenchResultBase(OptunaResult):
         return hv.Dataset(self.to_dataset(reduce, result_var, level))
 
     def to_dataset(
-        self, reduce: ReduceType = ReduceType.AUTO, result_var: ResultVar = None, level: int = None
+        self,
+        reduce: ReduceType = ReduceType.AUTO,
+        result_var: ResultVar = None,
+        level: int = None,
     ) -> xr.Dataset:
         """Generate a summarised xarray dataset.
 
@@ -85,16 +94,35 @@ class BenchResultBase(OptunaResult):
         if reduce == ReduceType.AUTO:
             reduce = ReduceType.REDUCE if self.bench_cfg.repeats > 1 else ReduceType.SQUEEZE
 
-        ds_out = self.ds if result_var is None else self.ds[result_var.name]
+        ds_out = self.ds.copy()
+
+        if result_var is not None:
+            ds_out = ds_out[result_var.name]
+
+        def rename_ds(dataset: xr.Dataset, suffix: str):
+            # var_name =
+            rename_dict = {var: f"{var}_{suffix}" for var in dataset.data_vars}
+            ds = dataset.rename_vars(rename_dict)
+            return ds
 
         match reduce:
             case ReduceType.REDUCE:
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
-                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
-
-                for v in ds_reduce_mean.data_vars:
-                    ds_reduce_mean[f"{v}_std"] = ds_reduce_std[v]
-                ds_out = ds_reduce_mean
+                ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=False)
+                ds_reduce_std = rename_ds(ds_reduce_std, "std")
+                ds_out = xr.merge([ds_reduce_mean, ds_reduce_std])
+                ds_out = xr.merge(
+                    [
+                        ds_reduce_mean,
+                        ds_reduce_std,
+                    ]
+                )
+            case ReduceType.MINMAX:  # TODO, need to pass mean, center of minmax, and minmax
+                ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
+                ds_reduce_min = ds_out.min(dim="repeat")
+                ds_reduce_max = ds_out.max(dim="repeat")
+                ds_reduce_range = rename_ds(ds_reduce_max - ds_reduce_min, "range")
+                ds_out = xr.merge([ds_reduce_mean, ds_reduce_range])
             case ReduceType.SQUEEZE:
                 ds_out = ds_out.squeeze(drop=True)
         if level is not None:
@@ -331,6 +359,7 @@ class BenchResultBase(OptunaResult):
         result_var: ResultVar = None,
         result_types=None,
         pane_collection: pn.pane = None,
+        override=False,
         **kwargs,
     ):
         plot_filter = PlotFilter(
@@ -342,7 +371,9 @@ class BenchResultBase(OptunaResult):
             repeats_range=repeats_range,
             input_range=input_range,
         )
-        matches_res = plot_filter.matches_result(self.plt_cnt_cfg, callable_name(plot_callback))
+        matches_res = plot_filter.matches_result(
+            self.plt_cnt_cfg, callable_name(plot_callback), override
+        )
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
@@ -400,7 +431,9 @@ class BenchResultBase(OptunaResult):
             dim_color = color_tuple_to_css(int_to_col(num_dims - 2, 0.05, 1.0))
 
             outer_container = ComposableContainerPanel(
-                name=" vs ".join(dims), background_col=dim_color, horizontal=not horizontal
+                name=" vs ".join(dims),
+                background_col=dim_color,
+                horizontal=not horizontal,
             )
             max_len = 0
             for i in range(dataset.sizes[selected_dim]):

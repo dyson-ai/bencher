@@ -6,6 +6,7 @@ import holoviews as hv
 from param import Parameter
 from functools import partial
 import hvplot.xarray  # noqa pylint: disable=duplicate-code,unused-import
+import hvplot.pandas  # noqa pylint: disable=duplicate-code,unused-import
 import xarray as xr
 
 from bencher.utils import (
@@ -86,7 +87,9 @@ class HoloviewResult(PanelResult):
 
         # return time_widget_args
 
-    def to_bar(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_bar(
+        self, result_var: Parameter = None, override: bool = False, **kwargs
+    ) -> Optional[pn.panel]:
         return self.filter(
             self.to_bar_ds,
             float_range=VarRange(0, 0),
@@ -97,6 +100,7 @@ class HoloviewResult(PanelResult):
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
+            override=override,
             **kwargs,
         )
 
@@ -186,6 +190,7 @@ class HoloviewResult(PanelResult):
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             reduce=ReduceType.REDUCE,
+            # reduce=ReduceType.MINMAX,
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
@@ -196,7 +201,6 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.Curve]:
         hvds = hv.Dataset(dataset)
-        # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= hvds.to(hv.Spread).opts(alpha=0.2)
@@ -541,17 +545,22 @@ class HoloviewResult(PanelResult):
     def to_scatter_jitter(
         self,
         result_var: Parameter = None,
+        override: bool = False,
         **kwargs,  # pylint: disable=unused-argument
     ) -> List[hv.Scatter]:
-        return self.overlay_plots(partial(self.to_scatter_jitter_single, **kwargs))
+        return self.overlay_plots(
+            partial(self.to_scatter_jitter_single, override=override, **kwargs)
+        )
 
-    def to_scatter_jitter_single(self, result_var: Parameter, **kwargs) -> Optional[hv.Scatter]:
+    def to_scatter_jitter_single(
+        self, result_var: Parameter, override: bool = True, **kwargs
+    ) -> Optional[hv.Scatter]:
         matches = PlotFilter(
             float_range=VarRange(0, 0),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             input_range=VarRange(1, None),
-        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter")
+        ).matches_result(self.plt_cnt_cfg, "to_scatter_jitter", override)
         if matches.overall:
             ds = self.to_hv_dataset(ReduceType.NONE)
             pt = (
@@ -640,9 +649,6 @@ class HoloviewResult(PanelResult):
 
         return hv.DynamicMap(cb, kdims=kdims)
 
-    def to_explorer(self):
-        return self.to_xarray().hvplot.explorer()
-
     def to_grid(self, inputs=None):
         if inputs is None:
             inputs = self.bench_cfg.inputs_as_str()
@@ -653,7 +659,13 @@ class HoloviewResult(PanelResult):
     def to_table(self):
         return self.to(hv.Table, ReduceType.SQUEEZE)
 
-    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.panel]:
+    def to_tabulator(self, **kwargs):
+        """Passes the data to the panel Tabulator type to display an interactive table
+        see https://panel.holoviz.org/reference/widgets/Tabulator.html for extra options
+        """
+        return pn.widgets.Tabulator(self.to_pandas(), **kwargs)
+
+    def to_surface(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
         return self.filter(
             self.to_surface_ds,
             float_range=VarRange(2, None),
