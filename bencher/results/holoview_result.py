@@ -202,17 +202,30 @@ class HoloviewResult(PanelResult):
     def to_curve_ds(
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.Curve]:
+        # dataset =
+
+        print("my dataset", dataset)
+        print("my hv dataset", hv.Dataset(dataset))
+        gpt_dataset = xr.Dataset(
+            data_vars={
+                "output": ("index", [0.0, 1.0, 1.0, 1.0, 1.0, 1.5]),  # Central values
+                "output_std": ("index", [0.0, 0.0, 0.0, 0.7071, 1.0, 0.5]),  # Spread (error)
+            },
+            coords={"index": [0, 1, 2, 3, 4, 5]},  # Index as coordinate
+        )
+        print("gpt dataset", gpt_dataset)
+        print("gpt hv dataset", hv.Dataset(gpt_dataset))
+        # exit()
         hvds = hv.Dataset(dataset)
         # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
 
-        pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
+        # pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         # pt *= hvds.to(hv.Spread).opts(alpha=0.2)
-        print(dataset)
-        pt *= (
+        print("ds", dataset)
+        pt = (
             # hv.Dataset(dataset[[f"{result_var.name}_std_min", f"{result_var.name}_std_max"]])
-            hvds.to(hv.Spread)
-            .opts(alpha=0.2)
+            hvds.to(hv.Spread).opts(alpha=0.2)
         )
         var_name = result_var.name
 
@@ -241,7 +254,8 @@ class HoloviewResult(PanelResult):
         #     color="blue",
         #     **kwargs,
         # )
-        pt *= hvds.to(hv.Curve).opts(title=title, **kwargs)
+        # pt *= hvds.to(hv.Curve).opts(title=title, **kwargs)
+        return pt
         if len(dataset.sizes) > 1:
             return pt.opts(legend_position="right").overlay()
         return pt.opts(legend_position="right")
