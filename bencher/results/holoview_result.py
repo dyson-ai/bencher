@@ -190,6 +190,7 @@ class HoloviewResult(PanelResult):
             cat_range=VarRange(0, None),
             repeats_range=VarRange(2, None),
             reduce=ReduceType.REDUCE,
+            # reduce=ReduceType.MINMAX,
             target_dimension=2,
             result_var=result_var,
             result_types=(ResultVar),
@@ -200,7 +201,6 @@ class HoloviewResult(PanelResult):
         self, dataset: xr.Dataset, result_var: Parameter, **kwargs
     ) -> Optional[hv.Curve]:
         hvds = hv.Dataset(dataset)
-        # result_var = self.get_results_var_list(result_var)[0]
         title = self.title_from_ds(dataset, result_var, **kwargs)
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= hvds.to(hv.Spread).opts(alpha=0.2)

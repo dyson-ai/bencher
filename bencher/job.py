@@ -59,7 +59,7 @@ class Executors(StrEnum):
     # THREADS=auto() #not that useful as most bench code is cpu bound
 
     @staticmethod
-    def factory(provider: Executors) -> Future():
+    def factory(provider: Executors) -> Future:
         providers = {
             Executors.SERIAL: None,
             Executors.MULTIPROCESSING: ProcessPoolExecutor(),
