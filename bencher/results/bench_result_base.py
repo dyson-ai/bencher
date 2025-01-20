@@ -97,7 +97,7 @@ class BenchResultBase(OptunaResult):
         ds_out = self.ds.copy()
 
         if result_var is not None:
-            ds_out = ds_out[result_var.name]
+            ds_out = ds_out[result_var.name].to_dataset(name=result_var.name)
 
         def rename_ds(dataset: xr.Dataset, suffix: str):
             rename_dict = {var: f"{var}_{suffix}" for var in dataset.data_vars}

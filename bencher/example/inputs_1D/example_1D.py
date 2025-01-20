@@ -44,7 +44,10 @@ def example_1D_float_repeats(
     bench.plot_sweep(pass_repeat=True)
 
     res = bench.get_result()
+    bench.report.append(res.to_curve())
     bench.report.append(res.to_curve(Example1D.param.output))
+    bench.report.append(res.to_curve(Example1D.param.output2))
+
     # bench.report.append(res.to_curve("output"))
     # bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
     # bench.report.append(res.to_curve() + res.to_scatter_jitter(override=True))
