@@ -110,57 +110,19 @@ class BenchResultBase(OptunaResult):
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
                 ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=False)
                 ds_reduce_std = rename_ds(ds_reduce_std, "std")
-
                 ds_out = xr.merge([ds_reduce_mean, ds_reduce_std])
-                # ds_reduce_std = rename_ds(ds_out.std(dim="repeat", keep_attrs=True), "std")
-                # ds_reduce_std = ds_out.std(dim="repeat", keep_attrs=True)
-                # ds_reduce_std_min = ds_reduce_mean - ds_reduce_std
-                # ds_reduce_std_max = ds_reduce_mean - ds_reduce_std
-                # print(ds_reduce_mean)
-                # print(ds_reduce_std)
-                # print(ds_reduce_std_min)
-                # exit()
-
-                # ds_reduce_std_min = rename_ds(ds_reduce_std_min, "std_min")
-                # ds_reduce_std_max = rename_ds(ds_reduce_std_max, "std_max")
-                # ds_reduce_min = rename_ds(ds_out.min(dim="repeat", keep_attrs=True), "min")
-                # ds_reduce_max = rename_ds(ds_out.max(dim="repeat", keep_attrs=True), "max")
-                # ds_reduce_min -= ds_reduce_mean
-                # ds_reduce_max-= ds_reduce_mean
                 ds_out = xr.merge(
                     [
                         ds_reduce_mean,
                         ds_reduce_std,
-                        # ds_reduce_std_min,
-                        # ds_reduce_std_max,
-                        # ds_reduce_min,
-                        # ds_reduce_max,
                     ]
                 )
-                # print(ds_out)
-            case ReduceType.MINMAX:
-                print("out1", ds_out)
+            case ReduceType.MINMAX:  # TODO, need to pass mean, center of minmax, and minmax
                 ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
-                print("out2", ds_out)
-                print("mean", ds_reduce_mean)
-                ds_reduce_min = rename_ds(ds_out.min(dim="repeat", keep_attrs=True), "min")
-                ds_reduce_max = rename_ds(ds_out.max(dim="repeat", keep_attrs=True), "max")
-
-                print(ds_reduce_min)
-                print(ds_reduce_min)
-
-                ds_out = xr.merge([ds_reduce_mean, ds_reduce_min, ds_reduce_max])
-                print(ds_out)
-
-                # ds_out = xr.merge([ds_reduce_mean, ds_reduce_min, ds_reduce_max])
-                # ds_reduce_mean = ds_out.mean(dim="repeat", keep_attrs=True)
-                # ds_reduce_min = ds_out.min(dim="repeat", keep_attrs=True)
-                # ds_reduce_max = ds_out.max(dim="repeat", keep_attrs=True)
-
-                # for v in ds_reduce_mean.data_vars:
-                #     ds_reduce_mean[f"{v}_min"] = ds_reduce_min[v]
-                #     ds_reduce_mean[f"{v}_max"] = ds_reduce_max[v]
-                # ds_out = ds_reduce_mean
+                ds_reduce_min = ds_out.min(dim="repeat")
+                ds_reduce_max = ds_out.max(dim="repeat")
+                ds_reduce_range = rename_ds(ds_reduce_max - ds_reduce_min, "range")
+                ds_out = xr.merge([ds_reduce_mean, ds_reduce_range])
             case ReduceType.SQUEEZE:
                 ds_out = ds_out.squeeze(drop=True)
         if level is not None:
