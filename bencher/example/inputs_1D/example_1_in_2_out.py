@@ -40,20 +40,13 @@ def example_1_in_2_out(
 
     # res = bench.get_result()
     bench.run_cfg = bch.BenchRunCfg(repeats=4)
-    # bench.plot_sweep(pass_repeat=True, plot_callbacks=False)
     bench.plot_sweep(pass_repeat=True)
 
     res = bench.get_result()
-    bench.report.append(res.to_curve())
-    bench.report.append(res.to_curve(Example1D.param.output))
-    bench.report.append(res.to_curve(Example1D.param.output2))
 
-    # bench.report.append(res.to_curve("output"))
-    # bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
-    # bench.report.append(res.to_curve() + res.to_scatter_jitter(override=True))
-    # bench.report.append(res.to_line())
+    bench.report.append(res.to_curve())
     bench.report.append(res.to_scatter_jitter(override=True))
-    # bench.report.append(res.to_error_bar())
+    bench.report.append(res.to_error_bar())
     # bench.report.append(res.to_explorer())
     # bench.report.append(res.to_error_bar()
 
