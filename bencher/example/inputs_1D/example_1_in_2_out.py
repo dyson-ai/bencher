@@ -30,7 +30,7 @@ class Example1D(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_1D_float_repeats(
+def example_1_in_2_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
@@ -65,4 +65,4 @@ def example_1D_float_repeats(
 
 
 if __name__ == "__main__":
-    example_1D_float_repeats().report.show()
+    example_1_in_2_out().report.show()
