@@ -202,6 +202,8 @@ class HoloviewResult(PanelResult):
     ) -> Optional[hv.Curve]:
         hvds = hv.Dataset(dataset)
         title = self.title_from_ds(dataset, result_var, **kwargs)
+
+        print(result_var.name,dataset)
         pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
         pt *= hvds.to(hv.Spread).opts(alpha=0.2)
         if len(dataset.sizes) > 1:

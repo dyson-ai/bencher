@@ -21,10 +21,12 @@ class DataSource:
 class Example1D(bch.ParametrizedSweep):
     index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input angle", units="rad", samples=30)
     output = bch.ResultVar(units="v", doc="sin of theta")
+    output2 = bch.ResultVar(units="v", doc="-sin of theta")
 
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         self.output = DataSource().call(self.index, kwargs["repeat"])
+        self.output2 = -DataSource().call(self.index, kwargs["repeat"])
         return super().__call__(**kwargs)
 
 
@@ -43,6 +45,10 @@ def example_1D_float_repeats(
 
     res = bench.get_result()
     bench.report.append(res.to_curve())
+    bench.report.append(res.to_curve(Example1D.param.output))
+    bench.report.append(res.to_curve(Example1D.param.output2))
+
+    # bench.report.append(res.to_curve("output"))
     # bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
     # bench.report.append(res.to_curve() + res.to_scatter_jitter(override=True))
     # bench.report.append(res.to_line())
