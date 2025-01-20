@@ -45,8 +45,8 @@ def example_1_in_2_out(
     res = bench.get_result()
 
     bench.report.append(res.to_curve())
-    bench.report.append(res.to_scatter_jitter(override=True))
-    bench.report.append(res.to_error_bar())
+    # bench.report.append(res.to_scatter_jitter(override=True))
+    # bench.report.append(res.to_error_bar())
     # bench.report.append(res.to_explorer())
     # bench.report.append(res.to_error_bar()
 
