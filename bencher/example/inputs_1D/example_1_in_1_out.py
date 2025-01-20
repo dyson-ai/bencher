@@ -36,7 +36,6 @@ def example_1_in_1_out(
     bench = Example1D().to_bench(run_cfg, report)
     bench.run_cfg = bch.BenchRunCfg(repeats=4)
     bench.plot_sweep(pass_repeat=True)
-    res = bench.get_result()
     return bench
 
 
