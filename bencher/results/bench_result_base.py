@@ -100,7 +100,6 @@ class BenchResultBase(OptunaResult):
             ds_out = ds_out[result_var.name]
 
         def rename_ds(dataset: xr.Dataset, suffix: str):
-            # var_name =
             rename_dict = {var: f"{var}_{suffix}" for var in dataset.data_vars}
             ds = dataset.rename_vars(rename_dict)
             return ds
@@ -377,7 +376,7 @@ class BenchResultBase(OptunaResult):
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
-                hv_dataset=self.to_hv_dataset(reduce=reduce),
+                hv_dataset=self.to_hv_dataset(reduce=reduce, result_var=result_var),
                 target_dimension=target_dimension,
                 result_var=result_var,
                 result_types=result_types,
