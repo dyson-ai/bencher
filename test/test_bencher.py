@@ -293,7 +293,7 @@ class TestBencher(unittest.TestCase):
             title=title,
             input_vars=iv,
             result_vars=rv,
-            run_cfg=BenchRunCfg(over_time=over_time, use_cache=False, auto_plot=False),
+            run_cfg=BenchRunCfg(over_time=over_time, cache_results=False, auto_plot=False),
         )
         self.assertEqual(
             bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples
@@ -305,7 +305,7 @@ class TestBencher(unittest.TestCase):
             title=title,
             input_vars=iv,
             result_vars=rv,
-            run_cfg=BenchRunCfg(over_time=over_time, use_cache=True, auto_plot=False),
+            run_cfg=BenchRunCfg(over_time=over_time, cache_results=True, auto_plot=False),
         )
         self.assertEqual(
             bench2.sample_cache.worker_wrapper_call_count, ExampleBenchCfgIn.param.theta.samples
@@ -348,7 +348,7 @@ class TestBencher(unittest.TestCase):
             const_vars=[
                 (ExampleBenchCfgIn.param.noisy, noisy),
             ],
-            run_cfg=BenchRunCfg(use_cache=True, auto_plot=False),
+            run_cfg=BenchRunCfg(cache_results=True, auto_plot=False),
         )
         # the result should be cached so the call count should be the same as before
         self.assertEqual(
