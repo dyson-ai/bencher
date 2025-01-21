@@ -1,6 +1,6 @@
 import unittest
 import bencher as bch
-from bencher.example.inputs_0D.example_0D import example_0_in_1_out
+from bencher.example.inputs_0D.example_0_in_1_out import example_0_in_1_out
 
 from bencher.example.inputs_1D.example_1_in_1_out import example_1_in_1_out
 from bencher.example.inputs_1D.example_1_in_2_out import example_1_in_2_out
