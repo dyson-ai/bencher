@@ -371,7 +371,7 @@ class Bench(BenchPlotServer):
                     title += "s"
                 title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars_in])
             else:
-                title = " ".join([i.name for i in result_vars_in])
+                title = "Recording: " + ", ".join([i.name for i in result_vars_in])
 
         if run_cfg.level > 0:
             inputs = []
