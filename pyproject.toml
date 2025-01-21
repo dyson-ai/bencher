@@ -61,6 +61,8 @@ test = [
     "ruff>=0.5.0,<=0.8.5",
     "coverage>=7.5.4,<=7.6.10",
     "pre-commit<=4.0.1",
+    "pydata-sphinx-theme",
+
 ]
 
 #adds support for embedding rerun windows (alpha)
