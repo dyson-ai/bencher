@@ -92,5 +92,5 @@
 
 # if __name__ == "__main__":
 #     ex_run_cfg = bch.BenchRunCfg()
-#     ex_run_cfg.use_cache = True
+#     ex_run_cfg.cache_results = True
 #     example_cone(ex_run_cfg).report.show()

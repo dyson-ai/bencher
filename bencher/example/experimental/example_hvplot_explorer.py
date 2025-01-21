@@ -30,7 +30,7 @@ if __name__ == "__main__":
         post_description="Here you can see the output plot of sin theta between 0 and pi.  In the tabs at the top you can also view 3 tabular representations of the data",
         run_cfg=bch.BenchRunCfg(
             auto_plot=True,
-            use_cache=False,
+            cache_results=False,
             repeats=2,
         ),
     )

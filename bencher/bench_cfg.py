@@ -83,16 +83,16 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
     raise_duplicate_exception: bool = param.Boolean(False, doc=" Used to debug unique plot names.")
 
-    use_cache: bool = param.Boolean(
+    cache_results: bool = param.Boolean(
         False,
-        doc="This is a benchmark level cache that stores the results of a fully completed benchmark. At the end of a benchmark the values are added to the cache but are not if the benchmark does not complete.  If you want to cache values during the benchmark you need to use the use_sample_cache option. Beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
+        doc="This is a benchmark level cache that stores the results of a fully completed benchmark. At the end of a benchmark the values are added to the cache but are not if the benchmark does not complete.  If you want to cache values during the benchmark you need to use the cache_samples option. Beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
 
     clear_cache: bool = param.Boolean(
         False, doc=" Clear the cache of saved input->output mappings."
     )
 
-    use_sample_cache: bool = param.Boolean(
+    cache_samples: bool = param.Boolean(
         False,
         doc="If true, every time the benchmark function is called, bencher will check if that value has been calculated before and if so load the from the cache.  Note that the sample level cache is different from the benchmark level cache which only caches the aggregate of all the results at the end of the benchmark. This cache lets you stop a benchmark halfway through and continue. However, beware that depending on how you change code in the objective function, the cache could provide values that are not correct.",
     )
@@ -182,7 +182,7 @@ class BenchRunCfg(BenchPlotSrvCfg):
         parser.add_argument(
             "--use-cache",
             action="store_true",
-            help=BenchRunCfg.param.use_cache.doc,
+            help=BenchRunCfg.param.cache_results.doc,
         )
 
         parser.add_argument(
@@ -380,8 +380,8 @@ class BenchCfg(BenchRunCfg):
             benchmark_sampling_str.append(f"    run tag: {self.run_tag}")
         if self.level is not None:
             benchmark_sampling_str.append(f"    bench level: {self.level}")
-        benchmark_sampling_str.append(f"    use_cache: {self.use_cache}")
-        benchmark_sampling_str.append(f"    use_sample_cache: {self.use_sample_cache}")
+        benchmark_sampling_str.append(f"    cache_results: {self.cache_results}")
+        benchmark_sampling_str.append(f"    cache_samples {self.cache_samples}")
         benchmark_sampling_str.append(f"    only_hash_tag: {self.only_hash_tag}")
         benchmark_sampling_str.append(f"    executor: {self.executor}")
 
