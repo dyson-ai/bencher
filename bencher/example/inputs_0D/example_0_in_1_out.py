@@ -32,5 +32,11 @@ def example_0_in_1_out(
 
 
 if __name__ == "__main__":
-    run_config = bch.BenchRunCfg(repeats=100)
-    example_0_in_1_out(run_config).report.show()
+    run_cfg = bch.BenchRunCfg(repeats=100)
+    report = bch.BenchReport()
+    example_0_in_1_out(run_cfg, report).report.show()
+
+    run_cfg.over_time = True
+    # run_cfg.
+    for i in range(4):
+        example_0_in_1_out(run_cfg, report)
