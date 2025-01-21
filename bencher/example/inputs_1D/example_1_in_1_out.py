@@ -14,7 +14,13 @@ class DataSource:
             [2, 2, 1, 1],
         ]
 
-    def call(self, index, repeat):
+        self.call_count = [0] * len(self.data)
+
+    def call(self, index, repeat=None):
+        if repeat is None:
+            self.call_count[index] += 1
+            repeat = self.call_count[index]
+        print(index, repeat)
         return self.data[index][repeat - 1]
 
 
@@ -22,9 +28,15 @@ class Example1D(bch.ParametrizedSweep):
     index = bch.IntSweep(default=0, bounds=[0, 5], doc="Input angle", units="rad", samples=30)
     output = bch.ResultVar(units="v", doc="sin of theta")
 
+    def __init__(self, **params):
+        super().__init__(**params)
+        self.data1 = DataSource()
+
+
+
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
-        self.output = DataSource().call(self.index, kwargs["repeat"])
+        self.output = self.data1.call(self.index)
         return super().__call__(**kwargs)
 
 
@@ -32,12 +44,21 @@ def example_1_in_1_out(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
-
     bench = Example1D().to_bench(run_cfg, report)
-    bench.run_cfg = bch.BenchRunCfg(repeats=4)
-    bench.plot_sweep(pass_repeat=True)
+    bench.plot_sweep()
     return bench
 
 
 if __name__ == "__main__":
-    example_1_in_1_out().report.show()
+    run_cfg = bch.BenchRunCfg()
+    report = bch.BenchReport()
+    example_1_in_1_out(run_cfg, report)
+
+    run_cfg.repeats = 4
+    example_1_in_1_out(run_cfg, report)
+
+    # run_cfg.over_time = True
+    # for i in range(4):
+    #     example_1_in_2_out(run_cfg, report)
+
+    report.show()
