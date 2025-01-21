@@ -78,11 +78,11 @@ class FutureCache:
         cache_name: str = "fcache",
         tag_index: bool = True,
         size_limit: int = int(20e9),  # 20 GB
-        use_cache=True,
+        cache_results=True,
     ):
         self.executor_type = executor
         self.executor = None
-        if use_cache:
+        if cache_results:
             self.cache = Cache(f"cachedir/{cache_name}", tag_index=tag_index, size_limit=size_limit)
             logging.info(f"cache dir: {self.cache.directory}")
         else:

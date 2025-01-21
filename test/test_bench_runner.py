@@ -9,7 +9,7 @@ class TestBenchRunner(unittest.TestCase):
     # Tests that bch.BenchRunner can be created with default configuration and the import statement in the bch.BenchRunner class is fixed
     def test_benchrunner_default_configuration_fixed(self):
         bench_runner = bch.BenchRunner("bench_runner_test")
-        self.assertEqual(bench_runner.run_cfg.use_sample_cache, True)
+        self.assertEqual(bench_runner.run_cfg.cache_samples, True)
         self.assertEqual(bench_runner.run_cfg.only_hash_tag, True)
         self.assertEqual(bench_runner.run_cfg.level, 2)
         self.assertEqual(bench_runner.publisher, None)
@@ -71,8 +71,8 @@ class TestBenchRunner(unittest.TestCase):
         self.assertEqual(results[0].sample_cache.worker_cache_call_count, 0)
         self.assertEqual(results[0].run_cfg.run_tag, run_tag)
 
-        # run with the same tag but set use cache to false, should not hit cache because even tho the tag is the same, use_cache=false
-        results = bench_runner.run(use_cache=False)
+        # run with the same tag but set use cache to false, should not hit cache because even tho the tag is the same, cache_results=false
+        results = bench_runner.run(cache_results=False)
         self.assertEqual(results[0].sample_cache.worker_wrapper_call_count, 2)
         self.assertEqual(results[0].sample_cache.worker_fn_call_count, 2)
         self.assertEqual(results[0].sample_cache.worker_cache_call_count, 0)
@@ -144,7 +144,7 @@ class TestBenchRunner(unittest.TestCase):
     #     bench_runner.add_run(bench_fn1)
     #     bench_runner.add_run(bench_fn2)
     #     run_cfg = bch.BenchRunCfg()
-    #     run_cfg.use_sample_cache = False
+    #     run_cfg.cache_samples = False
     #     run_cfg.only_hash_tag = False
     #     run_cfg.level = 3
     #     results = bench_runner.run(run_cfg=run_cfg)

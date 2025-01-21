@@ -33,11 +33,11 @@ class BenchRunner:
 
     @staticmethod
     def setup_run_cfg(
-        run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 2, use_cache=True
+        run_cfg: BenchRunCfg = BenchRunCfg(), level: int = 2, cache_results=True
     ) -> BenchRunCfg:
         run_cfg_out = deepcopy(run_cfg)
-        run_cfg_out.use_sample_cache = use_cache
-        run_cfg_out.only_hash_tag = use_cache
+        run_cfg_out.cache_samples = cache_results
+        run_cfg_out.only_hash_tag = cache_results
         run_cfg_out.level = level
         return run_cfg_out
 
@@ -78,9 +78,9 @@ class BenchRunner:
         show: bool = False,
         save: bool = False,
         grouped: bool = True,
-        use_cache: bool = True,
+        cache_results: bool = True,
     ) -> List[Bench]:
-        """This function controls how a benchmark or a set of benchmarks are run. If you are only running a single benchmark it can be simpler to just run it directly, but if you are running several benchmarks together and want them to be sampled at different levels of fidelity or published together in a single report this function enables that workflow.  If you have an expensive function, it can be useful to view low fidelity results as they are computed but also continue to compute higher fidelity results while reusing previously computed values. The parameters min_level and max_level let you specify how to progressivly increase the sampling resolution of the benchmark sweep. By default use_cache=True so that previous values are reused.
+        """This function controls how a benchmark or a set of benchmarks are run. If you are only running a single benchmark it can be simpler to just run it directly, but if you are running several benchmarks together and want them to be sampled at different levels of fidelity or published together in a single report this function enables that workflow.  If you have an expensive function, it can be useful to view low fidelity results as they are computed but also continue to compute higher fidelity results while reusing previously computed values. The parameters min_level and max_level let you specify how to progressivly increase the sampling resolution of the benchmark sweep. By default cache_results=True so that previous values are reused.
 
         Args:
             min_level (int, optional): The minimum level to start sampling at. Defaults to 2.
@@ -93,14 +93,14 @@ class BenchRunner:
             show (bool, optional): show the results in the local web browser. Defaults to False.
             save (bool, optional): save the results to disk in index.html. Defaults to False.
             grouped (bool, optional): Produce a single html page with all the benchmarks included. Defaults to True.
-            use_cache (bool, optional): Use the sample cache to reused previous results. Defaults to True.
+            cache_results (bool, optional): Use the sample cache to reused previous results. Defaults to True.
 
         Returns:
             List[BenchCfg]: A list of bencher instances
         """
         if run_cfg is None:
             run_cfg = deepcopy(self.run_cfg)
-        run_cfg = BenchRunner.setup_run_cfg(run_cfg, use_cache=use_cache)
+        run_cfg = BenchRunner.setup_run_cfg(run_cfg, cache_results=cache_results)
 
         if level is not None:
             min_level = level
