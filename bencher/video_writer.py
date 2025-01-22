@@ -64,8 +64,12 @@ class VideoWriter:
     def convert_to_compatible_format(video_path:str):
         vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
         new_path = Path(video_path)
-        new_path = new_path.with_stem(new_path.stem+"fixed")
-        return VideoWriter(Path(video_path)).write_video_raw(vid)
+        # new_path.stem +="_fixed"
+        new_path = new_path.with_name(new_path.stem+"_fixed"+new_path.suffix)
+        vw= VideoWriter(video_path)
+        vw.filename = new_path
+        vw.write()
+        return new_path
 
 def add_image(np_array: np.ndarray, name: str = "img") -> str:
     """Creates a file on disk from a numpy array and returns the created image path"""
