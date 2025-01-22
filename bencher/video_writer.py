@@ -61,14 +61,14 @@ class VideoWriter:
         return self.filename
 
     @staticmethod
-    def convert_to_compatible_format(video_path: str)->str:
+    def convert_to_compatible_format(video_path: str) -> str:
         vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
         new_path = Path(video_path)
-        new_path = new_path.with_name(new_path.stem + "_fixed" + new_path.suffix)
+        new_path = new_path.with_name(new_path.stem + "_fixed" + new_path.suffix).as_posix()
         vw = VideoWriter()
-        vw.filename = new_path.as_posix()
-        vw.write()
-        return new_path.as_posix()
+        vw.filename = new_path
+        vw.write_video_raw(vid)
+        return new_path
 
 
 def add_image(np_array: np.ndarray, name: str = "img") -> str:
