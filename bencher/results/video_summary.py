@@ -55,7 +55,7 @@ class VideoSummaryResult(BenchResultBase):
             float_range=VarRange(0, None),
             cat_range=VarRange(0, None),
             panel_range=VarRange(1, None),
-            input_range=VarRange(1, None),
+            input_range=VarRange(0, None),
         )
         matches_res = plot_filter.matches_result(
             self.plt_cnt_cfg, callable_name(self.to_video_grid_ds)
