@@ -65,8 +65,8 @@ class VideoWriter:
         vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
         new_path = Path(video_path)
         new_path = new_path.with_name(new_path.stem + "_fixed" + new_path.suffix)
-        vw = VideoWriter(video_path)
-        vw.filename = new_path
+        vw = VideoWriter()
+        vw.filename = new_path.as_posix()
         vw.write()
         return new_path.as_posix()
 
