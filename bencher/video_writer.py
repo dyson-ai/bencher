@@ -1,3 +1,4 @@
+import moviepy.video.io.VideoFileClip
 import numpy as np
 import moviepy.video.io.ImageSequenceClip
 from pathlib import Path
@@ -59,6 +60,10 @@ class VideoWriter:
         video_clip.close()
         return self.filename
 
+    @staticmethod
+    def convert_to_compatible_format(video_path:str):
+        vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
+        return VideoWriter(video_path).write_video_raw(vid)
 
 def add_image(np_array: np.ndarray, name: str = "img") -> str:
     """Creates a file on disk from a numpy array and returns the created image path"""
