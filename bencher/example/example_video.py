@@ -79,7 +79,7 @@ def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
     # run_cfg.auto_plot = False
-    # run_cfg.use_sample_cache = True
+    # run_cfg.cache_samples = True
     bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
 
     bench.plot_sweep(
@@ -111,7 +111,7 @@ def example_video_tap(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
-    run_cfg_ex.use_sample_cache = True
+    run_cfg_ex.cache_samples = True
     run_cfg_ex.only_hash_tag = True
 
     # example_video(run_cfg_ex).report.show()

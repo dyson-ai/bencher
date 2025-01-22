@@ -2,7 +2,7 @@ import bencher as bch
 
 
 class UnreliableClass(bch.ParametrizedSweep):
-    """This class helps demonstrate benchmarking a function that sometimes crashes during sampling.  By using BenchRunCfg.use_sample_cache you can store the results of every call to the benchmark function so data is not lost in the event of a crash.  However, because cache invalidation is hard (https://martinfowler.com/bliki/TwoHardThings.html) you need to be mindful of how you could get bad results due to incorrect cache data.  For example if you change your benchmark function and use the sample cache you will not get correct values; you will need to use BenchRunCfg.clear_sample_cache to purge any out of date results."""
+    """This class helps demonstrate benchmarking a function that sometimes crashes during sampling.  By using BenchRunCfg.cache_samples you can store the results of every call to the benchmark function so data is not lost in the event of a crash.  However, because cache invalidation is hard (https://martinfowler.com/bliki/TwoHardThings.html) you need to be mindful of how you could get bad results due to incorrect cache data.  For example if you change your benchmark function and use the sample cache you will not get correct values; you will need to use BenchRunCfg.clear_sample_cache to purge any out of date results."""
 
     input_val = bch.IntSweep(
         default=0,
@@ -31,7 +31,7 @@ def example_sample_cache(
     report: bch.BenchReport = bch.BenchReport(),
     trigger_crash: bool = False,
 ) -> bch.Bench:
-    """This example shows how to use the use_sample_cache option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashed during the run
+    """This example shows how to use the cache_samples option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashed during the run
 
     Args:
         run_cfg (BenchRunCfg): configuration of how to perform the param sweep
@@ -50,7 +50,7 @@ def example_sample_cache(
         title="Example Crashy Function with the sample_cache",
         input_vars=[UnreliableClass.param.input_val],
         result_vars=[UnreliableClass.param.return_value, UnreliableClass.param.trigger_crash],
-        description="""This example shows how to use the use_sample_cache option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashed during the run""",
+        description="""This example shows how to use the cache_samples option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashed during the run""",
         run_cfg=run_cfg,
         post_description="The input_val vs return value graph is a straight line as expected and there is no record of the fact the benchmark crashed halfway through. The second graph shows that for values >1 the trigger_crash value had to be 0 in order to proceed",
     )
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     ex_run_cfg.executor = bch.Executors.SCOOP
 
     # this will store the result of of every call to crashy_fn
-    ex_run_cfg.use_sample_cache = True
+    ex_run_cfg.cache_samples = True
     ex_run_cfg.clear_sample_cache = True
 
     try:

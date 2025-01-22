@@ -58,7 +58,7 @@ class BenchPolygons(bch.ParametrizedSweep):
 def example_image(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    run_cfg.use_cache = False
+    run_cfg.cache_results = False
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
     bench.result_vars = ["polygon", "area"]
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     # def example_image_pairs()
 
     ex_run_cfg = bch.BenchRunCfg()
-    ex_run_cfg.use_sample_cache = True
+    ex_run_cfg.cache_samples = True
     # ex_run_cfg.debug = True
     # ex_run_cfg.repeats = 2
     ex_run_cfg.level = 4

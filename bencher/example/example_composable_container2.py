@@ -144,7 +144,7 @@ def example_composable_container_image(
 
 # if __name__ == "__main__":
 #     ex_run_cfg = bch.BenchRunCfg()
-#     ex_run_cfg.use_sample_cache = False
+#     ex_run_cfg.cache_samples = False
 #     # ex_run_cfg.level = 2
 #     ex_report = bch.BenchReport()
 #     example_composable_container_image(ex_run_cfg, report=ex_report)
@@ -157,4 +157,4 @@ if __name__ == "__main__":
     # bench_runner.add_run(bench_image)
     bench_runner.add_run(example_composable_container_image)
 
-    bench_runner.run(level=6, show=True, use_cache=False)
+    bench_runner.run(level=6, show=True, cache_results=False)

@@ -13,7 +13,7 @@ class TestSampleCache(unittest.TestCase):
                 UnreliableClass.param.return_value,
                 UnreliableClass.param.trigger_crash,
             ],
-            description="""This example shows how to use the use_sample_cache option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashing during the run""",
+            description="""This example shows how to use the cache_samples option to deal with unreliable functions and to continue benchmarking using previously calculated results even if the code crashing during the run""",
             run_cfg=run_cfg,
             post_description="The input_val vs return value graph is a straight line as expected and there is no record of the fact the benchmark crashed halfway through. The second graph shows that for values >1 the trigger_crash value had to be 0 in order to proceed",
             tag="testing_tag3",
@@ -29,7 +29,7 @@ class TestSampleCache(unittest.TestCase):
         run_cfg.repeats = 1
         run_cfg.executor = bch.Executors.SERIAL  # THE ASSERTS WILL ONLY WORK IF RUN SERIALLY!!!
 
-        run_cfg.use_sample_cache = True  # this will store the result of every call
+        run_cfg.cache_samples = True  # this will store the result of every call
         run_cfg.only_hash_tag = True
         run_cfg.auto_plot = False
 

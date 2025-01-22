@@ -327,7 +327,7 @@ class Bench(BenchPlotServer):
                 logging.info("Copy run cfg from bench class")
 
         if run_cfg.only_plot:
-            run_cfg.use_cache = True
+            run_cfg.cache_results = True
 
         self.last_run_cfg = run_cfg
 
@@ -371,7 +371,7 @@ class Bench(BenchPlotServer):
                     title += "s"
                 title += ": " + ", ".join([f"{c[0].name}={c[1]}" for c in const_vars_in])
             else:
-                title = " ".join([i.name for i in result_vars_in])
+                title = "Recording: " + ", ".join([i.name for i in result_vars_in])
 
         if run_cfg.level > 0:
             inputs = []
@@ -448,7 +448,7 @@ class Bench(BenchPlotServer):
             if run_cfg.clear_cache:
                 c.delete(bench_cfg_hash)
                 logging.info("cleared cache")
-            elif run_cfg.use_cache:
+            elif run_cfg.cache_results:
                 logging.info(
                     f"checking for previously calculated results with key: {bench_cfg_hash}"
                 )
@@ -813,7 +813,7 @@ class Bench(BenchPlotServer):
             cache_name="sample_cache",
             tag_index=True,
             size_limit=self.cache_size,
-            use_cache=run_cfg.use_sample_cache,
+            cache_results=run_cfg.cache_samples,
         )
 
     def clear_tag_from_sample_cache(self, tag: str, run_cfg):

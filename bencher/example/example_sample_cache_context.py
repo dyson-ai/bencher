@@ -51,7 +51,7 @@ def assert_call_counts(bencher, run_cfg, wrapper_calls=-1, fn_calls=-1, cache_ca
 
 def example_cache_context() -> bch.Bench:
     run_cfg = bch.BenchRunCfg()
-    run_cfg.use_sample_cache = True
+    run_cfg.cache_samples = True
     run_cfg.only_hash_tag = True
     run_cfg.repeats = 2
     run_cfg.parallel = False
