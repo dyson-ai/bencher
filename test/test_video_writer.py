@@ -25,4 +25,3 @@ class TestVideoWriter(unittest.TestCase):
         assert conv.name == "test_vid_fixed.mp4"
         # assert orig.absolute() ==""
         # assert conv.absolute() == ""
-
