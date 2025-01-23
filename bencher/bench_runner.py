@@ -136,7 +136,7 @@ class BenchRunner:
             else:
                 report.publish(remote_callback=self.publisher, debug=debug)
         if show:
-            self.servers.append(report.show())
+            self.servers.append(report.show(self.run_cfg))
 
     def shutdown(self):
         while self.servers:
