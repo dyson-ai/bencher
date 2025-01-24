@@ -78,9 +78,7 @@ class TuringPattern(bch.ParametrizedSweep):
 def example_video(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:
-    # run_cfg.auto_plot = False
-    # run_cfg.cache_samples = True
-    bench = bch.Bench("example_video", TuringPattern(), run_cfg=run_cfg, report=report)
+    bench = TuringPattern().to_bench(run_cfg, report)
 
     bench.plot_sweep(
         "Turing patterns with different parameters",
@@ -96,14 +94,18 @@ def example_video_tap(
     run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
 ) -> bch.Bench:  # pragma: no cover
     bench = TuringPattern().to_bench(run_cfg=run_cfg, report=report)
-    res = bench.plot_sweep(
-        input_vars=["alpha", "beta"],
-        # result_vars=["video","score"],
-        # result_vars=["score"],
-        run_cfg=run_cfg,
-    )
+    res = bench.plot_sweep(input_vars=["alpha", "beta"])
 
-    bench.report.append(res.to_video_grid())
+    bench.report.append(res.to_video_grid(result_types=(bch.ResultVideo)))
+
+    res = bench.plot_sweep(input_vars=["alpha"])
+    bench.report.append(
+        res.to_video_grid(
+            time_sequence_dimension=2,
+            result_types=(bch.ResultVideo),
+            compose_method_list=[bch.ComposeType.right],
+        )
+    )
 
     return bench
 
