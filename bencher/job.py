@@ -38,7 +38,7 @@ class JobFuture:
         # either a result or a future needs to be passed
         assert (
             self.res is not None or self.future is not None
-        ), "make sure you are returning a dict or or  super().__call__(**kwargs) from your __call__ function"
+        ), "make sure you are returning a dict or super().__call__(**kwargs) from your __call__ function"
 
         self.cache = cache
 
