@@ -82,7 +82,7 @@ def example_video(
 
     bench.plot_sweep(
         "Turing patterns with different parameters",
-        t_vars=["alpha", "beta"],
+        input_vars=["alpha", "beta"],
         result_vars=[TuringPattern.param.video],
     )
 
