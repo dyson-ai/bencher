@@ -39,6 +39,7 @@ class VideoSummaryResult(BenchResultBase):
         pane_collection: pn.pane = None,
         time_sequence_dimension=0,
         target_duration: float = None,
+        compose_method_list: List = None,
         **kwargs,
     ) -> Optional[pn.panel]:
         """Returns the results compiled into a video
@@ -47,6 +48,7 @@ class VideoSummaryResult(BenchResultBase):
             result_var (Parameter, optional): The result var to plot. Defaults to None.
             result_types (tuple, optional): The types of result var to convert to video. Defaults to (ResultImage,).
             collection (pn.pane, optional): If there are multiple results, use this collection to stack them. Defaults to pn.Row().
+            compose_method_list (List: optional): Defines how each of the dimensions is composed in the video. ie, concatenate the videos horizontally, vertically, sequentially or alpha overlay. Seee bch.ComposeType for the options.
 
         Returns:
             Optional[pn.panel]: a panel pane with a video of all results concatenated together
@@ -74,7 +76,7 @@ class VideoSummaryResult(BenchResultBase):
                             rv,
                             time_sequence_dimension=time_sequence_dimension,
                             target_duration=target_duration,
-                            **kwargs,
+                            compose_method_list=compose_method_list**kwargs,
                         )
                     )
             return pane_collection
@@ -88,6 +90,7 @@ class VideoSummaryResult(BenchResultBase):
         time_sequence_dimension=0,
         video_controls: VideoControls = None,
         target_duration: float = None,
+        compose_method_list: List = None,
         **kwargs,
     ):
         cvc = self._to_video_panes_ds(
@@ -100,6 +103,7 @@ class VideoSummaryResult(BenchResultBase):
             result_var=result_var,
             final=True,
             reverse=reverse,
+            compose_method_list=compose_method_list,
             target_duration=target_duration,
             **kwargs,
         )
