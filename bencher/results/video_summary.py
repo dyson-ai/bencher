@@ -76,7 +76,8 @@ class VideoSummaryResult(BenchResultBase):
                             rv,
                             time_sequence_dimension=time_sequence_dimension,
                             target_duration=target_duration,
-                            compose_method_list=compose_method_list**kwargs,
+                            compose_method_list=compose_method_list,
+                            **kwargs,
                         )
                     )
             return pane_collection
