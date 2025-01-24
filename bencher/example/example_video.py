@@ -101,7 +101,6 @@ def example_video_tap(
     res = bench.plot_sweep(input_vars=["alpha"])
     bench.report.append(
         res.to_video_grid(
-            time_sequence_dimension=2,
             result_types=(bch.ResultVideo),
             compose_method_list=[bch.ComposeType.right],
         )
