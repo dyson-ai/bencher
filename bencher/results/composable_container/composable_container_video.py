@@ -130,7 +130,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             #     for i in range(len(self.container)):
             #         self.container[i].alpha = 1./len(self.container)
             #     out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
-            #     # out.duration = render_cfg.
+            #     # out.duration = fps
             case _:
                 raise RuntimeError("This compose type is not supported")
 
