@@ -16,3 +16,4 @@ args:
   - lazygit
   - pixi
   - cwd
+  - locales
