@@ -10,6 +10,7 @@ Welcome to bencher's documentation!
    :maxdepth: 3
 
    intro.rst 
+   gallery.rst
 
 
 Indices and tables
