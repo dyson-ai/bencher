@@ -63,6 +63,15 @@ test = [
     "pre-commit<=4.0.1",
 ]
 
+docs = [
+    "pydata-sphinx-theme",
+    "sphinxcontrib-napoleon",
+    "sphinx-autoapi",
+    "nbsite==0.8.7",
+    # "jinja2<3.1",
+]
+
+
 #adds support for embedding rerun windows (alpha)
 rerun = ["rerun-sdk==0.21.0", "rerun-notebook", "flask", "flask-cors"]
 
@@ -75,7 +84,7 @@ include = ["bencher"]
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test", "rerun"], solve-group = "default" }
+default = { features = ["test", "rerun", "docs"], solve-group = "default" }
 py310 = ["py310", "test", "rerun"]
 py311 = ["py311", "test", "rerun"]
 py312 = ["py312", "test", "rerun"]
@@ -111,6 +120,8 @@ ci-push = { depends-on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
+docs = "rm -rf builtdocs; sphinx-build -b html docs builtdocs"
+
 
 #demos
 demo = "python3 bencher/example/example_image.py"
