@@ -3,7 +3,7 @@ import numpy as np
 from copy import deepcopy
 from pathlib import Path
 from dataclasses import dataclass
-from moviepy.editor import (
+from moviepy import (
     ImageClip,
     CompositeVideoClip,
     clips_array,
