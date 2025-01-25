@@ -1,25 +1,20 @@
-Intro
-=====
+## Intro
 
-Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.
+Bencher is a tool to make it easy to benchmark the interactions between the input parameters to your algorithm and its resulting performance on a set of metrics.  It calculates the [cartesian product](https://en.wikipedia.org/wiki/Cartesian_product) of a set of variables
 
-Parameters for bencher are defined using the param library https://param.holoviz.org/ as a config class with extra metadata that describes the bounds of the search space you want to measure.  You must define a benchmarking function that accepts an instance of the config class and return a dictionary with string metric names and float values.
+Parameters for bencher are defined using the [param](https://param.holoviz.org/) library  as a config class with extra metadata that describes the bounds of the search space you want to measure.  You must define a benchmarking function that accepts an instance of the config class and return a dictionary with string metric names and float values.
 
 Parameters are benchmarked by passing in a list N parameters, and an N-Dimensional tensor is returned.   You can optionally sample each point multiple times to get back a distribution and also track its value over time.  By default the data will be plotted automatically based on the types of parameters you are sampling (e.g, continuous, discrete), but you can also pass in a callback to customize plotting.
 
 The data is stored in a persistent database so that past performance is tracked.
 
-Assumptions
------------
+## Assumptions
 
 The input types should also be of one of the basic datatypes (bool, int, float, str, enum, datetime) so that the data can be easily hashed, cached and stored in the database and processed with seaborn and xarray plotting functions. You can use class inheritance to define hierarchical parameter configuration class types that can be reused in a bigger configuration classes.
 
 Bencher is designed to work with stochastic pure functions with no side effects.  It assumes that when the objective function is given the same inputs, it will return the same output +- random noise.  This is because the function must be called multiple times to get a good statistical distribution of it and so each call must not be influenced by anything or the results will be corrupted.
 
-Pseudocode of bencher
----------------------
-
-.. code-block:: 
+### Pseudocode of bencher
 
     Enumerate a list of all input parameter combinations
     for each set of input parameters:
@@ -32,10 +27,35 @@ Pseudocode of bencher
             combine latest data with historical data
         
         store the results using the input hash as a key
-    deduce the type of plot based on the input types
+    deduce the type of plot based on the input and output types
     return data and plot
     
-Example Output
---------------
 
-https://dyson-ai.github.io/bencher/
+## Demo
+
+if you have [pixi](https://github.com/prefix-dev/pixi/) installed you can run a demo example with:
+
+```bash
+pixi run demo
+```
+
+An example of the type of output bencher produces can be seen here:
+
+https://dyson-ai.github.io/bencher/ 
+
+
+## Examples
+
+Most of the features that are supported are demonstrated in the examples folder.
+
+Start with example_simple_float.py and explore other examples based on your data types:
+- example_float.py: More complex float operations
+- example_float2D.py: 2D float sweeps
+- example_float3D.py: 3D float sweeps 
+- example_categorical.py: Sweeping categorical values (enums)
+- example_strings.py: Sweeping categorical string values
+- example_float_cat.py: Mixing float and categorical values
+- example_image.py: Output images as part of the sweep
+- example_video.py: Output videos as part of the sweep
+- example_filepath.py: Output arbitrary files as part of the sweep
+- and many others

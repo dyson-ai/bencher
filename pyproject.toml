@@ -65,6 +65,7 @@ test = [
 
 docs = [
     "pydata-sphinx-theme",
+    "sphinx-rtd-theme",
     "sphinxcontrib-napoleon",
     "sphinx-autoapi",
     "nbsite==0.8.7",
@@ -120,7 +121,7 @@ ci-push = { depends-on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
-docs = "rm -rf builtdocs; sphinx-build -b html docs builtdocs"
+docs = "rm -rf docs/builtdocs; sphinx-build -b html docs docs/builtdocs"
 
 
 #demos
