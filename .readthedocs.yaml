@@ -17,6 +17,7 @@ build:
 
   # Install system-level dependencies
   apt_packages:
+    - chromium-browser
     - chromium-chromedriver
     # - firefox
     # - geckodriver
