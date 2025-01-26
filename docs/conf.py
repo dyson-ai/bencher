@@ -53,9 +53,7 @@ nbsite_gallery_conf = {
     "galleries": {
         "reference": {
             "title": "Reference Gallery",
-            "intro": (
-                "Find the list of supported libraries on the `Integrations <../user_guide/Integrations.html>`_ page."
-            ),
+            "intro": ("This shows examples of what various dimensionalities of sweep look like."),
             "sections": [
                 "0D_inputs",
                 "1D_inputs",

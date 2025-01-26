@@ -1,7 +1,7 @@
 Reference Gallery
 _________________
 
-Find the list of supported libraries on the `Integrations <../user_guide/Integrations.html>`_ page.
+This shows examples of what various dimensionalities of sweep look like
 
 
 0D_Inputs
