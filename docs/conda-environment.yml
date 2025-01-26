@@ -1,0 +1,10 @@
+name: docs
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - firefox  # Explicitly include Firefox
+  - geckodriver  # Install geckodriver from conda-forge
+  - pip
+  - pip:
+      - -r requirements.txt
