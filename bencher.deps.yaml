@@ -3,7 +3,6 @@ apt_tools:
   - git-lfs
   - python3-pip
   - jq #for auto installing extensions in container
-  - make #for docs
 
 pip_language-toolchain:
   - uv #use uv instead of pip
