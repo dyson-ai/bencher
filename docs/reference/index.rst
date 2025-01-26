@@ -1,7 +1,7 @@
 Reference Gallery
 _________________
 
-This shows examples of what various dimensionalities of sweep look like
+This shows examples of what various dimensionalities of sweep look like.
 
 
 0D_Inputs
