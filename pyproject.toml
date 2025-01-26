@@ -72,17 +72,6 @@ jupyter_bokeh = "*"
 selenium = "*"
 chromedriver_binary = "*"
 
-# docs = [
-#     "pydata-sphinx-theme",
-#     "sphinx-rtd-theme",
-#     "sphinxcontrib-napoleon",
-#     "sphinx-autoapi",
-#     "nbsite==0.8.7",
-#     "jupyter_bokeh",
-#     "selenium",
-#     "geckodriver",
-# ]
-
 [project.optional-dependencies]
 test = [
     "pylint>=3.2.5,<=3.3.3",
@@ -95,8 +84,8 @@ test = [
 ]
 
 
-rerun = ["rerun-sdk==0.21.0", "rerun-notebook", "flask", "flask-cors"]
 #adds support for embedding rerun windows (alpha)
+rerun = ["rerun-sdk==0.21.0", "rerun-notebook", "flask", "flask-cors"]
 
 [build-system]
 requires = ["hatchling"]
