@@ -19,12 +19,12 @@ project = f"bencher {release}"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions += [
+extensions += [  # noqa
     "sphinx.ext.napoleon",
     # "autoapi.extension",
     "nbsite.gallery",
     "sphinx_copybutton",
-]  # noqa
+]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
