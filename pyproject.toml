@@ -97,9 +97,9 @@ include = ["bencher"]
 # Environments
 [tool.pixi.environments]
 default = { features = ["test", "rerun", "docs"], solve-group = "default" }
-py310 = ["py310", "test", "rerun"]
-py311 = ["py311", "test", "rerun"]
-py312 = ["py312", "test", "rerun"]
+py310 = ["py310", "test", "rerun", "docs"]
+py311 = ["py311", "test", "rerun", "docs"]
+py312 = ["py312", "test", "rerun", "docs"]
 
 
 [tool.pixi.tasks]
