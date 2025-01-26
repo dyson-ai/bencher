@@ -54,7 +54,7 @@ holobench = { path = ".", editable = true }
 
 # Define a consolidated docs feature with all dependencies
 [tool.pixi.feature.docs.dependencies]
-# python = "3.10.*"
+python = "3.10.*"
 firefox = ">=134.0,<135"         # Conda package
 geckodriver = "*"                # Conda package
 sphinx = "*"
@@ -97,9 +97,9 @@ include = ["bencher"]
 # Environments
 [tool.pixi.environments]
 default = { features = ["test", "rerun", "docs"], solve-group = "default" }
-py310 = ["py310", "test", "rerun", "docs"]
-py311 = ["py311", "test", "rerun", "docs"]
-py312 = ["py312", "test", "rerun", "docs"]
+py310 = ["py310", "test", "rerun"]
+py311 = ["py311", "test", "rerun"]
+py312 = ["py312", "test", "rerun"]
 
 
 [tool.pixi.tasks]
@@ -144,6 +144,8 @@ demo_rerun = "python3 bencher/example/example_rerun.py"
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
 jobs = 16                                    #detect number of cores
+omit = ["docs/conf.py"]                      # Add this line to exclude conf.py from pylint checks
+
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,duplicate-code,too-many-public-methods,too-many-nested-blocks,cyclic-import,too-many-positional-arguments"
