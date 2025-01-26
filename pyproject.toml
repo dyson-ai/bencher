@@ -54,7 +54,7 @@ holobench = { path = ".", editable = true }
 
 # Define a consolidated docs feature with all dependencies
 [tool.pixi.feature.docs.dependencies]
-python = "3.10.*"
+# python = "3.10.*"
 firefox = ">=134.0,<135"         # Conda package
 geckodriver = "*"                # Conda package
 sphinx = "*"
@@ -150,7 +150,7 @@ disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-do
 enable = "no-else-return,consider-using-in"
 
 [tool.coverage.run]
-omit = ["*/test/*", "__init__.py", "docs/conf.py"]
+omit = ["*/test/*", "__init__.py"]
 
 [tool.coverage.report]
 exclude_also = [
