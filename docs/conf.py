@@ -21,7 +21,7 @@ project = f"bencher {release}"
 
 extensions += [  # noqa
     "sphinx.ext.napoleon",
-    # "autoapi.extension",
+    "autoapi.extension",
     "nbsite.gallery",
     "sphinx_copybutton",
 ]
