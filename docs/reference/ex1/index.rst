@@ -14,4 +14,3 @@ ___
 
    example1
    example2
-   expy
