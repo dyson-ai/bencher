@@ -17,8 +17,10 @@ build:
 
   # Install system-level dependencies
   apt_packages:
-    - firefox
-    - geckodriver
+    - chromium-chromedriver
+    # - firefox
+    - 
+    # - geckodriver
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
