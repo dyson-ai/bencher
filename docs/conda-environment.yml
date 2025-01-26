@@ -7,4 +7,4 @@ dependencies:
   - geckodriver  # Install geckodriver from conda-forge
   - pip
   - pip:
-      - -r docs/requirements.txt
+      - -r requirements.txt
