@@ -6,6 +6,7 @@
 # - args: Lists additional features or tools to be added to the docker image
 
 image: ubuntu:22.04
+# image: selenium/standalone-firefox
 args:
   - nvidia
   - x11 
@@ -16,3 +17,4 @@ args:
   - lazygit
   - pixi
   - cwd
+  - locales

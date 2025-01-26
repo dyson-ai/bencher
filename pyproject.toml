@@ -52,6 +52,26 @@ python = "3.12.*"
 [tool.pixi.pypi-dependencies]
 holobench = { path = ".", editable = true }
 
+# Define a consolidated docs feature with all dependencies
+[tool.pixi.feature.docs.dependencies]
+python = "3.10.*"
+firefox = ">=134.0,<135"         # Conda package
+geckodriver = "*"                # Conda package
+sphinx = "*"
+gtk3 = "*"
+python-chromedriver-binary = "*"
+
+[tool.pixi.feature.docs.pypi-dependencies]
+# All Python documentation dependencies
+pydata-sphinx-theme = "*"
+sphinx-rtd-theme = "*"
+sphinxcontrib-napoleon = "*"
+sphinx-autoapi = "*"
+nbsite = "==0.8.7"
+jupyter_bokeh = "*"
+selenium = "*"
+chromedriver_binary = "*"
+
 [project.optional-dependencies]
 test = [
     "pylint>=3.2.5,<=3.3.3",
@@ -62,6 +82,7 @@ test = [
     "coverage>=7.5.4,<=7.6.10",
     "pre-commit<=4.0.1",
 ]
+
 
 #adds support for embedding rerun windows (alpha)
 rerun = ["rerun-sdk==0.21.0", "rerun-notebook", "flask", "flask-cors"]
@@ -79,7 +100,7 @@ default = { features = ["test", "rerun"], solve-group = "default" }
 py310 = ["py310", "test", "rerun"]
 py311 = ["py311", "test", "rerun"]
 py312 = ["py312", "test", "rerun"]
-
+docs = ["py310", "docs"]
 
 [tool.pixi.tasks]
 pre-commit = "pre-commit run -a"
@@ -112,13 +133,18 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ours.driver true"
 update-from-template-repo = "./scripts/update_from_template.sh"
 
+docs = "rm -rf docs/builtdocs; rm -rf docs/jupyter_execute; sphinx-build -b html docs docs/builtdocs"
+
+
 #demos
 demo = "python3 bencher/example/example_image.py"
 demo_rerun = "python3 bencher/example/example_rerun.py"
 
+
 [tool.pylint]
 extension-pkg-whitelist = ["numpy", "scipy"]
 jobs = 16                                    #detect number of cores
+ignore-paths = "docs/*"
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,duplicate-code,too-many-public-methods,too-many-nested-blocks,cyclic-import,too-many-positional-arguments"
