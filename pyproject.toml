@@ -150,7 +150,7 @@ disable = "C,logging-fstring-interpolation,line-too-long,fixme,missing-module-do
 enable = "no-else-return,consider-using-in"
 
 [tool.coverage.run]
-omit = ["*/test/*", "__init__.py"]
+omit = ["*/test/*", "__init__.py", "docs/conf.py"]
 
 [tool.coverage.report]
 exclude_also = [
