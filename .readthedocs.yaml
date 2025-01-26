@@ -16,19 +16,23 @@ build:
     # golang: "1.19"
 
   # Install system-level dependencies
-  apt_packages:
+  # apt_packages:
     # - chromium-browser
     # - chromium-chromedriver
-    - firefox
+    # - firefox
     # - geckodriver
 
-  jobs:
-    pre_create_environment:
-      - wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
-      - tar -xzf geckodriver-*.tar.gz
-      - chmod +x geckodriver
-      - sudo mv geckodriver /usr/local/bin/  # Add to PATH
+  # jobs:
+  #   pre_create_environment:
+  #     - wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+  #     - tar -xzf geckodriver-*.tar.gz
+  #     - chmod +x geckodriver
+  #     - sudo mv geckodriver /usr/local/bin/  # Add to PATH
 # Build documentation in the "docs/" directory with Sphinx
+
+conda:
+  environment: conda-environment.yml  # Reference the Conda environment file
+
 sphinx:
    configuration: docs/conf.py
 
