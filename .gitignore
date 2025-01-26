@@ -182,3 +182,4 @@ test_suite_analysis/metadata.json
 docs/builtdocs*
 docs/jupyter_execute*
 thumbnails/
+docs/autoapi/*
