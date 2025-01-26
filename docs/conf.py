@@ -45,6 +45,22 @@ numpydoc_show_class_members = False
 autosummary_generate = True
 
 nbsite_gallery_conf = {
-    "examples_dir": "examples",
-    "galleries": {},
+    # "examples_dir": "examples",
+    # "galleries": {},
+    "examples_dir": ".",
+    "galleries": {
+        "reference": {
+            "title": "Reference Gallery",
+            "intro": (
+                "Find the list of supported libraries on the `Integrations <../user_guide/Integrations.html>`_ page."
+            ),
+            "sections": [
+                "ex1",
+                "ex2",
+            ],
+            "skip_rst_notebook_directive": True,
+        }
+    },
 }
+
+nbsite_nbbuild_exclude_patterns = ["jupyter_execute/**"]

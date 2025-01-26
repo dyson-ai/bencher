@@ -5,7 +5,11 @@
 :maxdepth: 3
 
 intro
-examples/index
-examples/example1.ipynb
-examples/example2.ipynb
+
+examples/ex1/example1.ipynb
+examples/ex1/example2.ipynb
+examples/ex2/example3.ipynb
+<!-- examples/ex2/example4.ipynb -->
+
+reference/index
 ```
