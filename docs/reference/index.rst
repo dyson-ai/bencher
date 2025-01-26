@@ -17,7 +17,7 @@ Find the list of supported libraries on the `Integrations <../user_guide/Integra
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_1float.png
+        .. image:: //workspaces/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_1float.png
             :alt: Example In 0 Out 1float
 
     .. grid-item-card:: Example In 0 Out 2float
@@ -26,7 +26,7 @@ Find the list of supported libraries on the `Integrations <../user_guide/Integra
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_2float.png
+        .. image:: //workspaces/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_2float.png
             :alt: Example In 0 Out 2float
 
 
@@ -43,7 +43,7 @@ Find the list of supported libraries on the `Integrations <../user_guide/Integra
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/docs/reference/1D_inputs/thumbnails/example_in_1_out_1float.png
+        .. image:: //workspaces/bencher/docs/reference/1D_inputs/thumbnails/example_in_1_out_1float.png
             :alt: Example In 1 Out 1float
 
 
