@@ -34,27 +34,9 @@ def example_1D_float_repeats(
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
     bench = Example1D().to_bench(run_cfg, report)
-    # bench.plot_sweep(pass_repeat=True,plot_callbacks=False)
-
-    # res = bench.get_result()
     bench.run_cfg = bch.BenchRunCfg(repeats=4)
-    # bench.plot_sweep(pass_repeat=True, plot_callbacks=False)
     bench.plot_sweep(pass_repeat=True)
 
-    res = bench.get_result()
-    bench.report.append(res.to_curve())
-    # bench.report.append(hv.Table(res.to_hv_dataset(bch.ReduceType.MINMAX)))
-    # bench.report.append(res.to_curve() + res.to_scatter_jitter(override=True))
-    # bench.report.append(res.to_line())
-    bench.report.append(res.to_scatter_jitter(override=True))
-    # bench.report.append(res.to_error_bar())
-    # bench.report.append(res.to_explorer())
-    # bench.report.append(res.to_error_bar()
-
-    # bench.report.append(res.to_dataset())
-    # bench.report.append(res.to_xarray().hvplot.plot(kind="andrews_curves"))
-    # print(res.to_xarray())
-    # bench.report.append()
     return bench
 
 

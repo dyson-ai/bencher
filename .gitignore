@@ -181,3 +181,4 @@ test_suite_analysis/metadata.json
 *.rrd
 docs/builtdocs*
 docs/jupyter_execute*
+thumbnails/

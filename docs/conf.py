@@ -57,8 +57,8 @@ nbsite_gallery_conf = {
                 "Find the list of supported libraries on the `Integrations <../user_guide/Integrations.html>`_ page."
             ),
             "sections": [
-                "ex1",
-                "ex2",
+                "0D_inputs",
+                "1D_inputs",
             ],
             "skip_rst_notebook_directive": True,
         }

@@ -4,61 +4,52 @@ _________________
 Find the list of supported libraries on the `Integrations <../user_guide/Integrations.html>`_ page.
 
 
-Ex1
----
+0D_Inputs
+---------
 
 .. grid:: 2 2 4 5
     :gutter: 3
     :margin: 0
 
-    .. grid-item-card:: Example1
-        :link: ex1/example1
+    .. grid-item-card:: Example In 0 Out 1float
+        :link: 0D_inputs/example_in_0_out_1float
         :link-type: doc
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
-            :alt: Example1
+        .. image:: //home/ags/projects/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_1float.png
+            :alt: Example In 0 Out 1float
 
-    .. grid-item-card:: Example2
-        :link: ex1/example2
+    .. grid-item-card:: Example In 0 Out 2float
+        :link: 0D_inputs/example_in_0_out_2float
         :link-type: doc
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/docs/reference/ex1/thumbnails/example2.png
-            :alt: Example2
+        .. image:: //home/ags/projects/bencher/docs/reference/0D_inputs/thumbnails/example_in_0_out_2float.png
+            :alt: Example In 0 Out 2float
 
 
-Ex2
----
+1D_Inputs
+---------
 
 .. grid:: 2 2 4 5
     :gutter: 3
     :margin: 0
 
-    .. grid-item-card:: Example3
-        :link: ex2/example3
+    .. grid-item-card:: Example In 1 Out 1float
+        :link: 1D_inputs/example_in_1_out_1float
         :link-type: doc
         :class-card: -example
         :shadow: md
 
-        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
-            :alt: Example3
-
-    .. grid-item-card:: Example4
-        :link: ex2/example4
-        :link-type: doc
-        :class-card: -example
-        :shadow: md
-
-        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
-            :alt: Example4
+        .. image:: //home/ags/projects/bencher/docs/reference/1D_inputs/thumbnails/example_in_1_out_1float.png
+            :alt: Example In 1 Out 1float
 
 
 .. toctree::
    :glob:
    :hidden:
 
-   ex1/index
-   ex2/index
+   0D_inputs/index
+   1D_inputs/index
