@@ -10,3 +10,8 @@ pip_language-toolchain:
   - pip #update to the latest pip
   - pre-commit
 
+
+apt_docs:
+  - firefox
+  - chromium-browser
+  - chromium-chromedriver

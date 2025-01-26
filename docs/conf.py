@@ -48,7 +48,7 @@ autosummary_generate = True
 nbsite_gallery_conf = {
     # "examples_dir": "examples",
     # "galleries": {},
-        'default_extensions': ['*.ipynb',"*.py"],
+    "default_extensions": ["*.ipynb", "*.py"],
     "examples_dir": ".",
     "galleries": {
         "reference": {

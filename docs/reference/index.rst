@@ -17,7 +17,7 @@ Ex1
         :class-card: -example
         :shadow: md
 
-        .. image:: //workspaces/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
+        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
             :alt: Example1
 
     .. grid-item-card:: Example2
@@ -26,7 +26,7 @@ Ex1
         :class-card: -example
         :shadow: md
 
-        .. image:: //workspaces/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
+        .. image:: //home/ags/projects/bencher/docs/reference/ex1/thumbnails/example2.png
             :alt: Example2
 
 
@@ -43,7 +43,7 @@ Ex2
         :class-card: -example
         :shadow: md
 
-        .. image:: //workspaces/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
+        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
             :alt: Example3
 
     .. grid-item-card:: Example4
@@ -52,7 +52,7 @@ Ex2
         :class-card: -example
         :shadow: md
 
-        .. image:: //workspaces/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
+        .. image:: //home/ags/projects/bencher/.pixi/envs/default/lib/python3.10/site-packages/sphinx_copybutton/_static/images/logo.png
             :alt: Example4
 
 
