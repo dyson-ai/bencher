@@ -16,7 +16,6 @@ build:
     # golang: "1.19"
 
 # Build documentation in the "docs/" directory with Sphinx
-
 conda:
   environment: docs/conda-environment.yml  # Reference the Conda environment file
 
