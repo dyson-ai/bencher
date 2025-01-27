@@ -32,8 +32,6 @@ class Example1D(bch.ParametrizedSweep):
         super().__init__(**params)
         self.data1 = DataSource()
 
-
-
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         self.output = self.data1.call(self.index)

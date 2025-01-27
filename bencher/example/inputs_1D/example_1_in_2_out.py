@@ -34,8 +34,6 @@ class Example1D(bch.ParametrizedSweep):
         self.data1 = DataSource()
         self.data2 = DataSource()
 
-
-
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
         self.output = self.data1.call(self.index)
@@ -63,10 +61,10 @@ if __name__ == "__main__":
     # example_1_in_2_out(run_cfg, report)
 
     run_cfg.over_time = True
-    run_cfg.auto_plot=False
+    run_cfg.auto_plot = False
     for i in range(4):
         example_1_in_2_out(run_cfg, report)
-    
-    run_cfg.auto_plot=True
+
+    run_cfg.auto_plot = True
     example_1_in_2_out(run_cfg, report)
     report.show()

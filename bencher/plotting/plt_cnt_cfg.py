@@ -2,7 +2,6 @@ from __future__ import annotations
 import param
 from bencher.bench_cfg import BenchCfg
 from bencher.variables.results import PANEL_TYPES
-from copy import deepcopy
 
 from bencher.variables.inputs import (
     IntSweep,
