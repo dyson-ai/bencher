@@ -10,7 +10,7 @@ pip_language-toolchain:
   - pre-commit
 
 
-apt_docs:
-  - firefox
-  - chromium-browser
-  - chromium-chromedriver
+# apt_docs:
+#   - firefox
+#   - chromium-browser
+#   - chromium-chromedriver
