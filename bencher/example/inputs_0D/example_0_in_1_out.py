@@ -34,7 +34,7 @@ def example_0_in_1_out(
 
 
 if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg(repeats=100)
+    run_config = bch.BenchRunCfg(repeats=100)
     report = bch.BenchReport()
     # example_0_in_1_out(run_cfg, report).report.show()
 
@@ -43,12 +43,12 @@ if __name__ == "__main__":
     # for i in range(4):
     #     example_0_in_1_out(run_cfg, report)
 
-    run_cfg.over_time = True
-    run_cfg.auto_plot = False
+    run_config.over_time = True
+    run_config.auto_plot = False
     for i in range(4):
-        example_0_in_1_out(run_cfg, report)
+        example_0_in_1_out(run_config, report)
 
-    run_cfg.auto_plot = True
-    example_0_in_1_out(run_cfg, report)
+    run_config.auto_plot = True
+    example_0_in_1_out(run_config, report)
 
     report.show()
