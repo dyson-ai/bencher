@@ -100,7 +100,7 @@ class ComposableContainerVideo(ComposableContainerBase):
         print("rc", render_cfg)
         _, frame_duration = self.calculate_duration(float(len(self.container)), render_cfg)
         out = None
-        print(f"using compose type{render_cfg.compose_method}")
+        print(f"using compose type: {render_cfg.compose_method}")
         max_duration = 0.0
 
         for i in range(len(self.container)):
@@ -129,8 +129,8 @@ class ComposableContainerVideo(ComposableContainerBase):
             # case ComposeType.overlay:
             #     for i in range(len(self.container)):
             #         self.container[i].alpha = 1./len(self.container)
-            #     out = CompositeVideoClip(self.container, bg_color=render_args.background_col)
-            #     out.duration = fps
+            #     out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
+            #     # out.duration = fps
             case _:
                 raise RuntimeError("This compose type is not supported")
 
