@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.36.1"
+version = "1.36.2"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -71,6 +71,7 @@ nbsite = "==0.8.7"
 jupyter_bokeh = "*"
 selenium = "*"
 chromedriver_binary = "*"
+ipykernel = "*"
 
 [project.optional-dependencies]
 test = [

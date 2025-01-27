@@ -1952,8 +1952,8 @@ packages:
   timestamp: 1605162808667
 - pypi: .
   name: holobench
-  version: 1.36.1
-  sha256: b4b7fb19c5b623d7c58cb1a8c6ac012604e069bb739d3687bc63893a78c0b069
+  version: 1.36.2
+  sha256: 4bd6e6826f4cce6425955913132d8ec2777388ae9ef2ebb1d37883ea048f6bf2
   requires_dist:
   - holoviews>=1.15,<=1.20.0
   - numpy>=1.0,<=2.2.1
