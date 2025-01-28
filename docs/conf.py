@@ -55,8 +55,9 @@ nbsite_gallery_conf = {
             "title": "Reference Gallery",
             "intro": ("This shows examples of what various dimensionalities of sweep look like."),
             "sections": [
-                "0D_inputs",
-                "1D_inputs",
+                "0D",
+                "1D",
+                "2D",
             ],
             "skip_rst_notebook_directive": True,
         }
