@@ -106,9 +106,8 @@ def example_meta(
         description="""## All Combinations of Variable Sweeps and Resulting Plots
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
-            # bch.p("float_vars", [0, 1, 2, 3]),
-            bch.p("float_vars", [0, 1, 2]),
-            BenchMetaGen.param.categorical_vars,
+            bch.p("float_vars", [0, 1, 2, 3]),
+            "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
             # BenchMeta.param.sample_over_time,
         ],
