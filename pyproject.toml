@@ -72,7 +72,6 @@ jupyter_bokeh = "*"
 selenium = "*"
 chromedriver_binary = "*"
 ipykernel = "*"
-nbformat = "*"
 
 [project.optional-dependencies]
 test = [
@@ -83,6 +82,7 @@ test = [
     "ruff>=0.5.0,<=0.9.3",
     "coverage>=7.5.4,<=7.6.10",
     "pre-commit<=4.1.0",
+    "nbformat",
 ]
 
 
