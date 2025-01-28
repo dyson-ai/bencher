@@ -57,7 +57,8 @@ class BenchMetaGen(bch.ParametrizedSweep):
         ]
 
         input_vars = (
-            inputs_vars_float[0 : self.float_vars] + inputs_vars_cat[0 : self.categorical_vars]
+            inputs_vars_float[: self.float_vars]
+            + inputs_vars_cat[: self.categorical_vars]
         )
 
         res = bench.plot_sweep(
