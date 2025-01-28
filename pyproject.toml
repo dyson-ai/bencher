@@ -72,6 +72,7 @@ jupyter_bokeh = "*"
 selenium = "*"
 chromedriver_binary = "*"
 ipykernel = "*"
+nbformat = "*"
 
 [project.optional-dependencies]
 test = [
