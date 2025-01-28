@@ -87,9 +87,10 @@ res.to_auto_plots()
             nbf.v4.new_code_cell(code_gen),
             nbf.v4.new_code_cell(code_results),
         ]
-        fname = f"docs/reference/meta/ex_{title}.ipynb"
-        with open(fname, "w") as f:
-            nbf.write(nb, f)
+        from pathlib import Path
+
+        fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
+        fname.write_text(nbf.writes(nb))
 
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto()
