@@ -1,4 +1,4 @@
-# holobench
+holobench
 sphinxcontrib-napoleon
 sphinx-rtd-theme
 sphinx-autoapi

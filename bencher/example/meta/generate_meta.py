@@ -22,7 +22,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
     categorical_vars = bch.IntSweep(
         default=0, bounds=(0, 3), doc="The number of categorical variables that are swept"
     )
-    sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 10))
+    sample_with_repeats = bch.IntSweep(default=1, bounds=(1, 100))
 
     sample_over_time = bch.BoolSweep(default=False)
 
@@ -56,10 +56,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
             "negate_output",
         ]
 
-        input_vars = (
-            inputs_vars_float[: self.float_vars]
-            + inputs_vars_cat[: self.categorical_vars]
-        )
+        input_vars = inputs_vars_float[: self.float_vars] + inputs_vars_cat[: self.categorical_vars]
 
         res = bench.plot_sweep(
             "test",
@@ -73,7 +70,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         title = res.to_plot_title()
 
-        title = f"{len(input_vars)}_in"
+        title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
 
         nb = nbf.v4.new_notebook()
         text = f"""# {title}"""
@@ -117,9 +114,9 @@ def example_meta(
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
             # bch.p("float_vars", [0, 1, 2, 3]),
-            bch.p("float_vars", [0, 1]),
-            # BenchMetaGen.param.categorical_vars,
-            # bch.p("sample_with_repeats", [1, 2]),
+            bch.p("float_vars", [0, 1, 2]),
+            BenchMetaGen.param.categorical_vars,
+            bch.p("sample_with_repeats", [1, 20]),
             # BenchMeta.param.sample_over_time,
         ],
         const_vars=[
