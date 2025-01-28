@@ -1,14 +1,7 @@
 import nbformat as nbf
 from typing import Any
 import bencher as bch
-import numpy as np
 
-from enum import auto
-from strenum import StrEnum
-import random
-import holoviews as hv
-import math
-from pathlib import Path
 
 from bencher.example.meta.example_meta import BenchableObject
 
