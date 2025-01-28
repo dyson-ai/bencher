@@ -58,6 +58,7 @@ nbsite_gallery_conf = {
                 "0D",
                 "1D",
                 "2D",
+                "meta",
             ],
             "skip_rst_notebook_directive": True,
         }
