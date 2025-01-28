@@ -39,7 +39,9 @@ class BenchMetaGen(bch.ParametrizedSweep):
         run_cfg.over_time = self.sample_over_time
         run_cfg.plot_size = 500
 
-        bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
+        # bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
+
+        bench = BenchableObject().to_bench(run_cfg)
 
         inputs_vars_float = [
             "float1",
@@ -58,11 +60,6 @@ class BenchMetaGen(bch.ParametrizedSweep):
             inputs_vars_float[0 : self.float_vars] + inputs_vars_cat[0 : self.categorical_vars]
         )
 
-        print(input_vars)
-        print("inputsfjkdfjslkjf", input_vars)
-
-        inputs_str = str(input_vars)
-
         res = bench.plot_sweep(
             "test",
             input_vars=input_vars,
@@ -80,23 +77,28 @@ class BenchMetaGen(bch.ParametrizedSweep):
         nb = nbf.v4.new_notebook()
         text = f"""# {title}"""
 
-        code = f"""
-
+        code_gen = f"""
+%%capture
 import bencher as bch
-from bencher.example.meta.example_meta import BenchMeta
+from bencher.example.meta.example_meta import BenchableObject
 
-bench = BenchMeta().to_bench(bch.BenchRunCfg())
-bench.plot_sweep(input_vars={input_vars}, const_vars=dict(float_vars=2,level=5))
-bench.report.show()
+bench = BenchableObject().to_bench(bch.BenchRunCfg())
+res=bench.plot_sweep(input_vars={input_vars},result_vars=["distance"])
+"""
+        code_results = """
+from bokeh.io import output_notebook
+output_notebook()
+res.to_auto_plots()
 """
 
-        nb["cells"] = [nbf.v4.new_markdown_cell(text), nbf.v4.new_code_cell(code)]
-        fname = "test.ipynb"
-
-        # print(Path())
+        nb["cells"] = [
+            nbf.v4.new_markdown_cell(text),
+            nbf.v4.new_code_cell(code_gen),
+            nbf.v4.new_code_cell(code_results),
+        ]
+        fname = f"docs/reference/meta/ex_{title}.ipynb"
         with open(fname, "w") as f:
-            # nbf.write(nb, f"ex_{title.replace(" ","_")}.ipynb")
-            nbf.write(nb, f"docs/reference/meta/ex_{title}.ipynb")
+            nbf.write(nb, f)
 
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto()
