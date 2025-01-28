@@ -90,7 +90,7 @@ res.to_auto_plots()
         from pathlib import Path
 
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
-        fname.write_text(nbf.writes(nb))
+        fname.write_text(nbf.writes(nb), encoding="utf-8")
 
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto()
