@@ -2,11 +2,10 @@
 
 This is a gallery of plots
 
-<meta http-equiv="refresh" content="0; url=reference/index.html">
+reference/index
 
 ```{toctree}
 :maxdepth: 3
 
-reference/index
 intro
 ```
