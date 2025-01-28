@@ -126,15 +126,13 @@ class IntSweep(Integer, SweepBase):
 
         if not isinstance(val, (int, np.integer)):
             raise ValueError(
-                "Integer parameter %r must be an integer, " "not type %r." % (self.name, type(val))
+                "Integer parameter %r must be an integer, not type %r." % (self.name, type(val))
             )
 
     ###THESE ARE COPIES OF INTEGER VALIDATION BUT ALSO ALLOW NUMPY INT TYPES
     def _validate_step(self, val, step):
         if step is not None and not isinstance(step, (int, np.integer)):
-            raise ValueError(
-                "Step can only be None or an " "integer value, not type %r" % type(step)
-            )
+            raise ValueError("Step can only be None or an integer value, not type %r" % type(step))
 
 
 class FloatSweep(Number, SweepBase):

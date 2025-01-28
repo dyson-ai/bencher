@@ -162,7 +162,7 @@ class FutureCache:
         logging.info(f"cache calls: {self.worker_cache_call_count}")
         logging.info(f"worker calls: {self.worker_fn_call_count}")
         if self.cache:
-            return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
+            return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit / 1000000)}MB"
         return ""
 
 
