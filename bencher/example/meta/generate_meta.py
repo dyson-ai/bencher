@@ -51,17 +51,17 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         input_vars = inputs_vars_float[: self.float_vars] + inputs_vars_cat[: self.categorical_vars]
 
-        res = bench.plot_sweep(
-            "test",
-            input_vars=input_vars,
-            result_vars=[BenchableObject.param.distance],
-            # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
-            # result_vars=[ BenchableObject.param.sample_noise],
-            # result_vars=[BenchableObject.param.result_hmap],
-            plot_callbacks=False,
-        )
+        # res = bench.plot_sweep(
+        #     "test",
+        #     input_vars=input_vars,
+        #     result_vars=[BenchableObject.param.distance],
+        #     # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+        #     # result_vars=[ BenchableObject.param.sample_noise],
+        #     # result_vars=[BenchableObject.param.result_hmap],
+        #     plot_callbacks=False,
+        # )
 
-        title = res.to_plot_title()
+        # title = res.to_plot_title()
 
         title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
 
