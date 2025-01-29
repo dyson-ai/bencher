@@ -7,6 +7,8 @@ from bencher.example.meta.example_meta_float import example_meta_float
 
 
 def example_docs(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
+    if report is None:
+        report = bch.BenchReport()
     # b_run = bch.BenchRunner("bench_runner_test", run_cfg=run_cfg)
     # b_run.add_run(example_categorical)
     # b_run.add_run(example_floats)
