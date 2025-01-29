@@ -6,9 +6,7 @@ import bencher as bch
 from bencher.example.benchmark_data import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
 
-def example_pareto(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_pareto(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     """Example of how to calculate the pareto front of a parameter sweep
 
     Args:

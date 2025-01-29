@@ -73,9 +73,7 @@ def plot_holo(self, plot=True) -> hv.core.ViewableElement:
     return None
 
 
-def example_holosweep(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_holosweep(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     # wv = PlotFunctions()
 
     bench = bch.Bench(

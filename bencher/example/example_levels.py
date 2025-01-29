@@ -161,9 +161,7 @@ def run_levels_2D(bench: bch.Bench) -> bch.Bench:
     return bench
 
 
-def run_levels(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def run_levels(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     hv.extension("bokeh")
     opts.defaults(
         opts.Curve(show_legend=False),
