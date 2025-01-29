@@ -21,6 +21,8 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
     level = bch.IntSweep(default=2, units="level", bounds=(2, 5))
 
+    run_bench = False
+
     plots = bch.ResultReference(units="int")
 
     def __call__(self, **kwargs: Any) -> Any:
@@ -33,8 +35,6 @@ class BenchMetaGen(bch.ParametrizedSweep):
         run_cfg.plot_size = 500
 
         # bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
-
-        bench = BenchableObject().to_bench(run_cfg)
 
         inputs_vars_float = [
             "float1",
@@ -51,17 +51,19 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         input_vars = inputs_vars_float[: self.float_vars] + inputs_vars_cat[: self.categorical_vars]
 
-        res = bench.plot_sweep(
-            "test",
-            input_vars=input_vars,
-            result_vars=[BenchableObject.param.distance],
-            # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
-            # result_vars=[ BenchableObject.param.sample_noise],
-            # result_vars=[BenchableObject.param.result_hmap],
-            plot_callbacks=False,
-        )
-
-        title = res.to_plot_title()
+        if self.run_bench:
+            bench = BenchableObject().to_bench(run_cfg)
+            res = bench.plot_sweep(
+                "test",
+                input_vars=input_vars,
+                result_vars=[BenchableObject.param.distance],
+                # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+                # result_vars=[ BenchableObject.param.sample_noise],
+                # result_vars=[BenchableObject.param.result_hmap],
+                plot_callbacks=False,
+            )
+            self.plots = bch.ResultReference()
+            self.plots.obj = res.to_auto()
 
         title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
 
@@ -92,8 +94,6 @@ res.to_auto_plots()
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
-        self.plots = bch.ResultReference()
-        self.plots.obj = res.to_auto()
         return super().__call__()
 
 
