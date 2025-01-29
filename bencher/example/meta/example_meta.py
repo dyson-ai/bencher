@@ -20,7 +20,7 @@ class NoiseDistribution(StrEnum):
         if noisy:
             match noise_distribution:
                 case NoiseDistribution.uniform:
-                    return random.uniform(0, sigma)
+                    return random.uniform(-sigma / 2.0, sigma / 2)
                 case NoiseDistribution.gaussian:
                     return random.gauss(0, sigma)
         return 0.0
