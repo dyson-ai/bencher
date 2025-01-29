@@ -34,8 +34,6 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         # bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
 
-        bench = BenchableObject().to_bench(run_cfg)
-
         inputs_vars_float = [
             "float1",
             "float2",
@@ -51,6 +49,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         input_vars = inputs_vars_float[: self.float_vars] + inputs_vars_cat[: self.categorical_vars]
 
+        # bench = BenchableObject().to_bench(run_cfg)
         # res = bench.plot_sweep(
         #     "test",
         #     input_vars=input_vars,
