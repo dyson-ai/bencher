@@ -1,0 +1,11 @@
+@media screen and (min-width: 76.25em) {
+    .wy-nav-content {
+        max-width: none;
+        /* Removes the fixed maximum width */
+        width: auto;
+        /* Or 100%; 
+                           depending on how you want the layout to behave */
+        margin: 0 2em;
+        /* Optional: add some horizontal margin for readability */
+    }
+}
