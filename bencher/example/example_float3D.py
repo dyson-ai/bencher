@@ -47,9 +47,7 @@ class VolumeSweep(bch.ParametrizedSweep):
         return super().__call__()
 
 
-def example_floats3D(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_floats3D(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     """Example of how to perform a 3D floating point parameter sweep
 
     Args:
