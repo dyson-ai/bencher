@@ -34,7 +34,7 @@ class BenchableObject(bch.ParametrizedSweep):
     float2 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="y coordinate of the sample volume")
     float3 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="z coordinate of the sample volume")
 
-    sigma = bch.FloatSweep(default=1, bounds=[1, 10], doc="standard deviation of the added noise")
+    sigma = bch.FloatSweep(default=0.2, bounds=[0, 10], doc="standard deviation of the added noise")
 
     # categorial variables
     noisy = bch.BoolSweep(
