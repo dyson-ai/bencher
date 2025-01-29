@@ -20,7 +20,7 @@ class NoiseDistribution(StrEnum):
         if noisy:
             match noise_distribution:
                 case NoiseDistribution.uniform:
-                    return random.uniform(0, sigma)
+                    return random.uniform(-sigma / 2.0, sigma / 2)
                 case NoiseDistribution.gaussian:
                     return random.gauss(0, sigma)
         return 0.0
@@ -34,7 +34,7 @@ class BenchableObject(bch.ParametrizedSweep):
     float2 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="y coordinate of the sample volume")
     float3 = bch.FloatSweep(default=0, bounds=[0, 1.0], doc="z coordinate of the sample volume")
 
-    sigma = bch.FloatSweep(default=1, bounds=[1, 10], doc="standard deviation of the added noise")
+    sigma = bch.FloatSweep(default=0.2, bounds=[0, 10], doc="standard deviation of the added noise")
 
     # categorial variables
     noisy = bch.BoolSweep(
@@ -141,9 +141,7 @@ class BenchMeta(bch.ParametrizedSweep):
         return super().__call__()
 
 
-def example_meta(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_meta(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = BenchMeta().to_bench(run_cfg, report)
 
     bench.plot_sweep(

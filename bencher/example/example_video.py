@@ -75,9 +75,7 @@ class TuringPattern(bch.ParametrizedSweep):
         return super().__call__()
 
 
-def example_video(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_video(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = TuringPattern().to_bench(run_cfg, report)
 
     bench.plot_sweep(
@@ -90,7 +88,7 @@ def example_video(
 
 
 def example_video_tap(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:  # pragma: no cover
     bench = TuringPattern().to_bench(run_cfg=run_cfg, report=report)
     res = bench.plot_sweep(input_vars=["alpha", "beta"])

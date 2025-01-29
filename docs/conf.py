@@ -35,7 +35,10 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # html_theme = "pydata_sphinx_theme"
 html_theme = "sphinx_rtd_theme"
-# html_static_path = ["_static"]
+html_static_path = ["_static"]
+html_css_files = [
+    "custom.css",
+]
 
 autoapi_dirs = ["../bencher"]
 autoapi_ignore = ["*example_*", "*example*", "*experimental*"]
@@ -58,6 +61,7 @@ nbsite_gallery_conf = {
                 "0D",
                 "1D",
                 "2D",
+                "Levels",
                 "meta",
             ],
             "skip_rst_notebook_directive": True,

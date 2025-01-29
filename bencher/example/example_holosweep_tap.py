@@ -79,7 +79,7 @@ class PlotFunctions(bch.ParametrizedSweep):
 
 
 def example_holosweep_tap(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     wv = PlotFunctions()
 
@@ -101,7 +101,7 @@ def example_holosweep_tap(
 
 
 def example_holosweep_tap_slider(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:  # pragma: no cover
     wv = PlotFunctions()
 
