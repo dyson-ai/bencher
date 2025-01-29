@@ -60,8 +60,8 @@ class BenchMetaGen(bch.ParametrizedSweep):
         #     # result_vars=[BenchableObject.param.result_hmap],
         #     plot_callbacks=False,
         # )
-
-        # title = res.to_plot_title()
+        # self.plots = bch.ResultReference()
+        # self.plots.obj = res.to_auto()
 
         title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
 
@@ -92,8 +92,6 @@ res.to_auto_plots()
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
-        self.plots = bch.ResultReference()
-        self.plots.obj = res.to_auto()
         return super().__call__()
 
 
