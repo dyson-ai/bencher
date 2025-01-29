@@ -21,6 +21,8 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
     level = bch.IntSweep(default=2, units="level", bounds=(2, 5))
 
+    run_bench = False
+
     plots = bch.ResultReference(units="int")
 
     def __call__(self, **kwargs: Any) -> Any:
@@ -49,18 +51,19 @@ class BenchMetaGen(bch.ParametrizedSweep):
 
         input_vars = inputs_vars_float[: self.float_vars] + inputs_vars_cat[: self.categorical_vars]
 
-        # bench = BenchableObject().to_bench(run_cfg)
-        # res = bench.plot_sweep(
-        #     "test",
-        #     input_vars=input_vars,
-        #     result_vars=[BenchableObject.param.distance],
-        #     # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
-        #     # result_vars=[ BenchableObject.param.sample_noise],
-        #     # result_vars=[BenchableObject.param.result_hmap],
-        #     plot_callbacks=False,
-        # )
-        # self.plots = bch.ResultReference()
-        # self.plots.obj = res.to_auto()
+        if self.run_bench:
+            bench = BenchableObject().to_bench(run_cfg)
+            res = bench.plot_sweep(
+                "test",
+                input_vars=input_vars,
+                result_vars=[BenchableObject.param.distance],
+                # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
+                # result_vars=[ BenchableObject.param.sample_noise],
+                # result_vars=[BenchableObject.param.result_hmap],
+                plot_callbacks=False,
+            )
+            self.plots = bch.ResultReference()
+            self.plots.obj = res.to_auto()
 
         title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
 
