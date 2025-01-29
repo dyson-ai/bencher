@@ -55,9 +55,7 @@ class BenchPolygons(bch.ParametrizedSweep):
         return filename
 
 
-def example_image(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_image(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     run_cfg.cache_results = False
     bench = bch.Bench("polygons", BenchPolygons(), run_cfg=run_cfg, report=report)
 
@@ -131,7 +129,7 @@ if __name__ == "__main__":
         return bench
 
     def example_image_vid_sequential(
-        run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
+        run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
     ) -> bch.Bench:
         bench = BenchPolygons().to_bench(run_cfg, report)
         bench.add_plot_callback(bch.BenchResult.to_title)

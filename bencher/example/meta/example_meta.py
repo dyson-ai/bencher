@@ -141,9 +141,7 @@ class BenchMeta(bch.ParametrizedSweep):
         return super().__call__()
 
 
-def example_meta(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_meta(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = BenchMeta().to_bench(run_cfg, report)
 
     bench.plot_sweep(
