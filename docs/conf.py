@@ -62,6 +62,7 @@ nbsite_gallery_conf = {
                 "1D",
                 "2D",
                 "Levels",
+                "examples",
                 "meta",
             ],
             "skip_rst_notebook_directive": True,
