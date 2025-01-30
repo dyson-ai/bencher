@@ -16,14 +16,13 @@ class SimpleFloat(bch.ParametrizedSweep):
         return super().__call__(**kwargs)
 
 
-def example_1D_float(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
+def example_simple_float(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
 
     bench = SimpleFloat().to_bench(run_cfg, report)
     bench.plot_sweep()
-    bench.report.append(bench.get_result().to_explorer())
     return bench
 
 
 if __name__ == "__main__":
-    example_1D_float().report.show()
+    example_simple_float().report.show()
