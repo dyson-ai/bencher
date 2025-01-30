@@ -108,7 +108,7 @@ This uses bencher to display all the combinations of plots bencher is able to pr
             bch.p("float_vars", [0, 1, 2, 3]),
             "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
-            # BenchMeta.param.sample_over_time,
+            "sample_over_time",
         ],
         const_vars=[
             # BenchMeta.param.float_vars.with_const(1),
