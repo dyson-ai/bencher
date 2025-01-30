@@ -1,18 +1,15 @@
 import nbformat as nbf
-from typing import Any
-import bencher as bch
 from pathlib import Path
 
 
-def convert_example_to_jupyter_notebook(filename:str):
-    source_path = Path.home()/filename
-
+def convert_example_to_jupyter_notebook(filename: str):
+    source_path = Path.home() / filename
 
     source_path.read_text()
 
     nb = nbf.v4.new_notebook()
     title = source_path.stem
-    function_name= source_path.stem+"()"
+    function_name = source_path.stem + "()"
     text = f"""# {title}"""
 
     code = "%%capture\n"
@@ -21,8 +18,7 @@ def convert_example_to_jupyter_notebook(filename:str):
     split_code = example_code.split("""if __name__ == "__main__":""")
     code += split_code[0]
 
-
-    code+= f"""
+    code += f"""
 bench={function_name}
 """
 
@@ -42,9 +38,7 @@ bench.get_result().to_auto_plots()
     output_path.write_text(nbf.writes(nb), encoding="utf-8")
 
 
-
-
-
-
 if __name__ == "__main__":
-    convert_example_to_jupyter_notebook("/home/ags/projects/bencher/bencher/example/example_simple_float.py")
+    convert_example_to_jupyter_notebook(
+        "/home/ags/projects/bencher/bencher/example/example_simple_float.py"
+    )
