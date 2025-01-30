@@ -73,7 +73,7 @@ import bencher as bch
 from bencher.example.meta.example_meta import BenchableObject
 
 bench = BenchableObject().to_bench(bch.BenchRunCfg())
-res=bench.plot_sweep(input_vars={input_vars},result_vars=["distance"])
+res=bench.plot_sweep(input_vars={input_vars},result_vars=["distance","sample_noise"])
 """
         code_results = """
 from bokeh.io import output_notebook
