@@ -213,3 +213,14 @@ class ParametrizedSweep(Parameterized):
             name = self.name[:-5]  # param adds 5 digit number to the end, so remove it
 
         return Bench(name, self, run_cfg=run_cfg, report=report)
+
+    # TODO Add type hints here and fix the circular imports
+    def to_bench_runner(self, run_cfg: BenchRunCfg = None, report=None, name: str = None):
+        from bencher import BenchRunner
+
+        assert isinstance(self, ParametrizedSweep)
+
+        if name is None:
+            name = self.name[:-5]  # param adds 5 digit number to the end, so remove it
+
+        return BenchRunner(name, self, run_cfg=run_cfg, report=report)
