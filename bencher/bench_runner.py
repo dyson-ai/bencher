@@ -8,7 +8,7 @@ from copy import deepcopy
 
 
 class Benchable(Protocol):
-    def bench(self, run_cfg: BenchRunCfg, report: BenchReport) -> BenchCfg:
+    def bench(self, run_cfg: BenchRunCfg, report: BenchReport) -> Bench:
         raise NotImplementedError
 
 
@@ -22,6 +22,13 @@ class BenchRunner:
         run_cfg: BenchRunCfg = BenchRunCfg(),
         publisher: Callable = None,
     ) -> None:
+        # print("lskdjflskdjfsldkjfksldjf")
+        # print(name)
+        # if isinstance(name,Benchable):
+        #     print("slkfjsdlkfjasldf")
+        #     self.name = name.__qualname__
+        #     self.add_run(name)
+        # else:
         self.name = name
         self.run_cfg = BenchRunner.setup_run_cfg(run_cfg)
         self.bench_fns = []

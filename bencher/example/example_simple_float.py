@@ -27,4 +27,14 @@ def example_simple_float(
 
 
 if __name__ == "__main__":
-    example_simple_float().report.show()
+    print("sdlkfjsd")
+    
+    bench_runner = bch.BenchRunner.from_parametrized_sweep(SimpleFloat())
+    # bench_runner =bch.BenchRunner(example_simple_float)
+
+    # print(bench_runner.name)
+    # print(bench_runner.bench_fns)
+
+    bench_runner.run(show=True)
+
+    # example_simple_float().report.show()
