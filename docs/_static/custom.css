@@ -1,0 +1,45 @@
+/* Allow content to take up full width but enable scrolling when necessary */
+.wy-nav-content {
+    max-width: none;
+    /* Expand the content width */
+    width: 100%;
+    margin: 0 auto;
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    white-space: normal;
+    /* Prevent inline elements from forcing overflow */
+}
+
+/* Prevent tables from overflowing and allow scrolling */
+.wy-table-responsive table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Ensure code blocks do not exceed screen width */
+.rst-content pre {
+    white-space: pre-wrap;
+    /* Wrap code blocks properly */
+    word-wrap: break-word;
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+}
+
+/* Prevent entire page from breaking on overflow */
+html,
+body {
+    overflow-x: auto;
+}
+
+/* Optional: Ensure figures and images do not exceed screen width */
+.rst-content img,
+.rst-content figure {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Optional: If there's a specific content block overflowing, target it */
+.wy-nav-content-wrap {
+    overflow-x: auto;
+}

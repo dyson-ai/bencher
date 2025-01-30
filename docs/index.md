@@ -1,6 +1,5 @@
 # Welcome to bencher's documentation!
 
-
 ```{toctree}
 :maxdepth: 3
 
