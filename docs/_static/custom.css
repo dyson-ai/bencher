@@ -1,64 +1,45 @@
-/* Make the main content area expand to fit the screen width */
-@media screen and (min-width: 76.25em) {
-    .wy-nav-content {
-        max-width: none;
-        /* Remove fixed max width */
-        width: auto;
-        /* Allow it to expand */
-        margin: 0 2em;
-        /* Add some margin for readability */
-        overflow-x: auto;
-        /* Enable horizontal scrolling if content overflows */
-    }
-}
-
-/* Ensure the entire page allows horizontal scrolling if needed */
-html,
-body {
+/* Allow content to take up full width but enable scrolling when necessary */
+.wy-nav-content {
+    max-width: none;
+    /* Expand the content width */
+    width: 100%;
+    margin: 0 auto;
     overflow-x: auto;
-    /* Allow scrolling */
+    /* Enable horizontal scrolling */
+    white-space: normal;
+    /* Prevent inline elements from forcing overflow */
 }
 
-/* Prevent tables from overflowing and enable horizontal scrolling */
+/* Prevent tables from overflowing and allow scrolling */
 .wy-table-responsive table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-    /* Prevents table content from wrapping */
 }
 
-/* Prevent code blocks from overflowing and allow scrolling */
+/* Ensure code blocks do not exceed screen width */
 .rst-content pre {
     white-space: pre-wrap;
-    /* Wrap long lines properly */
+    /* Wrap code blocks properly */
     word-wrap: break-word;
     overflow-x: auto;
-    /* Allow horizontal scrolling if needed */
+    /* Enable horizontal scrolling */
 }
 
-/* Ensure inline code elements wrap correctly */
-code {
-    word-break: break-word;
+/* Prevent entire page from breaking on overflow */
+html,
+body {
+    overflow-x: auto;
 }
 
-/* Adjust sidebar width if needed */
-.wy-side-nav-search {
-    max-width: 300px;
-    /* Adjust this value if you need a wider sidebar */
-}
-
-/* Optional: Make images responsive */
-.rst-content img {
+/* Optional: Ensure figures and images do not exceed screen width */
+.rst-content img,
+.rst-content figure {
     max-width: 100%;
     height: auto;
 }
 
-/* Optional: Improve readability for wide screens */
-@media screen and (min-width: 1200px) {
-    .wy-nav-content {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 90vw;
-        /* Limit width to 90% of the viewport */
-    }
+/* Optional: If there's a specific content block overflowing, target it */
+.wy-nav-content-wrap {
+    overflow-x: auto;
 }
