@@ -1,0 +1,23 @@
+import bencher as bch
+from bencher.example.meta.example_meta import BenchMeta
+
+
+def example_meta_float(
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
+) -> bch.Bench:
+    bench = BenchMeta().to_bench(run_cfg, report)
+
+    bench.plot_sweep(
+        title="Sweeping Floating Point Variables",
+        input_vars=[bch.p("float_vars", [3])],
+        const_vars=[
+            BenchMeta.param.categorical_vars.with_const(2),
+            BenchMeta.param.level.with_const(4),
+        ],
+    )
+
+    return bench
+
+
+if __name__ == "__main__":
+    example_meta_float().report.show()

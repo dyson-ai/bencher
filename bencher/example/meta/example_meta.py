@@ -40,7 +40,7 @@ class BenchableObject(bch.ParametrizedSweep):
     noisy = bch.BoolSweep(
         default=False, doc="Optionally add random noise to the output of the function"
     )
-    noise_distribution = bch.EnumSweep(NoiseDistribution, doc=NoiseDistribution.__doc__)
+    noise_distribution = bch.EnumSweep(NoiseDistribution)
 
     negate_output = bch.StringSweep(["positive", "negative"])
 
@@ -89,8 +89,6 @@ class BenchMeta(bch.ParametrizedSweep):
 
     level = bch.IntSweep(default=2, units="level", bounds=(2, 5))
 
-    # plots = bch.ResultHmap()
-    # plots = bch.ResultContainer()
     plots = bch.ResultReference(units="int")
 
     def __call__(self, **kwargs: Any) -> Any:
@@ -102,7 +100,7 @@ class BenchMeta(bch.ParametrizedSweep):
         run_cfg.over_time = self.sample_over_time
         run_cfg.plot_size = 500
 
-        bench = bch.Bench("benchable", BenchableObject(), run_cfg=run_cfg)
+        bench = BenchableObject().to_bench(run_cfg)
 
         inputs_vars_float = [
             "float1",
@@ -121,6 +119,8 @@ class BenchMeta(bch.ParametrizedSweep):
             inputs_vars_float[0 : self.float_vars] + inputs_vars_cat[0 : self.categorical_vars]
         )
 
+        print(input_vars)
+        exit()
         res = bench.plot_sweep(
             "test",
             input_vars=input_vars,
@@ -133,11 +133,6 @@ class BenchMeta(bch.ParametrizedSweep):
 
         self.plots = bch.ResultReference()
         self.plots.obj = res.to_auto()
-
-        # self.plots.obj = res.to_heatmap_multi()
-
-        # self.plots.obj = res.to_line_multi(width=500, height=300)
-
         return super().__call__()
 
 
