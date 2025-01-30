@@ -5,11 +5,9 @@ from pathlib import Path
 def convert_example_to_jupyter_notebook(filename: str):
     source_path = Path.home() / filename
 
-    source_path.read_text()
-
     nb = nbf.v4.new_notebook()
     title = source_path.stem
-    function_name = source_path.stem + "()"
+    function_name = f"{source_path.stem}()"
     text = f"""# {title}"""
 
     code = "%%capture\n"
