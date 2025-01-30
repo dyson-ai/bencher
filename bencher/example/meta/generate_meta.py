@@ -72,7 +72,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
 import bencher as bch
 from bencher.example.meta.example_meta import BenchableObject
 
-bench = BenchableObject().to_bench(bch.BenchRunCfg())
+bench = BenchableObject().to_bench(bch.BenchRunCfg(over_time={self.sample_over_time}))
 res=bench.plot_sweep(input_vars={input_vars},result_vars=["distance"])
 """
         code_results = """
