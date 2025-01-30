@@ -1,11 +1,64 @@
+/* Make the main content area expand to fit the screen width */
 @media screen and (min-width: 76.25em) {
     .wy-nav-content {
         max-width: none;
-        /* Removes the fixed maximum width */
+        /* Remove fixed max width */
         width: auto;
-        /* Or 100%; 
-                           depending on how you want the layout to behave */
+        /* Allow it to expand */
         margin: 0 2em;
-        /* Optional: add some horizontal margin for readability */
+        /* Add some margin for readability */
+        overflow-x: auto;
+        /* Enable horizontal scrolling if content overflows */
+    }
+}
+
+/* Ensure the entire page allows horizontal scrolling if needed */
+html,
+body {
+    overflow-x: auto;
+    /* Allow scrolling */
+}
+
+/* Prevent tables from overflowing and enable horizontal scrolling */
+.wy-table-responsive table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    /* Prevents table content from wrapping */
+}
+
+/* Prevent code blocks from overflowing and allow scrolling */
+.rst-content pre {
+    white-space: pre-wrap;
+    /* Wrap long lines properly */
+    word-wrap: break-word;
+    overflow-x: auto;
+    /* Allow horizontal scrolling if needed */
+}
+
+/* Ensure inline code elements wrap correctly */
+code {
+    word-break: break-word;
+}
+
+/* Adjust sidebar width if needed */
+.wy-side-nav-search {
+    max-width: 300px;
+    /* Adjust this value if you need a wider sidebar */
+}
+
+/* Optional: Make images responsive */
+.rst-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Optional: Improve readability for wide screens */
+@media screen and (min-width: 1200px) {
+    .wy-nav-content {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 90vw;
+        /* Limit width to 90% of the viewport */
     }
 }
