@@ -120,7 +120,10 @@ This uses bencher to display all the combinations of plots bencher is able to pr
 
     return bench
 
-def example_meta_over_time(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
+
+def example_meta_over_time(
+    run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
+) -> bch.Bench:
     bench = BenchMetaGen().to_bench(run_cfg, report)
 
     bench.plot_sweep(
@@ -129,13 +132,12 @@ def example_meta_over_time(run_cfg: bch.BenchRunCfg = None, report: bch.BenchRep
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
             bch.p("float_vars", [0, 1]),
-            bch.p("categorical_vars",[0,1,2]),
+            bch.p("categorical_vars", [0, 1, 2]),
             bch.p("sample_with_repeats", [1, 20]),
             "sample_over_time",
         ],
     )
     return bench
-
 
 
 if __name__ == "__main__":
