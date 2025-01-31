@@ -1,26 +1,38 @@
-/* Ensure the main content fills 95% of the screen width */
+/* Ensure the main content fills 96% of the screen width */
 .wy-nav-content {
-    width: 95%;
-    /* Make content take up 95% of the viewport */
+    width: 96%;
+    /* Expand content width */
     max-width: none;
-    /* Remove any existing max-width restrictions */
-    margin-left: 0;
-    /* Align content to the left */
-    margin-right: 0;
-    /* Prevent centering */
+    /* Remove any max-width limitations */
+    margin-left: 1;
+    /* Align left */
+    margin-right: 1;
     overflow-x: auto;
-    /* Enable horizontal scrolling if content overflows */
-}
-
-/* Ensure body allows horizontal scrolling */
-html,
-body {
-    overflow-x: auto;
-    width: 100%;
+    /* Allow horizontal scrolling */
 }
 
 /* Force horizontal scrollbar to always be visible */
+html,
 body {
     overflow-x: scroll !important;
-    /* Always show the horizontal scrollbar */
+    /* Always show scrollbar */
+    width: 101vw;
+    /* Force full viewport width */
+}
+
+/* Prevent hidden scrollbars (some browsers hide them by default) */
+body::-webkit-scrollbar {
+    height: 13px;
+    /* Ensure scrollbar is visible (adjust as needed) */
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #889;
+    /* Style the scrollbar thumb */
+    border-radius: 7px;
+}
+
+body::-webkit-scrollbar-track {
+    background: #f2f1f1;
+    /* Style the scrollbar track */
 }
