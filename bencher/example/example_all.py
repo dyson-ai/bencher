@@ -5,7 +5,7 @@ from bencher.example.example_floats import example_floats
 from bencher.example.example_floats2D import example_floats2D
 from bencher.example.example_pareto import example_pareto
 from bencher.example.example_simple_cat import example_1D_cat
-from bencher.example.example_simple_float import example_simple_float
+from bencher.example.example_simple_float import example_1D_float
 from bencher.example.example_float_cat import example_float_cat
 from bencher.example.example_time_event import example_time_event
 from bencher.example.example_float3D import example_floats3D
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     bench_runner.add_run(example_floats2D)
     bench_runner.add_run(example_floats3D)
     bench_runner.add_run(example_1D_cat)
-    bench_runner.add_run(example_simple_float)
+    bench_runner.add_run(example_1D_float)
     bench_runner.add_run(example_pareto)
     bench_runner.add_run(example_float_cat)
     bench_runner.add_run(example_time_event)

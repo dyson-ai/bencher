@@ -84,7 +84,6 @@ Start with example_simple_float.py and explore other examples based on your data
 
 ## Documentation
 
-- [Examples Documentation](https://bencher.readthedocs.io/reference/index.html)
-- [API documentation](https://bencher.readthedocs.io/autoapi/bencher/index.html)
+API documentation can be found at https://bencher.readthedocs.io/en/latest/
 
 More documentation is needed for the examples and general workflow. 
