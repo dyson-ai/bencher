@@ -1,35 +1,9 @@
-/* Ensure the main content area utilizes the full available width */
+/* _static/css/custom.css */
 .wy-nav-content {
-    max-width: none;
-    /* Remove max-width constraints */
-    width: auto;
-    /* Allow width to adjust based on content */
-    margin-left: 0;
-    /* Align content to the left */
-    margin-right: 0;
-    overflow-x: auto;
-    /* Enable horizontal scrolling when necessary */
-}
+    /* Remove Read the Docs theme's default max-width so the content can stretch */
+    max-width: none !important;
 
-/* Ensure horizontal scrollbar is always visible */
-.wy-nav-content {
-    overflow-x: scroll;
-    /* Always show horizontal scrollbar */
-}
-
-/* Optional: Style the scrollbar for better visibility */
-.wy-nav-content::-webkit-scrollbar {
-    height: 12px;
-    /* Set the height of the scrollbar */
-}
-
-.wy-nav-content::-webkit-scrollbar-thumb {
-    background: #888;
-    /* Color of the scrollbar thumb */
-    border-radius: 6px;
-}
-
-.wy-nav-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    /* Color of the scrollbar track */
+    /* By default, overflow-x: auto only shows a scrollbar if there's actual overflow.
+       If you prefer the scrollbar to be always visible, use 'scroll' instead of 'auto'. */
+    overflow-x: auto !important;
 }
