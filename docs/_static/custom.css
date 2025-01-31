@@ -1,23 +1,7 @@
-/* Remove max-width constraint and allow full-width expansion */
 .wy-nav-content {
     max-width: none !important;
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-/* Enable horizontal scrolling ONLY for the main content */
-.wy-nav-content {
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-}
-
-/* Ensure content wrapper fills available width */
-.wy-nav-content-wrap {
-    min-width: 100% !important;
-}
-
-/* Optional: Prevent line breaks in literal blocks (if desired) */
-code.literal,
-.rst-content tt.literal {
-    white-space: nowrap !important;
+    overflow-x: scroll !important;
+    /* always show horizontal scrollbar */
+    overflow-y: auto !important;
+    /* preserve normal vertical scrolling */
 }
