@@ -1,16 +1,20 @@
-/* Expand main content width to 95% while keeping it left-aligned */
+/* Ensure the main content fills 95% of the screen width */
 .wy-nav-content {
     width: 95%;
-    /* Set width to 95% of screen */
+    /* Make content take up 95% of the viewport */
+    max-width: none;
+    /* Remove any existing max-width restrictions */
     margin-left: 0;
-    /* Align to the left */
-    margin-right: auto;
+    /* Align content to the left */
+    margin-right: 0;
+    /* Prevent centering */
     overflow-x: auto;
-    /* Enable horizontal scrolling when needed */
+    /* Enable horizontal scrolling if content overflows */
 }
 
-/* Allow full page horizontal scrolling if content exceeds width */
+/* Allow full-page horizontal scrolling when needed */
 html,
 body {
     overflow-x: auto;
+    width: 100%;
 }
