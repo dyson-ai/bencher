@@ -1,41 +1,39 @@
-/* Set a maximum width for content while keeping it centered */
+/* Set the content width to 99% to allow scrolling while keeping left alignment */
 @media screen and (min-width: 76.25em) {
     .wy-nav-content {
-        max-width: 1200px;
-        /* Adjust this value to your preference */
-        width: 100%;
-        margin: 0 auto;
-        /* Keep it centered */
+        width: 99%;
+        /* Almost full width, but allows scrolling */
+        margin-left: 0;
+        /* Left-align instead of centering */
+        margin-right: auto;
         overflow-x: auto;
-        /* Ensure scrolling when content overflows */
-        padding: 0 2em;
-        /* Add padding for readability */
+        /* Enable horizontal scrolling if needed */
+        padding: 0 1em;
+        /* Add slight padding for readability */
     }
 }
 
-/* Enable horizontal scrolling when content exceeds the max-width */
+/* Ensure body and page allow horizontal scrolling */
 html,
 body {
     overflow-x: auto;
 }
 
-/* Ensure code blocks and tables do not overflow the content width */
+/* Prevent tables from overflowing */
 .wy-table-responsive table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-    /* Prevents wrapping in tables */
 }
 
+/* Ensure code blocks wrap properly and scroll if needed */
 .rst-content pre {
     white-space: pre-wrap;
-    /* Wrap text properly */
     word-wrap: break-word;
     overflow-x: auto;
-    /* Enable horizontal scrolling inside code blocks */
 }
 
-/* Prevent images from exceeding the content width */
+/* Ensure images and figures stay within content width */
 .rst-content img,
 .rst-content figure {
     max-width: 100%;
