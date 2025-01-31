@@ -93,6 +93,7 @@ res.to_auto_plots()
         from pathlib import Path
 
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
+        fname.parent.mkdir(parents=True,exist_ok=True)
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
         return super().__call__()
