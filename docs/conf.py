@@ -35,6 +35,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # html_theme = "pydata_sphinx_theme"
 html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    'sticky_navigation': True,  # Keeps the sidebar static while scrolling
+}
 html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
@@ -63,7 +66,7 @@ nbsite_gallery_conf = {
                 "2D",
                 "Levels",
                 "examples",
-                "meta",
+                "Meta",
             ],
             "skip_rst_notebook_directive": True,
         }

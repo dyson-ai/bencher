@@ -1,38 +1,15 @@
-/* Ensure the main content fills 96% of the screen width */
+/* Ensure the main content area allows horizontal scrolling when necessary */
 .wy-nav-content {
-    width: 96%;
-    /* Expand content width */
-    max-width: none;
-    /* Remove any max-width limitations */
-    margin-left: 1;
-    /* Align left */
-    margin-right: 1;
     overflow-x: auto;
-    /* Allow horizontal scrolling */
+    /* Enable horizontal scrolling */
 }
 
-/* Force horizontal scrollbar to always be visible */
-html,
-body {
-    overflow-x: scroll !important;
-    /* Always show scrollbar */
-    width: 101vw;
-    /* Force full viewport width */
+/* Optional: Prevent tables from overflowing and allow them to scroll horizontally */
+.wy-table-responsive {
+    overflow-x: auto;
 }
 
-/* Prevent hidden scrollbars (some browsers hide them by default) */
-body::-webkit-scrollbar {
-    height: 13px;
-    /* Ensure scrollbar is visible (adjust as needed) */
-}
-
-body::-webkit-scrollbar-thumb {
-    background: #889;
-    /* Style the scrollbar thumb */
-    border-radius: 7px;
-}
-
-body::-webkit-scrollbar-track {
-    background: #f2f1f1;
-    /* Style the scrollbar track */
+/* Optional: Ensure code blocks do not exceed the width and allow scrolling */
+.highlight pre {
+    overflow-x: auto;
 }
