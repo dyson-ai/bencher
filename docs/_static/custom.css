@@ -1,15 +1,32 @@
-/* Ensure the main content area allows horizontal scrolling when necessary */
+/* Ensure the main content area utilizes the full width and allows horizontal scrolling */
 .wy-nav-content {
+    width: calc(100% - 300px);
+    /* Adjusts width to account for sidebar */
+    margin-left: 300px;
+    /* Aligns content next to the sidebar */
     overflow-x: auto;
-    /* Enable horizontal scrolling */
+    /* Enables horizontal scrolling */
 }
 
-/* Optional: Prevent tables from overflowing and allow them to scroll horizontally */
-.wy-table-responsive {
-    overflow-x: auto;
+/* Ensure horizontal scrollbar is always visible */
+.wy-nav-content {
+    overflow-x: scroll;
+    /* Always show horizontal scrollbar */
 }
 
-/* Optional: Ensure code blocks do not exceed the width and allow scrolling */
-.highlight pre {
-    overflow-x: auto;
+/* Optional: Style the scrollbar for better visibility */
+.wy-nav-content::-webkit-scrollbar {
+    height: 12px;
+    /* Set the height of the scrollbar */
+}
+
+.wy-nav-content::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Color of the scrollbar thumb */
+    border-radius: 6px;
+}
+
+.wy-nav-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Color of the scrollbar track */
 }
