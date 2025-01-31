@@ -96,7 +96,7 @@ res.to_auto_plots()
         ]
         from pathlib import Path
 
-        fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
+        fname = Path(f"docs/reference/Meta/ex_{title}.ipynb")
         fname.parent.mkdir(parents=True, exist_ok=True)
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
@@ -132,7 +132,7 @@ def example_meta_over_time(
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
             bch.p("float_vars", [0, 1]),
-            bch.p("categorical_vars", [0, 1, 2]),
+            bch.p("categorical_vars", [0, 1]),
             bch.p("sample_with_repeats", [1, 20]),
             "sample_over_time",
         ],
