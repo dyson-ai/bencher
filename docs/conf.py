@@ -39,9 +39,7 @@ html_theme = "sphinx_rtd_theme"
 #     "sticky_navigation": True,  # Keeps the sidebar static while scrolling
 # }
 html_static_path = ["_static"]
-html_css_files = [
-    "custom.css"
-]
+html_css_files = ["custom.css"]
 
 autoapi_dirs = ["../bencher"]
 autoapi_ignore = ["*example_*", "*example*", "*experimental*"]
