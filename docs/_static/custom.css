@@ -7,10 +7,5 @@
     overflow-y: auto;
     /* keep normal vertical scrolling */
 
-    /*
-     * Optional: fix the content area’s height so the horizontal scrollbar
-     * stays pinned at the bottom of this container (instead of the entire page).
-     * Adjust 90vh to taste. 
-     */
-    height: 97vh;
+    height: 99vh;
 }
