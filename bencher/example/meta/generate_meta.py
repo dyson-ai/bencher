@@ -62,7 +62,10 @@ class BenchMetaGen(bch.ParametrizedSweep):
             self.plots = bch.ResultReference()
             self.plots.obj = res.to_auto()
 
-        title = f"{self.float_vars}_float_{self.categorical_vars}_cat"
+        title = f"{self.float_vars}_float_{self.categorical_vars}_cat_{self.sample_with_repeats}_repeats"
+
+        if self.sample_over_time:
+            title += "_over_time"
 
         nb = nbf.v4.new_notebook()
         text = f"""# {title}"""
@@ -75,6 +78,7 @@ from bencher.example.meta.example_meta import BenchableObject
 run_cfg = bch.BenchRunCfg()
 run_cfg.repeats = {self.sample_with_repeats}
 run_cfg.level = 4 
+run_cfg.over_time = {self.sample_over_time}
 bench = BenchableObject().to_bench(run_cfg)
 res=bench.plot_sweep(input_vars={input_vars},
                     result_vars=["distance","sample_noise"])
@@ -93,6 +97,7 @@ res.to_auto_plots()
         from pathlib import Path
 
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
+        fname.parent.mkdir(parents=True, exist_ok=True)
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
         return super().__call__()
@@ -106,10 +111,10 @@ def example_meta(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
         description="""## All Combinations of Variable Sweeps and Resulting Plots
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
-            bch.p("float_vars", [0, 1, 2, 3]),
+            bch.p("float_vars", [0, 1, 2]),
             "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
-            # "sample_over_time",
+            "sample_over_time",
         ],
         const_vars=[
             # BenchMeta.param.float_vars.with_const(1),
