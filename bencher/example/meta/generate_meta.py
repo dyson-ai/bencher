@@ -114,18 +114,30 @@ This uses bencher to display all the combinations of plots bencher is able to pr
             bch.p("float_vars", [0, 1, 2]),
             "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
-            "sample_over_time",
-        ],
-        const_vars=[
-            # BenchMeta.param.float_vars.with_const(1),
-            # BenchMeta.param.sample_with_repeats.with_const(2),
-            # BenchMeta.param.categorical_vars.with_const(2),
-            # BenchMeta.param.sample_over_time.with_const(True),
+            # "sample_over_time",
         ],
     )
 
     return bench
 
+def example_meta_over_time(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
+    bench = BenchMetaGen().to_bench(run_cfg, report)
+
+    bench.plot_sweep(
+        title="Meta Bench",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots
+This uses bencher to display all the combinations of plots bencher is able to produce""",
+        input_vars=[
+            bch.p("float_vars", [0, 1]),
+            bch.p("categorical_vars",[0,1,2]),
+            bch.p("sample_with_repeats", [1, 20]),
+            "sample_over_time",
+        ],
+    )
+    return bench
+
+
 
 if __name__ == "__main__":
     example_meta().report.show()
+    example_meta_over_time().report.show()
