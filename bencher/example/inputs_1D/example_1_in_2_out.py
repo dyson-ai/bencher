@@ -48,7 +48,7 @@ def example_1_in_2_out(
     bench = Example1D().to_bench(run_cfg, report)
     bench.plot_sweep()
 
-    bench.report.append(bench.get_result().to_heatmap())
+    # bench.report.append(bench.get_result().to_heatmap())
     return bench
 
 
