@@ -12,9 +12,15 @@
     /* Enable horizontal scrolling if content overflows */
 }
 
-/* Allow full-page horizontal scrolling when needed */
+/* Ensure body allows horizontal scrolling */
 html,
 body {
     overflow-x: auto;
     width: 100%;
+}
+
+/* Force horizontal scrollbar to always be visible */
+body {
+    overflow-x: scroll !important;
+    /* Always show the horizontal scrollbar */
 }
