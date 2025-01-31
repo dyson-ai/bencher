@@ -56,10 +56,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
             res = bench.plot_sweep(
                 "test",
                 input_vars=input_vars,
-                result_vars=[BenchableObject.param.distance],
-                # result_vars=[BenchableObject.param.distance, BenchableObject.param.sample_noise],
-                # result_vars=[ BenchableObject.param.sample_noise],
-                # result_vars=[BenchableObject.param.result_hmap],
+                result_vars=["distance", "sample_noise"],
                 plot_callbacks=False,
             )
             self.plots = bch.ResultReference()
@@ -75,8 +72,12 @@ class BenchMetaGen(bch.ParametrizedSweep):
 import bencher as bch
 from bencher.example.meta.example_meta import BenchableObject
 
-bench = BenchableObject().to_bench(bch.BenchRunCfg())
-res=bench.plot_sweep(input_vars={input_vars},result_vars=["distance"])
+run_cfg = bch.BenchRunCfg()
+run_cfg.repeats = {self.sample_with_repeats}
+run_cfg.level = 4 
+bench = BenchableObject().to_bench(run_cfg)
+res=bench.plot_sweep(input_vars={input_vars},
+                    result_vars=["distance","sample_noise"])
 """
         code_results = """
 from bokeh.io import output_notebook
@@ -108,7 +109,7 @@ This uses bencher to display all the combinations of plots bencher is able to pr
             bch.p("float_vars", [0, 1, 2, 3]),
             "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
-            # BenchMeta.param.sample_over_time,
+            # "sample_over_time",
         ],
         const_vars=[
             # BenchMeta.param.float_vars.with_const(1),

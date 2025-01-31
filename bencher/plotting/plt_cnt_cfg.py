@@ -48,12 +48,17 @@ class PltCntCfg(param.Parameterized):
             PltCntCfg: see PltCntCfg definition
         """
         plt_cnt_cfg = PltCntCfg()
+        # plt_cnt_cfg.cat_vars = deepcopy(bench_cfg.iv_time_event)
         # plt_cnt_cfg.float_vars = deepcopy(bench_cfg.iv_time)
 
         plt_cnt_cfg.cat_vars = []
         plt_cnt_cfg.float_vars = []
 
+        # print(plt_cnt_cfg.float_vars)
+        # exit()
+
         for iv in bench_cfg.input_vars:
+            print("input_vars", iv)
             type_allocated = False
             if isinstance(iv, (IntSweep, FloatSweep, TimeSnapshot)):
                 # if "IntSweep" in typestr or "FloatSweep" in typestr:
