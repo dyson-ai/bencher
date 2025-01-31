@@ -65,8 +65,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
         title = f"{self.float_vars}_float_{self.categorical_vars}_cat_{self.sample_with_repeats}_repeats"
 
         if self.sample_over_time:
-            title+= "_over_time"
-
+            title += "_over_time"
 
         nb = nbf.v4.new_notebook()
         text = f"""# {title}"""
@@ -98,7 +97,7 @@ res.to_auto_plots()
         from pathlib import Path
 
         fname = Path(f"docs/reference/meta/ex_{title}.ipynb")
-        fname.parent.mkdir(parents=True,exist_ok=True)
+        fname.parent.mkdir(parents=True, exist_ok=True)
         fname.write_text(nbf.writes(nb), encoding="utf-8")
 
         return super().__call__()
