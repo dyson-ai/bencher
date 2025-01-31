@@ -1,11 +1,14 @@
-/* Ensure the main content area utilizes the full width and allows horizontal scrolling */
+/* Ensure the main content area utilizes the full available width */
 .wy-nav-content {
-    width: calc(100% - 300px);
-    /* Adjusts width to account for sidebar */
-    margin-left: 300px;
-    /* Aligns content next to the sidebar */
+    max-width: none;
+    /* Remove max-width constraints */
+    width: auto;
+    /* Allow width to adjust based on content */
+    margin-left: 0;
+    /* Align content to the left */
+    margin-right: 0;
     overflow-x: auto;
-    /* Enables horizontal scrolling */
+    /* Enable horizontal scrolling when necessary */
 }
 
 /* Ensure horizontal scrollbar is always visible */
