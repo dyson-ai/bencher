@@ -48,15 +48,15 @@ def example_1_in_1_out(
 
 
 if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg()
-    report = bch.BenchReport()
-    example_1_in_1_out(run_cfg, report)
+    run_config = bch.BenchRunCfg()
+    reprt = bch.BenchReport()
+    example_1_in_1_out(run_config, reprt)
 
-    run_cfg.repeats = 4
-    example_1_in_1_out(run_cfg, report)
+    run_config.repeats = 4
+    example_1_in_1_out(run_config, reprt)
 
     # run_cfg.over_time = True
     # for i in range(4):
     #     example_1_in_2_out(run_cfg, report)
 
-    report.show()
+    reprt.show()

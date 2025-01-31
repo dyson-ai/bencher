@@ -53,18 +53,18 @@ def example_1_in_2_out(
 
 
 if __name__ == "__main__":
-    run_cfg = bch.BenchRunCfg()
-    report = bch.BenchReport()
+    run_config = bch.BenchRunCfg()
+    reprt = bch.BenchReport()
     # example_1_in_2_out(run_cfg, report)
 
     # run_cfg.repeats = 4
     # example_1_in_2_out(run_cfg, report)
 
-    run_cfg.over_time = True
-    run_cfg.auto_plot = False
+    run_config.over_time = True
+    run_config.auto_plot = False
     for i in range(4):
-        example_1_in_2_out(run_cfg, report)
+        example_1_in_2_out(run_config, reprt)
 
-    run_cfg.auto_plot = True
-    example_1_in_2_out(run_cfg, report)
-    report.show()
+    run_config.auto_plot = True
+    example_1_in_2_out(run_config, reprt)
+    reprt.show()
