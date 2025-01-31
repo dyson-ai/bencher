@@ -1,7 +1,16 @@
+/* Force RTD content area to full width, and forcibly show a horizontal scrollbar. */
 .wy-nav-content {
     max-width: none !important;
+    /* remove default ~900px constraint */
     overflow-x: scroll !important;
-    /* always show horizontal scrollbar */
-    overflow-y: auto !important;
-    /* preserve normal vertical scrolling */
+    /* ALWAYS show horizontal scrollbar */
+    overflow-y: auto;
+    /* keep normal vertical scrolling */
+
+    /*
+     * Optional: fix the content area’s height so the horizontal scrollbar
+     * stays pinned at the bottom of this container (instead of the entire page).
+     * Adjust 90vh to taste. 
+     */
+    height: 90vh;
 }
