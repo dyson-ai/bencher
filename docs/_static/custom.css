@@ -1,41 +1,16 @@
-/* Set the content width to 99% to allow scrolling while keeping left alignment */
-@media screen and (min-width: 76.25em) {
-    .wy-nav-content {
-        width: 99%;
-        /* Almost full width, but allows scrolling */
-        margin-left: 0;
-        /* Left-align instead of centering */
-        margin-right: auto;
-        overflow-x: auto;
-        /* Enable horizontal scrolling if needed */
-        padding: 0 1em;
-        /* Add slight padding for readability */
-    }
+/* Expand main content width to 95% while keeping it left-aligned */
+.wy-nav-content {
+    width: 95%;
+    /* Set width to 95% of screen */
+    margin-left: 0;
+    /* Align to the left */
+    margin-right: auto;
+    overflow-x: auto;
+    /* Enable horizontal scrolling when needed */
 }
 
-/* Ensure body and page allow horizontal scrolling */
+/* Allow full page horizontal scrolling if content exceeds width */
 html,
 body {
     overflow-x: auto;
-}
-
-/* Prevent tables from overflowing */
-.wy-table-responsive table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-/* Ensure code blocks wrap properly and scroll if needed */
-.rst-content pre {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-x: auto;
-}
-
-/* Ensure images and figures stay within content width */
-.rst-content img,
-.rst-content figure {
-    max-width: 100%;
-    height: auto;
 }
