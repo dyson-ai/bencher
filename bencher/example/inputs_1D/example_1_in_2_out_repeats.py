@@ -42,6 +42,10 @@ def example_1_in_2_out_repeats(
     run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
 ) -> bch.Bench:
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
+
+    from importlib.metadata import version
+
+    print(version("holobench"))
     if run_cfg is None:
         run_cfg = bch.BenchRunCfg()
     run_cfg.repeats = 4
