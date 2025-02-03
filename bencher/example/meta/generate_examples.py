@@ -34,6 +34,7 @@ bench.get_result().to_auto_plots()
     ]
     output_path = Path(f"docs/reference/examples/ex_{title}.ipynb")
     # output_path.mkdir()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(nbf.writes(nb), encoding="utf-8")
 
 
