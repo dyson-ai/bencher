@@ -7,5 +7,6 @@ dependencies:
   - geckodriver  # Install geckodriver from conda-forge
   - pip
   - pip:
+      - -e .
       - -r requirements.txt
       
