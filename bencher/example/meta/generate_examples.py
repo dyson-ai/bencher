@@ -2,7 +2,7 @@ import nbformat as nbf
 from pathlib import Path
 
 
-def convert_example_to_jupyter_notebook(filename: str):
+def convert_example_to_jupyter_notebook(filename: str, output_path: str):
     # print
     source_path = Path(filename)
 
@@ -32,27 +32,29 @@ bench.get_result().to_auto_plots()
         nbf.v4.new_code_cell(code),
         nbf.v4.new_code_cell(code_results),
     ]
-    output_path = Path(f"docs/reference/examples/ex_{title}.ipynb")
-    # output_path.mkdir()
+    output_path = Path(f"docs/reference/{output_path}/ex_{title}.ipynb")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(nbf.writes(nb), encoding="utf-8")
 
 
 if __name__ == "__main__":
     # convert_example_to_jupyter_notebook(
-    #     "/workspaces/bencher/bencher/example/example_simple_float.py"
-    # )
-
-    # convert_example_to_jupyter_notebook(
     #     "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_1_out.py"
     # )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out.py"
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_1_out.py", "1D"
+    )
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out.py", "1D"
     )
 
     convert_example_to_jupyter_notebook(
-        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out_repeats.py"
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out_repeats.py", "1D"
+    )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/example_simple_float.py", "1D"
     )
 
     # convert_example_to_jupyter_notebook(
