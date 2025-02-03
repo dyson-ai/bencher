@@ -1,6 +1,6 @@
 [project]
 name = "holobench"
-version = "1.36.2"
+version = "1.38.0"
 
 authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
 description = "A package for benchmarking the performance of arbitrary functions"
@@ -84,6 +84,10 @@ test = [
     "coverage>=7.5.4,<=7.6.10",
     "pre-commit<=4.1.0",
     "nbformat",
+    "ipykernel",
+    "pip",
+    "jupyter_bokeh",
+
 ]
 
 
