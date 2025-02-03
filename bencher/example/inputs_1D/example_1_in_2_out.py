@@ -1,5 +1,5 @@
 import bencher as bch
-from bencher.example.inputs_1D.example1d_common import Example1D, ex
+from bencher.example.inputs_1D.example1d_common import Example1D
 
 
 def example_1_in_2_out(
@@ -17,10 +17,6 @@ if __name__ == "__main__":
     run_config = bch.BenchRunCfg()
     reprt = bch.BenchReport()
     example_1_in_2_out(run_config, reprt)
-
-    run_config.repeats = 4
-    example_1_in_2_out(run_config, reprt)
-
     # run_config.over_time = True
     # run_config.auto_plot = False
     # for i in range(4):
