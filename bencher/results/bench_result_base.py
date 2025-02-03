@@ -97,7 +97,7 @@ class BenchResultBase(OptunaResult):
         ds_out = self.ds.copy()
 
         if result_var is not None:
-            ds_out = ds_out[result_var.name]
+            ds_out = ds_out[result_var.name].to_dataset(name=result_var.name)
 
         def rename_ds(dataset: xr.Dataset, suffix: str):
             # var_name =
@@ -317,6 +317,7 @@ class BenchResultBase(OptunaResult):
         result_types=None,
         pane_collection: pn.pane = None,
         zip_results=False,
+        reduce: ReduceType = None,
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
@@ -332,7 +333,7 @@ class BenchResultBase(OptunaResult):
             if result_types is None or isinstance(rv, result_types):
                 row.append(
                     self.to_panes_multi_panel(
-                        hv_dataset,
+                        self.to_hv_dataset(reduce=reduce, result_var=rv),
                         rv,
                         plot_callback=partial(plot_callback, **kwargs),
                         target_dimension=target_dimension,
@@ -377,11 +378,12 @@ class BenchResultBase(OptunaResult):
         if matches_res.overall:
             return self.map_plot_panes(
                 plot_callback=plot_callback,
-                hv_dataset=self.to_hv_dataset(reduce=reduce),
+                hv_dataset=None,
                 target_dimension=target_dimension,
                 result_var=result_var,
                 result_types=result_types,
                 pane_collection=pane_collection,
+                reduce=reduce,
                 **kwargs,
             )
         return matches_res.to_panel()
