@@ -94,9 +94,6 @@ class TestBenchExamples(unittest.TestCase):
     def test_example_simple_float(self) -> None:
         self.examples_asserts(example_simple_float(self.create_run_cfg()))
 
-    def test_example_simple_float1D(self) -> None:
-        self.examples_asserts(example_simple_float(self.create_run_cfg()))
-
     def test_example_simple_float2D(self) -> None:
         self.examples_asserts(example_2D_float(self.create_run_cfg()))
 

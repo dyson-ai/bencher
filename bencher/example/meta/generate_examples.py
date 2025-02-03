@@ -13,7 +13,7 @@ def convert_example_to_jupyter_notebook(filename: str, output_path: str):
 
     code = "%%capture\n"
 
-    example_code = source_path.read_text()
+    example_code = source_path.read_text(encoding="utf-8")
     split_code = example_code.split("""if __name__ == "__main__":""")
     code += split_code[0]
 
