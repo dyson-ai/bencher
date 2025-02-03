@@ -138,6 +138,21 @@ class BenchRunner:
         if show:
             self.servers.append(report.show(self.run_cfg))
 
+    def show(
+        self,
+        report: BenchReport = None,
+        show: bool = True,
+        publish: bool = False,
+        save: bool = False,
+        debug: bool = False,
+    ):
+        if report is None:
+            if len(self.results) > 0:
+                report = self.results[-1].report
+            else:
+                raise RuntimeError("no reports to show")
+        self.show_publish(report=report, show=show, publish=publish, save=save, debug=debug)
+
     def shutdown(self):
         while self.servers:
             self.servers.pop().stop()
