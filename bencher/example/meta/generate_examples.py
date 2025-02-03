@@ -3,7 +3,8 @@ from pathlib import Path
 
 
 def convert_example_to_jupyter_notebook(filename: str):
-    source_path = Path.home() / filename
+    # print
+    source_path = Path(filename)
 
     nb = nbf.v4.new_notebook()
     title = source_path.stem
@@ -37,6 +38,22 @@ bench.get_result().to_auto_plots()
 
 
 if __name__ == "__main__":
+    # convert_example_to_jupyter_notebook(
+    #     "/workspaces/bencher/bencher/example/example_simple_float.py"
+    # )
+
+    # convert_example_to_jupyter_notebook(
+    #     "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_1_out.py"
+    # )
+
     convert_example_to_jupyter_notebook(
-        "/home/ags/projects/bencher/bencher/example/example_simple_float.py"
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out.py"
     )
+
+    convert_example_to_jupyter_notebook(
+        "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out_repeats.py"
+    )
+
+    # convert_example_to_jupyter_notebook(
+    #     "/workspaces/bencher/bencher/example/inputs_0D/example_1_in_2_out.py"
+    # )
