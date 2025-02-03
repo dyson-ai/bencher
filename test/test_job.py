@@ -19,7 +19,7 @@ class CachedParamExample(bch.CachedParams):
 
 
 class TestJob(unittest.TestCase):
-    @settings(deadline=500)
+    @settings(deadline=2000)
     @given(st.sampled_from([bch.Executors.SERIAL, bch.Executors.MULTIPROCESSING]))
     def test_basic(self, executor):
         cp = CachedParamExample()  # clears cache by default

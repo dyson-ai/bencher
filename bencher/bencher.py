@@ -603,6 +603,10 @@ class Bench(BenchPlotServer):
         bench_cfg.all_vars = bench_cfg.input_vars + bench_cfg.meta_vars
         # bench_cfg.all_vars = bench_cfg.iv_time + bench_cfg.input_vars +[ bench_cfg.iv_repeat]
         # bench_cfg.all_vars = [ bench_cfg.iv_repeat] +bench_cfg.input_vars + bench_cfg.iv_time
+        if bench_cfg.over_time:
+            bench_cfg.input_vars = (
+                bench_cfg.iv_time + bench_cfg.iv_time_event + bench_cfg.input_vars
+            )
 
         for i in bench_cfg.all_vars:
             logging.info(i.sampling_str())
