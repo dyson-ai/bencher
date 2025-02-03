@@ -114,7 +114,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/8b/f5/cab5cf6a540c31f5099043de0ae43990fd9cf66f75ecb5e9f254a4e4d4ee/proglog-0.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e4/ea/d836f008d33151c7a1f62caf3d8dd782e4d15f6a43897f64480c2b8de2ad/prompt_toolkit-3.0.50-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/9c/39/0f88a830a1c8a3aba27fededc642da37613c57cbff143412e3536f89784f/psutil-6.1.1-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/49/ad/8ee3f8ac1d59cf269ae2d55f7cac7c65fe3b3f41cada5d6a17bc2f4c5d6d/psygnal-0.11.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/b4/89/300991108d86c00e6aa84ea85e9c998e27eed59fdcb1abd3e69b9f4d62f5/psygnal-0.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/5e/6bc81aa7fc9affc7d1c03b912fbcc984ca56c2a18513684da267715dab7b/pyarrow-19.0.0-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -275,7 +275,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/8b/f5/cab5cf6a540c31f5099043de0ae43990fd9cf66f75ecb5e9f254a4e4d4ee/proglog-0.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e4/ea/d836f008d33151c7a1f62caf3d8dd782e4d15f6a43897f64480c2b8de2ad/prompt_toolkit-3.0.50-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/9c/39/0f88a830a1c8a3aba27fededc642da37613c57cbff143412e3536f89784f/psutil-6.1.1-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/c3/3f/ae610fd14cdbae8735344abfc7f67c76ff8bcf18e0e3c5f26a1ca590014e/psygnal-0.11.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/74/16/fec37482a0ed5338a90f4cef0f00b66136c9bcfd1b6f9f56955632f74561/psygnal-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/31/55/f05fc5608cc96060c2b24de505324d641888bd62d4eed2fa1dacd872a1e1/pyarrow-19.0.0-cp310-cp310-manylinux_2_28_x86_64.whl
@@ -437,7 +437,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/8b/f5/cab5cf6a540c31f5099043de0ae43990fd9cf66f75ecb5e9f254a4e4d4ee/proglog-0.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e4/ea/d836f008d33151c7a1f62caf3d8dd782e4d15f6a43897f64480c2b8de2ad/prompt_toolkit-3.0.50-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/9c/39/0f88a830a1c8a3aba27fededc642da37613c57cbff143412e3536f89784f/psutil-6.1.1-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/84/6f/868f1d7d22c76b96e0c8a75f8eb196deaff83916ad2da7bd78d1d0f6a5df/psygnal-0.11.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/2e/58/91359b72fe0413626be8857122897bb9238fa7b1dd53a3ed299183a17cb6/psygnal-0.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b8/39/a2a6714b471c000e6dd6af4495dce00d7d1332351b8e3170dfb9f91dad1f/pyarrow-19.0.0-cp311-cp311-manylinux_2_28_x86_64.whl
@@ -598,7 +598,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/8b/f5/cab5cf6a540c31f5099043de0ae43990fd9cf66f75ecb5e9f254a4e4d4ee/proglog-0.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e4/ea/d836f008d33151c7a1f62caf3d8dd782e4d15f6a43897f64480c2b8de2ad/prompt_toolkit-3.0.50-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/9c/39/0f88a830a1c8a3aba27fededc642da37613c57cbff143412e3536f89784f/psutil-6.1.1-cp36-abi3-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/49/ad/8ee3f8ac1d59cf269ae2d55f7cac7c65fe3b3f41cada5d6a17bc2f4c5d6d/psygnal-0.11.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/b4/89/300991108d86c00e6aa84ea85e9c998e27eed59fdcb1abd3e69b9f4d62f5/psygnal-0.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3b/5e/6bc81aa7fc9affc7d1c03b912fbcc984ca56c2a18513684da267715dab7b/pyarrow-19.0.0-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -2891,20 +2891,32 @@ packages:
   - pytest-xdist ; extra == 'test'
   - setuptools ; extra == 'test'
   requires_python: '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*'
-- pypi: https://files.pythonhosted.org/packages/49/ad/8ee3f8ac1d59cf269ae2d55f7cac7c65fe3b3f41cada5d6a17bc2f4c5d6d/psygnal-0.11.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+- pypi: https://files.pythonhosted.org/packages/2e/58/91359b72fe0413626be8857122897bb9238fa7b1dd53a3ed299183a17cb6/psygnal-0.12.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: psygnal
-  version: 0.11.1
-  sha256: 885922a6e65ece9ff8ccf2b6810f435ca8067f410889f7a8fffb6b0d61421a0d
+  version: 0.12.0
+  sha256: b410dab639353320044856cef68bd9aa940f8e1399da2f57522356b42bc4cf5d
   requires_dist:
+  - attrs ; extra == 'dev'
+  - dask[array]>=2024.0.0 ; extra == 'dev'
   - ipython ; extra == 'dev'
+  - msgspec ; extra == 'dev'
   - mypy ; extra == 'dev'
   - mypy-extensions ; extra == 'dev'
+  - numpy>1.21.6 ; extra == 'dev'
   - pre-commit ; extra == 'dev'
-  - pyqt5 ; extra == 'dev'
+  - pydantic ; extra == 'dev'
+  - pyinstaller>=4.0 ; extra == 'dev'
+  - pyqt6 ; extra == 'dev'
+  - pytest-cov ; extra == 'dev'
   - pytest-mypy-plugins ; extra == 'dev'
+  - pytest-qt ; extra == 'dev'
+  - pytest>=6.0 ; extra == 'dev'
+  - qtpy ; extra == 'dev'
   - rich ; extra == 'dev'
   - ruff ; extra == 'dev'
+  - toolz ; extra == 'dev'
   - typing-extensions ; extra == 'dev'
+  - wrapt ; extra == 'dev'
   - griffe==0.25.5 ; extra == 'docs'
   - mkdocs-material==8.5.10 ; extra == 'docs'
   - mkdocs-minify-plugin ; extra == 'docs'
@@ -2915,9 +2927,9 @@ packages:
   - wrapt ; extra == 'proxy'
   - pydantic ; extra == 'pydantic'
   - attrs ; extra == 'test'
-  - dask ; extra == 'test'
+  - dask[array]>=2024.0.0 ; extra == 'test'
   - msgspec ; extra == 'test'
-  - numpy ; extra == 'test'
+  - numpy>1.21.6 ; extra == 'test'
   - pydantic ; extra == 'test'
   - pyinstaller>=4.0 ; extra == 'test'
   - pytest-cov ; extra == 'test'
@@ -2926,21 +2938,33 @@ packages:
   - wrapt ; extra == 'test'
   - pytest-qt ; extra == 'testqt'
   - qtpy ; extra == 'testqt'
-  requires_python: '>=3.8'
-- pypi: https://files.pythonhosted.org/packages/84/6f/868f1d7d22c76b96e0c8a75f8eb196deaff83916ad2da7bd78d1d0f6a5df/psygnal-0.11.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/74/16/fec37482a0ed5338a90f4cef0f00b66136c9bcfd1b6f9f56955632f74561/psygnal-0.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: psygnal
-  version: 0.11.1
-  sha256: 24e69ea57ee39e3677298f38a18828af87cdc0bf0aa64685d44259e608bae3ec
+  version: 0.12.0
+  sha256: c455c972071bc06403795f802623b54b0ba3217b7399520aee5e1e4ca71908e0
   requires_dist:
+  - attrs ; extra == 'dev'
+  - dask[array]>=2024.0.0 ; extra == 'dev'
   - ipython ; extra == 'dev'
+  - msgspec ; extra == 'dev'
   - mypy ; extra == 'dev'
   - mypy-extensions ; extra == 'dev'
+  - numpy>1.21.6 ; extra == 'dev'
   - pre-commit ; extra == 'dev'
-  - pyqt5 ; extra == 'dev'
+  - pydantic ; extra == 'dev'
+  - pyinstaller>=4.0 ; extra == 'dev'
+  - pyqt6 ; extra == 'dev'
+  - pytest-cov ; extra == 'dev'
   - pytest-mypy-plugins ; extra == 'dev'
+  - pytest-qt ; extra == 'dev'
+  - pytest>=6.0 ; extra == 'dev'
+  - qtpy ; extra == 'dev'
   - rich ; extra == 'dev'
   - ruff ; extra == 'dev'
+  - toolz ; extra == 'dev'
   - typing-extensions ; extra == 'dev'
+  - wrapt ; extra == 'dev'
   - griffe==0.25.5 ; extra == 'docs'
   - mkdocs-material==8.5.10 ; extra == 'docs'
   - mkdocs-minify-plugin ; extra == 'docs'
@@ -2951,9 +2975,9 @@ packages:
   - wrapt ; extra == 'proxy'
   - pydantic ; extra == 'pydantic'
   - attrs ; extra == 'test'
-  - dask ; extra == 'test'
+  - dask[array]>=2024.0.0 ; extra == 'test'
   - msgspec ; extra == 'test'
-  - numpy ; extra == 'test'
+  - numpy>1.21.6 ; extra == 'test'
   - pydantic ; extra == 'test'
   - pyinstaller>=4.0 ; extra == 'test'
   - pytest-cov ; extra == 'test'
@@ -2962,21 +2986,33 @@ packages:
   - wrapt ; extra == 'test'
   - pytest-qt ; extra == 'testqt'
   - qtpy ; extra == 'testqt'
-  requires_python: '>=3.8'
-- pypi: https://files.pythonhosted.org/packages/c3/3f/ae610fd14cdbae8735344abfc7f67c76ff8bcf18e0e3c5f26a1ca590014e/psygnal-0.11.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/b4/89/300991108d86c00e6aa84ea85e9c998e27eed59fdcb1abd3e69b9f4d62f5/psygnal-0.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   name: psygnal
-  version: 0.11.1
-  sha256: 7676e89225abc2f37ca7022c300ffd26fefaf21bdc894bc7c41dffbad5e969df
+  version: 0.12.0
+  sha256: ae2bd6edcf911fbff34ed75150e8f8dfb246ebf203514c7c1e4397cabbb1368a
   requires_dist:
+  - attrs ; extra == 'dev'
+  - dask[array]>=2024.0.0 ; extra == 'dev'
   - ipython ; extra == 'dev'
+  - msgspec ; extra == 'dev'
   - mypy ; extra == 'dev'
   - mypy-extensions ; extra == 'dev'
+  - numpy>1.21.6 ; extra == 'dev'
   - pre-commit ; extra == 'dev'
-  - pyqt5 ; extra == 'dev'
+  - pydantic ; extra == 'dev'
+  - pyinstaller>=4.0 ; extra == 'dev'
+  - pyqt6 ; extra == 'dev'
+  - pytest-cov ; extra == 'dev'
   - pytest-mypy-plugins ; extra == 'dev'
+  - pytest-qt ; extra == 'dev'
+  - pytest>=6.0 ; extra == 'dev'
+  - qtpy ; extra == 'dev'
   - rich ; extra == 'dev'
   - ruff ; extra == 'dev'
+  - toolz ; extra == 'dev'
   - typing-extensions ; extra == 'dev'
+  - wrapt ; extra == 'dev'
   - griffe==0.25.5 ; extra == 'docs'
   - mkdocs-material==8.5.10 ; extra == 'docs'
   - mkdocs-minify-plugin ; extra == 'docs'
@@ -2987,9 +3023,9 @@ packages:
   - wrapt ; extra == 'proxy'
   - pydantic ; extra == 'pydantic'
   - attrs ; extra == 'test'
-  - dask ; extra == 'test'
+  - dask[array]>=2024.0.0 ; extra == 'test'
   - msgspec ; extra == 'test'
-  - numpy ; extra == 'test'
+  - numpy>1.21.6 ; extra == 'test'
   - pydantic ; extra == 'test'
   - pyinstaller>=4.0 ; extra == 'test'
   - pytest-cov ; extra == 'test'
@@ -2998,7 +3034,7 @@ packages:
   - wrapt ; extra == 'test'
   - pytest-qt ; extra == 'testqt'
   - qtpy ; extra == 'testqt'
-  requires_python: '>=3.8'
+  requires_python: '>=3.9'
 - pypi: https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl
   name: ptyprocess
   version: 0.7.0
