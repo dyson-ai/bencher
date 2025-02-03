@@ -203,11 +203,17 @@ class HoloviewResult(PanelResult):
         hvds = hv.Dataset(dataset)
         title = self.title_from_ds(dataset, result_var, **kwargs)
 
-        print(result_var.name, dataset)
-        pt = hvds.to(hv.Curve).opts(title=title, **kwargs)
-        pt *= hvds.to(hv.Spread).opts(alpha=0.2)
-        if len(dataset.sizes) > 1:
-            return pt.opts(legend_position="right").overlay()
+        # print(result_var.name, dataset)
+        pt = hv.Overlay()
+        # find pairs of {var_name} {var_name}_std to plot the line and their spreads.
+        for var in dataset.data_vars:
+            if not var.endswith("_std"):
+                std_var = f"{var}_std"
+                pt *= hvds.to(hv.Curve, vdims=var, label=var).opts(title=title, **kwargs)
+                # Only create a Spread if the matching _std variable exists
+                if std_var in dataset.data_vars:
+                    pt *= hvds.to(hv.Spread, vdims=[var, std_var])
+
         return pt.opts(legend_position="right")
 
     def to_heatmap(
