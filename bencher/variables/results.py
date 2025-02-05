@@ -22,12 +22,14 @@ class ResultVar(Number):
 
     __slots__ = ["units", "direction"]
 
-    def __init__(self, units="ul", direction: OptDir = OptDir.minimize, **params):
+    def __init__(self, units="ul", direction: OptDir = OptDir.minimize, name=None, **params):
         Number.__init__(self, **params)
         assert isinstance(units, str)
         self.units = units
         self.default = 0  # json is terrible and does not support nan values
         self.direction = direction
+        if name is not None:
+            self.name = name
 
     def as_dim(self) -> hv.Dimension:
         return hv.Dimension((self.name, self.name), unit=self.units)
