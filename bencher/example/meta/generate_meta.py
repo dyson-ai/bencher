@@ -128,21 +128,21 @@ This uses bencher to display all the combinations of plots bencher is able to pr
         ],
     )
 
-#     bench.plot_sweep(
-#         title="Meta Bench",
-#         description="""## All Combinations of Variable Sweeps and Resulting Plots
-# This uses bencher to display all the combinations of plots bencher is able to produce""",
-#         input_vars=[
-#             bch.p("float_vars", [2, 3]),
-#             "categorical_vars",
-#         ],
-#         const_vars=[
-#             dict(level=3)
-#             # BenchMeta.param.sample_with_repeats.with_const(2),
-#             # BenchMeta.param.categorical_vars.with_const(2),
-#             # BenchMeta.param.sample_over_time.with_const(True),
-#         ],
-#     )
+    #     bench.plot_sweep(
+    #         title="Meta Bench",
+    #         description="""## All Combinations of Variable Sweeps and Resulting Plots
+    # This uses bencher to display all the combinations of plots bencher is able to produce""",
+    #         input_vars=[
+    #             bch.p("float_vars", [2, 3]),
+    #             "categorical_vars",
+    #         ],
+    #         const_vars=[
+    #             dict(level=3)
+    #             # BenchMeta.param.sample_with_repeats.with_const(2),
+    #             # BenchMeta.param.categorical_vars.with_const(2),
+    #             # BenchMeta.param.sample_over_time.with_const(True),
+    #         ],
+    #     )
 
     return bench
 
