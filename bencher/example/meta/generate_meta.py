@@ -107,10 +107,9 @@ def example_meta(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None
         description="""## All Combinations of Variable Sweeps and Resulting Plots
 This uses bencher to display all the combinations of plots bencher is able to produce""",
         input_vars=[
-            bch.p("float_vars", [0, 1, 2, 3]),
+            bch.p("float_vars", [0, 1]),
             "categorical_vars",
             bch.p("sample_with_repeats", [1, 20]),
-            # "sample_over_time",
         ],
         const_vars=[
             # BenchMeta.param.float_vars.with_const(1),
@@ -119,6 +118,31 @@ This uses bencher to display all the combinations of plots bencher is able to pr
             # BenchMeta.param.sample_over_time.with_const(True),
         ],
     )
+    bench.plot_sweep(
+        title="Meta Bench",
+        description="""## All Combinations of Variable Sweeps and Resulting Plots
+This uses bencher to display all the combinations of plots bencher is able to produce""",
+        input_vars=[
+            bch.p("float_vars", [2, 3]),
+            "categorical_vars",
+        ],
+    )
+
+#     bench.plot_sweep(
+#         title="Meta Bench",
+#         description="""## All Combinations of Variable Sweeps and Resulting Plots
+# This uses bencher to display all the combinations of plots bencher is able to produce""",
+#         input_vars=[
+#             bch.p("float_vars", [2, 3]),
+#             "categorical_vars",
+#         ],
+#         const_vars=[
+#             dict(level=3)
+#             # BenchMeta.param.sample_with_repeats.with_const(2),
+#             # BenchMeta.param.categorical_vars.with_const(2),
+#             # BenchMeta.param.sample_over_time.with_const(True),
+#         ],
+#     )
 
     return bench
 
