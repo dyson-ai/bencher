@@ -5,6 +5,7 @@ from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.bencher import Bench
 from bencher.bench_report import BenchReport, GithubPagesCfg
 from copy import deepcopy
+import pickle
 
 
 class Benchable(Protocol):
@@ -121,6 +122,13 @@ class BenchRunner:
                         res = bch_fn(run_lvl, BenchReport())
                         res.report.bench_name = f"{run_cfg.run_tag}_{res.report.bench_name}"
                         self.show_publish(res.report, show, publish, save, debug)
+                    # try:
+                    with open("latest_result.pickle", "wb") as handle:
+                        pickle.dump(res.get_result(), handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    # except:
+                        # don't mind that much if this fails
+                        # pass
+                        
                     self.results.append(res)
                 if grouped:
                     self.show_publish(report_level, show, publish, save, debug)
@@ -150,7 +158,12 @@ class BenchRunner:
             if len(self.results) > 0:
                 report = self.results[-1].report
             else:
-                raise RuntimeError("no reports to show")
+                with open("latest_result.pickle", "rb") as handle:
+                    res = pickle.load(handle)
+                    report = BenchReport()
+                    report.append_result(res)
+                    # report = res.report
+                # raise RuntimeError("no reports to show")
         self.show_publish(report=report, show=show, publish=publish, save=save, debug=debug)
 
     def shutdown(self):
