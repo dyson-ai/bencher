@@ -39,7 +39,7 @@ class BenchMetaGen(bch.ParametrizedSweep):
         inputs_vars_float = [
             "float1",
             "float2",
-            "float3",
+            bch.p("float3", max_level=3),
             "sigma",
         ]
 
