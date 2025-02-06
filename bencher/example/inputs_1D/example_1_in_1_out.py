@@ -44,6 +44,8 @@ def example_1_in_1_out(
     """This example shows how to sample a 1 dimensional float variable and plot the result of passing that parameter sweep to the benchmarking function"""
     bench = Example1D().to_bench(run_cfg, report)
     bench.plot_sweep()
+
+    bench.report.append(bench.get_result().to_block_summary())
     return bench
 
 

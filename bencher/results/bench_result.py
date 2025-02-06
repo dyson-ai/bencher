@@ -9,10 +9,13 @@ from bencher.results.plotly_result import PlotlyResult
 from bencher.results.holoview_result import HoloviewResult
 from bencher.results.hvplot_result import HvplotResult
 from bencher.results.dataset_result import DataSetResult
+from bencher.results.mermaid_result import MermaidResult
 from bencher.utils import listify
 
 
-class BenchResult(PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult, DataSetResult):  # noqa pylint: disable=too-many-ancestors
+class BenchResult(
+    PlotlyResult, HoloviewResult, HvplotResult, VideoSummaryResult, DataSetResult, MermaidResult
+):  # noqa pylint: disable=too-many-ancestors
     """Contains the results of the benchmark and has methods to cast the results to various datatypes and graphical representations"""
 
     def __init__(self, bench_cfg) -> None:
