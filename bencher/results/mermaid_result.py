@@ -49,54 +49,64 @@ diagram = MermaidDiagram(
 )
 
 
+def input_var_to_mermaid(iv):
+    vs = "\n"
+    if len(iv.values()) <= 5:
+        vals = "\n".join([str(v) for v in iv.values()])
+    else:
+        v = iv.values()
+        vals = [str(v[i]) for i in [0, 1, 0, -2, -1]]
+        vals[2] = "⋮"
+        vals = "\n".join(vals)
+
+    vs += f"""\t{iv.name}["<u>**{iv.name}**</u> \n{vals}"]"""
+    return vs
+
+
+def procs(id1, title, contents):
+    return f"\t{id1}" + "@{ shape: procs, label: " + f'**{title}**\n{contents}"' + "}"
+
+
+def result_var_to_mermaid(rv):
+    vs = "\n"
+    vs += f"""\t{rv.name}["**{rv.name} ({rv.units})**"]"""
+    return vs
+
+
 class MermaidResult(PanelResult):
     def to_block_summary(self, result_var: Parameter = None, **kwargs) -> Optional[pn.pane.Pane]:
-        # benchmark_sampling_str.append("Input Variables:")
-
-        def procs(id1, title, contents):
-            return f"\t{id1}" + "@{ shape: procs, label: " + f'**{title}**\n{contents}"' + "}"
-
-        vs = "floatchar LR\n"
-        input_str = ""
+        vs = "flowchart LR"
         for iv in self.bench_cfg.input_vars:
-            vs += procs("A", iv.name, "\n".join([str(v) for v in iv.values()]))
-            # input_str += " " + iv.name
+            vs += input_var_to_mermaid(iv)
 
-        vs += """ -- "X" --> """
-
-        input_str = ""
-        for iv in self.bench_cfg.input_vars:
-            vs += procs("B", iv.name, "\n".join([str(v) for v in iv.values()]))
+        # vs +=""" -- "X" -- \n"""
+        for iv in self.bench_cfg.result_vars:
+            vs += result_var_to_mermaid(iv)
+        vs += "\nindex --> output"
 
         print(vs)
-        # if self.const_vars and (self.summarise_constant_inputs):
-        #     benchmark_sampling_str.append("\nConstants:")
-        #     for cv in self.const_vars:
-        #         benchmark_sampling_str.extend(describe_variable(cv[0], False, cv[1]))
-
         # benchmark_sampling_str.append("\nResult Variables:")
         # for rv in self.result_vars:
         #     benchmark_sampling_str.extend(describe_variable(rv, False))
 
-        diagram = MermaidDiagram(
-            value=(
-                f"""
-        graph LR
-            {input_str} --- B
-            B-->C[fa:fa-ban forbidden]
-            B-->D(fa:fa-spinner);
-                """
-            )
-        )
+        #         diagram = MermaidDiagram(
+        #             value=(
+        #                 f"""
+        #         graph LR
+        #             {input_str} --- B
+        #             B-->C[fa:fa-ban forbidden]
+        #             B-->D(fa:fa-spinner);
+        #                 """
+        #             )
+        #         )
+        #         v2 = """
+        # flowchart LR
+        #     A@{ shape: procs, label: "**Input1** \n1\n2\n...\n5\n6"} -- "X" --> B@{shape: procs, label: "**Input2** \nalpha\nbeta\n...\nzeta"}
+        #                  """
 
-        v2 = """
-        flowchart LR
-            A@{ shape: procs, label: "**Input1** \n1\n2\n...\n5\n6"} -- "X" --> B@{shape: procs, label: "**Input2** \nalpha\nbeta\n...\nzeta"}
-                 """
+        #         print(v2)
 
-        print(v2)
-
-        diagram = MermaidDiagram(value=v2)
+        diagram = MermaidDiagram(value=vs)
         # diagram2 = MermaidDiagram(value=v)
 
         # diagram = MermaidDiagram(
