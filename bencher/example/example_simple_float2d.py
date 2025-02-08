@@ -22,7 +22,6 @@ def example_2D_float(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = 
 
     bench = SimpleFloat().to_bench(run_cfg, report)
     bench.plot_sweep()
-    bench.report.append(bench.get_result().to_xarray())
     return bench
 
 
