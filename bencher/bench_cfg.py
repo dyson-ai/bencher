@@ -18,6 +18,8 @@ from datetime import datetime
 
 # from bencher.results.bench_result import BenchResult
 
+from bencher.results.laxtex_result import to_latex
+
 
 class BenchPlotSrvCfg(param.Parameterized):
     port: int = param.Integer(None, doc="The port to launch panel with")
@@ -345,20 +347,20 @@ class BenchCfg(BenchRunCfg):
         return [i.name for i in self.input_vars]
 
     def to_latex(self):
-        from bencher.results.laxtex_result import to_latex
-
         return to_latex(self)
 
     def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
         """Produce a markdown summary of the sweep settings"""
-        col = pn.Column()
-        col.append(self.to_latex())
+
+        latex = self.to_latex()
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
         if accordion:
-            col.append(pn.Accordion(("Data Collection Parameters", desc)))
+            desc = pn.Accordion(("Data Collection Parameters", desc))
+
+        if latex is not None:
+            return pn.Column(latex, desc)
         else:
-            col.append(desc)
-        return col
+            return desc
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
