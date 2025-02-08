@@ -14,7 +14,7 @@ def latex_text(var):
 def input_var_to_latex(input_var):
     vals = input_var.values()
     if len(vals) <= 5:
-        vals = "\n".join([str(v) for v in input_var.values()])
+        v = "\n".join([str(v) for v in vals])
     else:
         v = [str(vals[i]) for i in [0, 1, 0, -2, -1]]
         v[2] = "⋮"
@@ -33,7 +33,7 @@ def result_var_to_latex(bench_cfg):
     latex_str = r"\begin{array}{c}"
     sizes = [str(len(i.values())) for i in bench_cfg.input_vars]
     if len(sizes) == 1:
-        sizes.append("1")
+        sizes.insert(0,"1")
     sizes_str = r"\times".join(reversed(sizes))
     latex_str += sizes_str + r"\\ "
     latex_str += r" \left[\begin{array}{cc}"
