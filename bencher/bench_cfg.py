@@ -355,8 +355,7 @@ class BenchCfg(BenchRunCfg):
 
         if latex is not None:
             return pn.Column(latex, desc)
-        else:
-            return desc
+        return desc
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
