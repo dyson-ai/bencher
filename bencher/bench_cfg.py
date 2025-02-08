@@ -344,13 +344,21 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
+    def to_latex(self):
+        from bencher.results.laxtex_result import to_latex
+
+        return to_latex(self)
+
     def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
         """Produce a markdown summary of the sweep settings"""
-
+        col = pn.Column()
+        col.append(self.to_latex())
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
         if accordion:
-            return pn.Accordion(("Data Collection Parameters", desc))
-        return desc
+            col.append(pn.Accordion(("Data Collection Parameters", desc)))
+        else:
+            col.append(desc)
+        return col
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
