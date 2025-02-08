@@ -19,7 +19,6 @@ def input_var_to_latex(input_var):
         displayed_vals[2] = "⋮"
     v = r"\\ ".join([str(va) for va in displayed_vals])
 
-    print(v)
     latex_str = r"""\begin{array}{c}"""
     latex_str += latex_text(input_var.name)
     latex_str += f"{len(vals)}" + r"\times1 \\"
