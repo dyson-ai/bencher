@@ -23,7 +23,7 @@ def input_var_to_latex(input_var):
     latex_str = r"""\begin{array}{c}"""
     latex_str += latex_text(input_var.name)
     latex_str += r"\left[ \begin{array}{c}"
-    latex_str += vals + " "
+    latex_str += f"{vals} "
     latex_str += r"\end{array} \right] \end{array}"
     return latex_str
 
