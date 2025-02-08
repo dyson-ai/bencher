@@ -29,7 +29,7 @@ def input_var_to_mermaid(iv):
     # latex_str += fr"\text{iv.name}} \\"
     latex_str += latex_text(iv.name)
     latex_str += r"\left[ \begin{array}{c}"
-    latex_str += vals + " "
+    latex_str += f"{vals} "
     latex_str += r"\end{array} \right] \end{array}"
     return latex_str
 
