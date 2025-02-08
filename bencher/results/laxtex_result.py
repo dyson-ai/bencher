@@ -12,18 +12,19 @@ def latex_text(var):
 
 
 def input_var_to_latex(input_var):
-    if len(input_var.values()) <= 5:
+    vals = input_var.values()
+    if len(vals) <= 5:
         vals = "\n".join([str(v) for v in input_var.values()])
     else:
-        v = input_var.values()
-        vals = [str(v[i]) for i in [0, 1, 0, -2, -1]]
-        vals[2] = "⋮"
-        vals = r"\\ ".join(vals)
+        v = [str(vals[i]) for i in [0, 1, 0, -2, -1]]
+        v[2] = "⋮"
+        v = r"\\ ".join(v)
 
     latex_str = r"""\begin{array}{c}"""
     latex_str += latex_text(input_var.name)
+    latex_str += f"{len(vals)}" + r"\times1 \\"
     latex_str += r"\left[ \begin{array}{c}"
-    latex_str += f"{vals} "
+    latex_str += f"{v} "
     latex_str += r"\end{array} \right] \end{array}"
     return latex_str
 
@@ -32,8 +33,8 @@ def result_var_to_latex(bench_cfg):
     latex_str = r"\begin{array}{c}"
     sizes = [str(len(i.values())) for i in bench_cfg.input_vars]
     if len(sizes) == 1:
-        sizes.insert(0, "1")
-    sizes_str = r"\times".join(sizes)
+        sizes.append("1")
+    sizes_str = r"\times".join(reversed(sizes))
     latex_str += sizes_str + r"\\ "
     latex_str += r" \left[\begin{array}{cc}"
 
