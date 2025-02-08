@@ -51,7 +51,7 @@ def to_latex(bench_cfg) -> Optional[pn.pane.LaTeX]:
         for i, iv in enumerate(bench_cfg.input_vars):
             latex_str += input_var_to_latex(iv)
             if i != len(bench_cfg.input_vars) - 1:
-                latex_str += r"\times"
+                latex_str += r"\bigtimes"
 
         latex_str += r"\rightarrow\quad"
         latex_str += result_var_to_latex(bench_cfg)
