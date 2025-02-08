@@ -8,16 +8,12 @@ from typing import List
 import param
 from str2bool import str2bool
 import panel as pn
-
+from datetime import datetime
 
 from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.job import Executors
-from datetime import datetime
-
-# from bencher.results.bench_result import BenchResult
-
 from bencher.results.laxtex_result import to_latex
 
 
@@ -349,7 +345,7 @@ class BenchCfg(BenchRunCfg):
     def to_latex(self):
         return to_latex(self)
 
-    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
+    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown | pn.Column:
         """Produce a markdown summary of the sweep settings"""
 
         latex = self.to_latex()

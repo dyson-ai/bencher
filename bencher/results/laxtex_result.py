@@ -2,6 +2,7 @@ from __future__ import annotations
 import panel as pn
 from panel.pane import LaTeX
 from typing import Optional
+
 pn.extension("mathjax")
 
 
@@ -35,11 +36,11 @@ def result_var_to_mermaid(bench_cfg):
     if len(sizes) == 1:
         sizes.insert(0, "1")
     sizes_str = r"\times".join(sizes)
-    latex_str += " " + sizes_str + r"\\ "
+    latex_str += sizes_str + r"\\ "
     latex_str += r" \left[\begin{array}{cc}"
 
     for rv in bench_cfg.result_vars:
-        latex_str += " " + latex_text(rv.name) + " "
+        latex_str +=  latex_text(rv.name)  
     latex_str += r"\end{array} \right]"
     latex_str += r"\end{array}"
     return latex_str
