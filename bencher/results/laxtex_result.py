@@ -13,13 +13,13 @@ def latex_text(var):
 
 def input_var_to_latex(input_var):
     vals = input_var.values()
-    if len(vals) <= 5:
-        v = "\n".join([str(v) for v in vals])
-    else:
-        v = [str(vals[i]) for i in [0, 1, 0, -2, -1]]
-        v[2] = "⋮"
-        v = r"\\ ".join(v)
+    displayed_vals = vals
+    if len(vals) > 5:
+        displayed_vals =[vals[i] for i in [0, 1, 0, -2, -1]]
+        displayed_vals[2] = "⋮"
+    v = r"\\ ".join([str(va) for va in displayed_vals])
 
+    print(v)
     latex_str = r"""\begin{array}{c}"""
     latex_str += latex_text(input_var.name)
     latex_str += f"{len(vals)}" + r"\times1 \\"
