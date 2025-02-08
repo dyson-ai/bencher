@@ -35,7 +35,7 @@ def result_var_to_latex(bench_cfg):
     if len(sizes) == 1:
         sizes.insert(0, "1")
     sizes_str = r"\times".join(reversed(sizes))
-    latex_str += sizes_str + r"\\ "
+    latex_str += sizes_str + r"\\ of \\"
     latex_str += r" \left[\begin{array}{cc}"
 
     for rv in bench_cfg.result_vars:
