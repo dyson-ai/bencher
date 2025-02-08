@@ -15,7 +15,7 @@ def input_var_to_latex(input_var):
     vals = input_var.values()
     displayed_vals = vals
     if len(vals) > 5:
-        displayed_vals =[vals[i] for i in [0, 1, 0, -2, -1]]
+        displayed_vals = [vals[i] for i in [0, 1, 0, -2, -1]]
         displayed_vals[2] = "⋮"
     v = r"\\ ".join([str(va) for va in displayed_vals])
 
