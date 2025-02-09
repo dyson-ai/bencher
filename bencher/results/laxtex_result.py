@@ -30,7 +30,7 @@ def input_var_to_latex(input_var):
 
 def result_var_to_latex(bench_cfg):
     latex_str = r"\begin{array}{c}"
-    sizes = [str(len(i.values())) for i in bench_cfg.input_vars]
+    sizes = [str(len(i.values())) for i in bench_cfg.all_vars]
     if len(sizes) == 1:
         sizes.insert(0, "1")
     sizes_str = r"\times".join(reversed(sizes))
@@ -45,11 +45,11 @@ def result_var_to_latex(bench_cfg):
 
 
 def to_latex(bench_cfg) -> Optional[pn.pane.LaTeX]:
-    if len(bench_cfg.input_vars) > 0:
+    if len(bench_cfg.all_vars) > 0:
         latex_str = r"\["
-        for i, iv in enumerate(bench_cfg.input_vars):
+        for i, iv in enumerate(bench_cfg.all_vars):
             latex_str += input_var_to_latex(iv)
-            if i != len(bench_cfg.input_vars) - 1:
+            if i != len(bench_cfg.all_vars) - 1:
                 latex_str += r"\bigtimes"
 
         latex_str += r"\rightarrow\quad"
