@@ -55,5 +55,6 @@ def to_latex(bench_cfg) -> Optional[pn.pane.LaTeX]:
         latex_str += r"\rightarrow\quad"
         latex_str += result_var_to_latex(bench_cfg)
         latex_str += r"\]"
-        return LaTeX(latex_str.replace("_","\;"))
+        # underscore represents subscript, so replace underscore with large space character \;
+        return LaTeX(latex_str.replace("_", r"\;"))
     return None
