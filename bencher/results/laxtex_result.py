@@ -55,5 +55,5 @@ def to_latex(bench_cfg) -> Optional[pn.pane.LaTeX]:
         latex_str += r"\rightarrow\quad"
         latex_str += result_var_to_latex(bench_cfg)
         latex_str += r"\]"
-        return LaTeX(latex_str)
+        return LaTeX(latex_str.replace("_"," "))
     return None
