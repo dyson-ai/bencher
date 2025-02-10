@@ -150,7 +150,7 @@ class BenchRunner:
             if len(self.results) > 0:
                 report = self.results[-1].report
             else:
-                raise RuntimeError("no reports to publish")
+                raise RuntimeError("no reports to show")
         self.show_publish(report=report, show=show, publish=publish, save=save, debug=debug)
 
     def shutdown(self):
