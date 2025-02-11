@@ -353,21 +353,21 @@ class BenchCfg(BenchRunCfg):
         if accordion:
             desc = pn.Accordion(("Data Collection Parameters", desc))
 
-        sentence = self.sweep_sentance()
+        sentence = self.sweep_sentence()
         if latex is not None:
             return pn.Column(sentence, latex, desc)
         return pn.Column(sentence, latex, desc)
 
-    def sweep_sentance(self):
+    def sweep_sentence(self):
         inputs = " by ".join([iv.name for iv in self.all_vars])
-        result_sizes = "x".join([str(len(iv.values())) for iv in reversed(self.all_vars)])
+
+        all_vars_lens = [len(iv.values()) for iv in reversed(self.all_vars)]
+        if len(all_vars_lens) == 1:
+            all_vars_lens.append(1)
+        result_sizes = "x".join([str(iv) for iv in all_vars_lens])
         results = ", ".join([rv.name for rv in self.result_vars])
 
-        sweep = f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
-
-        # if self.repeats>1:
-        # sweep += f"The sampling is repeated {self.repeats} times"
-        return sweep
+        return f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
