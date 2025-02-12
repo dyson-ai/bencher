@@ -7,7 +7,7 @@ pn.extension("mathjax")
 
 def latex_text(text: str) -> str:
     """Convert text to LaTeX text format, replacing underscores with spaces."""
-    return r"\text{" + str(text).replace("_", " ") + r"} \\"
+    return r"\text{" + text.replace("_", " ") + r"} \\"
 
 
 def format_values_list(values: List[Any], max_display: int = 5) -> List[Any]:
