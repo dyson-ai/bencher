@@ -59,8 +59,9 @@ def to_latex(bench_cfg) -> Optional[pn.pane.LaTeX]:
     if not bench_cfg.all_vars:
         return None
 
-    latex_str = r"\["
-    latex_str += r"\bigtimes".join(input_var_to_latex(iv) for iv in bench_cfg.all_vars)
+    latex_str = r"\[" + r"\bigtimes".join(
+        input_var_to_latex(iv) for iv in bench_cfg.all_vars
+    )
     latex_str += r"\rightarrow\quad"
     latex_str += result_var_to_latex(bench_cfg)
     latex_str += r"\]"
