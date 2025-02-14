@@ -434,7 +434,7 @@ class BenchCfg(BenchRunCfg):
             if title:
                 name = self.title
             else:
-                name = "Full Data Collection Parameters"
+                name = "Data Collection Parameters"
         col = pn.Column(name=name)
         if title:
             col.append(self.to_title())
