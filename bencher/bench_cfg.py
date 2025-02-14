@@ -351,7 +351,7 @@ class BenchCfg(BenchRunCfg):
         latex = self.to_latex()
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
         if accordion:
-            desc = pn.Accordion(("Data Collection Parameters", desc))
+            desc = pn.Accordion(("Expand Full Data Collection Parameters", desc))
 
         sentence = self.sweep_sentence()
         if latex is not None:
