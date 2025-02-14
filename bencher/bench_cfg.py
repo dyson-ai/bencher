@@ -351,23 +351,23 @@ class BenchCfg(BenchRunCfg):
         latex = self.to_latex()
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
         if accordion:
-            desc = pn.Accordion(("Data Collection Parameters", desc))
+            desc = pn.Accordion(("Expand Full Data Collection Parameters", desc))
 
-        sentence = self.sweep_sentence()
+        sentence = self.sweep_sentance()
         if latex is not None:
             return pn.Column(sentence, latex, desc)
         return pn.Column(sentence, latex, desc)
 
-    def sweep_sentence(self):
+    def sweep_sentance(self):
         inputs = " by ".join([iv.name for iv in self.all_vars])
-
-        all_vars_lens = [len(iv.values()) for iv in reversed(self.all_vars)]
-        if len(all_vars_lens) == 1:
-            all_vars_lens.append(1)
-        result_sizes = "x".join([str(iv) for iv in all_vars_lens])
+        result_sizes = "x".join([str(len(iv.values())) for iv in reversed(self.all_vars)])
         results = ", ".join([rv.name for rv in self.result_vars])
 
-        return f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
+        sweep = f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
+
+        # if self.repeats>1:
+        # sweep += f"The sampling is repeated {self.repeats} times"
+        return sweep
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
@@ -434,7 +434,7 @@ class BenchCfg(BenchRunCfg):
             if title:
                 name = self.title
             else:
-                name = "Click to Expand Full Data Collection Parameters"
+                name = "Data Collection Parameters"
         col = pn.Column(name=name)
         if title:
             col.append(self.to_title())
