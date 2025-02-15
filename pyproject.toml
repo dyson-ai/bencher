@@ -24,7 +24,6 @@ dependencies = [
     "strenum>=0.4.0,<=0.4.15",
     "scikit-learn>=1.2,<=1.6.1",
     "str2bool>=1.1,<=1.1",
-    "scoop>=0.7.0,<=0.7.2.0",
     "moviepy>=2.1.2,<=2.1.2",
 ]
 
@@ -92,6 +91,7 @@ test = [
 
 #adds support for embedding rerun windows (alpha)
 rerun = ["rerun-sdk==0.21.0", "rerun-notebook", "flask", "flask-cors"]
+scoop = ["scoop>=0.7.0,<=0.7.2.0"]
 
 [build-system]
 requires = ["hatchling"]
