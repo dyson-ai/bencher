@@ -75,9 +75,9 @@ test = [
     "pylint>=3.2.5,<=3.3.4",
     "pytest-cov>=4.1,<=6.0.0",
     "pytest>=7.4,<=8.3.4",
-    "hypothesis>=6.104.2,<=6.124.9",
-    "ruff>=0.5.0,<=0.9.4",
-    "coverage>=7.5.4,<=7.6.10",
+    "hypothesis>=6.104.2,<=6.125.3",
+    "ruff>=0.5.0,<=0.9.6",
+    "coverage>=7.5.4,<=7.6.12",
     "pre-commit<=4.1.0",
     "nbformat",
     "ipykernel",
@@ -95,7 +95,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = ["bencher"]
+include = ["bencher", "CHANGELOG.md"]
 
 # Environments
 [tool.pixi.environments]
