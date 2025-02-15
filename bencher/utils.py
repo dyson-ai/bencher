@@ -27,7 +27,7 @@ def hmap_canonical_input(dic: dict) -> tuple:
     Returns:
         tuple: values of the dictionary always in the same order and hashable
     """
-    return tuple(dict(sorted(dic.items())).values())
+    return tuple(value for _, value in sorted(dic.items()))
 
 
 def make_namedtuple(class_name: str, **fields) -> namedtuple:
