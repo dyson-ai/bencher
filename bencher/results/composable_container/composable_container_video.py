@@ -112,7 +112,7 @@ class ComposableContainerVideo(ComposableContainerBase):
                 for i in range(len(self.container)):
                     self.container[i] = self.extend_clip(self.container[i], max_duration)
                     self.container[i] = self.container[i].with_effects(
-                        vfx.Margin(top=render_cfg.margin, color=render_cfg.background_col)
+                        [vfx.Margin(top=render_cfg.margin, color=render_cfg.background_col)]
                     )
 
                 if render_cfg.compose_method == ComposeType.right:
