@@ -36,7 +36,10 @@ class JobFuture:
         self.res = res
         self.future = future
         # either a result or a future needs to be passed
-        assert self.res is not None or self.future is not None
+        assert self.res is not None or self.future is not None, (
+            "make sure you are returning a dict or super().__call__(**kwargs) from your __call__ function"
+        )
+
         self.cache = cache
 
     def result(self):
@@ -159,7 +162,7 @@ class FutureCache:
         logging.info(f"cache calls: {self.worker_cache_call_count}")
         logging.info(f"worker calls: {self.worker_fn_call_count}")
         if self.cache:
-            return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit/1000000)}MB"
+            return f"cache size :{int(self.cache.volume() / 1000000)}MB / {int(self.size_limit / 1000000)}MB"
         return ""
 
 

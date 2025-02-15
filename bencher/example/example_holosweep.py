@@ -69,9 +69,7 @@ class PlotFunctions(bch.ParametrizedSweep):
         return None
 
 
-def example_holosweep(
-    run_cfg: bch.BenchRunCfg = bch.BenchRunCfg(), report: bch.BenchReport = bch.BenchReport()
-) -> bch.Bench:
+def example_holosweep(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = PlotFunctions().to_bench(run_cfg, report)
 
     bench.plot_sweep(

@@ -8,15 +8,13 @@ from typing import List
 import param
 from str2bool import str2bool
 import panel as pn
-
+from datetime import datetime
 
 from bencher.variables.sweep_base import hash_sha1, describe_variable
 from bencher.variables.time import TimeSnapshot, TimeEvent
 from bencher.variables.results import OptDir
 from bencher.job import Executors
-from datetime import datetime
-
-# from bencher.results.bench_result import BenchResult
+from bencher.results.laxtex_result import to_latex
 
 
 class BenchPlotSrvCfg(param.Parameterized):
@@ -344,13 +342,32 @@ class BenchCfg(BenchRunCfg):
     def inputs_as_str(self) -> List[str]:
         return [i.name for i in self.input_vars]
 
-    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown:
+    def to_latex(self):
+        return to_latex(self)
+
+    def describe_sweep(self, width: int = 800, accordion=True) -> pn.pane.Markdown | pn.Column:
         """Produce a markdown summary of the sweep settings"""
 
+        latex = self.to_latex()
         desc = pn.pane.Markdown(self.describe_benchmark(), width=width)
         if accordion:
-            return pn.Accordion(("Data Collection Parameters", desc))
-        return desc
+            desc = pn.Accordion(("Expand Full Data Collection Parameters", desc))
+
+        sentence = self.sweep_sentence()
+        if latex is not None:
+            return pn.Column(sentence, latex, desc)
+        return pn.Column(sentence, latex, desc)
+
+    def sweep_sentence(self):
+        inputs = " by ".join([iv.name for iv in self.all_vars])
+
+        all_vars_lens = [len(iv.values()) for iv in reversed(self.all_vars)]
+        if len(all_vars_lens) == 1:
+            all_vars_lens.append(1)
+        result_sizes = "x".join([str(iv) for iv in all_vars_lens])
+        results = ", ".join([rv.name for rv in self.result_vars])
+
+        return f"Sweeping {inputs} to generate a {result_sizes} result dataframe containing {results}. "
 
     def describe_benchmark(self) -> str:
         """Generate a string summary of the inputs and results from a BenchCfg
