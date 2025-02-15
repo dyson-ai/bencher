@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Callable
-from sortedcontainers import SortedDict
 import logging
 from diskcache import Cache
 from concurrent.futures import Future, ProcessPoolExecutor
@@ -23,7 +22,7 @@ class Job:
         self.function = function
         self.job_args = job_args
         if job_key is None:
-            self.job_key = hash_sha1(tuple(SortedDict(self.job_args).items()))
+            self.job_key = hash_sha1(tuple(sorted(self.job_args.items())))
         else:
             self.job_key = job_key
         self.tag = tag
