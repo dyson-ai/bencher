@@ -1,6 +1,5 @@
 from collections import namedtuple
 import xarray as xr
-from sortedcontainers import SortedDict
 import hashlib
 import re
 import math
