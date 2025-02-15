@@ -35,5 +35,5 @@ if __name__ == "__main__":
         ),
     )
 
-    hvexplorer = hvplot.explorer(bench_out.get_dataframe())
+    hvexplorer = hvplot.explorer(bench_out.to_dataset())
     hvexplorer.show()
