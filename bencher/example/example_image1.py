@@ -16,7 +16,6 @@ class BenchPolygons(bch.ParametrizedSweep):
     sides = bch.IntSweep(default=3, bounds=(3, 7))
     radius = bch.FloatSweep(default=1, bounds=(0.2, 1))
     linewidth = bch.FloatSweep(default=1, bounds=(1, 10))
-    linestyle = bch.StringSweep(["solid", "dashed", "dotted"])
     color = bch.StringSweep(["red", "green", "blue"])
     start_angle = bch.FloatSweep(default=0, bounds=[0, 360])
     polygon = bch.ResultImage()
