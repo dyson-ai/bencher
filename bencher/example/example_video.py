@@ -1,7 +1,42 @@
 import bencher as bch
 import numpy as np
-import matplotlib.pyplot as plt
+from PIL import Image
 
+def apply_colormap(data):
+    """Apply a viridis-like colormap to the data"""
+    # Create a simple blue-green-red colormap
+    colors = np.array([
+        [0, 0, 143],      # dark blue
+        [0, 255, 255],    # cyan
+        [0, 255, 0],      # green
+        [255, 255, 0],    # yellow
+        [255, 0, 0]       # red
+    ])
+    
+    # Normalize data to [0, 1]
+    normalized = (data - data.min()) / (data.max() - data.min())
+    
+    # Map normalized values to color indices
+    indices = (normalized * (len(colors) - 1)).astype(int)
+    
+    # Create RGB array
+    rgb = np.zeros((*data.shape, 3), dtype=np.uint8)
+    
+    # Interpolate between colors
+    for i in range(len(colors) - 1):
+        mask = (indices == i)
+        if i < len(colors) - 1:
+            # Calculate interpolation factor
+            factor = (normalized - i/(len(colors)-1)) * (len(colors)-1)
+            factor = factor[mask]
+            # Interpolate between current and next color
+            rgb[mask] = (colors[i] * (1-factor[:, np.newaxis]) + 
+                        colors[i+1] * factor[:, np.newaxis]).astype(np.uint8)
+    
+    # Handle the last color
+    rgb[indices == len(colors)-1] = colors[-1]
+    
+    return rgb
 
 # code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
 class TuringPattern(bch.ParametrizedSweep):
@@ -55,22 +90,22 @@ class TuringPattern(bch.ParametrizedSweep):
         U = np.random.rand(self.size, self.size)
         V = np.random.rand(self.size, self.size)
 
-        fig, ax = plt.subplots(frameon=False, figsize=(2, 2))
-        fig.set_tight_layout(True)
-        ax.set_axis_off()
         vid_writer = bch.VideoWriter()
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
-                ax.imshow(U)
-                fig.canvas.draw()
-                rgb = np.array(fig.canvas.renderer.buffer_rgba())
-                vid_writer.append(rgb)
+                # Apply colormap to create RGB image
+                rgb = apply_colormap(U)
+                # Create PIL image with alpha channel
+                img = Image.fromarray(rgb, 'RGB').convert('RGBA')
+                # Resize image
+                img = img.resize((200, 200), Image.Resampling.LANCZOS)
+                # Convert back to numpy array
+                rgb_alpha = np.array(img)
+                vid_writer.append(rgb_alpha)
 
-        self.img = bch.add_image(rgb)
-
+        self.img = bch.add_image(rgb_alpha)
         self.video = vid_writer.write()
-
         self.score = self.alpha + self.beta
         return super().__call__()
 
