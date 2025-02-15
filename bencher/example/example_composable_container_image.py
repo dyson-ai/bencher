@@ -56,5 +56,5 @@ def example_composable_container_image(
 
 if __name__ == "__main__":
     ex_run_cfg = bch.BenchRunCfg()
-    bench = example_composable_container_image(ex_run_cfg)
-    bench.report.show()
+    ex_composable_image = example_composable_container_image(ex_run_cfg)
+    ex_composable_image.report.show()
