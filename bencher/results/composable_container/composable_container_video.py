@@ -22,11 +22,32 @@ from moviepy import vfx
 
 @dataclass()
 class RenderCfg:
+    """Configuration class for video rendering options.
+
+    This class controls how videos and images are composed and rendered together.
+    It provides options for timing, layout, appearance, and labeling of the output.
+
+    Attributes:
+        compose_method (ComposeType): Method to compose multiple clips (sequence, right, down, overlay).
+            Defaults to ComposeType.sequence.
+        var_name (str, optional): Variable name for labeling. Defaults to None.
+        var_value (str, optional): Variable value for labeling. Defaults to None.
+        background_col (tuple[int, int, int]): RGB color for background. Defaults to white (255, 255, 255).
+        duration (float): Target duration for the composed video in seconds. Defaults to 10.0.
+        default_duration (float): Fallback duration when duration is None. Defaults to 10.0.
+        duration_target (bool): If True, tries to match target duration while respecting frame
+            duration constraints. If False, uses exact duration. Defaults to True.
+        min_frame_duration (float): Minimum duration for each frame in seconds. Defaults to 1/30.
+        max_frame_duration (float): Maximum duration for each frame in seconds. Defaults to 2.0.
+        margin (int): Margin size in pixels to add around clips. Defaults to 0.
+    """
+
     compose_method: ComposeType = ComposeType.sequence
     var_name: str = None
     var_value: str = None
     background_col: tuple[int, int, int] = (255, 255, 255)
     duration: float = 10.0
+    default_duration: float = 10.0
     duration_target: bool = True
     min_frame_duration: float = 1.0 / 30
     max_frame_duration: float = 2.0
@@ -69,7 +90,9 @@ class ComposableContainerVideo(ComposableContainerBase):
     def calculate_duration(self, frames, render_cfg: RenderCfg):
         if render_cfg.duration_target:
             # calculate duration based on fps constraints
-            duration = 10.0 if render_cfg.duration is None else render_cfg.duration
+            duration = (
+                render_cfg.default_duration if render_cfg.duration is None else render_cfg.duration
+            )
             frame_duration = duration / frames
             if render_cfg.min_frame_duration is not None:
                 frame_duration = max(frame_duration, render_cfg.min_frame_duration)
@@ -78,7 +101,7 @@ class ComposableContainerVideo(ComposableContainerBase):
             duration = frame_duration * frames
         else:
             if render_cfg.duration is None:
-                duration = 10.0
+                duration = render_cfg.default_duration
             else:
                 duration = render_cfg.duration
             frame_duration = duration / float(frames)
