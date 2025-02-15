@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     run_config.over_time = True
     run_config.auto_plot = False
-    for i in range(4):
+    for _ in range(4):
         example_0_in_1_out(run_config, reprt)
 
     run_config.auto_plot = True

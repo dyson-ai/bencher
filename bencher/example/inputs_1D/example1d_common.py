@@ -20,7 +20,6 @@ class DataSource:
         if repeat is None:
             self.call_count[index] += 1
             repeat = self.call_count[index]
-        print(index, repeat)
         return self.data[index][repeat - 1]
 
 
