@@ -134,7 +134,9 @@ class ComposableContainerVideo(ComposableContainerBase):
                     self.container[i] = self.container[i].with_opacity(1.0 / len(self.container))
                 out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
             case _:
-                raise RuntimeError(f"This compose type is not supported: {render_cfg.compose_method}")
+                raise RuntimeError(
+                    f"This compose type is not supported: {render_cfg.compose_method}"
+                )
 
         label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
         if label is not None:

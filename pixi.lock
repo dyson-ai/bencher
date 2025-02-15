@@ -1106,7 +1106,7 @@ packages:
 - pypi: .
   name: holobench
   version: 1.40.1
-  sha256: 700182966d32596e00825f441a690aa196e24fe7cfc9512f44d82cd0d6c0f63c
+  sha256: b431c6f1d6129007a725d836ebe94d6fa5a0497a4387eff2157a7556645de3b2
   requires_dist:
   - holoviews>=1.15,<=1.20.0
   - numpy>=1.0,<=2.2.2
@@ -1120,7 +1120,7 @@ packages:
   - pandas>=2.0,<=2.2.3
   - strenum>=0.4.0,<=0.4.15
   - scikit-learn>=1.2,<=1.6.1
-  - moviepy>=2.1.2
+  - moviepy>=2.1.2,<=2.1.2
   - pylint>=3.2.5,<=3.3.4 ; extra == 'test'
   - pytest-cov>=4.1,<=6.0.0 ; extra == 'test'
   - pytest>=7.4,<=8.3.4 ; extra == 'test'
