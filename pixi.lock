@@ -1106,7 +1106,7 @@ packages:
 - pypi: .
   name: holobench
   version: 1.40.1
-  sha256: a1cbac668d670c14fa7c9fbee0102e5da87182b9ea23a8b939de9321975bb33a
+  sha256: 534c75fb6ddf19070d85af794bf0f9defc8a922c9fb1e417f9d82163ff8c8560
   requires_dist:
   - holoviews>=1.15,<=1.20.0
   - numpy>=1.0,<=2.2.2
@@ -1117,7 +1117,6 @@ packages:
   - optuna>=3.2,<=4.2.0
   - xarray>=2023.7,<=2025.1.2
   - plotly>=5.15,<=6.0.0
-  - sortedcontainers>=2.4,<=2.4
   - pandas>=2.0,<=2.2.3
   - strenum>=0.4.0,<=0.4.15
   - scikit-learn>=1.2,<=1.6.1
