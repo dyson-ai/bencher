@@ -77,7 +77,10 @@ class ComposableContainerVideo(ComposableContainerBase):
                 frame_duration = min(frame_duration, render_cfg.max_frame_duration)
             duration = frame_duration * frames
         else:
-            duration = render_cfg.duration
+            if render_cfg.duration is None:
+                duration = 10.0
+            else:
+                duration = render_cfg.duration
             frame_duration = duration / float(frames)
 
         print("max_frame_duration", render_cfg.max_frame_duration)
@@ -126,13 +129,12 @@ class ComposableContainerVideo(ComposableContainerBase):
                 out = concatenate_videoclips(
                     self.container, bg_color=render_cfg.background_col, method="compose"
                 )
-            # case ComposeType.overlay:
-            #     for i in range(len(self.container)):
-            #         self.container[i].alpha = 1./len(self.container)
-            #     out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
-            #     # out.duration = fps
+            case ComposeType.overlay:
+                for i in range(len(self.container)):
+                    self.container[i] = self.container[i].with_opacity(1.0 / len(self.container))
+                out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
             case _:
-                raise RuntimeError("This compose type is not supported")
+                raise RuntimeError(f"This compose type is not supported: {render_cfg.compose_method}")
 
         label = self.label_formatter(render_cfg.var_name, render_cfg.var_value)
         if label is not None:
