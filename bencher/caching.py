@@ -17,7 +17,7 @@ class CachedParams(ParametrizedSweep):
             self.cache.clear()
 
     def kwargs_to_hash_key(self, **kwargs):
-        return tuple(sorted(kwargs.items()))
+        return tuple(sorted(kwargs.items(), key=lambda item: str(item[0])))
 
     def in_cache(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
