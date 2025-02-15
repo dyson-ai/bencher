@@ -195,14 +195,14 @@ class BenchRunCfg(BenchPlotSrvCfg):
             help=BenchRunCfg.param.port.doc,
         )
 
-        parser.add_argument(
-            "--nightly",
-            type=lambda b: bool(str2bool(b)),
-            nargs="?",
-            const=False,
-            default=False,
-            help="turn on nightly benchmarking",
-        )
+        # parser.add_argument(
+        #     "--nightly",
+        #     type=lambda b: bool(str2bool(b)),
+        #     nargs="?",
+        #     const=False,
+        #     default=False,
+        #     help="turn on nightly benchmarking",
+        # )
 
         parser.add_argument(
             "--time_event",
