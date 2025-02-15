@@ -9,4 +9,5 @@ dependencies:
   - pip:
       - -e ../
       - -r requirements.txt
+      - matplotlib
       

@@ -1,9 +1,24 @@
 import bencher as bch
 import numpy as np
-import matplotlib.pyplot as plt
+from PIL import Image
+import colorcet as cc
+import numpy.typing as npt
 
 
-# code from https://ipython-books.github.io/124-simulating-a-partial-differential-equation-reaction-diffusion-systems-and-turing-patterns/
+def apply_colormap(data: npt.NDArray) -> npt.NDArray:
+    """Apply a perceptually uniform colormap to the data"""
+    # Normalize data to [0, 1]
+    normalized = (data - data.min()) / (data.max() - data.min())
+    # Convert hex colors to RGB values using numpy's frombuffer
+    colors = np.array(
+        [np.frombuffer(bytes.fromhex(c.lstrip("#")), dtype=np.uint8) for c in cc.rainbow]
+    )
+    # Map normalized values to colormap indices
+    indices = (normalized * (len(colors) - 1)).astype(int)
+    # Create RGB array from the colormap
+    return colors[indices]
+
+
 class TuringPattern(bch.ParametrizedSweep):
     alpha = bch.FloatSweep(default=2.8e-4, bounds=(2e-4, 5e-3))
     beta = bch.FloatSweep(default=5e-3, bounds=(1e-3, 9e-3))
@@ -49,28 +64,26 @@ class TuringPattern(bch.ParametrizedSweep):
     def __call__(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
 
-        n = int(self.time / self.dt)  # number of iterations
-        dx = 2.0 / self.size  # space step
+        n = int(self.time / self.dt)
+        dx = 2.0 / self.size
 
         U = np.random.rand(self.size, self.size)
         V = np.random.rand(self.size, self.size)
 
-        fig, ax = plt.subplots(frameon=False, figsize=(2, 2))
-        fig.set_tight_layout(True)
-        ax.set_axis_off()
         vid_writer = bch.VideoWriter()
         for i in range(n):
             self.update(U, V, dx)
             if i % 500 == 0:
-                ax.imshow(U)
-                fig.canvas.draw()
-                rgb = np.array(fig.canvas.renderer.buffer_rgba())
-                vid_writer.append(rgb)
+                # Apply colormap to create RGB image
+                rgb = apply_colormap(U)
+                # Create PIL image with alpha channel
+                img = Image.fromarray(rgb, "RGB").convert("RGBA")
+                img = img.resize((200, 200), Image.Resampling.LANCZOS)
+                rgb_alpha = np.array(img)
+                vid_writer.append(rgb_alpha)
 
-        self.img = bch.add_image(rgb)
-
+        self.img = bch.add_image(rgb_alpha)
         self.video = vid_writer.write()
-
         self.score = self.alpha + self.beta
         return super().__call__()
 
@@ -109,7 +122,7 @@ def example_video_tap(
 if __name__ == "__main__":
     run_cfg_ex = bch.BenchRunCfg()
     run_cfg_ex.level = 2
-    run_cfg_ex.cache_samples = True
+    # run_cfg_ex.cache_samples = True
     run_cfg_ex.only_hash_tag = True
 
     # example_video(run_cfg_ex).report.show()

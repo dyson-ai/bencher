@@ -320,7 +320,7 @@ class BenchResultBase(OptunaResult):
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
-            hv_dataset = self.to_hv_dataset()
+            hv_dataset = self.to_hv_dataset(reduce=reduce)
 
         if pane_collection is None:
             pane_collection = pn.Row()
@@ -332,7 +332,7 @@ class BenchResultBase(OptunaResult):
             if result_types is None or isinstance(rv, result_types):
                 row.append(
                     self.to_panes_multi_panel(
-                        self.to_hv_dataset(reduce=reduce, result_var=rv),
+                        hv_dataset,
                         rv,
                         plot_callback=partial(plot_callback, **kwargs),
                         target_dimension=target_dimension,

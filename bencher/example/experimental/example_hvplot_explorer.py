@@ -1,6 +1,5 @@
 # THIS IS NOT A WORKING EXAMPLE YET
 # pylint: disable=duplicate-code
-import hvplot
 import bencher as bch
 from bencher import ExampleBenchCfgIn, ExampleBenchCfgOut, bench_function
 
@@ -35,5 +34,5 @@ if __name__ == "__main__":
         ),
     )
 
-    hvexplorer = hvplot.explorer(bench_out.get_dataframe())
-    hvexplorer.show()
+    bench.report.append(bench_out.to_explorer())
+    bench.report.show()
