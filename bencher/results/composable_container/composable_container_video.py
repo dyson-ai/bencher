@@ -11,13 +11,13 @@ from moviepy import (
     VideoClip,
     VideoFileClip,
 )
-from moviepy.video.fx.margin import margin
 
 from bencher.results.composable_container.composable_container_base import (
     ComposableContainerBase,
     ComposeType,
 )
 from bencher.video_writer import VideoWriter
+from moviepy import vfx
 
 
 @dataclass()
@@ -111,8 +111,8 @@ class ComposableContainerVideo(ComposableContainerBase):
             case ComposeType.right | ComposeType.down:
                 for i in range(len(self.container)):
                     self.container[i] = self.extend_clip(self.container[i], max_duration)
-                    self.container[i] = margin(
-                        self.container[i], top=render_cfg.margin, color=render_cfg.background_col
+                    self.container[i] = self.container[i].with_effects(
+                        vfx.Margin(top=render_cfg.margin, color=render_cfg.background_col)
                     )
 
                 if render_cfg.compose_method == ComposeType.right:
