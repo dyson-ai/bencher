@@ -333,7 +333,7 @@ class BenchResultBase(OptunaResult):
             if result_types is None or isinstance(rv, result_types):
                 row.append(
                     self.to_panes_multi_panel(
-                        self.to_hv_dataset(reduce=reduce, result_var=rv),
+                        hv_dataset,
                         rv,
                         plot_callback=partial(plot_callback, **kwargs),
                         target_dimension=target_dimension,
