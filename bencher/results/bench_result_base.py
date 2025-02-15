@@ -321,7 +321,7 @@ class BenchResultBase(OptunaResult):
         **kwargs,
     ) -> Optional[pn.Row]:
         if hv_dataset is None:
-            hv_dataset = self.to_hv_dataset()
+            hv_dataset = self.to_hv_dataset(reduce=reduce)
 
         if pane_collection is None:
             pane_collection = pn.Row()
