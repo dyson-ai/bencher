@@ -3,15 +3,14 @@ import numpy as np
 from copy import deepcopy
 from pathlib import Path
 from dataclasses import dataclass
-from moviepy import (
+from moviepy.editor import (
     ImageClip,
     CompositeVideoClip,
-    clips_array,
-    concatenate_videoclips,
-    VideoClip,
     VideoFileClip,
+    VideoClip,
 )
-from moviepy.video.fx.margin import margin
+from moviepy.video.compositing.concatenate import concatenate_videoclips
+from moviepy.video.compositing.CompositeVideoClip import clips_array
 
 from bencher.results.composable_container.composable_container_base import (
     ComposableContainerBase,
@@ -52,15 +51,14 @@ class ComposableContainerVideo(ComposableContainerBase):
             elif isinstance(obj, ComposableContainerVideo):
                 self.container.append(obj.render())
             elif isinstance(obj, np.ndarray):
-                self.container.append(ImageClip(obj))
+                self.container.append(ImageClip(obj, duration=None))
             else:
                 path = Path(obj)
                 extension = str.lower(path.suffix)
                 if extension in [".jpg", ".jepg", ".png"]:
-                    self.container.append(ImageClip(obj))
+                    self.container.append(ImageClip(str(obj), duration=None))
                 elif extension in [".mpeg", ".mpg", ".mp4", ".webm"]:
-                    # print(obj)
-                    self.container.append(VideoFileClip(obj))
+                    self.container.append(VideoFileClip(str(obj)))
                 else:
                     raise RuntimeWarning(f"unsupported filetype {extension}")
         else:
@@ -105,15 +103,16 @@ class ComposableContainerVideo(ComposableContainerBase):
 
         for i in range(len(self.container)):
             if self.container[i].duration is None:
-                self.container[i].duration = frame_duration
+                self.container[i] = self.container[i].with_duration(frame_duration)
             max_duration = max(max_duration, self.container[i].duration)
         match render_cfg.compose_method:
             case ComposeType.right | ComposeType.down:
                 for i in range(len(self.container)):
                     self.container[i] = self.extend_clip(self.container[i], max_duration)
-                    self.container[i] = margin(
-                        self.container[i], top=render_cfg.margin, color=render_cfg.background_col
-                    )
+                    if render_cfg.margin > 0:
+                        self.container[i] = self.container[i].margin(
+                            top=render_cfg.margin, color=render_cfg.background_col
+                        )
 
                 if render_cfg.compose_method == ComposeType.right:
                     clips = [self.container]
@@ -121,16 +120,9 @@ class ComposableContainerVideo(ComposableContainerBase):
                     clips = [[c] for c in self.container]
                 out = clips_array(clips, bg_color=render_cfg.background_col)
                 if out.duration is None:
-                    out.duration = max_duration
+                    out = out.with_duration(max_duration)
             case ComposeType.sequence:
-                out = concatenate_videoclips(
-                    self.container, bg_color=render_cfg.background_col, method="compose"
-                )
-            # case ComposeType.overlay:
-            #     for i in range(len(self.container)):
-            #         self.container[i].alpha = 1./len(self.container)
-            #     out = CompositeVideoClip(self.container, bg_color=render_cfg.background_col)
-            #     # out.duration = fps
+                out = concatenate_videoclips(self.container, bg_color=render_cfg.background_col)
             case _:
                 raise RuntimeError("This compose type is not supported")
 
@@ -138,9 +130,10 @@ class ComposableContainerVideo(ComposableContainerBase):
         if label is not None:
             # print("adding label")
             label = ImageClip(
-                np.array(VideoWriter.create_label(label, color=render_cfg.background_col))
+                np.array(VideoWriter.create_label(label, color=render_cfg.background_col)),
+                duration=None,
             )
-            label.duration = out.duration
+            label = label.with_duration(out.duration)
             label_compose = ComposeType.down
             if render_cfg.compose_method == ComposeType.down:
                 label_compose = ComposeType.right
@@ -173,12 +166,8 @@ class ComposableContainerVideo(ComposableContainerBase):
 
     def extend_clip(self, clip: VideoClip, desired_duration: float):
         if clip.duration < desired_duration:
-            return concatenate_videoclips(
-                [
-                    clip,
-                    ImageClip(
-                        clip.get_frame(clip.duration), duration=desired_duration - clip.duration
-                    ),
-                ]
+            frozen_frame = ImageClip(
+                clip.get_frame(clip.duration), duration=desired_duration - clip.duration
             )
+            return concatenate_videoclips([clip, frozen_frame])
         return clip
