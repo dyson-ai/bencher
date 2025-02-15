@@ -1,8 +1,6 @@
 import bencher as bch
 import numpy as np
 import math
-import plotly.graph_objects as go
-from plotly.io import write_image
 from PIL import Image, ImageDraw
 
 
@@ -37,7 +35,9 @@ class BenchPolygons(bch.ParametrizedSweep):
         )
         # Verify filepaths are being returned
         assert isinstance(self.polygon, str), f"Expected string filepath, got {type(self.polygon)}"
-        assert isinstance(self.polygon_small, str), f"Expected string filepath, got {type(self.polygon_small)}"
+        assert isinstance(self.polygon_small, str), (
+            f"Expected string filepath, got {type(self.polygon_small)}"
+        )
 
         self.side_length = 2 * self.radius * math.sin(math.pi / self.sides)
         self.area = (self.sides * self.side_length**2) / (4 * math.tan(math.pi / self.sides))
@@ -45,13 +45,13 @@ class BenchPolygons(bch.ParametrizedSweep):
 
     def points_to_polygon_png(self, points: list[float], filename: str, dpi):
         """Draw a closed polygon and save to png using PIL"""
-        size = int(100 * (dpi/30))
-        img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+        size = int(100 * (dpi / 30))
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
-        
-        scaled_points = [(((p[0] + 1) * size/2), ((1 - p[1]) * size/2)) for p in points]
+
+        scaled_points = [(((p[0] + 1) * size / 2), ((1 - p[1]) * size / 2)) for p in points]
         draw.line(scaled_points, fill=self.color, width=int(self.linewidth))
-        
+
         img.save(filename, "PNG")
         return str(filename)
 

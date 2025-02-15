@@ -4,19 +4,20 @@ from PIL import Image
 import colorcet as cc
 import numpy.typing as npt
 
+
 def apply_colormap(data: npt.NDArray) -> npt.NDArray:
     """Apply a perceptually uniform colormap to the data"""
     # Normalize data to [0, 1]
     normalized = (data - data.min()) / (data.max() - data.min())
     # Convert hex colors to RGB values using numpy's frombuffer
-    colors = np.array([
-        np.frombuffer(bytes.fromhex(c.lstrip('#')), dtype=np.uint8)
-        for c in cc.rainbow
-    ])
+    colors = np.array(
+        [np.frombuffer(bytes.fromhex(c.lstrip("#")), dtype=np.uint8) for c in cc.rainbow]
+    )
     # Map normalized values to colormap indices
     indices = (normalized * (len(colors) - 1)).astype(int)
     # Create RGB array from the colormap
     return colors[indices]
+
 
 class TuringPattern(bch.ParametrizedSweep):
     alpha = bch.FloatSweep(default=2.8e-4, bounds=(2e-4, 5e-3))
@@ -65,7 +66,7 @@ class TuringPattern(bch.ParametrizedSweep):
 
         n = int(self.time / self.dt)
         dx = 2.0 / self.size
-        
+
         U = np.random.rand(self.size, self.size)
         V = np.random.rand(self.size, self.size)
 
@@ -76,7 +77,7 @@ class TuringPattern(bch.ParametrizedSweep):
                 # Apply colormap to create RGB image
                 rgb = apply_colormap(U)
                 # Create PIL image with alpha channel
-                img = Image.fromarray(rgb, 'RGB').convert('RGBA')
+                img = Image.fromarray(rgb, "RGB").convert("RGBA")
                 img = img.resize((200, 200), Image.Resampling.LANCZOS)
                 rgb_alpha = np.array(img)
                 vid_writer.append(rgb_alpha)
@@ -85,6 +86,7 @@ class TuringPattern(bch.ParametrizedSweep):
         self.video = vid_writer.write()
         self.score = self.alpha + self.beta
         return super().__call__()
+
 
 def example_video(run_cfg: bch.BenchRunCfg = None, report: bch.BenchReport = None) -> bch.Bench:
     bench = TuringPattern().to_bench(run_cfg, report)

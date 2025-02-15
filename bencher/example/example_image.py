@@ -37,15 +37,15 @@ class BenchPolygons(bch.ParametrizedSweep):
     def points_to_polygon_png(self, points: list[float], filename: str):
         """Draw a closed polygon and save to png using PIL"""
         size = 300
-        img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
-        
+
         # Scale points to image size (from [-1,1] to [0,size])
-        scaled_points = [(((p[0] + 1) * size/2), ((1 - p[1]) * size/2)) for p in points]
-        
+        scaled_points = [(((p[0] + 1) * size / 2), ((1 - p[1]) * size / 2)) for p in points]
+
         # Draw polygon outline
         draw.line(scaled_points, fill=self.color, width=int(self.linewidth))
-        
+
         img.save(filename, "PNG")
         # Explicitly return the filename string
         return str(filename)
