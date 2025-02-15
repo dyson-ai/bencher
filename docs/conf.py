@@ -65,6 +65,7 @@ nbsite_gallery_conf = {
                 "Levels",
                 "examples",
                 "Meta",
+                "Media",
             ],
             "skip_rst_notebook_directive": True,
         }
