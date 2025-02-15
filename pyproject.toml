@@ -96,7 +96,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = ["bencher"]
+include = ["bencher", "CHANGELOG.md"]
 
 # Environments
 [tool.pixi.environments]
