@@ -6,7 +6,6 @@ import logging
 from typing import List
 
 import param
-from str2bool import str2bool
 import panel as pn
 from datetime import datetime
 
