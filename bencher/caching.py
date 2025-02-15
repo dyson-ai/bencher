@@ -3,9 +3,6 @@ from diskcache import Cache
 from bencher.variables.parametrised_sweep import ParametrizedSweep
 from bencher.utils import hash_sha1
 import logging
-from sortedcontainers import SortedDict
-
-# from job import job,JobCache,JobFunctionCache
 
 
 class CachedParams(ParametrizedSweep):
@@ -20,7 +17,7 @@ class CachedParams(ParametrizedSweep):
             self.cache.clear()
 
     def kwargs_to_hash_key(self, **kwargs):
-        return tuple(SortedDict(kwargs).items())
+        return tuple(sorted(kwargs.items()))
 
     def in_cache(self, **kwargs):
         self.update_params_from_kwargs(**kwargs)
