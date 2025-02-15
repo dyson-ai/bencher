@@ -1,0 +1,39 @@
+name: Update Changelog
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update_changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Update Changelog
+        run: |
+          # Get the latest release info
+          RELEASE_TAG=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
+            jq -r .tag_name)
+          RELEASE_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
+            jq -r .body)
+          
+          # Update CHANGELOG.md
+          echo "## [$RELEASE_TAG] - $(date +%Y-%m-%d)" > temp_changelog
+          echo "" >> temp_changelog
+          echo "$RELEASE_BODY" >> temp_changelog
+          echo "" >> temp_changelog
+          cat CHANGELOG.md >> temp_changelog
+          mv temp_changelog CHANGELOG.md
+          
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Update changelog for latest release" || exit 0
+          git push
