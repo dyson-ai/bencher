@@ -154,14 +154,14 @@ class HoloviewResult(PanelResult):
             tap_var = [tap_var]
 
         if len(tap_var) == 0 or self.plt_cnt_cfg.inputs_cnt > 1 or not use_tap:
-            heatmap_cb = self.to_line_ds
+            line_cb = self.to_line_ds
         else:
-            heatmap_cb = partial(
+            line_cb = partial(
                 self.to_line_tap_ds, result_var_plots=tap_var, container=tap_container
             )
 
         return self.filter(
-            heatmap_cb,
+            line_cb,
             float_range=VarRange(1, 1),
             cat_range=VarRange(0, None),
             repeats_range=VarRange(1, 1),
