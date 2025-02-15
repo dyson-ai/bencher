@@ -1,17 +1,16 @@
 from __future__ import annotations
-import numpy as np
 from copy import deepcopy
 from pathlib import Path
 from dataclasses import dataclass
-from moviepy.editor import (
-    ImageClip,
-    CompositeVideoClip,
-    VideoFileClip,
-    VideoClip,
-)
-from moviepy.video.compositing.concatenate import concatenate_videoclips
-from moviepy.video.compositing.CompositeVideoClip import clips_array
 
+# Third-party imports
+import numpy as np
+from moviepy.video.VideoClip import VideoClip, ImageClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip, clips_array
+
+from moviepy import VideoFileClip, concatenate_videoclips
+
+# Local imports
 from bencher.results.composable_container.composable_container_base import (
     ComposableContainerBase,
     ComposeType,
