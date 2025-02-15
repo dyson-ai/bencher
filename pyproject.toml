@@ -22,7 +22,6 @@ dependencies = [
     "pandas>=2.0,<=2.2.3",
     "strenum>=0.4.0,<=0.4.15",
     "scikit-learn>=1.2,<=1.6.1",
-    "str2bool>=1.1,<=1.1",
     "moviepy>=2.1.2",
 ]
 
