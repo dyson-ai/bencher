@@ -47,12 +47,12 @@ class VideoWriter:
 
     @staticmethod
     def convert_to_compatible_format(video_path: str) -> str:
-        vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
         new_path = Path(video_path)
         new_path = new_path.with_name(new_path.stem + "_fixed" + new_path.suffix).as_posix()
         vw = VideoWriter()
         vw.filename = new_path
-        vw.write_video_raw(vid)
+        with moviepy.video.io.VideoFileClip.VideoFileClip(video_path) as vid:
+            vw.write_video_raw(vid)
         return new_path
 
     def write_video_raw(self, video_clip: moviepy.video.VideoClip, fps: int = 30) -> str:
