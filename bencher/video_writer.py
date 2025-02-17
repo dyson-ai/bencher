@@ -1,9 +1,8 @@
 import numpy as np
 import moviepy.video.io.ImageSequenceClip
+import moviepy.video.io.VideoFileClip
 from pathlib import Path
 from .utils import gen_video_path, gen_image_path
-
-import moviepy
 from PIL import Image, ImageDraw
 
 
@@ -45,6 +44,16 @@ class VideoWriter:
         )
         new_img.paste(image, (0, padding))
         return new_img
+
+    @staticmethod
+    def convert_to_compatible_format(video_path: str) -> str:
+        vid = moviepy.video.io.VideoFileClip.VideoFileClip(video_path)
+        new_path = Path(video_path)
+        new_path = new_path.with_name(new_path.stem + "_fixed" + new_path.suffix).as_posix()
+        vw = VideoWriter()
+        vw.filename = new_path
+        vw.write_video_raw(vid)
+        return new_path
 
     def write_video_raw(self, video_clip: moviepy.video.VideoClip, fps: int = 30) -> str:
         video_clip.write_videofile(
