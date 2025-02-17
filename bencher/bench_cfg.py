@@ -6,7 +6,6 @@ import logging
 from typing import List
 
 import param
-from str2bool import str2bool
 import panel as pn
 from datetime import datetime
 
@@ -197,11 +196,8 @@ class BenchRunCfg(BenchPlotSrvCfg):
 
         parser.add_argument(
             "--nightly",
-            type=lambda b: bool(str2bool(b)),
-            nargs="?",
-            const=False,
-            default=False,
-            help="turn on nightly benchmarking",
+            action="store_true",
+            help="Turn on nightly benchmarking",
         )
 
         parser.add_argument(

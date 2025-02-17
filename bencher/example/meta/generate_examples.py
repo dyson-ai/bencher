@@ -48,3 +48,9 @@ if __name__ == "__main__":
     convert_example_to_jupyter_notebook(
         "/workspaces/bencher/bencher/example/inputs_1D/example_1_in_2_out_repeats.py", "1D"
     )
+
+    # todo, enable
+    # convert_example_to_jupyter_notebook(
+    #     "/workspaces/bencher/bencher/example/example_composable_container_video.py",
+    #     "Media",
+    # )
